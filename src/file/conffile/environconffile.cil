@@ -1,0 +1,25 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .environ.conf.conf_file_type_transition_file (typeattr)))
+
+(in environ
+
+    (block conf
+
+	   (filecon "/etc/environment" file file_context)
+	   (filecon "/etc/environment\..*" file file_context)
+	   (filecon "/etc/environment\.d" dir file_context)
+	   (filecon "/etc/environment\.d/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "environmanet.d"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "environment")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)))

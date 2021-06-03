@@ -1,0 +1,103 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .systemd.oom.tmpfs.readwriteinherited_file_files (subj))
+    (call .systemd.oom.use_subj_fds (subj)))
+
+(in systemd.oom
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (dac_override dac_read_search)))
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self create_unix_stream_socket)
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call run.list_file_dirs (subj))
+    (call run.read_file_files (subj))
+
+    (call run.write_file_sock_files (subj))
+
+    (call tmpfs.manage_file_files (subj))
+    (call tmpfs.tmp_fs_type_transition_file (subj))
+
+    (call logparsenv.type (subj))
+    (call notify.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dbus.run.listinherited_file_dirs (subj))
+    (call .dbus.run.readinherited_file_sock_files (subj))
+    (call .dbus.run.watch_file_dirs (subj))
+    (call .dbus.run.watch_file_sock_files (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .meminfo.read_procfile_files (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .pressure.read_procfile_files (subj))
+    (call .pressure.search_procfile_dirs (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.usefdtarget.type (subj))
+
+    (call .root.list_file_dirs (subj))
+    (call .root.watch_file_dirs (subj))
+
+    (call .run.list_file_dirs (subj))
+    (call .run.watch_file_dirs (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .swaps.read_procfile_files (subj))
+
+    (call .sys.connectto_subj_unix_stream_sockets (subj))
+
+    (call .systemd.conf.search_file_pattern.type (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-oomd" file file_context))
+
+    (block tmpfs
+
+	   (macro tmp_fs_type_transition_file ((type ARG1))
+		  (call .tmp.fs_type_transition
+			(ARG1 file file "*")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmpfs.base_template)
+
+	   (call .rbacsep.exempt.obj.type (file)))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-oomd\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)
+
+	   (call .dbus.activated.unit.type (file))))

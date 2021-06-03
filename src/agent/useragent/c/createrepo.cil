@@ -1,0 +1,97 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block createrepo
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (getsched setsched)))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir))
+       (call tmp.tmp_file_type_transition_file (subj file))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .cpu.read_sysfile_files (subj))
+       (call .cpu.search_sysfile_pattern.type (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .overcommitmemory.read_sysctlfile_files (subj))
+
+       (call .pkgmgr.conf.list_file_dirs (subj))
+       (call .pkgmgr.conf.read_file_files (subj))
+
+       (call .pkgmgr.data.list_file_dirs (subj))
+       (call .pkgmgr.data.read_file_files (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.home.manage_file_dirs (subj))
+       (call .user.home.manage_file_files (subj))
+
+       (call .vm.search_sysctlfile_pattern.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/createrepo_c" file file_context)
+	      (filecon "/usr/bin/mergerepo_c" file file_context)
+	      (filecon "/usr/bin/modifyrepo_c" file file_context)
+	      (filecon "/usr/bin/sqliterepo_c" file file_context))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1)(class ARG2))
+		     (call .tmp.file_type_transition
+			   (ARG1 file ARG2 "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in user
+
+    (call .createrepo.role (role))
+
+    (call .createrepo.tmp.manage_file_dirs (subj))
+    (call .createrepo.tmp.manage_file_files (subj))
+    (call .createrepo.tmp.relabel_file_dirs (subj))
+    (call .createrepo.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .createrepo.role (role)))

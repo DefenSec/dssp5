@@ -1,0 +1,22 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block dconf
+
+       (block conf
+
+	      (filecon "/etc/dconf" dir file_context)
+	      (filecon "/etc/dconf/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dconf")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.conf.template)))
+
+(in file.unconfined
+
+    (call .dconf.conf.conf_file_type_transition_file (typeattr)))

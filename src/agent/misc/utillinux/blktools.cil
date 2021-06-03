@@ -1,0 +1,77 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block blktools
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (sys_admin)))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call .block.list_sysfile_dirs (subj))
+       (call .block.read_sysfile_lnk_files (subj))
+
+       (call .bus.search_sysfile_pattern.type (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .dev.list_sysfile_dirs (subj))
+       (call .dev.read_sysfile_lnk_files (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .fstab.read_file_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mount.mountpoint.list_all_dirs (subj))
+
+       (call .mount.run.read_file_files (subj))
+       (call .mount.run.search_file_dirs (subj))
+
+       (call .partitions.read_procfile_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .run.search_file_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .stordev.read.type (subj))
+       (call .stordev.read_all_blk_files (subj))
+       (call .stordev.read_all_chr_files (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/blkdiscard" file file_context)
+	      (filecon "/usr/bin/blkid" file file_context)
+	      (filecon "/usr/bin/blkzone" file file_context)
+	      (filecon "/usr/bin/lsblk" file file_context))
+
+       (block run
+
+	      (filecon "/run/blkid" dir file_context)
+	      (filecon "/run/blkid/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "blkid")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.run.base_template)))
+
+(in file.unconfined
+
+    (call .blktools.run.run_file_type_transition_file (typeattr)))

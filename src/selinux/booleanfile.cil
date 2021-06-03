@@ -16,8 +16,8 @@
 
 	      (blockabstract base_template)
 
-	      (context booleanfile_context
-		       (.sys.id .sys.role booleanfile (systemlow systemlow)))
+	      (context booleanfile_context (.sys.id .sys.role booleanfile
+						    (systemlow systemlow)))
 
 	      (type booleanfile)
 	      (call .booleanfile.type (booleanfile)))

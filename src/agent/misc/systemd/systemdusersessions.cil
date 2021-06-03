@@ -1,0 +1,55 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block usersessions
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .nologin.manage_file_files (subj))
+	   (call .nologin.run_file_type_transition_file (subj "*"))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .run.deletename_file_dirs (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-user-sessions" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-user-sessions\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

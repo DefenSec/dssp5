@@ -31,9 +31,8 @@
 
 	      (typeattribute typeattr)
 
-	      (typeattributeset typeattr
-				(and nodedev.typeattr
-				     (not (exception.typeattr)))))
+	      (typeattributeset typeattr (and nodedev.typeattr
+					      (not (exception.typeattr)))))
 
        (block exception
 

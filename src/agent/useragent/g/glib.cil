@@ -1,0 +1,145 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block glib
+
+       (block compileschemas
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (call data.manage_file_files (subj))
+	      (call data.readwrite_file_dirs (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/glib-compile-schemas" file
+			      file_context)))
+
+       (block data
+
+	      (filecon "/usr/share/glib-2\.0" dir file_context)
+	      (filecon "/usr/share/glib-2\.0/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "glib-2.0")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block gio
+
+	      (block lib
+
+		     (filecon "/usr/lib/gio" dir file_context)
+		     (filecon "/usr/lib/gio/.*" any file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "gio")))
+
+		     (blockinherit .file.lib.template)
+		     (blockinherit .file.macro_template_dirs))
+
+	      (block querymodules
+
+		     (blockinherit .hybrid.agent.template)
+
+		     (allow subj self (process (execmem)))
+
+		     (call lib.manage_file_files (subj))
+		     (call lib.mapexecute_file_pattern.type (subj))
+		     (call lib.readwrite_file_dirs (subj))
+
+		     (call .locale.data.map_file_pattern.type (subj))
+		     (call .locale.data.read_file_pattern.type (subj))
+
+		     (call .selinux.linked.type (subj))
+
+		     (call .xattr.getattr_fs_pattern.type (subj))
+
+		     (block exec
+
+			    (filecon "/usr/bin/gio-querymodules-64" file
+				     file_context))))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/glib-2\.0" dir file_context)
+		     (filecon "HOME_DIR/\.config/glib-2\.0/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "glib-2.0")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.home.conf.base_template)))
+
+       (block pacrunner
+
+	      (blockinherit .user.agent.template)
+	      (blockinherit .user.dbus.nameclient.template)
+
+	      (allow subj self (process (getsched setsched)))
+
+	      (call .user.systemd.agent (subj exec.file))
+
+	      (block exec
+
+		     (filecon "/usr/bin/glib-pacrunner" file file_context))
+
+	      (block unit
+
+		     (filecon "/usr/lib/systemd/user/glib-pacrunner\.service.*"
+			      file file_context)
+
+		     (blockinherit .file.user.unit.template)
+
+		     (call .user.dbus.activated.unit.type (file)))))
+
+(in file.unconfined
+
+    (call .glib.data.data_file_type_transition_file (typeattr))
+    (call .glib.gio.lib.lib_file_type_transition_file (typeattr))
+    (call .glib.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in subj.common
+
+    (call .glib.gio.lib.mapexecute_file_pattern.type (typeattr))
+    (call .glib.gio.lib.read_file_pattern.type (typeattr)))
+
+(in user
+
+    (call .glib.home.conf.manage_file_dirs (subj))
+    (call .glib.home.conf.manage_file_files (subj))
+    (call .glib.home.conf.map_file_files (subj))
+    (call .glib.home.conf.relabel_file_dirs (subj))
+    (call .glib.home.conf.relabel_file_files (subj))
+    (call .glib.home.conf.user_home_conf_file_type_transition_file (subj))
+
+    (call .glib.pacrunner.role (role)))
+
+(in wheel
+
+    (call .glib.pacrunner.role (role)))

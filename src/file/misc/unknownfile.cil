@@ -5,7 +5,17 @@
 
        (filecon "/.*" any file_context)
 
-       (macro root_file_type_transition_file ((type ARG1)(class ARG2)(name ARG3))
+       (macro dontaudit_getattr_file ((type ARG1))
+	      (dontaudit ARG1 file (blk_file (getattr)))
+	      (dontaudit ARG1 file (chr_file (getattr)))
+	      (dontaudit ARG1 file (dir (getattr)))
+	      (dontaudit ARG1 file (fifo_file (getattr)))
+	      (dontaudit ARG1 file (file (getattr)))
+	      (dontaudit ARG1 file (lnk_file (getattr)))
+	      (dontaudit ARG1 file (sock_file (getattr))))
+
+       (macro root_file_type_transition_file
+	      ((type ARG1)(class ARG2)(name ARG3))
 	      (call .root.file_type_transition
 		    (ARG1 file ARG2 ARG3)))
 
@@ -18,7 +28,7 @@
        (blockinherit .file.macro_template_lnk_files)
        (blockinherit .file.macro_template_sock_files)
 
-       (call .xattr.associate_fs (file)))
+       (call .xattr.associate_fs_pattern.type (file)))
 
 (in file.unconfined
 

@@ -1,0 +1,151 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block authselect
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (process (setfscreate)))
+
+       (call conf.conf_file_type_transition_file (subj))
+       (call conf.manage_file_files (subj))
+
+       (call data.list_file_dirs (subj))
+       (call data.read_file_files (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
+       (call .conf.manage_file_dirs (subj))
+       (call .conf.manage_file_lnk_files (subj))
+
+       (call .dconf.conf.conf_file_type_transition_file (subj))
+       (call .dconf.conf.manage_file_dirs (subj))
+       (call .dconf.conf.manage_file_files (subj))
+       (call .dconf.conf.manage_file_lnk_files (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .nss.conf_file_type_transition_file (subj))
+       (call .nss.manage_file_files (subj))
+
+       (call .pam.conf.conf_file_type_transition_file (subj))
+       (call .pam.conf.manage_file_dirs (subj))
+       (call .pam.conf.manage_file_files (subj))
+       (call .pam.conf.manage_file_lnk_files (subj))
+
+       (call .rbac.objchangesys.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .run.search_file_pattern.type (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/authselect/authselect\.conf" file file_context)
+	      (filecon "/etc/authselect/authselect\.conf\..*" file file_context)
+	      (filecon "/etc/authselect/user-nsswitch\.conf" file file_context)
+	      (filecon "/etc/authselect/user-nsswitch\.conf\..*" file
+		       file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "authselect.conf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "user-nsswitch.conf")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block data
+
+	      (filecon "/usr/share/authselect" dir file_context)
+	      (filecon "/usr/share/authselect/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "authselect")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/authselect" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/authselect" dir file_context)
+	      (filecon "/var/lib/authselect/.*" any file_context)
+	      (filecon "/var/lib/authselect/backups/.*" any ())
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "authselect")))
+
+	      (blockinherit .file.state.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in dconf.conf
+
+    (filecon "/etc/authselect/custom/.*/dconf-db" file file_context)
+    (filecon "/etc/authselect/custom/.*/dconf-db\..*" file file_context)
+    (filecon "/etc/authselect/custom/.*/dconf-locks" file file_context)
+    (filecon "/etc/authselect/custom/.*/dconf-locks\..*" file file_context)
+    (filecon "/etc/authselect/dconf-db" file file_context)
+    (filecon "/etc/authselect/dconf-db\..*" file file_context)
+    (filecon "/etc/authselect/dconf-locks" file file_context)
+    (filecon "/etc/authselect/dconf-locks\..*" file file_context))
+
+(in dconf.conf.conf_file_type_transition_file
+
+    (call .conf.file_type_transition
+	  (ARG1 file file "dconf-db"))
+    (call .conf.file_type_transition
+	  (ARG1 file file "dconf-locks")))
+
+(in file.unconfined
+
+    (call .authselect.conf.conf_file_type_transition_file (typeattr))
+    (call .authselect.data.data_file_type_transition_file (typeattr))
+    (call .authselect.state.state_file_type_transition_file (typeattr)))
+
+(in nss
+
+    (filecon "/etc/authselect/custom/.*/nsswitch\.conf" file file_context)
+    (filecon "/etc/authselect/custom/.*/nsswitch\.conf\..*" file file_context)
+    (filecon "/etc/authselect/nsswitch\.conf" file file_context)
+    (filecon "/etc/authselect/nsswitch\.conf\..*" file file_context))
+
+(in pam.conf
+
+    (filecon "/etc/authselect/fingerprint-auth" file file_context)
+    (filecon "/etc/authselect/fingerprint-auth\..*" file file_context)
+    (filecon "/etc/authselect/password-auth" file file_context)
+    (filecon "/etc/authselect/password-auth\..*" file file_context)
+    (filecon "/etc/authselect/postlogin" file file_context)
+    (filecon "/etc/authselect/postlogin\..*" file file_context)
+    (filecon "/etc/authselect/smartcard-auth" file file_context)
+    (filecon "/etc/authselect/smartcard-auth\..*" file file_context)
+    (filecon "/etc/authselect/system-auth" file file_context)
+    (filecon "/etc/authselect/system-auth\..*" file file_context))
+
+(in pam.conf.conf_file_type_transition_file
+    (call .conf.file_type_transition
+	  (ARG1 file file "fingerprint-auth"))
+    (call .conf.file_type_transition
+	  (ARG1 file file "password-auth"))
+    (call .conf.file_type_transition
+	  (ARG1 file file "postlogin"))
+    (call .conf.file_type_transition
+	  (ARG1 file file "smartcard-auth"))
+    (call .conf.file_type_transition
+	  (ARG1 file file "system-auth")))

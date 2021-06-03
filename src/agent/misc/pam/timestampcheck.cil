@@ -1,0 +1,12 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block timestampcheck
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/pam_timestamp_check" file file_context)))

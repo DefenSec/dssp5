@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block gcrypt
+
+       (block conf
+
+	      (filecon "/etc/gcrypt" dir file_context)
+	      (filecon "/etc/gcrypt/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "gcrypt")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .gcrypt.conf.conf_file_type_transition_file (typeattr)))

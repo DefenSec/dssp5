@@ -309,6 +309,7 @@
 (classpermission readwrite_bluetooth_socket)
 (classpermission readwrite_dccp_socket)
 (classpermission readwrite_netlink_audit_socket)
+(classpermission readwrite_netlink_kobject_uevent_socket)
 (classpermission readwrite_sctp_socket)
 (classpermission readwrite_tcp_socket)
 (classpermission readwrite_tun_socket)
@@ -328,9 +329,9 @@
 		    (alg_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_alg_stream_socket
-		    (alg_socket (accept append bind connect create getattr getopt
-					ioctl listen read setattr setopt shutdown
-					write)))
+		    (alg_socket (accept append bind connect create getattr
+					getopt ioctl listen read setattr setopt
+					shutdown write)))
 (classpermissionset create_appletalk_socket
 		    (appletalk_socket (append bind connect create getattr getopt
 					      ioctl read setattr setopt shutdown
@@ -344,8 +345,9 @@
 					   ioctl read setattr setopt shutdown
 					   write)))
 (classpermissionset create_ax25_socket
-		    (ax25_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (ax25_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_bluetooth_socket
 		    (bluetooth_socket (append bind connect create getattr getopt
 					      ioctl read setattr setopt shutdown
@@ -355,14 +357,16 @@
 					      getopt ioctl listen read setattr
 					      setopt shutdown write)))
 (classpermissionset create_caif_socket
-		    (caif_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (caif_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_can_socket
 		    (can_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_dccp_socket
-		    (dccp_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (dccp_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_dccp_stream_socket
 		    (dccp_socket (accept append bind connect create getattr
 					 getopt ioctl listen read setattr setopt
@@ -372,24 +376,28 @@
 					   ioctl read setattr setopt shutdown
 					   write)))
 (classpermissionset create_icmp_socket
-		    (icmp_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (icmp_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_ieee802154_socket
-		    (ieee802154_socket (append bind connect create getattr getopt
-					       ioctl read setattr setopt shutdown
-					       write)))
+		    (ieee802154_socket (append bind connect create getattr
+					       getopt ioctl read setattr setopt
+					       shutdown write)))
 (classpermissionset create_ipx_socket
 		    (ipx_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_irda_socket
-		    (irda_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (irda_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_isdn_socket
-		    (isdn_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (isdn_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_iucv_socket
-		    (iucv_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (iucv_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_kcm_socket
 		    (kcm_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
@@ -404,17 +412,18 @@
 						  getopt ioctl read setattr
 						  setopt shutdown write)))
 (classpermissionset create_netlink_connector_socket
-		    (netlink_connector_socket (append bind connect create getattr
-						      getopt ioctl read setattr
-						      setopt shutdown write)))
+		    (netlink_connector_socket (append bind connect create
+						      getattr getopt ioctl read
+						      setattr setopt shutdown
+						      write)))
 (classpermissionset create_netlink_crypto_socket
 		    (netlink_crypto_socket (append bind connect create getattr
 						   getopt ioctl read setattr
 						   setopt shutdown write)))
 (classpermissionset create_netlink_dnrt_socket
 		    (netlink_dnrt_socket (append bind connect create getattr
-						 getopt ioctl read setattr setopt
-						 shutdown write)))
+						 getopt ioctl read setattr
+						 setopt shutdown write)))
 (classpermissionset create_netlink_fib_lookup_socket
 		    (netlink_fib_lookup_socket (append bind connect create
 						       getattr getopt ioctl
@@ -434,17 +443,18 @@
 							   read setattr setopt
 							   shutdown write)))
 (classpermissionset create_netlink_netfilter_socket
-		    (netlink_netfilter_socket (append bind connect create getattr
-						      getopt ioctl read setattr
-						      setopt shutdown write)))
+		    (netlink_netfilter_socket (append bind connect create
+						      getattr getopt ioctl read
+						      setattr setopt shutdown
+						      write)))
 (classpermissionset create_netlink_nflog_socket
 		    (netlink_nflog_socket (append bind connect create getattr
 						  getopt ioctl read setattr
 						  setopt shutdown write)))
 (classpermissionset create_netlink_rdma_socket
 		    (netlink_rdma_socket (append bind connect create getattr
-						 getopt ioctl read setattr setopt
-						 shutdown write)))
+						 getopt ioctl read setattr
+						 setopt shutdown write)))
 (classpermissionset create_netlink_route_socket
 		    (netlink_route_socket (append bind connect create getattr
 						  getopt ioctl read setattr
@@ -468,8 +478,8 @@
 						    setopt shutdown write)))
 (classpermissionset create_netlink_xfrm_socket
 		    (netlink_xfrm_socket (append bind connect create getattr
-						 getopt ioctl read setattr setopt
-						 shutdown write)))
+						 getopt ioctl read setattr
+						 setopt shutdown write)))
 (classpermissionset create_netrom_socket
 		    (netrom_socket (append bind connect create getattr getopt
 					   ioctl read setattr setopt shutdown
@@ -501,15 +511,17 @@
 		    (rds_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_rose_socket
-		    (rose_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (rose_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_rxrpc_socket
 		    (rxrpc_socket (append bind connect create getattr getopt
 					  ioctl read setattr setopt shutdown
 					  write)))
 (classpermissionset create_sctp_socket
-		    (sctp_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (sctp_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_sctp_stream_socket
 		    (sctp_socket (accept append bind connect create getattr
 					 getopt ioctl listen read setattr setopt
@@ -518,18 +530,19 @@
 		    (smc_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_socket
-		    (socket (append bind connect create getattr getopt ioctl read
-				    setattr setopt shutdown write)))
+		    (socket (append bind connect create getattr getopt ioctl
+				    read setattr setopt shutdown write)))
 (classpermissionset create_tcp_socket
 		    (tcp_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_tcp_stream_socket
-		    (tcp_socket (accept append bind connect create getattr getopt
-					ioctl listen read setattr setopt shutdown
-					write)))
+		    (tcp_socket (accept append bind connect create getattr
+					getopt ioctl listen read setattr setopt
+					shutdown write)))
 (classpermissionset create_tipc_socket
-		    (tipc_socket (append bind connect create getattr getopt ioctl
-					 read setattr setopt shutdown write)))
+		    (tipc_socket (append bind connect create getattr getopt
+					 ioctl read setattr setopt shutdown
+					 write)))
 (classpermissionset create_tun_socket
 		    (tun_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
@@ -537,9 +550,9 @@
 		    (udp_socket (append bind connect create getattr getopt ioctl
 					read setattr setopt shutdown write)))
 (classpermissionset create_unix_dgram_socket
-		    (unix_dgram_socket (append bind connect create getattr getopt
-					       ioctl read setattr setopt shutdown
-					       write)))
+		    (unix_dgram_socket (append bind connect create getattr
+					       getopt ioctl read setattr setopt
+					       shutdown write)))
 (classpermissionset create_unix_stream_socket
 		    (unix_stream_socket (append bind connect create getattr
 						getopt ioctl read setattr setopt
@@ -572,6 +585,11 @@
 		    (netlink_audit_socket (append bind connect getattr getopt
 						  ioctl read setopt shutdown
 						  write)))
+(classpermissionset readwrite_netlink_kobject_uevent_socket
+		    (netlink_kobject_uevent_socket (append bind connect getattr
+							   getopt ioctl read
+							   setopt shutdown
+							   write)))
 (classpermissionset readwrite_sctp_socket
 		    (sctp_socket (append bind connect getattr getopt ioctl read
 					 setopt shutdown write)))
@@ -585,8 +603,9 @@
 		    (unix_dgram_socket (append bind connect getattr getopt ioctl
 					       read setopt shutdown write)))
 (classpermissionset readwrite_unix_stream_socket
-		    (unix_stream_socket (append bind connect getattr getopt ioctl
-						read setopt shutdown write)))
+		    (unix_stream_socket (append bind connect getattr getopt
+						ioctl read setopt shutdown
+						write)))
 
 (classpermissionset write_alg_socket
 		    (alg_socket (append bind connect getattr getopt ioctl setopt
@@ -595,11 +614,11 @@
 		    (bluetooth_socket (append bind connect getattr getopt ioctl
 					      setopt shutdown write)))
 (classpermissionset write_dccp_socket
-		    (dccp_socket (append bind connect getattr getopt ioctl setopt
-					 shutdown write)))
+		    (dccp_socket (append bind connect getattr getopt ioctl
+					 setopt shutdown write)))
 (classpermissionset write_sctp_socket
-		    (sctp_socket (append bind connect getattr getopt ioctl setopt
-					 shutdown write)))
+		    (sctp_socket (append bind connect getattr getopt ioctl
+					 setopt shutdown write)))
 (classpermissionset write_tcp_socket
 		    (tcp_socket (append bind connect getattr getopt ioctl setopt
 					shutdown write)))
@@ -610,8 +629,8 @@
 		    (unix_dgram_socket (append bind connect getattr getopt ioctl
 					       setopt shutdown write)))
 (classpermissionset write_unix_stream_socket
-		    (unix_stream_socket (append bind connect getattr getopt ioctl
-						setopt shutdown write)))
+		    (unix_stream_socket (append bind connect getattr getopt
+						ioctl setopt shutdown write)))
 
 (classmap constrainsocketobject (nameconnect nodebind))
 (classmap constrainsocketsubject
@@ -654,7 +673,8 @@
 (classmapping constrainsocketsubject append (netlink_connector_socket (append)))
 (classmapping constrainsocketsubject append (netlink_crypto_socket (append)))
 (classmapping constrainsocketsubject append (netlink_dnrt_socket (append)))
-(classmapping constrainsocketsubject append (netlink_fib_lookup_socket (append)))
+(classmapping constrainsocketsubject append
+	      (netlink_fib_lookup_socket (append)))
 (classmapping constrainsocketsubject append (netlink_generic_socket (append)))
 (classmapping constrainsocketsubject append (netlink_iscsi_socket (append)))
 (classmapping constrainsocketsubject append
@@ -721,7 +741,8 @@
 (classmapping constrainsocketsubject create (netlink_connector_socket (create)))
 (classmapping constrainsocketsubject create (netlink_crypto_socket (create)))
 (classmapping constrainsocketsubject create (netlink_dnrt_socket (create)))
-(classmapping constrainsocketsubject create (netlink_fib_lookup_socket (create)))
+(classmapping constrainsocketsubject create
+	      (netlink_fib_lookup_socket (create)))
 (classmapping constrainsocketsubject create (netlink_generic_socket (create)))
 (classmapping constrainsocketsubject create (netlink_iscsi_socket (create)))
 (classmapping constrainsocketsubject create
@@ -1085,8 +1106,8 @@
 (classmapping constrainsocketsubject write (xdp_socket (write)))
 
 (classmapping sockets common
-	      (alg_socket (not (accept listen map name_bind relabelfrom relabelto
-				       recvfrom sendto))))
+	      (alg_socket (not (accept listen map name_bind relabelfrom
+				       relabelto recvfrom sendto))))
 (classmapping sockets common
 	      (appletalk_socket (not (accept listen map name_bind relabelfrom
 					     relabelto recvfrom sendto))))
@@ -1117,7 +1138,8 @@
 					  relabelto recvfrom sendto))))
 (classmapping sockets common
 	      (icmp_socket (not (accept listen map name_bind node_bind
-					relabelfrom relabelto recvfrom sendto))))
+					relabelfrom relabelto recvfrom
+					sendto))))
 (classmapping sockets common
 	      (ieee802154_socket (not (accept listen map name_bind relabelfrom
 					      relabelto recvfrom sendto))))
@@ -1210,8 +1232,8 @@
 						   recvfrom sendto))))
 (classmapping sockets common
 	      (netlink_xfrm_socket (not (accept listen map name_bind nlmsg_read
-						nlmsg_write relabelfrom relabelto
-						recvfrom sendto))))
+						nlmsg_write relabelfrom
+						relabelto recvfrom sendto))))
 (classmapping sockets common
 	      (netrom_socket (not (accept listen map name_bind relabelfrom
 					  relabelto recvfrom sendto))))

@@ -1,0 +1,17 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block factory
+
+       (filecon "/usr/share/factory" dir file_context)
+       (filecon "/usr/share/factory/.*" any file_context)
+
+       (macro data_file_type_transition_file ((type ARG1))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "factory")))
+
+       (blockinherit .file.data.template))
+
+(in file.unconfined
+
+    (call .factory.data_file_type_transition_file (typeattr)))

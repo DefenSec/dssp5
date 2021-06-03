@@ -1,0 +1,15 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block torrent
+
+       (portcon "dccp" (6890 6999) port_context)
+       (portcon "dccp" 6881 port_context)
+       (portcon "sctp" (6890 6999) port_context)
+       (portcon "sctp" 6881 port_context)
+       (portcon "tcp" (6890 6999) port_context)
+       (portcon "tcp" 6881 port_context)
+       (portcon "udp" (6890 6999) port_context)
+       (portcon "udp" 6881 port_context)
+
+       (blockinherit .net.port.unreserved.template))

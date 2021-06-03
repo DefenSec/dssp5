@@ -10,7 +10,7 @@
 
     (constrain (filesystem (relabelto))
 	       (or (or (or (eq u1 u2)
-			   (and (eq t1 objchangesys.typeattr) (eq u2 .sys.id)))
+			(and (eq t1 objchangesys.typeattr) (eq u2 .sys.id)))
 		       (eq t1 objchange.typeattr))
 		   (eq t1 exempt.typeattr))))
 
@@ -28,8 +28,7 @@
 
     (constrain (filesystem (relabelto))
 	       (or (or (or (eq r1 r2)
-			   (and (eq t1 objchangesys.typeattr)
-				(eq r2 .sys.role)))
+			   (and (eq t1 objchangesys.typeattr) (eq r2 .sys.role)))
 		       (eq t1 objchange.typeattr))
 		   (eq t1 exempt.typeattr))))
 
@@ -42,8 +41,9 @@
 			       (eq t1 exempt.subj.typeattr))
 			   (eq t2 exempt.obj.typeattr))
 		       (and (eq r2 exempt.roleattr) (eq t2 typeattr)))
-		   (and (eq t1 readstatesource.typeattr)
-			(eq t2 readstatetarget.typeattr)))))
+		   (and
+		    (eq t1 readstatesource.typeattr)
+		    (eq t2 readstatetarget.typeattr)))))
 
 (macro associate_invalid_fs ((type ARG1))
        (allow ARG1 invalid (filesystem (associate))))
@@ -81,6 +81,9 @@
 (allow invalid self (filesystem (associate)))
 
 (block fs
+
+       (macro dontaudit_getattr_all_fs ((type ARG1))
+	      (dontaudit ARG1 typeattr (filesystem (getattr))))
 
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
@@ -584,7 +587,8 @@
 		     (fifo_file (not (execmod map mounton))))
 	      (allow typeattr fs.typeattr (file (not (entrypoint execmod))))
 	      (allow typeattr fs.typeattr (filesystem (not associate)))
-	      (allow typeattr fs.typeattr (lnk_file (not (execmod map mounton))))
+	      (allow typeattr fs.typeattr
+		     (lnk_file (not (execmod map mounton))))
 	      (allow typeattr fs.typeattr
 		     (sock_file (not (execmod map mounton))))))
 

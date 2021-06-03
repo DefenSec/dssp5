@@ -19,8 +19,8 @@
 
 	      (blockabstract base_template)
 
-	      (context debugfile_context
-		       (.sys.id .sys.role debugfile (systemlow systemlow)))
+	      (context debugfile_context (.sys.id .sys.role debugfile
+						  (systemlow systemlow)))
 
 	      (type debugfile)
 	      (call .debugfile.type (debugfile)))

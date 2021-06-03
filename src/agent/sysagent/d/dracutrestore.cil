@@ -1,0 +1,114 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dracut
+
+    (block restore
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self
+		  (capability (chown dac_override dac_read_search fowner fsetid
+				     mknod sys_admin)))
+
+	   (call data.search_file_dirs (subj))
+
+	   (call run.manage_file_chr_files (subj))
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_files (subj))
+	   (call run.manage_file_lnk_files (subj))
+	   (call run.run_file_type_transition_file (subj))
+
+	   (call .boot.mounton_file_dirs (subj))
+	   (call .boot.read_file_files (subj))
+	   (call .boot.search_file_pattern.type (subj))
+
+	   (call .console.readwrite_serialtermdev_chr_files (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .fstab.read_file_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .machineid.read_file_files (subj))
+
+	   (call .mount.exec.execute_file_files (subj))
+
+	   (call .mount.run.manage_file_dirs (subj))
+	   (call .mount.run.manage_file_files (subj))
+	   (call .mount.run.run_file_type_transition_file (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .shell.exec.execute_file_files (subj))
+
+	   (call .stordev.getattr_all_blk_files (subj))
+	   (call .stordev.getattr_all_chr_files (subj))
+
+	   (call .sys.tmpfs.manage_file_files (subj))
+
+	   (call .terminfo.conf.read_file_pattern.type (subj))
+	   (call .terminfo.data.read_file_pattern.type (subj))
+
+	   (call .tty.readwrite_nodedev_chr_files (subj))
+
+	   (optional dracut_restore_selinux
+		     ;; https://github.com/dracutdevs/dracut/commit/76522d58c337e695cbffdc10afb04344f16f81b0
+		     ;; added dracut.restore.run.file to customizable_types
+		     (call .caplastcap.read_sysctlfile_pattern.type (subj))
+		     (call .checkcontext_selinux_security (subj))
+		     (call .debug.search_fs_pattern.type (subj))
+		     (call .proc.getattr_fs_pattern.type (subj))
+		     (call .runuser.search_file_pattern.type (subj))
+		     (call .seclabelfs.getattr_all_fs (subj))
+		     (call .selinux.default.read_file_pattern.type (subj))
+		     (call .selinux.file.read_file_pattern.type (subj))
+		     (call .selinux.readwrite_fs_pattern.type (subj))
+		     (call .tmp.dontaudit_getattr_fs_dirs (subj))
+		     (call .tmp.dontaudit_getattr_fs_files (subj))
+		     (call .trace.search_fs_pattern.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dracut/dracut-initramfs-restore" file
+			   file_context))
+
+	   (block run
+
+		  (filecon "/run/initramfs" dir file_context)
+		  (filecon "/run/initramfs/.*" any ())
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "initramfs")))
+
+		  (blockinherit .file.macro_template_chr_files)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block state
+
+		  (filecon "/var/lib/initramfs" dir file_context)
+		  (filecon "/var/lib/initramfs/.*" any file_context)
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "initramfs")))
+
+		  (blockinherit .file.state.template))))
+
+(in exec
+
+    (filecon "/usr/lib/dracut/skipcpio" file file_context))
+
+(in file.unconfined
+
+    (call .dracut.restore.run.run_file_type_transition_file (typeattr))
+    (call .dracut.restore.state.state_file_type_transition_file (typeattr)))

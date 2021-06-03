@@ -1,14 +1,14 @@
 # SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 # SPDX-License-Identifier: Unlicense
 
-.PHONY: all clean policy check config_install modular_install monolithic_install
+.PHONY: all clean policy check config_install modular_install
 
 all: clean policy check
 
 MCS = true
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
 POLVERS = 33
-SELINUXTYPE = dssp5
+SELINUXTYPE = dssp5-fedora
 VERBOSE = false
 
 clean: clean.$(POLVERS)
@@ -39,12 +39,44 @@ config_install:
 \n<selinux>\
 \n</selinux>\
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
-	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
-	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+	echo -e """sys.serialtermdev\
+\nuser.serialtermdev\
+\ndracut.restore.run.file""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
+	echo -e """gitshell.role:gitshell.subj\
+\nsys.role:sys.user.subj\
+\nuser.role:user.subj\
+\nwheel.role:user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+	echo -e """user.serialtermdev\
+\nsys.serialtermdev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/securetty_types
 	echo -e """/bin /usr/bin\
+\n/etc/systemd/system /usr/lib/systemd/system\
+\n/etc/systemd/system.attached /usr/lib/systemd/system\
+\n/etc/systemd/system.control /usr/lib/systemd/system\
+\n/etc/systemd/user /usr/lib/systemd/user\
 \n/lib /usr/lib\
 \n/lib64 /usr/lib\
 \n/sbin /usr/bin\
+\n/sysroot /\
+\n/sysroot/bin /usr/bin\
+\n/sysroot/lib /usr/lib\
+\n/sysroot/lib64 /usr/lib\
+\n/sysroot/sbin /usr/bin\
+\n/sysroot/usr/lib64 /usr/lib\
+\n/sysroot/usr/libexec /usr/bin\
+\n/sysroot/usr/local/bin /usr/bin\
+\n/sysroot/usr/local/etc /etc\
+\n/sysroot/usr/local/lib /usr/lib\
+\n/sysroot/usr/local/lib64 /usr/lib\
+\n/sysroot/usr/local/libexec /usr/bin\
+\n/sysroot/usr/local/sbin /usr/bin\
+\n/sysroot/usr/local/share /usr/share\
+\n/sysroot/usr/local/src /usr/src\
+\n/sysroot/usr/sbin /usr/bin\
+\n/sysroot/usr/tmp /tmp\
+\n/sysroot/var/mail /var/spool/mail\
+\n/sysroot/var/lock /run/lock\
+\n/sysroot/var/run /run\
+\n/sysroot/var/tmp /tmp\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
 \n/usr/local/bin /usr/bin\
@@ -61,20 +93,45 @@ config_install:
 \n/var/lock /run/lock\
 \n/var/run /run\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
+	echo "privsep_preauth=openssh.server.privsep.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/openssh_contexts
 ifeq ($(MCS),false)
 	echo -e """cdrom sys.id:sys.role:removable.stordev\
 \ndisk sys.id:sys.role:removable.stordev\
 \nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
-	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo -e """sys.role:sys.subj sys.role:sys.user.subj user.role:user.systemd.subj wheel.role:user.systemd.subj\
+\nsys.role:login.subj sys.role:sys.user.subj user.role:user.subj wheel.role:user.subj\
+\nsys.role:openssh.server.subj gitshell.role:gitshell.openssh.subj sys.role:sys.user.subj user.role:user.openssh.subj wheel.role:user.openssh.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
+	echo -e "sys.role:openssh.server.subj gitshell.role:gitshell.openssh.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/gitshell.id
+	echo -e """sys.role:sys.subj sys.role:sys.user.subj\
+\nsys.role:login.subj sys.role:sys.user.subj\
+\nsys.role:openssh.server.subj sys.role:sys.user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
+	echo -e """sys.role:login.subj user.role:user.subj\
+\nsys.role:sys.subj user.role:user.systemd.subj\
+\nsys.role:openssh.server.subj user.role:user.openssh.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
+	echo -e """sys.role:login.subj wheel.role:user.subj\
+\nsys.role:sys.subj wheel.role:user.systemd.subj\
+\nsys.role:openssh.server.subj wheel.role:user.openssh.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 else
 	echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
 \ndisk sys.id:sys.role:removable.stordev:s0\
 \nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj:s0 sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
-	echo "sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo -e """sys.role:sys.subj:s0 sys.role:sys.user.subj:s0 user.role:user.systemd.subj:s0 wheel.role:user.systemd.subj:s0\
+\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0 wheel.role:user.subj:s0\
+\nsys.role:openssh.server.subj:s0 gitshell.role:gitshell.subj:s0 sys.role:sys.user.subj:s0 user.role:user.openssh.subj:s0 wheel.role:user.openssh.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
+	echo -e "sys.role:openssh.server.subj:s0 gitshell.role:gitshell.openssh.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/gitshell.id
+	echo -e """sys.role:sys.subj:s0 sys.role:sys.user.subj:s0\
+\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0\
+\nsys.role:openssh.server.subj:s0 sys.role:sys.user.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
+	echo -e """sys.role:login.subj:s0 user.role:user.subj:s0\
+\nsys.role:sys.subj:s0 user.role:user.systemd.subj:s0\
+\nsys.role:openssh.server.subj:s0 user.role:user.openssh.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
+	echo -e """sys.role:login.subj:s0 wheel.role:user.subj:s0\
+\nsys.role:sys.subj:s0 wheel.role:user.systemd.subj:s0\
+\nsys.role:openssh.server.subj:s0 wheel.role:user.openssh.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 endif
 
 modular_install: config_install
@@ -98,13 +155,3 @@ endif
 ifeq ($(MCS),false)
 	sed -i 's/(mls false)/(mls true)/' src/misc/conf.cil
 endif
-
-monolithic_install: config_install monolithic_install.$(POLVERS)
-monolithic_install.%:
-ifeq ($(MCS),false)
-	echo "__default__:sys.id" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
-else
-	echo "__default__:sys.id:s0-s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
-endif
-	install -m 644 file_contexts $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/
-	install -m 600 policy.$* $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/policy/

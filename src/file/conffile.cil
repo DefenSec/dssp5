@@ -3,7 +3,35 @@
 
 (block conf
 
-       (blockinherit .file.conf.template))
+       (filecon "/etc" dir file_context)
+       (filecon "/etc/.*" any file_context)
+
+       (macro data_file_type_transition_file ((type ARG1))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "etc")))
+
+       (macro dontaudit_read_file_files ((type ARG1))
+	      (dontaudit ARG1 file read_file))
+
+       (macro getattr_file_files ((type ARG1))
+	      (allow ARG1 file (file (getattr))))
+
+       (macro map_file_files ((type ARG1))
+	      (allow ARG1 file (file (map))))
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "etc")))
+
+       (macro watch_file_dirs ((type ARG1))
+	      (allow ARG1 file (dir (watch))))
+
+       (macro watch_file_lnk_files ((type ARG1))
+	      (allow ARG1 file (lnk_file (watch))))
+
+       (blockinherit .file.conf.template)
+
+       (call .mount.mountpoint.type (file)))
 
 (in file
 
@@ -20,7 +48,7 @@
 
 	   (call file.type (typeattr))
 
-	   (call .xattr.associate_fs (typeattr))
+	   (call .xattr.associate_fs_pattern.type (typeattr))
 
 	   (block base_template
 
@@ -38,3 +66,8 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .conf.data_file_type_transition_file (typeattr))
+    (call .conf.root_file_type_transition_file (typeattr)))

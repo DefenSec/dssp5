@@ -1,0 +1,425 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block firefox
+
+       (blockinherit .dbus.client.macro_template)
+       (blockinherit .user.agent.template)
+
+       (allow subj self (cap_userns (sys_admin sys_chroot sys_ptrace)))
+       (allow subj self
+	      (process (execmem getsched setcap setrlimit setsched)))
+       (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self create_tcp_socket)
+       (allow subj self create_unix_dgram_socket)
+
+       (call sendmsg_subj_dbus.type (subj))
+
+       (call common.type (subj))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call lib.execute_file_files (subj))
+       (call lib.list_file_dirs (subj))
+
+       (call plugincontainer.noatsecure_subj_processes (subj))
+       (call plugincontainer.share_subj_processes (subj))
+       (call plugincontainer.signal_subj_processes (subj))
+       (call plugincontainer.subj_type_transition (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.manage_file_lnk_files (subj))
+       (call tmp.map_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir "*"))
+       (call tmp.tmp_file_type_transition_file (subj file "*"))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .atspi.buslauncher.sendmsg_subj_dbus.type (subj))
+
+       (call .bus.list_sysfile_pattern.type (subj))
+       (call .bus.read_sysfile_lnk_files (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .cert.map_file_files (subj))
+       (call .cert.read_file_pattern.type (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .class.list_sysfile_dirs (subj))
+       (call .class.read_sysfile_lnk_files (subj))
+
+       (call .conf.list_file_dirs (subj))
+       (call .conf.watch_file_dirs (subj))
+
+       (call .cryptopol.conf.read_file_files (subj))
+       (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+       (call .cryptopol.data.read_file_files (subj))
+       (call .cryptopol.data.search_file_pattern.type (subj))
+
+       (call .data.list_file_dirs (subj))
+       (call .data.read_file_files (subj))
+       (call .data.watch_file_dirs (subj))
+
+       (call .dbus.client.type (subj))
+
+       (call .debug.search_fs_pattern.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+       (call .dev.watch_file_dirs (subj))
+
+       (call .dev.read_sysctlfile_files (subj))
+       (call .dev.search_sysctlfile_pattern.type (subj))
+
+       (call .dev.read_sysfile_files (subj))
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .dri.map_nodedev_pattern.type (subj))
+       (call .dri.readwrite_nodedev_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .font.cache.dontaudit_setattr_file.type (subj))
+       (call .font.cache.map_file_pattern.type (subj))
+       (call .font.cache.read_file_pattern.type (subj))
+       (call .font.conf.read_file_pattern.type (subj))
+       (call .font.data.map_file_pattern.type (subj))
+       (call .font.data.read_file_pattern.type (subj))
+
+       (call .font.home.cache.map_file_pattern.type (subj))
+       (call .font.home.cache.manage_file_pattern.type (subj))
+       (call .font.home.conf.read_file_pattern.type (subj))
+       (call .font.home.data.map_file_pattern.type (subj))
+       (call .font.home.data.read_file_pattern.type (subj))
+
+       (call .fstab.read_file_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .glib.data.map_file_pattern.type (subj))
+       (call .glib.data.read_file_pattern.type (subj))
+
+       (call .glib.home.conf.manage_file_dirs (subj))
+       (call .glib.home.conf.manage_file_files (subj))
+       (call .glib.home.conf.user_home_conf_file_type_transition_file (subj))
+       (call .glib.home.conf.watch_file_dirs (subj))
+
+       (call .gtk3.home.conf.manage_file_pattern.type (subj))
+       (call .gtk3.home.conf.watch_file_dirs (subj))
+
+       (call .http.nameconnect_port_tcp_sockets (subj))
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .icons.data.map_file_pattern.type (subj))
+       (call .icons.data.read_file_pattern.type (subj))
+
+       (call .ipp.nameconnect_port_tcp_sockets (subj))
+
+       (call .kernel.search_sysfile_pattern.type (subj))
+
+       (call .ldso.conf.list_file_dirs (subj))
+       (call .ldso.conf.read_file_files (subj))
+
+       (call .libdrm.data.read_file_pattern.type (subj))
+
+       (call .libglvnd.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mime.data.map_file_pattern.type (subj))
+       (call .mime.read_file_pattern.type (subj))
+
+       (call .media.search_file_dirs (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .meminfo.read_procfile_files (subj))
+
+       (call .mesa.data.read_file_pattern.type (subj))
+
+       (call .mesa.home.cache.manage_file_pattern.type (subj))
+       (call .mesa.home.cache.map_file_pattern.type (subj))
+
+       (call .modules.read_procfile_files (subj))
+
+       (call .mount.run.read_file_files (subj))
+       (call .mount.run.search_file_dirs (subj))
+
+       (call .mozilla.data.list_file_dirs (subj))
+       (call .mozilla.data.map_file_files (subj))
+       (call .mozilla.data.read_file_files (subj))
+
+       (call .mozilla.home.manage_file_dirs (subj))
+       (call .mozilla.home.manage_file_files (subj))
+       (call .mozilla.home.manage_file_lnk_files (subj))
+       (call .mozilla.home.map_file_files (subj))
+       (call .mozilla.home.user_home_file_type_transition_file (subj))
+
+       (call .mozilla.home.cache.manage_file_dirs (subj))
+       (call .mozilla.home.cache.manage_file_files (subj))
+       (call .mozilla.home.cache.map_file_files (subj))
+       (call .mozilla.home.cache.user_home_cache_file_type_transition_file
+	     (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+       (call .net.port.unreserved.nameconnect_all_tcp_sockets (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .node.read_sysfile_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .p11kit.conf.read_file_pattern.type (subj))
+
+       (call .p11kit.data.map_file_files (subj))
+       (call .p11kit.data.read_file_pattern.type (subj))
+
+       (call .p11kit.home.conf.read_file_files (subj))
+       (call .p11kit.home.conf.search_file_dirs (subj))
+
+       (call .pipewire.pulse.client.type (subj))
+
+       (call .pixmaps.data.read_file_pattern.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .proc.list_fs_dirs (subj))
+
+       (call .rbacsep.readstatesource.type (subj))
+
+       (call .rtkit.client.type (subj))
+
+       (call .seclabelfs.getattr_all_fs (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+
+       (call .selinux.read_fs_files (subj))
+       (call .selinux.search_fs_pattern.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .subj.common.read_all_states (subj))
+       (call .subj.dontaudit_read_all_states (subj))
+
+       (call .sys.read_subj_states (subj))
+
+       (call .systemd.hostname.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .themes.data.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.dbus.nameclient.type (subj))
+
+       (call .user.home.manage_file_dirs (subj))
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.watch_file_dirs (subj))
+
+       (call .user.home.conf.watch_file_dirs (subj))
+
+       (call .user.home.data.create_file_dir_pattern.type (subj))
+       (call .user.home.data.manage_file_files (subj))
+       (call .user.home.data.readwrite_file_dirs (subj))
+       (call .user.home.data.watch_file_dirs (subj))
+
+       (call .v4l.map_nodedev_chr_files (subj))
+       (call .v4l.readwrite_nodedev_chr_files (subj))
+
+       (call .wlroots.client.type (subj))
+
+       (call .xdg.conf.list_file_dirs (subj))
+       (call .xdg.conf.read_file_files (subj))
+       (call .xdg.conf.watch_file_dirs (subj))
+
+       (call .xkb.data.map_file_pattern.type (subj))
+       (call .xkb.data.read_file_pattern.type (subj))
+
+       (optional firefox_kitty
+		 (call .kitty.tmp.read_file_files (subj))
+		 (call .kitty.tmp.search_file_dirs (subj)))
+
+       (optional firefox_waypipe
+		 (call .waypipe.agent (subj exec.file)))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .cpu.read_sysfile_pattern.type (typeattr))
+
+	      (call .cpuinfo.read_procfile_files (typeattr))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
+	      (call .random.read_nodedev_chr_files (typeattr)))
+
+       (block conf
+
+	      (filecon "/etc/firefox" dir file_context)
+	      (filecon "/etc/firefox/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "firefox")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (macro dontaudit_auditaccess_file_files ((type ARG1))
+		     (dontaudit ARG1 file (file (audit_access))))
+
+	      (filecon "/usr/bin/firefox" file file_context)
+	      (filecon "/usr/bin/firefox-wayland" file file_context))
+
+       (block lib
+
+	      (filecon "/usr/lib/firefox" dir file_context)
+	      (filecon "/usr/lib/firefox/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "firefox")))
+
+	      (blockinherit .file.lib.template)
+	      (blockinherit .file.macro_template_dirs))
+
+       (block plugincontainer
+
+	      (macro share_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (share))))
+
+	      (blockinherit .user.agent.template)
+
+	      (call common.type (subj))
+
+	      (call firefox.readwrite_subj_unix_stream_sockets (subj))
+
+	      (call firefox.tmpfs.map_file_files (subj))
+	      (call firefox.tmpfs.readwriteinherited_file_files
+		    (subj))
+
+	      (call tmpfs.manage_file_files (subj))
+	      (call tmpfs.map_file_files (subj))
+	      (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	      (call lib.mapexecute_file_files (subj))
+	      (call lib.read_file_files (subj))
+	      (call lib.search_file_dirs (subj))
+
+	      (call .mozilla.home.mapexecute_file_files (subj))
+	      (call .mozilla.home.read_file_files (subj))
+	      (call .mozilla.home.search_file_dirs (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .tmp.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/lib/firefox/plugin-container" file
+			      file_context))
+
+	      (block tmpfs
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro tmp_fs_type_transition_file ((type ARG1))
+			    (call .tmp.fs_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.tmpfs.base_template)))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .tmp.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.user.tmp.base_template))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file))))
+
+(in file.unconfined
+
+    (call .firefox.conf.conf_file_type_transition_file (typeattr))
+    (call .firefox.lib.lib_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .firefox.plugincontainer.role (role))
+
+    (call .firefox.plugincontainer.tmpfs.manage_file_files (subj))
+    (call .firefox.plugincontainer.tmpfs.relabel_file_files (subj))
+
+    (call .firefox.role (role))
+
+    (call .firefox.tmp.manage_file_dirs (subj))
+    (call .firefox.tmp.manage_file_files (subj))
+    (call .firefox.tmp.manage_file_lnk_files (subj))
+    (call .firefox.tmp.map_file_files (subj))
+    (call .firefox.tmp.relabel_file_dirs (subj))
+    (call .firefox.tmp.relabel_file_files (subj))
+    (call .firefox.tmp.relabel_file_lnk_files (subj))
+
+    (call .firefox.tmpfs.manage_file_files (subj))
+    (call .firefox.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .firefox.plugincontainer.role (role))
+    (call .firefox.role (role)))

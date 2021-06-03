@@ -1,0 +1,382 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+    (call .user.web.htaccess.manage_file_files (subj))
+    (call .user.web.htaccess.relabel_file_files (subj))
+    (call .user.web.htaccess.user_web_ra_file_type_transition_file (subj))
+    (call .user.web.htaccess.user_web_ro_file_type_transition_file (subj))
+    (call .user.web.htaccess.user_web_rw_file_type_transition_file (subj))
+    (call .user.web.htaccess.user_web_script_exec_file_type_transition_file
+	  (subj))
+
+    (call .user.web.ra.manage_file_dirs (subj))
+    (call .user.web.ra.manage_file_files (subj))
+    (call .user.web.ra.map_file_files (subj))
+    (call .user.web.ra.relabel_file_dirs (subj))
+    (call .user.web.ra.relabel_file_files (subj))
+    (call .user.web.ra.user_web_ro_file_type_transition_file (subj))
+
+    (call .user.web.ro.manage_file_dirs (subj))
+    (call .user.web.ro.manage_file_files (subj))
+    (call .user.web.ro.map_file_files (subj))
+    (call .user.web.ro.relabel_file_dirs (subj))
+    (call .user.web.ro.relabel_file_files (subj))
+    (call .user.web.ro.user_home_file_type_transition_file (subj))
+
+    (call .user.web.rw.manage_file_dirs (subj))
+    (call .user.web.rw.manage_file_fifo_files (subj))
+    (call .user.web.rw.manage_file_files (subj))
+    (call .user.web.rw.manage_file_lnk_files (subj))
+    (call .user.web.rw.manage_file_sock_files (subj))
+    (call .user.web.rw.map_file_files (subj))
+    (call .user.web.rw.relabel_file_dirs (subj))
+    (call .user.web.rw.relabel_file_fifo_files (subj))
+    (call .user.web.rw.relabel_file_files (subj))
+    (call .user.web.rw.relabel_file_lnk_files (subj))
+    (call .user.web.rw.relabel_file_sock_files (subj))
+    (call .user.web.rw.user_web_ro_file_type_transition_file (subj))
+
+    (call .user.web.script.exec.manage_file_dirs (subj))
+    (call .user.web.script.exec.manage_file_files (subj))
+    (call .user.web.script.exec.map_file_files (subj))
+    (call .user.web.script.exec.relabel_file_dirs (subj))
+    (call .user.web.script.exec.relabel_file_files (subj))
+    (call .user.web.script.exec.user_web_ro_file_type_transition_file (subj))
+
+    (call .user.web.script.role (role))
+    (call .user.web.script.subj_type_transition (subj))
+
+    (block web
+
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (blockinherit .file.user.content.template)
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block htaccess
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htaccess"
+			   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htaccess\..*" file
+		   file_context)
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htgroup"
+			   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htgroup\..*" file
+		   file_context)
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htpasswd"
+			   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?\.htpasswd\..*" file
+		   file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htaccess"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htaccess\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htgroup"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htgroup\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htpasswd"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/([^/]*/)?\.htpasswd\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htaccess"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htaccess\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htgroup"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htgroup\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htpasswd"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/([^/]*/)?\.htpasswd\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htaccess"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htaccess\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htgroup"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htgroup\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htpasswd"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/([^/]*/)?\.htpasswd\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htaccess"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htaccess\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htgroup"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htgroup\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htpasswd"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?log/([^/]*/)?\.htpasswd\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htaccess"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htaccess\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htgroup"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htgroup\..*"
+		   file file_context)
+
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htpasswd"
+		   file file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/([^/]*/)?\.htpasswd\..*"
+		   file file_context)
+
+		  (macro user_web_ra_file_type_transition_file ((type ARG1))
+			 (call .user.web.ra.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .user.web.ra.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .user.web.ra.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro user_web_ro_file_type_transition_file ((type ARG1))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro user_web_rw_file_type_transition_file ((type ARG1))
+			 (call .user.web.rw.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .user.web.rw.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .user.web.rw.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro user_web_script_exec_file_type_transition_file
+			 ((type ARG1))
+			 (call .user.web.script.exec.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .user.web.script.exec.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .user.web.script.exec.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.content.ro.base_template)
+
+		  (call web.type (file)))
+
+	   (block ra
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?log" dir
+			   file_context)
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?log/.*" any
+			   file_context)
+
+		  (macro rename_file_files ((type ARG1))
+			 (allow ARG1 file rename_file))
+
+		  (macro setattr_file_files ((type ARG1))
+			 (allow ARG1 file (file (setattr))))
+
+		  (macro user_web_ro_file_type_transition_file ((type ARG1))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file dir "log")))
+
+		  (call web.type (file)))
+
+	   (block ro
+
+		  (filecon "HOME_DIR/((public_html)|(www))" dir file_context)
+		  (filecon "HOME_DIR/((public_html)|(www))/.*" any file_context)
+
+		  (macro dontaudit_auditaccess_file_dirs ((type ARG1))
+			 (dontaudit ARG1 file (dir (audit_access))))
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file dir "public_html"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file dir "www")))
+
+		  (call web.type (file)))
+
+	   (block rw
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming"
+			   dir file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?incoming/.*" any
+		   file_context)
+
+		  (filecon "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads" dir
+			   file_context)
+		  (filecon
+		   "HOME_DIR/((public_html)|(www))/([^/]*/)?uploads/.*" any
+		   file_context)
+
+		  (macro user_web_ro_file_type_transition_file ((type ARG1))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file dir "incoming"))
+			 (call .user.web.ro.file_type_transition
+			       (ARG1 file dir "uploads")))
+
+		  (call web.type (file))
+
+		  (call .file.user.tmp.type (file)))
+
+	   (block script
+
+		  (call .user.web.ro.search_file_dirs (subj))
+
+		  (optional userwebcontentfile_httpd
+			    (call .httpd.accept_subj_unix_stream_sockets (subj))
+			    (call .httpd.log.append_file_files (subj))
+			    (call .httpd.log.search_file_dirs (subj))
+			    (call .httpd.readwrite_subj_unix_stream_sockets
+				  (subj))
+			    (call .httpd.signal_subj_processes (subj))
+			    (call .httpd.signull_subj_processes (subj))
+			    (call .httpd.use_subj_fds (subj))
+			    (call .httpd.writeinherited_subj_fifo_files (subj)))
+
+		  (block exec
+
+			 (filecon
+			  "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin" dir
+			  file_context)
+			 (filecon
+			  "HOME_DIR/((public_html)|(www))/([^/]*/)?cgi-bin/.*"
+			  any file_context)
+
+			 (filecon
+			  "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin" dir
+			  file_context)
+			 (filecon
+			  "HOME_DIR/((public_html)|(www))/([^/]*/)?fcgi-bin/.*"
+			  any file_context)
+
+			 (macro user_web_ro_file_type_transition_file
+				((type ARG1))
+				(call .user.web.ro.file_type_transition
+				      (ARG1 file dir "cgi-bin"))
+				(call .user.web.ro.file_type_transition
+				      (ARG1 file dir "fcgi-bin")))
+
+			 (call web.type (file))))))
+
+(in file.unconfined
+
+    (call .user.web.htaccess.user_web_ra_file_type_transition_file (typeattr))
+    (call .user.web.htaccess.user_web_ro_file_type_transition_file (typeattr))
+    (call .user.web.htaccess.user_web_rw_file_type_transition_file (typeattr))
+    (call .user.web.htaccess.user_web_script_exec_file_type_transition_file
+	  (typeattr))
+
+    (call .user.web.ra.user_web_ro_file_type_transition_file (typeattr))
+    (call .user.web.ro.user_home_file_type_transition_file (typeattr))
+    (call .user.web.rw.user_web_ro_file_type_transition_file (typeattr))
+
+    (call .user.web.script.exec.user_web_ro_file_type_transition_file
+	  (typeattr)))
+
+(in sys
+
+    ;; suexec
+    (call .user.web.script.role (role)))
+
+(in web.content.script.webserver
+
+    (call .user.home.search_file_pattern.type (typeattr))
+
+    (call .user.web.htaccess.read_file_files (typeattr))
+    (call .user.web.map_all_files (typeattr))
+    (call .user.web.ra.append_file_files (typeattr))
+    (call .user.web.ra.create_file_files (typeattr))
+    (call .user.web.ra.delete_file_files (typeattr))
+    (call .user.web.ra.read_file_files (typeattr))
+    (call .user.web.ra.readwrite_file_dirs (typeattr))
+    (call .user.web.ra.rename_file_files (typeattr))
+    (call .user.web.ra.setattr_file_files (typeattr))
+    (call .user.web.ro.dontaudit_auditaccess_file_dirs (typeattr))
+    (call .user.web.ro.list_file_dirs (typeattr))
+    (call .user.web.ro.read_file_files (typeattr))
+    (call .user.web.rw.manage_file_dirs (typeattr))
+    (call .user.web.rw.manage_file_fifo_files (typeattr))
+    (call .user.web.rw.manage_file_files (typeattr))
+    (call .user.web.rw.manage_file_lnk_files (typeattr))
+    (call .user.web.rw.manage_file_sock_files (typeattr))
+    (call .user.web.script.exec.list_file_dirs (typeattr))
+    (call .user.web.script.exec.read_file_files (typeattr)))
+
+(in wheel
+
+    (call .user.web.script.role (role)))

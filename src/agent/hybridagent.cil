@@ -1,0 +1,52 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block hybrid
+
+       (call .sys.agent.exec.type (agent.exec.typeattr))
+       (call .sys.agent.type (agent.typeattr))
+
+       (call .user.agent.exec.type (agent.exec.typeattr))
+       (call .user.agent.type (agent.typeattr))
+
+       (block agent
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (blockinherit .subj.all_macro_template)
+
+	      (typeattribute typeattr)
+
+	      ;; traversal of cwd
+	      (dontaudit typeattr self
+			 (capability (dac_override dac_read_search)))
+
+	      (block exec
+
+		     (macro entrypoint_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (entrypoint))))
+
+		     (macro getattr_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (getattr))))
+
+		     (macro map_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (map))))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (blockinherit .file.all_macro_template_files)
+
+		     (typeattribute typeattr))
+
+	      (block template
+
+		     (blockabstract template)
+
+		     (blockinherit .user.agent.template)
+
+		     (call subj_type_transition (.sys.subj))
+
+		     (call .hybrid.agent.exec.type (exec.file))
+		     (call .hybrid.agent.type (subj)))))

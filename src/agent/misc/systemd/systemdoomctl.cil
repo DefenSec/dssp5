@@ -1,0 +1,51 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block oomctl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+
+	   (call pager.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.read_subj_states (subj))
+
+	   (call .systemd.oom.sendmsg_subj_dbus.type (subj))
+	   (call .systemd.oom.tmpfs.readwriteinherited_file_files (subj))
+	   (call .systemd.oom.use_subj_fds (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/oomctl" file file_context))))
+
+(in user
+
+    (call .systemd.oomctl.role (role)))
+
+(in wheel
+
+    (call .systemd.oomctl.role (role)))

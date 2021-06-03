@@ -1,0 +1,55 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block sasl
+
+       (block conf
+
+	      (filecon "/etc/sasl2" dir file_context)
+	      (filecon "/etc/sasl2/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "sasl2")))
+
+	      (blockinherit .file.conf.template))
+
+       (block db
+
+	      (filecon "/etc/sasldb2" file file_context)
+	      (filecon "/etc/sasldb2\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .conf.file_type_transition
+			   (ARG1 file file ARG2)))
+
+	      (blockinherit .file.auth.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block dblistusers
+
+	      (blockinherit .user.agent.template)
+
+	      (call db.read_file_files (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/sasldblistusers2" file file_context)))
+
+       (block passwd
+
+	      (blockinherit .user.agent.template)
+
+	      (call db.manage_file_files (subj))
+	      (call db.conf_file_type_transition_file (subj "*"))
+
+	      (call .file.auth.write.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/saslpasswd2" file file_context))))
+
+(in file.unconfined
+
+    (call .sasl.conf.conf_file_type_transition_file (typeattr))
+    (call .sasl.db.conf_file_type_transition_file (typeattr "sasldb2")))

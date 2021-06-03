@@ -1,0 +1,28 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wlregdb
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .exec.execute_file_files (subj))
+
+       (call .iw.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .logger.subj_type_transition (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/setregdomain" file file_context)))

@@ -1,0 +1,330 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+    (macro role ((role ARG1))
+	   (roleattributeset roleattr ARG1))
+
+    (macro type ((type ARG1))
+	   (typeattributeset typeattr ARG1))
+
+    (roleattribute roleattr)
+    (typeattribute typeattr)
+
+    (blockinherit all_macro_template)
+
+    ;; access to user agents is governed per-unpriv-role with rbac
+    (call agent.client.type (subj))
+
+    (call .obj.role (roleattr))
+
+    (call .ci.getattr_fs_pattern.type (subj))
+    (call .ci.manage_fs_pattern.type (subj))
+
+    (call .dos.getattr_fs_pattern.type (subj))
+    (call .dos.manage_fs_pattern.type (subj))
+
+    (call .fuse.getattr_fs_pattern.type (subj))
+    (call .fuse.manage_fs_pattern.type (subj))
+
+    (call .nfs.getattr_fs_pattern.type (subj))
+    (call .nfs.manage_fs_pattern.type (subj))
+
+    (call .checkcontext_selinux_security (subj))
+
+    (call .selinux.default.read_file_pattern.type (subj))
+    (call .selinux.file.read_file_pattern.type (subj))
+
+    (call .sys.termdev.readwriteinherited_all_chr_files (subj))
+
+    (block all_macro_template
+
+	   (blockabstract all_macro_template)
+
+	   (macro create_all_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (create))))
+
+	   (macro link_all_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (link))))
+
+	   (macro search_all_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (search))))
+
+	   (macro write_all_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (write))))
+
+	   (blockinherit .subj.all_macro_template))
+
+    (block common
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit all_macro_template)
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr self (cap_userns (kill sys_ptrace)))
+	   (allow typeattr self
+		  (process (getattr getrlimit getsched ptrace setfscreate
+				    setpgid setrlimit setsched)))
+	   (dontaudit typeattr self (constrainsocketsubject (create)))
+
+	   (call termdev.readwrite_all_chr_files (typeattr))
+
+	   (call user.type (typeattr))
+
+	   (call .agent.exec.dontaudit_auditaccess_all_files (typeattr))
+
+	   (call .auto.getattr_fs_dirs (typeattr))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .computecreate_selinux_security (typeattr))
+
+	   (call .conf.list_file_dirs (typeattr))
+	   (call .conf.map_file_files (typeattr))
+	   (call .conf.read_file_files (typeattr))
+
+	   (call .cpu.read_sysfile_files (typeattr))
+	   (call .cpu.search_sysfile_dirs (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .data.list_file_dirs (typeattr))
+	   (call .data.map_file_files (typeattr))
+	   (call .data.read_file_files (typeattr))
+	   (call .data.traverse_file_pattern.type (typeattr))
+
+	   (call .dev.dontaudit_getattr_all_chr_files (typeattr))
+	   (call .dev.getattr_all_chr_files (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr))
+
+	   (call .devpts.search_fs_pattern.type (typeattr))
+
+	   (call .editor.conf.read_file_files (typeattr))
+
+	   (call .exec.entrypoint_file_files (typeattr))
+	   (call .exec.execute_file_files (typeattr))
+	   (call .exec.list_file_dirs (typeattr))
+
+	   (call .file.exec.getattr_all_files (typeattr))
+	   (call .file.lib.getattr_all_files (typeattr))
+
+	   (call .filesystems.read_procfile_files (typeattr))
+
+	   (call .font.cache.map_file_pattern.type (typeattr))
+	   (call .font.cache.read_file_pattern.type (typeattr))
+	   (call .font.conf.read_file_pattern.type (typeattr))
+	   (call .font.data.map_file_pattern.type (typeattr))
+	   (call .font.data.read_file_pattern.type (typeattr))
+
+	   (call .fs.dontaudit_getattr_all_fs (typeattr))
+
+	   (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
+	   (call .inputrc.conf.read_file_files (typeattr))
+
+	   (call .kernel.search_sysctlfile_pattern.type (typeattr))
+
+	   (call .lib.list_file_dirs (typeattr))
+
+	   (call .loadavg.read_procfile_files (typeattr))
+
+	   (call .locale.data.map_file_pattern.type (typeattr))
+	   (call .locale.read_file_pattern.type (typeattr))
+
+	   (call .mail.search_file_pattern.type (typeattr))
+
+	   (call .man.read_file_pattern.type (typeattr))
+
+	   (call .media.list_file_dirs (typeattr))
+
+	   (call .meminfo.read_procfile_files (typeattr))
+
+	   (call .mime.data.read_file_pattern.type (typeattr))
+
+	   (call .net.traverse_procfile_pattern.type (typeattr))
+
+	   (call .node.read_sysfile_files (typeattr))
+	   (call .node.search_sysfile_dirs (typeattr))
+
+	   (call .ns.read_fs_pattern.type (typeattr))
+
+	   (call .nss.passwdgroup.type (typeattr))
+
+	   (call .osrelease.read_sysctlfile_files (typeattr))
+
+	   (call .overcommitmemory.read_sysctlfile_files (typeattr))
+
+	   (call .perl5.data.read_file_files (typeattr))
+	   (call .perl5.data.search_file_dirs (typeattr))
+
+	   (call .pidmax.read_sysctlfile_files (typeattr))
+
+	   (call .proc.list_fs_dirs (typeattr))
+
+	   (call .random.read_nodedev_chr_files (typeattr))
+
+	   (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .runuser.search_file_pattern.type (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+	   (call .selinux.readwrite_fs_pattern.type (typeattr))
+
+	   (call .shell.exec.entrypoint_file_files (typeattr))
+	   (call .shell.exec.execute_file_files (typeattr))
+
+	   (call .stat.read_procfile_files (typeattr))
+
+	   (call .stordev.getattr_all_blk_files (typeattr))
+
+	   (call .subj.dontaudit_getattr_all_sockets (typeattr))
+	   (call .subj.dontaudit_ps_all_states (typeattr))
+	   (call .subj.useinteractivefd.type (typeattr))
+
+	   (call .sysfile.dontaudit_listinherited_all_dirs (typeattr))
+
+	   (call .terminfo.conf.read_file_pattern.type (typeattr))
+	   (call .terminfo.data.read_file_pattern.type (typeattr))
+
+	   (call .tty.read_procfile_files (typeattr))
+	   (call .tty.search_procfile_dirs (typeattr))
+
+	   (call .uptime.read_procfile_files (typeattr))
+
+	   (call .user.home.search_file_pattern.type (typeattr))
+
+	   (call .utmp.run.read_file_files (typeattr))
+
+	   (call .vm.search_sysctlfile_pattern.type (typeattr))
+
+	   (call .xattr.getattr_fs_pattern.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .subj.common.base_template)
+
+		  (call .user.common.type (subj)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .user.common.base_template)
+		  (blockinherit .user.macro_template)))
+
+    (block id_template
+
+	   (blockabstract id_template)
+
+	   (user id)
+	   (userlevel id systemlow)
+	   (userrange id (systemlow systemlow)))
+
+    (block macro_template
+
+	   (blockabstract macro_template)
+
+	   (macro create_subj_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (create))))
+
+	   (macro link_subj_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (link))))
+
+	   (macro search_subj_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (search))))
+
+	   (macro write_subj_keyrings ((type ARG1))
+		  (allow ARG1 typeattr (key (write))))
+
+	   (blockinherit .subj.macro_template))
+
+    (block role_template
+
+	   (blockabstract role_template)
+
+	   (role role)
+	   (roleallow roleallow.roleattr role)
+
+	   (userrole userrole.userattr role)
+
+	   (call .user.role (role))
+
+	   (block roleallow
+
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
+		  (roleattribute roleattr)
+
+		  (roleallow roleattr role))
+
+	   (block userrole
+
+		  (macro user ((user ARG1))
+			 (userattributeset userattr ARG1))
+
+		  (userattribute userattr)
+
+		  (userrole userattr role)))
+
+    (block subj_template
+
+	   (blockabstract subj_template)
+
+	   (macro exec_subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .exec.mapexecute_file_files (ARG1))
+		  (call .exec.read_file_files (ARG1))
+		  (call .exec.subj_type_transition (ARG1 subj)))
+
+	   (macro exec_home_subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .exec.home.mapexecute_file_files (ARG1))
+		  (call .exec.home.read_file_files (ARG1))
+		  (call .exec.home.subj_type_transition (ARG1 subj)))
+
+	   (macro shell_exec_subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .shell.exec.mapexecute_file_files (ARG1))
+		  (call .shell.exec.read_file_files (ARG1))
+		  (call .shell.exec.subj_type_transition (ARG1 subj)))
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (blockinherit .user.common.template)
+
+	   (roleattribute roleattr)
+
+	   (roletype roleattr subj))
+
+    (block template
+
+	   (blockabstract template)
+
+	   (blockinherit .user.role_template)
+	   (blockinherit .user.subj_template)
+
+	   (call role (role))))

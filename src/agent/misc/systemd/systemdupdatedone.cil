@@ -1,0 +1,81 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.updatedone.conf_file_type_transition_file (typeattr))
+    (call .systemd.updatedone.var_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block updatedone
+
+	   (filecon "/etc/\.updated" file file_context)
+	   (filecon "/etc/\.updated\..*" file file_context)
+
+	   (filecon "/var/\.updated" file file_context)
+	   (filecon "/var/\.updated\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file ".updated")))
+
+	   (macro var_file_type_transition_file ((type ARG1))
+		  (call .var.file_type_transition
+			(ARG1 file file ".updated")))
+
+	   (blockinherit .file.base_template)
+	   (blockinherit .file.macro_template_files)
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call conf_file_type_transition_file (subj))
+	   (call manage_file_files (subj))
+	   (call var_file_type_transition_file (subj))
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .conf.deletename_file_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .var.deletename_file_dirs (subj))
+
+	   (call .xattr.associate_fs_pattern.type (file))
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-update-done" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-update-done\.service.*" file
+		   file_context)
+
+		  (blockinherit .file.unit.template))))

@@ -1,0 +1,16 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block veritysetup
+
+	   (blockinherit .sys.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-veritysetup" file
+			   file_context))))

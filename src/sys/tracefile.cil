@@ -19,8 +19,8 @@
 
 	      (blockabstract base_template)
 
-	      (context tracefile_context
-		       (.sys.id .sys.role tracefile (systemlow systemlow)))
+	      (context tracefile_context (.sys.id .sys.role tracefile
+						  (systemlow systemlow)))
 
 	      (type tracefile)
 	      (call .tracefile.type (tracefile)))

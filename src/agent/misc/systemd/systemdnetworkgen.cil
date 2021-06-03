@@ -1,0 +1,25 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block networkgen
+
+	   (blockinherit .sys.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon
+		   "/usr/lib/systemd/systemd-network-generator" file
+		   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-network-generator\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

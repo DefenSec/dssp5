@@ -1,13 +1,15 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(sidcontext devnull
-	    (sys.id sys.role null.nodedev (systemlow systemlow)))
+(sidcontext devnull (sys.id sys.role null.nodedev (systemlow systemlow)))
 
 (block null
 
        (filecon "/dev/full" char nodedev_context)
        (filecon "/dev/null" char nodedev_context)
+
+       (macro setattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (setattr))))
 
        (blockinherit .nodedev.template)
 

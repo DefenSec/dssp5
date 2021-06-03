@@ -3,6 +3,14 @@
 
 (block usb
 
-       (filecon "/dev/usb.+" char nodedev_context)
+       (filecon "/dev/bus/usb/.+" char nodedev_context)
 
-       (blockinherit .nodedev.template))
+       (macro getattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (getattr))))
+
+       (macro setattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (setattr))))
+
+       (blockinherit .nodedev.template)
+
+       (call .rbacsep.exempt.obj.type (nodedev)))

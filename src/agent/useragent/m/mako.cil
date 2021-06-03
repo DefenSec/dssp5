@@ -1,0 +1,178 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mako
+
+       (blockinherit .user.agent.template)
+       (blockinherit .user.dbus.nameclient.template)
+
+       (allow subj self (process (getsched setsched)))
+       (allow subj self create_unix_stream_socket)
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call home.conf.list_file_dirs (subj))
+       (call home.conf.read_file_files (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .font.cache.dontaudit_setattr_file.type (subj))
+       (call .font.cache.map_file_pattern.type (subj))
+       (call .font.cache.read_file_pattern.type (subj))
+       (call .font.conf.read_file_pattern.type (subj))
+       (call .font.data.map_file_pattern.type (subj))
+       (call .font.data.read_file_pattern.type (subj))
+
+       (call .font.home.cache.map_file_pattern.type (subj))
+       (call .font.home.cache.manage_file_pattern.type (subj))
+       (call .font.home.cache.user_home_cache_file_type_transition_file (subj))
+       (call .font.home.conf.read_file_pattern.type (subj))
+       (call .font.home.data.map_file_pattern.type (subj))
+       (call .font.home.data.read_file_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .icons.data.read_file_pattern.type (subj))
+
+       (call .libnotify.type (subj))
+
+       (call .mime.data.map_file_pattern.type (subj))
+       (call .mime.read_file_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+       (call .user.systemd.service.noatsecure.type (subj))
+
+       (call .wlroots.client.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional mako_sway
+		 (call .sway.bar.sendmsg_subj_dbus.type (subj)))
+
+       (block exec
+
+	      (filecon "/usr/bin/mako" file file_context))
+
+       (block conf
+
+	      (filecon "/etc/mako" dir file_context)
+	      (filecon "/etc/mako/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "mako")))
+
+	      (blockinherit .file.conf.template))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/mako" dir file_context)
+		     (filecon "HOME_DIR/\.config/mako/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "mako")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block makoctl
+
+	      (blockinherit .user.agent.template)
+	      (blockinherit .user.dbus.client.template)
+
+	      (allow subj self create_unix_stream_socket)
+
+	      (call mako.sendmsg_subj_dbus.type (subj))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	      (call .cgroup.getattr_fs_pattern.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .libnl.conf.read_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .proc.getattr_fs_pattern.type (subj))
+
+	      (call .rbacsep.readstatesource.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.mapexecute_file_files (subj))
+	      (call .shell.exec.read_file_files (subj))
+
+	      (call .sys.read_subj_states (subj))
+
+	      (call .systemd.pager.type (subj))
+
+	      (call .systemd.busctl.exec.execute_file_files (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/makoctl" file file_context)))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/user/mako\.service.*" file file_context)
+
+	      (blockinherit .file.user.unit.template)
+
+	      (call .user.dbus.activated.unit.type (file))))
+
+(in file.unconfined
+
+    (call .mako.conf.conf_file_type_transition_file (typeattr))
+    (call .mako.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .mako.home.conf.manage_file_dirs (typeattr))
+    (call .mako.home.conf.manage_file_files (typeattr))
+    (call .mako.home.conf.map_file_files (typeattr))
+    (call .mako.home.conf.relabel_file_dirs (typeattr))
+    (call .mako.home.conf.relabel_file_files (typeattr))
+    (call .mako.home.conf.user_home_conf_file_type_transition_file (typeattr))
+
+    (call .mako.makoctl.role (role))
+
+    (call .mako.role (role))
+
+    (call .mako.tmpfs.manage_file_files (subj))
+    (call .mako.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .mako.makoctl.role (role))
+    (call .mako.role (role)))

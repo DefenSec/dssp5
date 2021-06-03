@@ -1,0 +1,116 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block oident
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (setgid setuid)))
+       (allow subj self create_netlink_tcpdiag_socket)
+       (allow subj self create_tcp_stream_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_tcpdiag_socket (nlmsg_read)))
+
+       (call conf.read_file_files (subj))
+
+       (call home.conf.read_file_files (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .ident.namebind_port_tcp_sockets (subj))
+       (call .ident.nameconnect_port_tcp_sockets (subj))
+
+       (call .kernel.read_sysctlfile_pattern.type (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+       (call .nss.services.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .sys.modulerequest_system (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
+
+       (call .user.home.conf.search_file_pattern.type (subj))
+
+       (optional iodent_znc
+		 (call .znc.state.read_file_files (subj))
+		 (call .znc.state.search_file_dirs (subj)))
+
+       (block conf
+
+	      (filecon "/etc/oidentd\.conf" file file_context)
+	      (filecon "/etc/oidentd\.conf\..*" file file_context)
+	      (filecon "/etc/oidentd_masq\.conf" file file_context)
+	      (filecon "/etc/oidentd_masq\.conf\..*" file file_context)
+	      (filecon "/etc/sysconfig/oidentd" file file_context)
+	      (filecon "/etc/sysconfig/oidentd\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "oidentd"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "oidentd.conf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "oidentd_masq.conf")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/oidentd" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/oidentd\.conf" file
+			      file_context)
+		     (filecon "HOME_DIR/\.config/oidentd\.conf\..*" file
+			      file_context)
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file file "oidentd.conf")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.home.conf.base_template)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/oidentd\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/oidentd@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/oidentd\.socket.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .oident.conf.conf_file_type_transition_file (typeattr))
+    (call .oident.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .oident.home.conf.manage_file_files (subj))
+    (call .oident.home.conf.relabel_file_files (subj))
+    (call .oident.home.conf.user_home_conf_file_type_transition_file (subj)))

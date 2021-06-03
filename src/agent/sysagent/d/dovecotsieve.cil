@@ -1,0 +1,135 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block managesieve
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (dac_override dac_read_search)))
+
+	   (call cli.signal_subj_processes (subj))
+	   (call cli.subj_type_transition (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call config.signal_subj_processes (subj))
+	   (call config.subj_type_transition (subj))
+
+	   (call dovecot.accept_subj_tcp_sockets (subj))
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.readwrite_subj_tcp_sockets (subj))
+	   (call dovecot.readwriteinherited_subj_fifo_files (subj))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call dovecot.run.readwriteinherited_file_files (subj))
+
+	   (call managesievelogin.readwrite_subj_unix_stream_sockets (subj))
+	   (call managesievelogin.use_subj_fds (subj))
+
+	   (call spool.manage_file_dirs (subj))
+	   (call spool.manage_file_files (subj))
+	   (call spool.manage_file_lnk_files (subj))
+	   (call spool.map_file_files (subj))
+
+	   (call .mail.search_file_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/dovecot/managesieve" file file_context)))
+
+    (block managesievelogin
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (dac_override dac_read_search)))
+
+	   (call dovecot.accept_subj_tcp_sockets (subj))
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.readwrite_subj_tcp_sockets (subj))
+	   (call dovecot.unix_stream_connect (subj))
+	   (call dovecot.unix_stream_connect_login (subj))
+
+	   (call dovecot.run.readwriteinherited_file_files (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .cryptopol.conf.read_file_files (subj))
+	   (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	   (call .cryptopol.data.read_file_files (subj))
+	   (call .cryptopol.data.search_file_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/dovecot/managesieve-login" file
+			   file_context)))
+
+    (block sievec
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call dovecot.spool.manage_file_files (subj))
+	   (call dovecot.spool.readwrite_file_dirs (subj))
+
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .lib.list_file_dirs (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sieve.home.manage_file_dirs (subj))
+	   (call .sieve.home.manage_file_files (subj))
+	   (call .sieve.home.user_home_file_type_transition_file (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sieve-dump" file file_context)
+		  (filecon "/usr/bin/sieve-filter" file file_context)
+		  (filecon "/usr/bin/sieve-test" file file_context)
+		  (filecon "/usr/bin/sievec" file file_context))))
+
+(in dovecot.cli
+
+    (call dovecot.managesieve.signal_subj_processes (subj))
+    (call dovecot.managesieve.subj_type_transition (subj)))
+
+(in dovecot.config
+
+    (call dovecot.managesieve.signal_subj_processes (subj))
+    (call dovecot.managesieve.subj_type_transition (subj)))
+
+(in user
+
+    (call .dovecot.sievec.role (role)))
+
+(in wheel
+
+    (call .dovecot.sievec.role (role)))

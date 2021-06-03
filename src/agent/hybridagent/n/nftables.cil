@@ -1,0 +1,73 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block nftables
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (net_admin)))
+       (allow subj self create_netlink_netfilter_socket)
+
+       (call conf.manage_file_files (subj))
+       (call conf.read_file_lnk_files (subj))
+       (call conf.readwrite_file_dirs (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .iproute.conf.list_file_dirs (subj))
+       (call .iproute.conf.read_file_files (subj))
+
+       (call .libnl.conf.read_file_pattern.type (subj))
+
+       (call .net.packet.relabelto_all_packets (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.protocols.type (subj))
+       (call .nss.services.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .sys.modulerequest_system (subj))
+
+       (block conf
+
+	      (filecon "/etc/nftables" dir file_context)
+	      (filecon "/etc/nftables/.*" any file_context)
+
+	      (filecon "/etc/sysconfig/nftables\.conf" file file_context)
+	      (filecon "/etc/sysconfig/nftables\.conf\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "nftables"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "nftables.conf")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/nft" file file_context))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/nftables\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .nftables.conf.conf_file_type_transition_file (typeattr)))

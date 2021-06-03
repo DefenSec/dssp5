@@ -18,8 +18,8 @@
 
 	      (blockabstract base_template)
 
-	      (context procfile_context
-		       (.sys.id .sys.role procfile (systemlow systemlow)))
+	      (context procfile_context (.sys.id .sys.role procfile
+						 (systemlow systemlow)))
 
 	      (type procfile)
 	      (call .procfile.type (procfile)))
@@ -35,9 +35,8 @@
 
 	      (typeattribute typeattr)
 
-	      (typeattributeset typeattr
-				(and procfile.typeattr
-				     (not (exception.typeattr)))))
+	      (typeattributeset typeattr (and procfile.typeattr
+					      (not (exception.typeattr)))))
 
        (block exception
 

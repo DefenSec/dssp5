@@ -1,0 +1,128 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in opendkim
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (setgid setuid)))
+    (allow subj self create_tcp_stream_socket)
+    (allow subj self create_unix_dgram_socket)
+
+    (call namebind_port_tcp_sockets (subj))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.run_file_type_transition_file (subj))
+
+    (call spool.manage_file_dirs (subj))
+    (call spool.manage_file_files (subj))
+
+    (call .cert.read_file_files (subj))
+    (call .cert.traverse_file_pattern.type (subj))
+
+    (call .cpu.read_sysfile_files (subj))
+    (call .cpu.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .cryptopol.conf.read_file_files (subj))
+    (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+    (call .cryptopol.data.read_file_files (subj))
+    (call .cryptopol.data.search_file_pattern.type (subj))
+
+    (call .kernel.read_sysctlfile_pattern.type (subj))
+
+    (call .net.nodebind_netnode_tcp_sockets (subj))
+
+    (call .nss.hosts.type (subj))
+    (call .nss.passwdgroup.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (block client
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/opendkim-default-keygen" file file_context)
+		  (filecon "/usr/bin/opendkim-genkey" file file_context)
+		  (filecon "/usr/bin/opendkim-genzone" file file_context)
+		  (filecon "/usr/bin/opendkim-reportstats" file file_context)
+		  (filecon "/usr/bin/opendkim-testkey" file file_context)
+		  (filecon "/usr/bin/opendkim-testmsg" file file_context)))
+
+    (block conf
+
+	   (filecon "/etc/opendkim" dir file_context)
+	   (filecon "/etc/opendkim/.*" any file_context)
+
+	   (filecon "/etc/opendkim\.conf" file file_context)
+	   (filecon "/etc/opendkim\.conf\..*" file file_context)
+
+	   (filecon "/etc/sysconfig/opendkim" file file_context)
+	   (filecon "/etc/sysconfig/opendkim\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "opendkim"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "opendkim"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "opendkim.conf")))
+
+	   (blockinherit .file.conf.template))
+
+    (block exec
+
+           (filecon "/usr/bin/opendkim" file file_context))
+
+    (block run
+
+           (filecon "/run/opendkim" dir file_context)
+           (filecon "/run/opendkim/.*" any file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "opendkim")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.run.base_template))
+
+    (block spool
+
+           (filecon "/var/spool/opendkim" dir file_context)
+           (filecon "/var/spool/opendkim/.*" any file_context)
+
+	   (macro spool_file_type_transition_file ((type ARG1))
+		  (call .spool.file_type_transition
+			(ARG1 file dir "opendkim")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.spool.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/opendkim\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .opendkim.conf.conf_file_type_transition_file (typeattr))
+    (call .opendkim.run.run_file_type_transition_file (typeattr))
+    (call .opendkim.spool.spool_file_type_transition_file (typeattr)))

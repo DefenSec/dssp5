@@ -81,6 +81,9 @@
 (macro deletename_unlabeled_dirs ((type ARG1))
        (allow ARG1 unlabeled deletename_dir))
 
+(macro dontaudit_auditaccess_unlabeled_dirs ((type ARG1))
+       (dontaudit ARG1 unlabeled (dir (audit_access))))
+
 (macro execute_unlabeled_files ((type ARG1))
        (allow ARG1 unlabeled execute_file))
 
@@ -303,9 +306,15 @@
 (macro search_unlabeled_dirs ((type ARG1))
        (allow ARG1 unlabeled search_dir))
 
+(macro setattr_unlabeled_dirs ((type ARG1))
+       (allow ARG1 unlabeled (dir (setattr))))
+
 (macro unlabeled_type_transition ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
        (typetransition ARG1 unlabeled ARG3 ARG4 ARG2)
        (call addname_unlabeled_dirs (ARG1)))
+
+(macro watch_unlabeled_dirs ((type ARG1))
+       (allow ARG1 unlabeled (dir (watch))))
 
 (macro write_unlabeled ((type ARG1))
        (allow ARG1 unlabeled (files (write))))
@@ -351,6 +360,8 @@
 
 (type unlabeled)
 (roletype sys.role unlabeled)
+
+(call .xattr.associate_fs_pattern.type (unlabeled))
 
 (block unlabeled
 

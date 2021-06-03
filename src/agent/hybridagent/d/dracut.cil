@@ -1,0 +1,179 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block dracut
+
+       (blockinherit hybrid.agent.template)
+
+       (allow subj self
+	      (capability (dac_override dac_read_search fsetid mknod sys_admin)))
+       (allow subj self (process (setfscreate getsched)))
+       (allow subj self create_unix_stream_socket)
+       (dontaudit subj self (capability (net_admin)))
+
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .blktools.subj_type_transition (subj))
+
+       (call .btrfsprogs.subj_type_transition (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .cmdline.read_procfile_files (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .debug.search_fs_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devicemapper.subj_type_transition (subj))
+
+       (call .dos.search_fs_dirs (subj))
+
+       (call .file.unconfined.type (subj))
+
+       (call .hypervisor.search_sysfile_pattern.type (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .kernel.search_sysfile_pattern.type (subj))
+
+       (call .kmod.subj_type_transition (subj))
+
+       (call .ldconfig.subj_type_transition (subj))
+
+       (call .module.readwrite_sysfile_files (subj))
+       (call .module.search_sysfile_pattern.type (subj))
+
+       (call .modules.read_procfile_pattern.type (subj))
+
+       (call .power.read_sysfile_files (subj))
+       (call .power.search_sysfile_pattern.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbac.objchangesys.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .seclabelfs.getattr_all_fs (subj))
+
+       (call .selinux.getattr_fs (subj))
+       (call .selinux.mapread_fs_pattern.type (subj))
+
+       (call .stordev.getattr_all_blk_files (subj))
+       (call .stordev.getattr_all_chr_files (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .sys.connectto_subj_unix_stream_sockets (subj))
+       (call .sys.read_subj_states (subj))
+
+       (call .sysfile.devices.list_all_dirs (subj))
+       (call .sysfile.devices.read_all_files (subj))
+       (call .sysfile.devices.read_all_lnk_files (subj))
+
+       (call .systemd.journal.unit.status_file_services (subj))
+
+       (call .systemd.udev.subj_type_transition (subj))
+
+       (call .user.home.list_file_dirs (subj))
+
+       (block conf
+
+	      (filecon "/etc/dracut\.conf" file file_context)
+	      (filecon "/etc/dracut\.conf\..*" file file_context)
+	      (filecon "/etc/dracut\.conf\.d" dir file_context)
+	      (filecon "/etc/dracut\.conf\.d/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dracut.conf.d"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "dracut.conf")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/dracut" dir file_context)
+	      (filecon "/usr/lib/dracut/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "dracut")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/dracut" file file_context))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file dir "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_fifo_files)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.tmp.base_template)))
+
+(in blktools
+
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj)))
+
+(in btrfsprogs
+
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj)))
+
+(in devicemapper
+
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj)))
+
+(in file.unconfined
+
+    (call .dracut.conf.conf_file_type_transition_file (typeattr))
+    (call .dracut.data.lib_file_type_transition_file (typeattr)))
+
+(in kmod
+
+    (call .dracut.tmp.manage_file_files (subj))
+    (call .dracut.tmp.manage_file_lnk_files (subj))
+    (call .dracut.tmp.map_file_files (subj))
+    (call .dracut.tmp.readwrite_file_dirs (subj))
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj))
+
+    (call .tmp.search_file_pattern.type (subj)))
+
+(in ldconfig
+
+    (call .dracut.tmp.manage_file_files (subj))
+    (call .dracut.tmp.manage_file_lnk_files (subj))
+    (call .dracut.tmp.map_file_files (subj))
+    (call .dracut.tmp.readwrite_file_dirs (subj))
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj))
+
+    (call .tmp.search_file_pattern.type (subj)))
+
+(in systemd.udev
+
+    (call .dracut.tmp.writeinherited_file_fifo_files (subj)))
+
+(in systemd.unit
+
+    (filecon "/usr/lib/dracut/modules\.d/.*\.service" file file_context))

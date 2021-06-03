@@ -1,0 +1,22 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .man.conf.conf_file_type_transition_file (typeattr)))
+
+(in man
+
+    (block conf
+
+	   (filecon "/etc/manpath\.config" file file_context)
+	   (filecon "/etc/manpath\.config\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file "manpath.config")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_files)
+
+	   (call .alternatives.alternate.type (file))))

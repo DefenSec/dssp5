@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mpd
+
+       (portcon "dccp" 6600 port_context)
+       (portcon "sctp" 6600 port_context)
+       (portcon "tcp" 6600 port_context)
+       (portcon "udp" 6600 port_context)
+
+       (blockinherit .net.port.unreserved.template))

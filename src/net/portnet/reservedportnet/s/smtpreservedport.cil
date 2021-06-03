@@ -1,0 +1,29 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block smtp
+
+       (portcon "dccp" 25 port_context)
+       (portcon "sctp" 25 port_context)
+       (portcon "tcp" 25 port_context)
+       (portcon "udp" 25 port_context)
+
+       (blockinherit .net.port.reserved.template)
+
+       (block msa
+
+	      (portcon "dccp" 587 port_context)
+	      (portcon "sctp" 587 port_context)
+	      (portcon "tcp" 587 port_context)
+	      (portcon "udp" 587 port_context)
+
+	      (blockinherit .net.port.reserved.template))
+
+       (block smtps
+
+	      (portcon "dccp" 465 port_context)
+	      (portcon "sctp" 465 port_context)
+	      (portcon "tcp" 465 port_context)
+	      (portcon "udp" 465 port_context)
+
+	      (blockinherit .net.port.reserved.template)))

@@ -1,0 +1,18 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block parttools
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/addpart" file file_context)
+	      (filecon "/usr/bin/cfdisk" file file_context)
+	      (filecon "/usr/bin/delpart" file file_context)
+	      (filecon "/usr/bin/fdisk" file file_context)
+	      (filecon "/usr/bin/partx" file file_context)
+	      (filecon "/usr/bin/resizepart" file file_context)
+	      (filecon "/usr/bin/sfdisk" file file_context)))

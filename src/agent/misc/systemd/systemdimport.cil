@@ -1,0 +1,152 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.import.state.state_file_type_transition_file (typeattr)))
+
+(in systemd.import
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (chown dac_read_search dac_override fowner fsetid
+			      linux_immutable mknod setfcap setpcap sys_admin)))
+    (allow subj self (process (getcap setcap setfscreate)))
+    (allow subj self create_tcp_socket)
+    (allow subj self create_unix_dgram_socket)
+
+    (call logparsenv.type (subj))
+    (call notify.type (subj))
+
+    (call cert.dontaudit_auditaccess_file_files (subj))
+    (call cert.read_file_files (subj))
+
+    (call conf.manage_file_files (subj))
+    (call conf.systemd_conf_file_type_transition_file (subj))
+
+    (call helper.exec.execute_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
+    (call state.manage_file_files (subj))
+    (call state.state_file_type_transition_file (subj))
+
+    (call tmp.manage_file_dirs (subj))
+    (call tmp.manage_file_files (subj))
+    (call tmp.mounton_file_dirs (subj))
+    (call tmp.tmp_file_type_transition_file (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cert.read_file_files (subj))
+    (call .cert.traverse_file_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .cryptopol.conf.read_file_files (subj))
+    (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+    (call .cryptopol.data.read_file_files (subj))
+    (call .cryptopol.data.search_file_pattern.type (subj))
+
+    (call .exec.execute_file_files (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .gnupg.conf.search_file_dirs (subj))
+    (call .gnupg.exec.execute_file_files (subj))
+
+    (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .locale.data.map_file_pattern.type (subj))
+    (call .locale.data.read_file_pattern.type (subj))
+
+    (call .nss.hosts.type (subj))
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .polkit.sendmsg_subj_dbus.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .systemd.conf.deletename_file_dirs (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .tmp.deletename_file_dirs (subj))
+
+    (call .manage_unlabeled_dirs (subj))
+    (call .manage_unlabeled_files (subj))
+    (call .manage_unlabeled_lnk_files (subj))
+
+    (call .relabelfrom_unlabeled_dirs (subj))
+    (call .relabelfrom_unlabeled_files (subj))
+    (call .relabelfrom_unlabeled_lnk_files (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-importd" file file_context))
+
+    (block helper
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-export" file file_context)
+		  (filecon "/usr/lib/systemd/systemd-import" file file_context)
+		  (filecon "/usr/lib/systemd/systemd-import-fs" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/systemd-pull" file file_context)
+
+		  (blockinherit .file.exec.template)))
+
+    (block state
+
+	   (filecon "/var/lib/machines\.raw" file file_context)
+	   (filecon "/var/lib/machines\.raw\..*" file file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file file "machines.raw")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.state.base_template)
+
+	   (call .mount.image.type (file)))
+
+    (block tmp
+
+	   (macro tmp_file_type_transition_file ((type ARG1))
+		  (call .tmp.file_type_transition
+			(ARG1 file dir "*"))
+		  (call .tmp.file_type_transition
+			(ARG1 file file "*")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmp.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-importd\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)
+
+	   (call .dbus.activated.unit.type (file))))

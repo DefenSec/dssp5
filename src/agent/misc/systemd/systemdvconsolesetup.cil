@@ -1,0 +1,76 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.vconsolesetup.conf.conf_file_type_transition_file
+	  (typeattr)))
+
+(in systemd
+
+    (block vconsolesetup
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self
+		  (capability (sys_resource sys_tty_config)))
+
+	   (call conf.read_file_files (subj))
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kbd.subj_type_transition (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .module.search_sysfile_pattern.type (subj))
+	   (call .module.write_sysfile_files (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .systemd.run.search_file_pattern.type (subj))
+
+	   (call .tty.open_serialtermdev_chr_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block conf
+
+		  (filecon "/etc/vconsole\.conf" file file_context)
+		  (filecon "/etc/vconsole\.conf\..*" file
+			   file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file file "vconsole.conf")))
+
+		  (blockinherit .file.conf.base_template)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-vconsole-setup" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-vconsole-setup\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

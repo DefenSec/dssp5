@@ -1,0 +1,284 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block kitty
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (cap_userns (sys_ptrace)))
+       (allow subj self (process (execmem getpgid getsched setsched)))
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+
+       (call data.list_file_dirs (subj))
+       (call data.mapexecute_file_files (subj))
+       (call data.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call home.cache.manage_file_dirs (subj))
+       (call home.cache.manage_file_files (subj))
+       (call home.cache.user_home_cache_file_type_transition_file (subj))
+
+       (call home.conf.manage_file_dirs (subj))
+       (call home.conf.manage_file_files (subj))
+       (call home.conf.user_home_conf_file_type_transition_file (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.manage_file_sock_files (subj))
+       (call tmp.map_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir "*"))
+       (call tmp.tmp_file_type_transition_file (subj file "*"))
+       (call tmp.tmp_file_type_transition_file (subj sock_file "*"))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .cpu.read_sysfile_files (subj))
+       (call .cpu.search_sysfile_pattern.type (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+
+       (call .dev.read_sysctlfile_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.traverse_sysfile_pattern.type (subj))
+
+       (call .dri.map_nodedev_pattern.type (subj))
+       (call .dri.readwrite_nodedev_pattern.type (subj))
+
+       (call .font.cache.dontaudit_setattr_file.type (subj))
+       (call .font.cache.map_file_pattern.type (subj))
+       (call .font.cache.read_file_pattern.type (subj))
+       (call .font.conf.read_file_pattern.type (subj))
+       (call .font.data.map_file_pattern.type (subj))
+       (call .font.data.read_file_pattern.type (subj))
+
+       (call .font.home.cache.map_file_pattern.type (subj))
+       (call .font.home.cache.manage_file_pattern.type (subj))
+       (call .font.home.conf.read_file_pattern.type (subj))
+       (call .font.home.data.map_file_pattern.type (subj))
+       (call .font.home.data.read_file_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .icons.data.read_file_pattern.type (subj))
+
+       (call .inputrc.read_file_pattern.type (subj))
+
+       (call .kernel.search_sysctlfile_pattern.type (subj))
+
+       (call .libdrm.data.read_file_pattern.type (subj))
+
+       (call .libglvnd.read_file_pattern.type (subj))
+
+       (call .lib.list_file_dirs (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mesa.data.read_file_pattern.type (subj))
+
+       (call .mesa.home.cache.manage_file_pattern.type (subj))
+       (call .mesa.home.cache.map_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pixmaps.data.read_file_pattern.type (subj))
+
+       (call .proc.list_fs_dirs (subj))
+
+       (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.readstatesource.type (subj))
+
+       (call .selinux.conf.read_file_files (subj))
+       (call .selinux.linked.type (subj))
+       (call .selinux.search_fs_pattern.type (subj))
+
+       (call .subj.common.read_all_states (subj))
+       (call .subj.dontaudit_read_all_states (subj))
+
+       (call .subj.interactivefd.type (subj))
+
+       (call .sys.read_subj_states (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.getpgid_subj_processes (subj))
+       (call .user.readwrite_ptytermdev_chr_files (subj))
+
+       (call .user.devpts_fs_type_transition_ptytermdev (subj))
+
+       (call .user.exec_subj_type_transition (subj))
+       (call .user.exec_home_subj_type_transition (subj))
+
+       (call .user.home.read_file_files (subj))
+
+       (call .user.home.cache.create_file_dir_pattern.type (subj))
+
+       (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+       (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.signal_subj_processes (subj))
+
+       (call .wlroots.client.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (call .xdg.conf.list_file_dirs (subj))
+       (call .xdg.conf.read_file_files (subj))
+
+       (call .xkb.data.map_file_pattern.type (subj))
+       (call .xkb.data.read_file_pattern.type (subj))
+
+       (optional kitty_opensshclient
+		 (call .openssh.client.signal_subj_processes (subj))
+		 (call .openssh.client.subj_type_transition (subj)))
+
+       (optional kitty_waypipe
+		 (call .waypipe.agent (subj exec.file)))
+
+       (block data
+
+	      (filecon "/usr/lib/kitty" dir file_context)
+	      (filecon "/usr/lib/kitty/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "kitty")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.data.base_template))
+
+       (block exec
+
+	      (filecon "/usr/bin/kitty" file file_context))
+
+       (block home
+
+	      (block cache
+
+		     (filecon "HOME_DIR/\.cache/kitty" dir file_context)
+		     (filecon "HOME_DIR/\.cache/kitty/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_cache_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.cache.file_type_transition
+				  (ARG1 file dir "kitty")))
+
+		     (blockinherit .file.user.home.cache.template))
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/kitty" dir file_context)
+		     (filecon "HOME_DIR/\.config/kitty/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "kitty")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.home.conf.base_template)))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .tmp.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.tmp.base_template))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file))))
+
+(in file.unconfined
+
+    (call .kitty.data.lib_file_type_transition_file (typeattr))
+
+    (call .kitty.home.cache.user_home_cache_file_type_transition_file
+	  (typeattr))
+    (call .kitty.home.conf.user_home_conf_file_type_transition_file (typeattr))
+
+    (call .terminfo.data.kitty_data_file_type_transition_file (typeattr)))
+
+(in terminfo.data
+
+    (filecon "/usr/lib/kitty/terminfo" dir file_context)
+    (filecon "/usr/lib/kitty/terminfo/.*" any file_context)
+
+    (macro kitty_data_file_type_transition_file ((type ARG1))
+	   (call .kitty.data.file_type_transition
+		 (ARG1 file dir "terminfo"))))
+
+(in user
+
+    (call .kitty.home.cache.manage_file_dirs (subj))
+    (call .kitty.home.cache.manage_file_files (subj))
+    (call .kitty.home.cache.map_file_files (subj))
+    (call .kitty.home.cache.relabel_file_dirs (subj))
+    (call .kitty.home.cache.relabel_file_files (subj))
+    (call .kitty.home.cache.user_home_cache_file_type_transition_file (subj))
+
+    (call .kitty.home.conf.manage_file_dirs (subj))
+    (call .kitty.home.conf.manage_file_files (subj))
+    (call .kitty.home.conf.map_file_files (subj))
+    (call .kitty.home.conf.relabel_file_dirs (subj))
+    (call .kitty.home.conf.relabel_file_files (subj))
+    (call .kitty.home.conf.user_home_conf_file_type_transition_file (subj))
+
+    (call .kitty.role (role))
+
+    (call .kitty.tmp.manage_file_dirs (subj))
+    (call .kitty.tmp.manage_file_files (subj))
+    (call .kitty.tmp.manage_file_sock_files (subj))
+    (call .kitty.tmp.map_file_files (subj))
+    (call .kitty.tmp.relabel_file_dirs (subj))
+    (call .kitty.tmp.relabel_file_files (subj))
+    (call .kitty.tmp.relabel_file_sock_files (subj))
+
+    (call .kitty.tmpfs.manage_file_files (subj))
+    (call .kitty.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .kitty.role (role)))

@@ -3,6 +3,16 @@
 
 (in sys
 
+    (call mqueuefs.mqueue_fs_type_transition_file (subj "*"))
+
     (block mqueuefs
 
+	   (macro mqueue_fs_type_transition_file ((type ARG1)(name ARG2))
+		  (call .mqueue.fs_type_transition
+			(ARG1 file file ARG2)))
+
 	   (blockinherit .file.mqueuefs.template)))
+
+(in sys.user
+
+    (call .sys.mqueuefs.mqueue_fs_type_transition_file (subj "*")))

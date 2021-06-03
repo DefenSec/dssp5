@@ -3,6 +3,28 @@
 
 (block cert
 
+       (filecon "/etc/pki" dir file_context)
+       (filecon "/etc/pki/.*" any file_context)
+
+       (filecon "/etc/ssl" dir file_context)
+       (filecon "/etc/ssl/.*" any file_context)
+
+       (filecon "/usr/share/pki" dir file_context)
+       (filecon "/usr/share/pki/.*" any file_context)
+
+       (macro conf_file_type_transition_file ((type ARG1))
+	      (call .conf.file_type_transition
+		    (ARG1 file dir "pki"))
+	      (call .conf.file_type_transition
+		    (ARG1 file dir "ssl")))
+
+       (macro data_file_type_transition_file ((type ARG1))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "pki")))
+
+       (macro map_file_files ((type ARG1))
+	      (allow ARG1 file (file (map))))
+
        (blockinherit .file.cert.template))
 
 (in file
@@ -18,9 +40,7 @@
 
 	   (typeattribute typeattr)
 
-	   (call file.type (typeattr))
-
-	   (call .xattr.associate_fs (typeattr))
+	   (call data.type (typeattr))
 
 	   (block base_template
 
@@ -38,3 +58,8 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .cert.conf_file_type_transition_file (typeattr))
+    (call .cert.data_file_type_transition_file (typeattr)))

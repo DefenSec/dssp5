@@ -1,0 +1,39 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wayland
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/wayland-([1-9]+)?" socket
+		       file_context)
+	      (filecon "/run/user/%{USERID}/wayland-([1-9]+)?\.lock" file
+		       file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "wayland-1.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "wayland-2.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "wayland-3.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "wayland-1"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "wayland-2"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "wayland-3")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.run.base_template)))
+
+(in file.unconfined
+
+    (call .wayland.run.user_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .wayland.run.manage_file_pattern.type (subj))
+    (call .wayland.run.relabel_file_files (subj))
+    (call .wayland.run.relabel_file_sock_files (subj)))

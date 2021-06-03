@@ -1,0 +1,54 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.user
+
+    (block mqueuefs
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.mqueuefs.type (typeattr))
+	   (call .file.user.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.base_template)
+
+		  (call .file.user.mqueuefs.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.mqueuefs.base_template))))
+
+(in user
+
+    (call mqueuefs.manage_file_pattern.type (subj))
+    (call mqueuefs.map_file_files (subj))
+    (call mqueuefs.mqueue_fs_type_transition_file (subj "*"))
+    (call mqueuefs.relabel_file_pattern.type (subj))
+
+    (call .mqueue.deletename_fs_dirs (subj))
+
+    (block mqueuefs
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro mqueue_fs_type_transition_file ((type ARG1)(name ARG2))
+		  (call .mqueue.fs_type_transition
+			(ARG1 file file ARG2)))
+
+	   (blockinherit .file.user.mqueuefs.template)))

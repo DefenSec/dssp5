@@ -1,0 +1,151 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.tmpfiles.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.tmpfiles.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.tmpfiles.run.run_file_type_transition_file (typeattr)))
+
+(in sys
+
+    (call .systemd.tmpfiles.subj_type_transition (subj)))
+
+(in systemd
+
+    (block tmpfiles
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self
+		  (capability (chown dac_override dac_read_search fowner fsetid
+				     mknod)))
+	   (allow subj self (process (getcap)))
+
+	   (call common.type (subj))
+
+	   (call .list_invalid_dirs (subj))
+	   (call .relabelfrom_invalid (subj))
+
+	   (call .list_unlabeled_dirs (subj))
+	   (call .relabelfrom_unlabeled (subj))
+
+	   (call .file.unconfined.type (subj))
+
+	   (call .ibac.objchange.type (subj))
+
+	   (call .nodedev.unconfined.type (subj))
+
+	   (call .rbac.objchange.type (subj))
+
+	   (call .stordev.unconfined.type (subj))
+
+	   (call .sys.getattr_fs (subj))
+
+	   (call .tmp.addname_fs_dirs (subj))
+	   (call .tmp.create_fs_dirs (subj))
+	   (call .tmp.relabelfrom_fs_dirs (subj))
+
+	   (call .hybrid.agent.exec.type (exec.file))
+	   (call .hybrid.agent.type (subj))
+
+	   (block common
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (allow typeattr self (process (setfscreate)))
+		  (allow typeattr self create_unix_dgram_socket)
+
+		  (call logparsenv.type (typeattr))
+		  (call pager.type (typeattr))
+
+		  (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
+
+		  (call .cgroup.getattr_fs_pattern.type (typeattr))
+
+		  (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+		  (call .devtmp.getattr_fs (typeattr))
+
+		  (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
+		  (call .libnl.conf.read_file_pattern.type (typeattr))
+
+		  (call .net.read_procfile_pattern.type (typeattr))
+
+		  (call .nss.passwdgroup.type (typeattr))
+
+		  (call .osrelease.read_sysctlfile_pattern.type (typeattr))
+
+		  (call .proc.getattr_fs_pattern.type (typeattr))
+
+		  (call .random.read_sysctlfile_pattern.type (typeattr))
+
+		  (call .selinux.file.read_file_pattern.type (typeattr))
+		  (call .selinux.mapread_fs_pattern.type (typeattr))
+
+		  (call .systemd.journal.relay_msgs.type (typeattr))
+
+		  (call .tmp.getattr_fs_pattern.type (typeattr))
+
+		  (call .xattr.getattr_fs_pattern.type (typeattr)))
+
+	   (block conf
+
+		  (filecon "/etc/tmpfiles\.d" dir file_context)
+		  (filecon "/etc/tmpfiles\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "tmpfiles.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/tmpfiles\.d" dir file_context)
+		  (filecon "/usr/lib/tmpfiles\.d/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "tmpfiles.d")))
+
+		  (blockinherit .file.data.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-tmpfiles" file file_context))
+
+	   (block run
+
+		  (filecon "/run/tmpfiles\.d" dir file_context)
+		  (filecon "/run/tmpfiles\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "tmpfiles.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-tmpfiles-clean\.service.*"
+		   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-tmpfiles-clean\.timer.*"
+		   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-tmpfiles-setup-dev\.service.*"
+		   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-tmpfiles-setup\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

@@ -1,0 +1,38 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block zramctl
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .block.search_sysfile_pattern.type (subj))
+
+       (call .class.search_sysfile_pattern.type (subj))
+
+       (call .dev.list_file_dirs (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.search_sysfile_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .stordev.getattr_all_blk_files (subj))
+       (call .stordev.getattr_all_chr_files (subj))
+       (call .stordev.read.type (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .zram.read_stordev_blk_files (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_lnk_files (subj))
+       (call .zram.readwrite_sysfile_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/zramctl" file file_context)))

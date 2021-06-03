@@ -1,0 +1,73 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+    (block priv
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (roleattribute roleattr)
+	   (typeattribute typeattr)
+
+	   (blockinherit all_macro_template)
+
+	   (call .cert.read_file_files (typeattr))
+	   (call .cert.search_file_dirs (typeattr))
+
+	   (call .cryptopol.conf.read_file_files (typeattr))
+	   (call .cryptopol.conf.traverse_file_pattern.type (typeattr))
+
+	   (call .cryptopol.data.read_file_files (typeattr))
+	   (call .cryptopol.data.search_file_pattern.type (typeattr))
+
+	   (call .rbac.subjchangetarget.type (typeattr))
+
+	   (call .rbacsep.exempt.role (roleattr))
+	   (call .rbacsep.usefdsource.type (typeattr))
+
+	   (call .sys.home.dontaudit_list_file_dirs (typeattr))
+
+	   (call .user.mail.dontaudit_getattr_file_files (typeattr))
+
+	   (block role_template
+
+		  (blockabstract role_template)
+
+		  (macro role_access ((role ARG1)(user ARG2))
+			 (call roleallow.role (ARG1))
+			 (call userrole.user (ARG2)))
+
+		  (blockinherit .user.role_template)
+
+		  (call .user.priv.role (role)))
+
+	   (block roleallow
+
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
+		  (roleattribute roleattr)
+
+		  (roleallow roleattr priv.roleattr))
+
+	   (block subj_template
+
+		  (blockabstract subj_template)
+
+		  (blockinherit .user.subj_template)
+
+		  (call .user.priv.type (subj)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .user.priv.role_template)
+		  (blockinherit .user.priv.subj_template)
+
+		  (call role (role)))))

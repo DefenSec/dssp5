@@ -1,0 +1,155 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block systemctl
+
+	   (blockinherit .dbus.client.macro_template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (cap_userns (sys_ptrace)))
+	   (allow subj self (process (setfscreate setrlimit)))
+
+	   (call logparsenv.type (subj))
+	   (call pager.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+	   (call .cgroup.list_fs_dirs (subj))
+	   (call .cgroup.read_fs_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dbus.client.type (subj))
+
+	   (call .editor.conf.read_file_files (subj))
+
+	   (call .file.unit.control_all_services (subj))
+	   (call .file.unit.manage_all_files (subj))
+
+	   (call .fstab.status_file_services (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kernel.read_sysfile_files (subj))
+	   (call .kernel.search_sysfile_pattern.type (subj))
+
+	   (call .lib.list_file_dirs (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .machineid.read_file_files (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .openssh.client.subj_type_transition (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .subj.common.read_all_states (subj))
+	   (call .subj.dontaudit_read_all_states (subj))
+
+	   (call .sys.control_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_self (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .systemd.catalog.state.list_file_dirs (subj))
+	   (call .systemd.catalog.state.map_file_files (subj))
+	   (call .systemd.catalog.state.read_file_files (subj))
+
+	   (call .systemd.conf.search_file_pattern.type (subj))
+
+	   (call .systemd.journal.log.map_file_pattern.type (subj))
+	   (call .systemd.journal.log.read_file_pattern.type (subj))
+
+	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.machines.run.list_file_dirs (subj))
+	   (call .systemd.machines.run.read_file_files (subj))
+
+	   (call .systemd.private.type (subj))
+
+	   (call .systemd.run.search_file_pattern.type (subj))
+
+	   (call .systemd.sessions.run.list_file_dirs (subj))
+	   (call .systemd.sessions.run.read_file_files (subj))
+
+	   (call .systemd.state.search_file_pattern.type (subj))
+
+	   (call .systemd.unit.manage_file_dirs (subj))
+	   (call .systemd.unit.manage_file_lnk_files (subj))
+
+	   (call .systemd.unit.run.control_file_services (subj))
+	   (call .systemd.unit.run.manage_file_dirs (subj))
+	   (call .systemd.unit.run.manage_file_files (subj))
+	   (call .systemd.unit.run.manage_file_lnk_files (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .user.dbus.client.type (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj exec.file))
+	   (call .user.systemd.control_system (subj))
+	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
+	   (call .user.systemd.service.noatsecure.type (subj))
+	   (call .user.systemd.private.type (subj))
+
+	   (call .user.systemd.home.conf.control_file_services (subj))
+	   (call .user.systemd.home.conf.manage_file_dirs (subj))
+	   (call .user.systemd.home.conf.manage_file_files (subj))
+	   (call .user.systemd.home.conf.manage_file_lnk_files (subj))
+
+	   (call .user.systemd.run.addname_file_dirs (subj))
+
+	   (call .user.systemd.unit.manage_file_dirs (subj))
+	   (call .user.systemd.unit.manage_file_lnk_files (subj))
+
+	   (call .user.systemd.unit.run.control_file_services (subj))
+	   (call .user.systemd.unit.run.manage_file_dirs (subj))
+	   (call .user.systemd.unit.run.manage_file_files (subj))
+	   (call .user.systemd.unit.run.manage_file_lnk_files (subj))
+
+	   (call .utmp.run.read_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemctl" file file_context))))
+
+(in user
+
+    (call .systemd.systemctl.noatsecure_subj_processes (subj))
+    (call .systemd.systemctl.role (role)))
+
+(in wheel
+
+    (call .systemd.systemctl.role (role)))

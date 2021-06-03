@@ -1,0 +1,33 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block libglvnd
+
+       (block conf
+
+	      (filecon "/etc/glvnd" dir file_context)
+	      (filecon "/etc/glvnd/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "glvnd")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/glvnd" dir file_context)
+	      (filecon "/usr/share/glvnd/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "glvnd")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.data.base_template)))
+
+(in file.unconfined
+
+    (call .libglvnd.conf.conf_file_type_transition_file (typeattr))
+    (call .libglvnd.data.data_file_type_transition_file (typeattr)))

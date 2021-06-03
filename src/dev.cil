@@ -3,6 +3,18 @@
 
 (block dev
 
+       (macro dontaudit_getattr_all_chr_files ((type ARG1))
+	      (dontaudit ARG1 typeattr (chr_file (getattr))))
+
+       (macro getattr_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (getattr))))
+
+       (macro setattr_all_blk_files ((type ARG1))
+	      (allow ARG1 typeattr (blk_file (setattr))))
+
+       (macro setattr_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (setattr))))
+
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
 
@@ -25,8 +37,8 @@
 
 	      (typeattribute typeattr)
 
-	      (typeattributeset typeattr (and dev.typeattr
-					      (not (exception.typeattr)))))
+	      (typeattributeset typeattr
+				(and dev.typeattr (not (exception.typeattr)))))
 
        (block exception
 

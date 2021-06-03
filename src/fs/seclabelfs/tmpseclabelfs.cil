@@ -3,9 +3,18 @@
 
 (block tmp
 
+       (filecon "/dev/shm" dir fs_context)
+       (filecon "/dev/shm/.*" any ())
+
        (fsuse trans "ramfs" fs_context)
        (fsuse trans "shm" fs_context)
        (fsuse trans "tmpfs" fs_context)
+
+       (macro dontaudit_getattr_fs_dirs ((type ARG1))
+	      (dontaudit ARG1 fs (dir (getattr))))
+
+       (macro dontaudit_getattr_fs_files ((type ARG1))
+	      (dontaudit ARG1 fs (file (getattr))))
 
        (blockinherit .fs.macro_template_all_files)
        (blockinherit .fs.macro_template_blk_files)
@@ -15,4 +24,10 @@
        (blockinherit .fs.macro_template_files)
        (blockinherit .fs.macro_template_lnk_files)
        (blockinherit .fs.macro_template_sock_files)
-       (blockinherit .seclabelfs.template))
+       (blockinherit .seclabelfs.template)
+
+       (allow fs self (filesystem (associate)))
+
+       (call .devtmp.associate_fs (fs))
+
+       (call .rbacsep.exempt.obj.type (fs)))

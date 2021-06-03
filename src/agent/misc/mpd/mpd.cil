@@ -1,0 +1,198 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .mpd.conf.conf_file_type_transition_file (typeattr))
+    (call .mpd.log.log_file_type_transition_file (typeattr))
+    (call .mpd.run.run_file_type_transition_file (typeattr))
+    (call .mpd.state.state_file_type_transition_file (typeattr)))
+
+(in mpd
+
+    (macro unix_stream_connect ((type ARG1))
+	   (call connectto_subj_unix_stream_sockets (ARG1))
+	   (call run.search_file_dirs (ARG1))
+	   (call run.write_file_sock_files (ARG1)))
+
+    (blockinherit .agent.template)
+
+    (allow subj self (capability (dac_override dac_read_search setgid setuid)))
+
+    (call common.type (subj))
+
+    (call conf.read_file_files (subj))
+
+    (call log.append_file_files (subj))
+    (call log.create_file_files (subj))
+    (call log.manage_file_dirs (subj))
+    (call log.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+
+    (call state.manage_file_dirs (subj))
+    (call state.manage_file_files (subj))
+
+    (call tmpfs.manage_file_files (subj))
+    (call tmpfs.map_file_files (subj))
+    (call tmpfs.tmp_fs_type_transition_file (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .sys.agent.type (subj))
+
+    (call .systemd.notify.type (subj))
+
+    (call .tmp.deletename_fs_dirs (subj))
+
+    (block common
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr self (process (getsched setrlimit setsched)))
+	   (allow typeattr self create_tcp_stream_socket)
+	   (allow typeattr self create_unix_dgram_socket)
+	   (allow typeattr self (unix_stream_socket (accept listen)))
+
+	   (call namebind_port_tcp_sockets (typeattr))
+
+	   (call exec.entrypoint_file_files (typeattr))
+	   (call exec.mapexecute_file_files (typeattr))
+	   (call exec.read_file_files (typeattr))
+
+	   (call .cert.read_file_files (typeattr))
+	   (call .cert.traverse_file_pattern.type (typeattr))
+
+	   (call .ci.getattr_fs_pattern.type (typeattr))
+	   (call .ci.manage_fs_pattern.type (typeattr))
+
+	   (call .cpu.list_sysfile_dirs (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .cryptopol.conf.read_file_files (typeattr))
+	   (call .cryptopol.conf.traverse_file_pattern.type (typeattr))
+
+	   (call .cryptopol.data.read_file_files (typeattr))
+	   (call .cryptopol.data.search_file_pattern.type (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr))
+
+	   (call .dos.getattr_fs_pattern.type (typeattr))
+	   (call .dos.manage_fs_pattern.type (typeattr))
+
+	   (call .fuse.getattr_fs_pattern.type (typeattr))
+	   (call .fuse.manage_fs_pattern.type (typeattr))
+
+	   (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
+	   (call .locale.data.map_file_pattern.type (typeattr))
+	   (call .locale.data.read_file_pattern.type (typeattr))
+
+	   (call .net.nodebind_netnode_tcp_sockets (typeattr))
+
+	   (call .net.read_procfile_pattern.type (typeattr))
+
+	   (call .nfs.getattr_fs_pattern.type (typeattr))
+	   (call .nfs.manage_fs_pattern.type (typeattr))
+
+	   (call .node.read_sysfile_pattern.type (typeattr))
+
+	   (call .nss.hosts.type (typeattr))
+	   (call .nss.passwdgroup.type (typeattr))
+
+	   (call .random.read_nodedev_chr_files (typeattr))
+
+	   (call .samba.conf.read_file_pattern.type (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+
+	   (call .shout.namebind_port_tcp_sockets (typeattr))
+	   (call .shout.nameconnect_port_tcp_sockets (typeattr))
+
+	   (call .systemd.journal.relay_msgs.type (typeattr)))
+
+    (block conf
+
+	   (filecon "/etc/mpd\.conf" file file_context)
+	   (filecon "/etc/mpd\.conf\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file "mpd.conf")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_files))
+
+    (block exec
+
+	   (filecon "/usr/bin/mpd" file file_context)
+
+	   (call .hybrid.agent.exec.type (file)))
+
+    (block log
+
+	   (filecon "/var/log/mpd" dir file_context)
+	   (filecon "/var/log/mpd/.*" any file_context)
+
+	   (macro log_file_type_transition_file ((type ARG1))
+		  (call .log.file_type_transition
+			(ARG1 file dir "mpd")))
+
+	   (blockinherit .file.log.template))
+
+    (block run
+
+	   (filecon "/run/mpd" dir file_context)
+	   (filecon "/run/mpd/.*" any file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "mpd")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_sock_files)
+	   (blockinherit .file.run.base_template))
+
+    (block state
+
+	   (filecon "/var/lib/mpd" dir file_context)
+	   (filecon "/var/lib/mpd/.*" any file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "mpd")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.state.base_template))
+
+    (block tmpfs
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro tmp_fs_type_transition_file ((type ARG1))
+		  (call .tmp.fs_type_transition
+			(ARG1 file file "*")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmpfs.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/mpd\.service.*" file file_context)
+	   (filecon "/usr/lib/systemd/system/mpd\.socket.*" file file_context)
+
+	   (blockinherit .file.unit.template)))
+
+(in sys
+
+    (call .mpd.subj_type_transition (subj)))

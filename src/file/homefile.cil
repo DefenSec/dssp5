@@ -3,14 +3,37 @@
 
 (block home
 
+       (filecon "HOME_ROOT" dir file_context)
+       (filecon "HOME_ROOT/[^/]+" block file_context)
+       (filecon "HOME_ROOT/[^/]+" char file_context)
+       (filecon "HOME_ROOT/[^/]+" file file_context)
+       (filecon "HOME_ROOT/[^/]+" pipe file_context)
+       (filecon "HOME_ROOT/[^/]+" socket file_context)
+       (filecon "HOME_ROOT/[^/]+" symlink file_context)
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "home")))
+
        (blockinherit .file.home.template)
        (blockinherit .file.macro_template_all_files)
        (blockinherit .file.macro_template_blk_files)
-       (blockinherit .file.macro_template_chr_files))
+       (blockinherit .file.macro_template_chr_files)
+
+       (call .mount.mountpoint.type (file)))
 
 (in file
 
     (block home
+
+	   (macro dontaudit_listinherited_all_dirs ((type ARG1))
+		  (dontaudit ARG1 typeattr listinherited_dir))
+
+	   (macro dontaudit_readwriteinherited_all_dirs ((type ARG1))
+		  (dontaudit ARG1 typeattr readwriteinherited_dir))
+
+	   (macro dontaudit_readwriteinherited_all_files ((type ARG1))
+		  (dontaudit ARG1 typeattr readwriteinherited_file))
 
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
@@ -25,7 +48,7 @@
 
 	   (call file.type (typeattr))
 
-	   (call .xattr.associate_fs (typeattr))
+	   (call .xattr.associate_fs_pattern.type (typeattr))
 
 	   (block base_template
 
@@ -45,3 +68,7 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files)
 		  (blockinherit .file.macro_template_sock_files))))
+
+(in file.unconfined
+
+    (call .home.root_file_type_transition_file (typeattr)))

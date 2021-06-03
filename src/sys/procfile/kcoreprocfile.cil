@@ -5,6 +5,9 @@
 
        (genfscon "proc" "/kcore" procfile_context)
 
+       (macro getattr_procfile_files ((type ARG1))
+	      (allow ARG1 procfile (file (getattr))))
+
        (blockinherit .procfile.template)
 
        (call .procfile.exception.type (procfile))

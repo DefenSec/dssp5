@@ -1,0 +1,42 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .font.cache.cache_file_type_transition_file (typeattr))
+    (call .font.cache.lib_file_type_transition_file (typeattr)))
+
+(in font
+
+    (block cache
+
+	   (filecon "/usr/lib/fontconfig/" dir file_context)
+	   (filecon "/usr/lib/fontconfig/.*" any file_context)
+
+	   (filecon "/var/cache/fontconfig" dir file_context)
+	   (filecon "/var/cache/fontconfig/.*" any file_context)
+
+	   (macro cache_file_type_transition_file ((type ARG1))
+		  (call .cache.file_type_transition
+			(ARG1 file dir "fontconfig")))
+
+	   (macro dontaudit_setattr_file_dirs ((type ARG1))
+		  (dontaudit ARG1 file (dir (setattr))))
+
+	   (macro lib_file_type_transition_file ((type ARG1))
+		  (call .lib.file_type_transition
+			(ARG1 file dir "fontconfig")))
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (blockinherit .file.cache.template)
+
+	   (block dontaudit_setattr_file
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call dontaudit_setattr_file_dirs (typeattr)))))

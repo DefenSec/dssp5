@@ -1,0 +1,15 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block samba
+
+       (portcon "dccp" (137 139) port_context)
+       (portcon "dccp" 445 port_context)
+       (portcon "sctp" (137 139) port_context)
+       (portcon "sctp" 445 port_context)
+       (portcon "tcp" (137 139) port_context)
+       (portcon "tcp" 445 port_context)
+       (portcon "udp" (137 139) port_context)
+       (portcon "udp" 445 port_context)
+
+       (blockinherit .net.port.reserved.template))

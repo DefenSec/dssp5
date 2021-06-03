@@ -3,9 +3,19 @@
 
 (block cgroup
 
+       (filecon "/sys/fs/cgroup" dir ())
+       (filecon "/sys/fs/cgroup/.*" any ())
+
        (genfscon "cgroup" "/" fs_context)
        (genfscon "cgroup2" "/" fs_context)
 
+       (macro watch_fs_files ((type ARG1))
+	      (allow ARG1 fs (file (watch))))
+
        (blockinherit .fs.macro_template_dirs)
        (blockinherit .fs.macro_template_files)
-       (blockinherit .seclabelfs.template))
+       (blockinherit .seclabelfs.template)
+
+       (allow fs self (filesystem (associate)))
+
+       (call .rbacsep.exempt.obj.type (fs)))

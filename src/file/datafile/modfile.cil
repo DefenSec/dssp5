@@ -3,6 +3,16 @@
 
 (block mod
 
+       (filecon "/usr/lib/modules" dir file_context)
+       (filecon "/usr/lib/modules/.*" any file_context)
+
+       (macro lib_file_type_transition_file ((type ARG1))
+	      (call .lib.file_type_transition
+		    (ARG1 file dir "modules")))
+
+       (macro setattr_file_files ((type ARG1))
+	      (allow ARG1 file (file (setattr))))
+
        (blockinherit .file.macro_template_dirs)
        (blockinherit .file.macro_template_lnk_files)
        (blockinherit .file.mod.template))
@@ -11,7 +21,7 @@
 
     (block mod
 
-	   (macro load_all_files ((type ARG1))
+	   (macro moduleload_all_system ((type ARG1))
 		  (allow ARG1 typeattr (system (module_load))))
 
 	   (macro map_all_files ((type ARG1))
@@ -38,7 +48,7 @@
 
 		  (blockabstract template)
 
-		  (macro load_file_files ((type ARG1))
+		  (macro moduleload_file_system ((type ARG1))
 			 (allow ARG1 file (system (module_load))))
 
 		  (macro map_file_files ((type ARG1))
@@ -47,9 +57,13 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.mod.base_template))))
 
+(in file.unconfined
+
+    (call .mod.lib_file_type_transition_file (typeattr)))
+
 (in sys
 
-    (call .file.mod.load_all_files (unconfined.typeattr)))
+    (call .file.mod.moduleload_all_system (unconfined.typeattr)))
 
 (in sys.moduleload
 

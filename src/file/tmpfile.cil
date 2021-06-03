@@ -3,7 +3,40 @@
 
 (in tmp
 
-    (blockinherit .file.tmp.template))
+    (filecon "/tmp" dir file_context)
+    (filecon "/tmp/.*" any ())
+
+    (filecon "/tmp/\.font-unix" dir file_context)
+    (filecon "/tmp/\.font-unix/.*" any ())
+    (filecon "/tmp/\.ICE-unix" dir file_context)
+    (filecon "/tmp/\.ICE-unix/.*" any ())
+    (filecon "/tmp/\.Test-unix" dir file_context)
+    (filecon "/tmp/\.Test-unix/.*" any ())
+    (filecon "/tmp/\.X11-unix" dir file_context)
+    (filecon "/tmp/\.X11-unix/.*" any ())
+    (filecon "/tmp/\.XIM-unix" dir file_context)
+    (filecon "/tmp/\.XIM-unix/.*" any ())
+
+    (macro getattr_file_dirs ((type ARG1))
+	   (allow ARG1 file (dir (getattr))))
+
+    (macro root_file_type_transition_file ((type ARG1))
+	   (call .root.file_type_transition
+		 (ARG1 file dir "tmp")))
+
+    (macro sys_tmp_file_type_transition_file ((type ARG1))
+	   (call .sys.tmp.file_type_transition
+		 (ARG1 file dir "tmp")))
+
+    (macro var_file_type_transition_file ((type ARG1))
+	   (call .var.file_type_transition
+		 (ARG1 file dir "tmp")))
+
+    (blockinherit .file.tmp.template)
+
+    (call .mount.mountpoint.type (file))
+
+    (call .rbacsep.exempt.obj.type (file)))
 
 (in file
 
@@ -27,6 +60,8 @@
 
 	   (call .tmp.associate_fs (typeattr))
 
+	   (call .xattr.associate_fs_pattern.type (typeattr))
+
 	   (block base_template
 
 		  (blockabstract base_template)
@@ -45,3 +80,12 @@
 		  (blockinherit .file.macro_template_lnk_files)
 		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.tmp.base_template))))
+
+(in file.unconfined
+
+    (call .tmp.root_file_type_transition_file (typeattr))
+    (call .tmp.var_file_type_transition_file (typeattr)))
+
+(in sys
+
+    (call .tmp.sys_tmp_file_type_transition_file (subj)))

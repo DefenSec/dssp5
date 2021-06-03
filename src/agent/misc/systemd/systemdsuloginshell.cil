@@ -1,0 +1,60 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block suloginshell
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (sys_resource)))
+	   (allow subj self create_unix_stream_socket)
+
+	   (call logparsenv.type (subj))
+	   (call private.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .console.readwrite_serialtermdev_chr_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .login.sulogin.subj_type_transition (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+	   (call .selinux.readwrite_fs_pattern.type (subj))
+
+	   (call .sys.reload_system (subj))
+
+	   (call .systemd.unit.start_file_services (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-sulogin-shell" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/emergency\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/rescue\.service.*" file
+			   file_context)
+
+		  (blockinherit .file.unit.template))))

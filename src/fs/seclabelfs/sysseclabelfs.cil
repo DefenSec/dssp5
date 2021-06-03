@@ -3,9 +3,22 @@
 
 (in sys
 
+    (filecon "/sys" dir fs_context)
+    (filecon "/sys/.*" any ())
+
     (genfscon "sysfs" "/" fs_context)
+
+    (macro dontaudit_auditaccess_fs_dirs ((type ARG1))
+	   (dontaudit ARG1 fs (dir (audit_access))))
+
+    (macro dontaudit_getattr_fs_dirs ((type ARG1))
+	   (dontaudit ARG1 fs (dir (getattr))))
 
     (blockinherit .fs.macro_template_dirs)
     (blockinherit .fs.macro_template_files)
     (blockinherit .fs.macro_template_lnk_files)
-    (blockinherit .seclabelfs.template))
+    (blockinherit .seclabelfs.template)
+
+    (allow fs self (filesystem (associate)))
+
+    (call .xattr.associate_fs_pattern.type (fs)))

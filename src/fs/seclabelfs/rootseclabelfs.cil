@@ -5,9 +5,22 @@
 
     (genfscon "rootfs" "/" fs_context)
 
+    (macro start_fs_services ((type ARG1))
+	   (allow ARG1 fs (service (start))))
+
+    (macro status_fs_services ((type ARG1))
+	   (allow ARG1 fs (service (status))))
+
     (blockinherit .fs.macro_template_dirs)
     (blockinherit .fs.macro_template_fifo_files)
     (blockinherit .fs.macro_template_files)
     (blockinherit .fs.macro_template_lnk_files)
     (blockinherit .fs.macro_template_sock_files)
-    (blockinherit .seclabelfs.template))
+    (blockinherit .seclabelfs.template)
+
+    (allow fs self (filesystem (associate))))
+
+(in sys
+
+    (call .root.start_fs_services (subj))
+    (call .root.status_fs_services (subj)))

@@ -1,0 +1,108 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block kernelinstall
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (dac_override dac_read_search)))
+       (allow subj self (process (getsched setfscreate)))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.execute_file_files (subj))
+
+       (call data.list_file_dirs (subj))
+       (call data.execute_file_files (subj))
+
+       (call .boot.manage_file_files (subj))
+       (call .boot.readwrite_file_dirs (subj))
+       (call .boot.relabelto_file_files (subj))
+
+       (call .bootloader.boot.manage_file_files (subj))
+       (call .bootloader.boot.readwrite_file_dirs (subj))
+       (call .bootloader.conf.read_file_files (subj))
+       (call .bootloader.grub2.subj_type_transition (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .cmdline.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .debug.search_fs_pattern.type (subj))
+
+       (call .dracut.subj_type_transition (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .hypervisor.search_sysfile_pattern.type (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .kernel.search_sysfile_pattern.type (subj))
+
+       (call .kmod.delete_file_files (subj))
+       (call .kmod.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .machineid.read_file_files (subj))
+
+       ;; dumb: cp -a to boot and then still setting attributes ...
+       (call .mod.manage_file_files (subj))
+       (call .mod.relabelfrom_file_files (subj))
+       (call .mod.deletename_file_dirs (subj))
+       (call .mod.setattr_file_files (subj))
+
+       (call .mount.mountpoint.search_all_dirs (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .runuser.search_file_pattern.type (subj))
+
+       (call .seclabelfs.getattr_all_fs (subj))
+
+       (call .selinux.default.read_file_pattern.type (subj))
+       (call .selinux.file.read_file_pattern.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (block conf
+
+	      (filecon "/etc/kernel" dir file_context)
+	      (filecon "/etc/kernel/.*" any file_context)
+
+	      (filecon "/etc/sysconfig/kernel" file file_context)
+	      (filecon "/etc/sysconfig/kernel\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "kernel"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "kernel")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/kernel" dir file_context)
+	      (filecon "/usr/lib/kernel/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "kernel")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/kernel-install" file file_context)))
+
+(in file.unconfined
+
+    (call .kernelinstall.conf.conf_file_type_transition_file (typeattr))
+    (call .kernelinstall.data.lib_file_type_transition_file (typeattr)))

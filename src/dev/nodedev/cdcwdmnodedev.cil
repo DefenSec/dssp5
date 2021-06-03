@@ -5,4 +5,7 @@
 
        (filecon "/dev/cdc-wdm([0-9]+)?" char nodedev_context)
 
+       (macro getattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (getattr))))
+
        (blockinherit .nodedev.template))

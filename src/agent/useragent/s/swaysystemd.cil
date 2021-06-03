@@ -1,0 +1,110 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in sway
+
+    (block assigncgroups
+
+	   (blockinherit .user.agent.template)
+	   (blockinherit .user.dbus.client.template)
+
+	   (allow subj self (cap_userns (sys_ptrace)))
+	   (allow subj self create_unix_stream_socket)
+
+	   (call sway.read_subj_states (subj))
+	   (call sway.unix_stream_connect (subj))
+
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .devices.search_sysfile_pattern.type (subj))
+
+	   (call .exec.list_file_dirs (subj))
+	   ;; uname
+	   (call .exec.execute_file_files (subj))
+
+	   (call .lib.list_file_dirs (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .proc.list_fs_dirs (subj))
+
+	   ;; this big hammer, seems it really needs to read all state
+	   (call .rbacsep.exempt.subj.type (subj))
+
+	   (call .stat.read_procfile_files (subj))
+
+	   (call .subj.read_all_states (subj))
+
+	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
+	   (call .user.systemd.start_system (subj))
+	   (call .user.systemd.status_system (subj))
+
+	   (call .user.systemd.unit.run.start_file_services (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sway-systemd/assign-cgroups\.py" file
+			   file_context)))
+
+    (block session
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+
+	   (call msg.subj_type_transition (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .sys.read_subj_states (subj))
+
+	   (call .systemd.systemctl.exec.execute_file_files (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .user.readwrite_serialtermdev_chr_files (subj))
+
+	   (call .user.systemd.private.type (subj))
+	   (call .user.systemd.reload_system (subj))
+
+	   (call .user.systemd.unit.start_file_services (subj))
+	   (call .user.systemd.unit.status_file_services (subj))
+	   (call .user.systemd.unit.stop_file_services (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sway-systemd/session\.sh" file
+			   file_context))))
+
+(in user
+
+    (call .sway.assigncgroups.role (role))
+    (call .sway.session.role (role)))
+
+(in wheel
+
+    (call .sway.assigncgroups.role (role))
+    (call .sway.session.role (role)))

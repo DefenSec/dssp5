@@ -3,6 +3,9 @@
 
 (block pstore
 
+       (filecon "/sys/fs/pstore" dir ())
+       (filecon "/sys/fs/pstore/.*" any ())
+
        (genfscon "pstore" "/" fs_context)
 
        (blockinherit .fs.macro_template_dirs)

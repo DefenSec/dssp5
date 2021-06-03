@@ -11,9 +11,9 @@
 
 (in mcs
 
-       (mlsconstrain (constrainnodeobject (sendto))
-		     (or (dom h1 h2)
-			 (neq t1 constrained.typeattr))))
+    (mlsconstrain (constrainnodeobject (sendto))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
 
 (macro recvfrom_invalid_nodes ((type ARG1))
        (allow ARG1 invalid (node (recvfrom))))

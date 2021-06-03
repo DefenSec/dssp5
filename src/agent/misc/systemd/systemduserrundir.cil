@@ -1,0 +1,73 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block userrundir
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self
+		  (capability (chown fowner dac_override dac_read_search mknod
+				     sys_admin)))
+	   (allow subj self (process (setfscreate)))
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+	   (call .cgroup.list_fs_dirs (subj))
+	   (call .cgroup.read_fs_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .file.user.run.delete_all_file (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .ibac.objchange.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbac.objchange.type (subj))
+
+	   (call .runuser.readwrite_file_dirs (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .systemd.login.conf.list_file_dirs (subj))
+	   (call .systemd.login.conf.read_file_files (subj))
+	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+	   (call .tmp.mount_fs (subj))
+	   (call .tmp.relabelfrom_fs_dirs (subj))
+	   (call .tmp.unmount_fs (subj))
+
+	   (call .user.run.manage_file_dirs (subj))
+	   (call .user.run.mounton_file_dirs (subj))
+	   (call .user.run.relabelto_file_dirs (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-user-runtime-dir" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/user-runtime-dir@.*\.service.*" file
+		   file_context)
+
+		  (blockinherit .file.unit.template))))

@@ -1,0 +1,61 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block hostnamectl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .machineid.read_file_files (subj))
+
+	   (call .openssh.client.subj_type_transition (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .systemd.hostname.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.machines.run.list_file_dirs (subj))
+	   (call .systemd.machines.run.read_file_files (subj))
+
+	   (call .systemd.run.search_file_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/hostnamectl" file file_context))))
+
+(in user
+
+    (call .systemd.hostnamectl.role (role)))
+
+(in wheel
+
+    (call .systemd.hostnamectl.role (role)))

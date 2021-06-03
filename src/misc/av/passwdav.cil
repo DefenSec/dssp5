@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class passwd (chfn chsh crontab passwd rootok))
+(classorder (unordered passwd))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (passwd (all))))
+
+(in rbacsep
+
+    (constrain (passwd (chfn chsh crontab passwd rootok))
+	       (or (or (eq r1 r2)
+		       (and (eq r1 exempt.roleattr)
+			    (neq t1 constrained.typeattr)))
+		   (eq t1 exempt.subj.typeattr))))
+
+(in subj.unconfined
+
+    (allow typeattr subj.typeattr (passwd (all))))

@@ -1,0 +1,65 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block groupadd
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self
+	      (capability (audit_write chown dac_override dac_read_search fsetid
+				       setuid)))
+       (allow subj self (process (setfscreate setrlimit)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .checkcontext_selinux_security (subj))
+
+       (call .conf.deletename_file_dirs (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .file.auth.write.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .logindefs.read_file_files (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .passwd.manage_file_files (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .pwdlock.conf_file_type_transition_file (subj "*"))
+       (call .pwdlock.manage_file_files (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .rbac.objchangesys.type (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+       (call .selinux.readwrite_fs_pattern.type (subj))
+
+       (call .shadow.manage_file_files (subj))
+       (call .shadow.read.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/gpasswd" file file_context)
+	      (filecon "/usr/bin/groupadd" file file_context)
+	      (filecon "/usr/bin/groupdel" file file_context)
+	      (filecon "/usr/bin/groupmems" file file_context)
+	      (filecon "/usr/bin/groupmod" file file_context)
+	      (filecon "/usr/bin/lgroupadd" file file_context)
+	      (filecon "/usr/bin/lgroupdel" file file_context)
+	      (filecon "/usr/bin/lgroupmod" file file_context)))

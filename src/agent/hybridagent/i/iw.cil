@@ -1,0 +1,24 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block iw
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (net_admin sys_module)))
+       (allow subj self create_netlink_generic_socket)
+       (allow subj self create_unix_dgram_socket)
+
+       (call .class.search_sysfile_pattern.type (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .sys.modulerequest_system (subj))
+
+       (call .sys.search_fs_pattern.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/iw" file file_context)))

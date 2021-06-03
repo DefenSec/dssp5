@@ -1,0 +1,45 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dev.unconfined
+
+    (call .sys.termdev.user_all_type_change (typeattr)))
+
+(in sys
+
+    (block termdev
+
+	   (macro appendinherited_all_chr_files ((type ARG1))
+		  (allow ARG1 typeattr appendinherited_chr_file)
+		  (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+	   (macro open_all_chr_files ((type ARG1))
+		  (allow ARG1 typeattr (chr_file (open))))
+
+	   (macro readwriteinherited_all_chr_files ((type ARG1))
+		  (allow ARG1 typeattr readwriteinherited_chr_file)
+		  (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+	   (macro setattr_all_chr_files ((type ARG1))
+		  (allow ARG1 typeattr (chr_file (setattr))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (macro user_all_type_change ((type ARG1))
+		  (call .sys.user_ptytermdev_type_change (ARG1))
+		  (call .sys.user_serialtermdev_type_change (ARG1)))
+
+	   (macro writeinherited_all_chr_files ((type ARG1))
+		  (allow ARG1 typeattr writeinherited_chr_file)
+		  (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+	   (typeattribute typeattr)
+
+	   (blockinherit .file.all_macro_template_chr_files)
+
+	   (call .rbacsep.exempt.obj.type (typeattr))))
+
+(in termdev.unconfined
+
+    (call .sys.termdev.user_all_type_change (typeattr)))

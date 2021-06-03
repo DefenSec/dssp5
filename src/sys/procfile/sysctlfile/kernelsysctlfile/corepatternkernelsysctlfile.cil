@@ -5,4 +5,7 @@
 
        (genfscon "proc" "/sys/kernel/core_pattern" sysctlfile_context)
 
+       (macro getattr_sysctlfile_files ((type ARG1))
+	      (allow ARG1 sysctlfile (file (getattr))))
+
        (blockinherit .sysctlfile.kernel.template))

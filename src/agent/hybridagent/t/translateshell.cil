@@ -1,0 +1,166 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block translateshell
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self create_tcp_socket)
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call home.conf.list_file_dirs (subj))
+       (call home.conf.read_file_files (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       ;; gawk
+       (call .exec.execute_file_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .http.nameconnect_port_tcp_sockets (subj))
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .inputrc.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .media.search_file_dirs (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .mpg123.subj_type_transition (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+       (call .tmp.getattr_fs_pattern.type (subj))
+
+       (call .user.devpts_fs_type_transition_ptytermdev (subj))
+
+       (call .user.home.conf.search_file_pattern.type (subj))
+
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.readwrite_file_dirs (subj))
+
+       (call .user.open_ptytermdev_chr_files (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+
+       (optional translateshell_emacs
+		 (call .emacs.subj_type_transition (subj)))
+
+       (optional translateshell_firefox
+		 (call .firefox.subj_type_transition (subj)))
+
+       (block conf
+
+	      (filecon "/etc/translate-shell" dir file_context)
+	      (filecon "/etc/translate-shell/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "translate-shell")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/trans" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/translate-shell" dir
+			      file_context)
+		     (filecon "HOME_DIR/\.config/translate-shell/.*" any
+			      file_context)
+
+		     (filecon "HOME_DIR/\.trans" file file_context)
+		     (filecon "HOME_DIR/\.trans\..*" file file_context)
+
+		     (filecon "HOME_DIR/\.translate-shell" dir file_context)
+		     (filecon "HOME_DIR/\.translate-shell/.*" any file_context)
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "translate-shell")))
+
+		     (macro user_home_file_type_transition_file ((type ARG1))
+			    (call .user.home.file_type_transition
+				  (ARG1 file dir ".translate-shell"))
+			    (call .user.home.file_type_transition
+				  (ARG1 file file ".trans")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .translateshell.conf.conf_file_type_transition_file (typeattr))
+
+    (call .translateshell.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .translateshell.home.conf.user_home_file_type_transition_file
+	  (typeattr)))
+
+(in user
+
+    (call .translateshell.home.conf.manage_file_dirs (subj))
+    (call .translateshell.home.conf.manage_file_files (subj))
+    (call .translateshell.home.conf.relabel_file_dirs (subj))
+    (call .translateshell.home.conf.relabel_file_files (subj))
+
+    (call .translateshell.home.conf.user_home_conf_file_type_transition_file
+	  (subj))
+    (call .translateshell.home.conf.user_home_file_type_transition_file (subj))
+
+    (call .translateshell.tmp.manage_file_files (subj))
+    (call .translateshell.tmp.relabel_file_files (subj))
+
+    (call .translateshell.role (role)))
+
+(in wheel
+
+    (call .translateshell.role (role)))

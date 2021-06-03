@@ -1,0 +1,196 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block foot
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (unix_stream_socket (accept listen)))
+
+       (call home.conf.list_file_dirs (subj))
+       (call home.conf.read_file_files (subj))
+       (call home.conf.read_file_lnk_files (subj))
+
+       (call run.manage_file_sock_files (subj))
+       (call run.user_run_file_type_transition_file (subj))
+
+       (call tmp.manage_file_sock_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .cpu.read_sysfile_files (subj))
+       (call .cpu.search_sysfile_pattern.type (subj))
+
+       (call .font.cache.dontaudit_setattr_file.type (subj))
+       (call .font.cache.map_file_pattern.type (subj))
+       (call .font.cache.read_file_pattern.type (subj))
+       (call .font.conf.read_file_pattern.type (subj))
+       (call .font.data.map_file_pattern.type (subj))
+       (call .font.data.read_file_pattern.type (subj))
+
+       (call .font.home.cache.manage_file_pattern.type (subj))
+       (call .font.home.cache.map_file_pattern.type (subj))
+       (call .font.home.conf.read_file_pattern.type (subj))
+       (call .font.home.data.map_file_pattern.type (subj))
+       (call .font.home.data.read_file_pattern.type (subj))
+
+       (call .icons.data.read_file_pattern.type (subj))
+
+       (call .libnotify.send.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pixmaps.data.read_file_pattern.type (subj))
+
+       (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+       (call .shells.read_file_files (subj))
+
+       (call .subj.interactivefd.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.devpts_fs_type_transition_ptytermdev (subj))
+
+       (call .user.exec_subj_type_transition (subj))
+       (call .user.exec_home_subj_type_transition (subj))
+
+       (call .user.home.list_file_dirs (subj))
+
+       (call .user.home.conf.list_file_dirs (subj))
+
+       (call .user.readwrite_ptytermdev_chr_files (subj))
+
+       (call .user.run.deletename_file_dirs (subj))
+
+       (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+
+       (call .wlroots.client.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (call .xkb.data.map_file_pattern.type (subj))
+       (call .xkb.data.read_file_pattern.type (subj))
+
+       (optional foot_waypipe
+		 (call .waypipe.agent (subj exec.file)))
+
+       (block client
+
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self create_unix_stream_socket)
+
+	      (call unix_stream_connect (subj))
+
+	      (call .user.run.search_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/footclient" file file_context)))
+
+       (block exec
+
+	      (filecon "/usr/bin/foot" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/foot" dir file_context)
+		     (filecon "HOME_DIR/\.config/foot/.*" any file_context)
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "foot")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/foot-wayland-([1-9]+)?\.sock" socket
+		       file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "foot-wayland-1.sock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "foot-wayland-2.sock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "foot-wayland-3.sock")))
+
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.run.base_template))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file sock_file "*")))
+
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.tmp.base_template))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file))))
+
+(in file.unconfined
+
+    (call .foot.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .foot.run.user_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .foot.client.role (role))
+
+    (call .foot.home.conf.manage_file_dirs (subj))
+    (call .foot.home.conf.manage_file_files (subj))
+    (call .foot.home.conf.manage_file_lnk_files (subj))
+    (call .foot.home.conf.relabel_file_dirs (subj))
+    (call .foot.home.conf.relabel_file_files (subj))
+    (call .foot.home.conf.relabel_file_lnk_files (subj))
+    (call .foot.home.conf.user_home_conf_file_type_transition_file (typeattr))
+
+    (call .foot.role (role))
+
+    (call .foot.run.manage_file_sock_files (subj))
+    (call .foot.run.relabel_file_sock_files (subj))
+    (call .foot.run.user_run_file_type_transition_file (subj))
+
+    (call .foot.tmp.manage_file_sock_files (subj))
+    (call .foot.tmp.relabel_file_sock_files (subj))
+
+    (call .foot.tmpfs.manage_file_files (subj))
+    (call .foot.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .foot.client.role (role))
+    (call .foot.role (role)))

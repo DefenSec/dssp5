@@ -1,0 +1,123 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block gtk3
+
+       (block broadwayd
+
+	      (blockinherit .user.agent.template)
+
+	      (call home.conf.read_file_files (subj))
+
+	      (call .user.home.conf.search_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/broadwayd" file file_context))
+
+	      (block home
+
+		     (block conf
+
+			    (filecon "HOME_DIR/\.config/broadway\.passwd" file
+				     file_context)
+			    (filecon "HOME_DIR/\.config/broadway\.passwd\..*"
+				     file file_context)
+
+			    (macro map_file_files ((type ARG1))
+				   (allow ARG1 file (file (map))))
+
+			    (macro user_home_conf_file_type_transition_file
+				   ((type ARG1))
+				   (call .user.home.conf.file_type_transition
+					 (ARG1 file file "broadway.passwd")))
+
+			    (blockinherit .file.macro_template_files)
+			    (blockinherit .file.user.home.conf.base_template))))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/gtk-3\.0" dir file_context)
+		     (filecon "HOME_DIR/\.config/gtk-3\.0/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "gtk-3.0")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block lib
+
+	      (filecon "/usr/lib/gtk-3\.0" dir file_context)
+	      (filecon "/usr/lib/gtk-3\.0/.*" dir file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "gtk-3.0")))
+
+	      (blockinherit .file.lib.template)
+	      (blockinherit .file.macro_template_dirs))
+
+       (block updateiconcache
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .icons.data.manage_file_dirs (subj))
+	      (call .icons.data.manage_file_files (subj))
+	      (call .icons.data.manage_file_lnk_files (subj))
+	      (call .icons.data.map_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/gtk-update-icon-cache" file
+			      file_context))))
+
+(in file.unconfined
+
+    (call .gtk3.broadwayd.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .gtk3.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .gtk3.lib.lib_file_type_transition_file (typeattr)))
+
+(in subj.common
+
+    (call .gtk3.lib.mapexecute_file_pattern.type (typeattr))
+    (call .gtk3.lib.read_file_pattern.type (typeattr)))
+
+(in user
+
+    (call .gtk3.broadwayd.home.conf.manage_file_files (subj))
+    (call .gtk3.broadwayd.home.conf.map_file_files (subj))
+    (call .gtk3.broadwayd.home.conf.relabel_file_files (subj))
+    (call .gtk3.broadwayd.home.conf.user_home_conf_file_type_transition_file
+	  (subj))
+
+    (call .gtk3.broadwayd.role (role))
+
+    (call .gtk3.home.conf.manage_file_dirs (subj))
+    (call .gtk3.home.conf.manage_file_files (subj))
+    (call .gtk3.home.conf.map_file_files (subj))
+    (call .gtk3.home.conf.relabel_file_dirs (subj))
+    (call .gtk3.home.conf.relabel_file_files (subj))
+    (call .gtk3.home.conf.user_home_conf_file_type_transition_file (subj)))
+
+(in wheel
+
+    (call .gtk3.broadwayd.role (role)))

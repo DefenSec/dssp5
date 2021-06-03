@@ -1,0 +1,130 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block kbd
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (sys_tty_config)))
+
+       (call data.list_file_dirs (subj))
+       (call data.read_file_files (subj))
+       (call data.read_file_lnk_files (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .file.bootflag.dontaudit_getattr_all_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .lostfound.dontaudit_getattr_file_dirs (subj))
+
+       (call .mount.mountpoint.dontaudit_getattr_all_dirs (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .root.list_file_dirs (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .swap.dontaudit_getattr_file_files (subj))
+
+       (call .sys.dontaudit_getattr_fs_dirs (subj))
+
+       (call .systemd.udev.use_subj_fds (subj))
+       (call .systemd.udev.writeinherited_subj_fifo_files (subj))
+
+       (call .tmp.dontaudit_getattr_fs_dirs (subj))
+
+       (call .tty.open_serialtermdev_chr_files (subj))
+
+       (call .unknown.dontaudit_getattr_file (subj))
+
+       (optional kbd_quotacheck
+		 (call .quotacheck.getattr_file_files (subj)))
+
+       (block data
+
+	      (filecon "/usr/lib/kbd" dir file_context)
+	      (filecon "/usr/lib/kbd/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "kbd")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/chvt" file file_context)
+	      (filecon "/usr/bin/deallocvt" file file_context)
+	      (filecon "/usr/bin/dumpkeys" file file_context)
+	      (filecon "/usr/bin/fgconsole" file file_context)
+	      (filecon "/usr/bin/getkeycodes" file file_context)
+	      (filecon "/usr/bin/kbd_mode" file file_context)
+	      (filecon "/usr/bin/kbdinfo" file file_context)
+	      (filecon "/usr/bin/kbdrate" file file_context)
+	      (filecon "/usr/bin/loadkeys" file file_context)
+	      (filecon "/usr/bin/loadunimap" file file_context)
+	      (filecon "/usr/bin/mapscrn" file file_context)
+	      (filecon "/usr/bin/openvt" file file_context)
+	      (filecon "/usr/bin/psfxtable" file file_context)
+	      (filecon "/usr/bin/resizecons" file file_context)
+	      (filecon "/usr/bin/setfont" file file_context)
+	      (filecon "/usr/bin/setkeycodes" file file_context)
+	      (filecon "/usr/bin/setleds" file file_context)
+	      (filecon "/usr/bin/setmetamode" file file_context)
+	      (filecon "/usr/bin/setvtrgb" file file_context)
+	      (filecon "/usr/bin/showconsolefont" file file_context)
+	      (filecon "/usr/bin/showkey" file file_context)
+	      (filecon "/usr/bin/unicode_start" file file_context)
+	      (filecon "/usr/bin/unicode_stop" file file_context)))
+
+(block vlock
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (capability (audit_write setuid)))
+       (allow subj self (process (getcap)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pam.linked.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/vlock" file file_context)))
+
+(in file.unconfined
+
+    (call .kbd.data.lib_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .vlock.role (role)))
+
+(in wheel
+
+    (call .vlock.role (role)))

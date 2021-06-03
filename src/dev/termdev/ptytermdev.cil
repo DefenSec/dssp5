@@ -30,8 +30,8 @@
 
 	      (blockabstract base_template)
 
-	      (context ptytermdev_context
-		       (.sys.id .sys.role ptytermdev (systemlow systemlow)))
+	      (context ptytermdev_context (.sys.id .sys.role ptytermdev
+						   (systemlow systemlow)))
 
 	      (type ptytermdev)
 	      (call .ptytermdev.type (ptytermdev)))

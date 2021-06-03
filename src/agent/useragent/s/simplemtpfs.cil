@@ -1,0 +1,90 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block simplemtpfs
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self create_unix_stream_socket)
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.mounton_file_dirs (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .bus.list_sysfile_dirs (subj))
+       (call .bus.read_sysfile_lnk_files (subj))
+
+       (call .class.list_sysfile_dirs (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .debug.search_fs_pattern.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.traverse_sysfile_pattern.type (subj))
+
+       (call .fuse.readwrite_stordev_chr_files (subj))
+
+       (call .fuse3.subj_type_transition (subj))
+       (call .fuse3.use_subj_fds (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .media.home.mounton_file_dirs (subj))
+       (call .media.home.readwrite_file_dirs (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .stordev.readwrite.type (subj))
+
+       (call .sys.getattr_fs (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .trace.search_fs_pattern.type (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .usb.readwrite_nodedev_chr_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/simple-mtpfs" file file_context))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file dir "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in fuse3
+
+    (call .simplemtpfs.readwrite_subj_unix_stream_sockets (subj)))
+
+(in user
+
+    (call .simplemtpfs.role (role))
+
+    (call .simplemtpfs.tmp.manage_file_dirs (subj))
+    (call .simplemtpfs.tmp.manage_file_files (subj))
+    (call .simplemtpfs.tmp.map_file_files (subj))
+    (call .simplemtpfs.tmp.relabel_file_dirs (subj))
+    (call .simplemtpfs.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .simplemtpfs.role (role)))

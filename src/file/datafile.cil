@@ -3,7 +3,35 @@
 
 (block data
 
-       (blockinherit .file.data.template))
+       (filecon "/opt" dir file_context)
+       (filecon "/opt/.*" any file_context)
+
+       (filecon "/usr" dir file_context)
+       (filecon "/usr/.*" any file_context)
+
+       (filecon "/tmp" symlink file_context)
+
+       (macro dontaudit_read_file_lnk_files ((type ARG1))
+	      (dontaudit ARG1 file read_lnk_file))
+
+       (macro getattr_file_files ((type ARG1))
+	      (allow ARG1 file (file (getattr))))
+
+       (macro map_file_files ((type ARG1))
+	      (allow ARG1 file (file (map))))
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "opt"))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "usr")))
+
+       (macro watch_file_dirs ((type ARG1))
+	      (allow ARG1 file (dir (watch))))
+
+       (blockinherit .file.data.template)
+
+       (call .mount.mountpoint.type (file)))
 
 (in file
 
@@ -20,7 +48,7 @@
 
 	   (call file.type (typeattr))
 
-	   (call .xattr.associate_fs (typeattr))
+	   (call .xattr.associate_fs_pattern.type (typeattr))
 
 	   (block base_template
 
@@ -38,3 +66,7 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .data.root_file_type_transition_file (typeattr)))

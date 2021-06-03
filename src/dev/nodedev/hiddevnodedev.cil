@@ -3,6 +3,6 @@
 
 (block hiddev
 
-       (filecon "/dev/hiddev[0-9]+" char nodedev_context)
+       (filecon "/dev/usb/hiddev[0-9]+" char nodedev_context)
 
        (blockinherit .nodedev.template))

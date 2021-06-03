@@ -1,0 +1,195 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.journal.log.log_file_type_transition_file (typeattr))
+    (call .systemd.journal.log.run_file_type_transition_file (typeattr)))
+
+(in systemd.journal
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (audit_control chown dac_read_search dac_override fowner
+				      setgid setuid sys_admin)))
+    (allow subj self (capability2 (syslog)))
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self create_unix_stream_stream_socket)
+    (allow subj self (netlink_audit_socket (nlmsg_write)))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+    (call conf.read_file_lnk_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+    (call data.read_file_lnk_files (subj))
+
+    (call logconsole.type (subj))
+    (call logparsenv.type (subj))
+
+    (call log.log_file_type_transition_file (subj))
+    (call log.map_file_files (subj))
+    (call log.manage_file_dirs (subj))
+    (call log.manage_file_files (subj))
+    (call log.run_file_type_transition_file (subj))
+
+    (call run.map_file_files (subj))
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
+    (call .bus.read_sysfile_lnk_files (subj))
+    (call .bus.search_sysfile_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .class.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dev.traverse_sysfile_pattern.type (subj))
+
+    (call .devices.read_sysfile_files (subj))
+    (call .devices.read_sysfile_lnk_files (subj))
+    (call .devices.search_sysfile_pattern.type (subj))
+
+    (call .firmware.search_sysfile_pattern.type (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .hostname.read_sysctlfile_files (subj))
+
+    (call .kmsg.read_nodedev_chr_files (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .logindefs.read_file_files (subj))
+
+    (call .machineid.read_file_files (subj))
+
+    (call .meminfo.read_procfile_files (subj))
+
+    (call .memory.read_sysfile_files (subj))
+    (call .memory.search_sysfile_dirs (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_nodedev_chr_files (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .subj.ps_all_states (subj))
+    (call .subj.signull_all_processes (subj))
+
+    (call .sys.readwrite_subj_netlink_audit_sockets (subj))
+    (call .sys.readwrite_subj_unix_dgram_sockets (subj))
+    (call .sys.syslogread_system (subj))
+
+    (call .systemd.conf.search_file_pattern.type (subj))
+    (call .systemd.notify.type (subj))
+
+    (call .systemd.run.read_file_files (subj))
+    (call .systemd.run.read_file_lnk_files (subj))
+
+    (call .systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .tmp.getattr_fs_pattern.type (subj))
+
+    (call .user.systemd.run.read_file_lnk_files (subj))
+    (call .user.systemd.run.search_file_pattern.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-journald" file file_context))
+
+    (block log
+
+	   (filecon "/run/log" dir file_context)
+	   (filecon "/run/log/.*" any file_context)
+
+	   (filecon "/var/log/journal" dir file_context)
+	   (filecon "/var/log/journal/.*" any file_context)
+
+	   (macro log_file_type_transition_file ((type ARG1))
+		  (call .log.file_type_transition
+			(ARG1 file dir "journal")))
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "log")))
+
+	   (macro watch_file_dirs ((type ARG1))
+		  (allow ARG1 file (dir (watch))))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_lnk_files)
+	   (blockinherit .file.log.base_template)
+
+	   (call .mount.mountpoint.type (file))
+
+	   (call .rbacsep.exempt.obj.type (file))
+
+	   (call .tmp.associate_fs (file)))
+
+    (block relay_msgs
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (dontaudit typeattr self (capability (net_admin)))
+
+	   (call sendto_subj_unix_dgram_sockets (typeattr))
+
+	   (call run.search_file_dirs (typeattr))
+	   (call run.write_file_sock_files (typeattr))
+
+	   (call systemd.run.search_file_pattern.type (typeattr))
+
+	   (call .console.dontaudit_writeinherited_serialtermdev_chr_files
+		 (typeattr))
+
+	   (call .sys.sendto_subj_unix_dgram_sockets (typeattr)))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/syslog\.socket.*" file
+		    file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-journal-catalog-update\.service.*"
+	    file file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald-audit\.socket.*"
+		    file file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald-dev-log\.socket.*"
+		    file file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald\.service.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald@.*\.service.*"
+		    file file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald\.socket.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journald@.*\.socket.*"
+		    file file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-journald-varlink@.*\.socket.*" file
+	    file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-journal-flush\.service.*"
+		    file file_context)
+
+	   (blockinherit .file.unit.template)))

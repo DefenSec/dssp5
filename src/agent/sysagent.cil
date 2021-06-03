@@ -1,0 +1,62 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in sys
+
+    (block agent
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .subj.all_macro_template)
+
+	   (typeattribute typeattr)
+
+	   (roletype role typeattr)
+
+	   (call home.search_file_pattern.type (typeattr))
+	   (call termdev.readwriteinherited_all_chr_files (typeattr))
+
+	   (call .agent.type (typeattr))
+
+	   (call .sys.user.readinherited_subj_fifo_files (typeattr))
+	   (call .sys.user.use_subj_fds (typeattr))
+
+	   ;; emergency shell
+	   (call .tty.readwriteinherited_serialtermdev_chr_files (typeattr))
+
+	   (call .user.home.dontaudit_search_file_dirs (typeattr))
+
+	   (block exec
+
+		  (macro auditexecuteaccess_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (getattr execute))))
+
+		  (macro entrypoint_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (entrypoint))))
+
+		  (macro getattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (getattr))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_files)
+
+		  (typeattribute typeattr)
+
+		  (call .agent.exec.type (typeattr)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .agent.template)
+
+		  (call subj_type_transition (.sys.subj))
+
+		  (call .sys.agent.exec.type (exec.file))
+		  (call .sys.agent.type (subj)))))

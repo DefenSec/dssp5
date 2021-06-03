@@ -1,0 +1,68 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(typealias swapfile_t)
+
+(block swap
+
+       (filecon "/swapfile" file file_context)
+
+       (macro dontaudit_getattr_file_files ((type ARG1))
+	      (dontaudit ARG1 file (file (getattr))))
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file file "swapfile")))
+
+       (blockinherit .file.base_template)
+       (blockinherit .file.macro_template_files)
+
+       (typealiasactual swapfile_t file)
+
+       (call .mount.image.type (file))
+
+       (call .xattr.associate_fs_pattern.type (file)))
+
+(block swaptools
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (sys_admin)))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.search_sysfile_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .run.search_file_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .stordev.readwrite.type (subj))
+       (call .stordev.readwrite_all_blk_files (subj))
+       (call .stordev.readwrite_all_chr_files (subj))
+
+       (call .swap.readwrite_file_files (subj))
+       (call .swap.relabel_file_files (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/mkswap" file file_context)
+	      (filecon "/usr/bin/swaplabel" file file_context)
+	      (filecon "/usr/bin/swapoff" file file_context)
+	      (filecon "/usr/bin/swapon" file file_context)))
+
+(in file.unconfined
+
+    (call .swap.root_file_type_transition_file (typeattr)))

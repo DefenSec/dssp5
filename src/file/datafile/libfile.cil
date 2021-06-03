@@ -3,20 +3,46 @@
 
 (block lib
 
+       (filecon "/usr/lib" dir file_context)
+       (filecon "/usr/lib/.*" any file_context)
+
+       (macro data_file_type_transition_file ((type ARG1))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "lib"))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "lib64")))
+
+       (macro dontaudit_getattr_file_files ((type ARG1))
+	      (dontaudit ARG1 file (file (getattr))))
+
+       (macro getattr_file_files ((type ARG1))
+	      (allow ARG1 file (file (getattr))))
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "lib"))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "lib64")))
+
        (blockinherit .file.lib.template)
        (blockinherit .file.macro_template_dirs)
        (blockinherit .file.macro_template_lnk_files))
 
 (block textrel
 
-       (macro execmod_file_files ((type ARG1))
-	      (allow ARG1 file (file (execmod))))
+       (block lib
 
-       (blockinherit .file.lib.template))
+	      (macro execmod_file_files ((type ARG1))
+		     (allow ARG1 file (file (execmod))))
+
+	      (blockinherit .file.lib.template)))
 
 (in file
 
     (block lib
+
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
 
 	   (macro map_all_files ((type ARG1))
 		  (allow ARG1 typeattr (file (map))))
@@ -47,3 +73,8 @@
 
 		  (blockinherit .file.lib.base_template)
 		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .lib.data_file_type_transition_file (typeattr))
+    (call .lib.root_file_type_transition_file (typeattr)))

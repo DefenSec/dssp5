@@ -1,0 +1,1945 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class service (disable enable reload start status stop))
+(classorder (unordered service))
+
+(block systemd
+
+       (block askpassword
+
+	      (block run
+
+		     (filecon "/run/systemd/ask-password" dir file_context)
+		     (filecon "/run/systemd/ask-password/.*" any file_context)
+		     (filecon "/run/systemd/ask-password-block" dir
+			      file_context)
+		     (filecon "/run/systemd/ask-password-block/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "ask-password"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "ask-password-block")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (macro watch_file_files ((type ARG1))
+			    (allow ARG1 file (file (watch))))
+
+		     (blockinherit .file.macro_template_fifo_files)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.template)))
+
+       (block backlight
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/backlight" dir file_context)
+		     (filecon "/var/lib/systemd/backlight/.*" any file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "backlight")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block boot
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/boot" dir file_context)
+		     (filecon "/usr/lib/systemd/boot/.*" any file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "boot")))
+
+		     (blockinherit .file.data.template)))
+
+       (block catalog
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/catalog" dir file_context)
+		     (filecon "/usr/lib/systemd/catalog/.*" any file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "catalog")))
+
+		     (blockinherit .file.data.template))
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/catalog" dir file_context)
+		     (filecon "/var/lib/systemd/catalog/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "catalog")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block cgroupsagent
+
+	      (block run
+
+		     (filecon "/run/systemd/cgroups-agent" socket file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "cgroups-agent")))
+
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block conf
+
+	      (filecon "/etc/systemd" dir file_context)
+	      (filecon "/etc/systemd/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "systemd")))
+
+	      (macro getattr_file_files ((type ARG1))
+		     (allow ARG1 file (file (getattr))))
+
+	      (blockinherit .file.conf.systemd.template))
+
+       (block coredump
+
+	      (block conf
+
+		     (filecon "/etc/systemd/coredump\.conf" file file_context)
+		     (filecon "/etc/systemd/coredump\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/coredump\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/coredump\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "coredump.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "coredump.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/coredump\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/coredump\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "coredump.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/coredump" dir file_context)
+		     (filecon "/run/systemd/coredump/.*" any file_context)
+		     (filecon "/run/systemd/coredump" socket file_context)
+		     (filecon "/run/systemd/coredump\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/coredump\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "coredump"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "coredump.conf.d"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "coredump")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.template))
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/coredump" dir file_context)
+		     (filecon "/var/lib/systemd/coredump/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "coredump")))
+
+		     (blockinherit .file.state.systemd.template)
+
+		     (call .root.associate_fs (file))))
+
+       (block dynamicuid
+
+	      (block run
+
+		     (filecon "/run/systemd/dynamic-uid" dir file_context)
+		     (filecon "/run/systemd/dynamic-uid/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "dynamic-uid")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.macro_template_lnk_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block defaulthostname
+
+	      (block run
+
+		     (filecon "/run/systemd/default-hostname" file file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "default-hostname")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block dynamicuser
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (dontaudit typeattr self (capability (net_admin)))
+
+	      (call conf.getattr_file_files (typeattr))
+	      (call conf.search_file_pattern.type (typeattr))
+
+	      (call run.search_file_pattern.type (typeattr))
+
+	      (call userdb.run.list_file_dirs (typeattr))
+	      (call userdb.run.write_file_sock_files (typeattr))
+
+	      (call .sys.connectto_subj_unix_stream_sockets (typeattr)))
+
+       (block exec
+
+	      (filecon "/usr/lib/systemd/systemd" file file_context)
+
+	      (blockinherit .file.exec.template)
+
+	      (call .hybrid.agent.exec.type (file)))
+
+       (block forked
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .sys.readwrite_subj_unix_stream_sockets (typeattr))
+	      (call .sys.use_subj_fds (typeattr)))
+
+       (block fsck
+
+	      (block run
+
+		     (filecon "/run/systemd/show-status" file file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "show-status")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "/etc/systemd/homed\.conf" file file_context)
+		     (filecon "/etc/systemd/homed\.conf\..*" file file_context)
+		     (filecon "/etc/systemd/homed\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/homed\.conf\.d/.*" any file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "homed.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "homed.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/homed\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/homed\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "homed.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/home" dir file_context)
+		     (filecon "/run/systemd/home/.*" any file_context)
+		     (filecon "/run/systemd/homed\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/homed\.conf\.d/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "home"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "home.conf.d")))
+
+		     (blockinherit .file.macro_template_fifo_files)
+		     (blockinherit .file.run.systemd.template))
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/home" dir file_context)
+		     (filecon "/var/lib/systemd/home/.*" any file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "home")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block import
+
+	      (block cert
+
+		     (filecon "/etc/systemd/import-pubring\.gpg" file
+			      file_context)
+		     (filecon "/etc/systemd/import-pubring\.gpg\..*" file
+			      file_context)
+
+		     (macro dontaudit_auditaccess_file_files ((type ARG1))
+			    (dontaudit ARG1 file (file (audit_access))))
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "import-pubring.gpg")))
+
+		     (blockinherit .file.cert.base_template)
+		     (blockinherit .file.macro_template_files))
+
+	      (block conf
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.conf.systemd.base_template)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/import" dir file_context)
+		     (filecon "/run/systemd/import/.*" any file_context)
+		     (filecon "/run/systemd/machines\.lock" file file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "import"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "machines.lock")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.template)))
+
+       (block inaccessible
+
+	      (block run
+
+		     (filecon "/run/systemd/inaccessible" dir file_context)
+		     (filecon "/run/systemd/inaccessible/.*" any file_context)
+
+		     (macro addname_file_dirs ((type ARG1))
+			    (allow ARG1 file addname_dir))
+
+		     (macro delete_file ((type ARG1))
+			    (allow ARG1 file (files (delete))))
+
+		     (macro dontaudit_getattr_file ((type ARG1))
+			    (dontaudit ARG1 file (blk_file (getattr)))
+			    (dontaudit ARG1 file (chr_file (getattr)))
+			    (dontaudit ARG1 file (dir (getattr)))
+			    (dontaudit ARG1 file (fifo_file (getattr)))
+			    (dontaudit ARG1 file (file (getattr)))
+			    (dontaudit ARG1 file (lnk_file (getattr)))
+			    (dontaudit ARG1 file (sock_file (getattr))))
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "inaccessible")))
+
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block incoming
+
+	      (block run
+
+		     (filecon "/run/systemd/incoming" dir file_context)
+		     (filecon "/run/systemd/incoming/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "incoming")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block inhibit
+
+	      (block run
+
+		     (filecon "/run/systemd/inhibit" dir file_context)
+		     (filecon "/run/systemd/inhibit/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "inhibit")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_fifo_files)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block journal
+
+	      (block conf
+
+		     (filecon "/etc/systemd/journald@.*\.conf" file
+			      file_context)
+		     (filecon "/etc/systemd/journald@.*\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/journald@.*\.conf\.d" dir
+			      file_context)
+		     (filecon "/etc/systemd/journald@.*\.conf\.d/.*" any
+			      file_context)
+
+		     (filecon "/etc/systemd/journald\.conf" file file_context)
+		     (filecon "/etc/systemd/journald\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/journald\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/journald\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "journald.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "journald.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/journald@.*\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/journald@.*\.conf\.d/.*" any
+			      file_context)
+
+		     (filecon "/usr/lib/systemd/journald\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/journald\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "journald.conf.d")))
+
+		     (blockinherit .file.data.template))
+
+	      (block run
+
+		     (filecon "/run/systemd/journal" dir file_context)
+		     (filecon "/run/systemd/journal/.*" any file_context)
+
+		     (filecon "/run/systemd/journald@.*\.conf\.d" dir
+			      file_context)
+		     (filecon "/run/systemd/journald@.*\.conf\.d/.*" any
+			      file_context)
+
+		     (filecon "/run/systemd/journald\.conf\.d" dir file_context)
+		     (filecon "/rin/systemd/journald\.conf\.d/.*" any
+			      file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "journal"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "journal.conf.d")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block linger
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/linger" dir file_context)
+		     (filecon "/var/lib/systemd/linger/.*" dir file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "linger")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block login
+
+	      (block conf
+
+		     (filecon "/etc/systemd/logind\.conf" file file_context)
+		     (filecon "/etc/systemd/logind\.conf\..*" file file_context)
+		     (filecon "/etc/systemd/logind\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/logind\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "logind.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "logind.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/logind\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/logind\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "logind.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/logind\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/logind\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "logind.conf.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block logconsole
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .console.write_serialtermdev_chr_files (typeattr))
+
+	      (call .kmsg.write_nodedev_chr_files (typeattr)))
+
+       (block logparsenv
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (dontaudit typeattr self (capability (net_admin sys_ptrace)))
+
+	      (call .cmdline.read_procfile_pattern.type (typeattr))
+
+	      ;; /proc/1/environ requires cap_sys_ptrace
+	      (call .sys.read_subj_states (typeattr)))
+
+       (block machines
+
+	      (block run
+
+		     (filecon "/run/systemd/machines" dir file_context)
+		     (filecon "/run/systemd/machines/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "machines")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.macro_template_lnk_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block macro_template_system
+
+	      (blockabstract macro_template_system)
+
+	      (macro control_system ((type ARG1))
+		     (allow ARG1 subj
+			    (system (halt reboot reload start status stop))))
+
+	      (macro halt_system ((type ARG1))
+		     (allow ARG1 subj (system (halt))))
+
+	      (macro reboot_system ((type ARG1))
+		     (allow ARG1 subj (system (reboot))))
+
+	      (macro reload_system ((type ARG1))
+		     (allow ARG1 subj (system (reload))))
+
+	      ;; systemd bug: /proc/self/mountinfo
+	      (macro status_self ((type ARG1))
+		     (allow ARG1 subj (service (status))))
+
+	      (macro start_system ((type ARG1))
+		     (allow ARG1 subj (system (start))))
+
+	      (macro status_system ((type ARG1))
+		     (allow ARG1 subj (system (status))))
+
+	      (macro stop_system ((type ARG1))
+		     (allow ARG1 subj (system (stop)))))
+
+       (block netif
+
+	      (block run
+
+		     (filecon "/run/systemd/netif" dir file_context)
+		     (filecon "/run/systemd/netif/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "netif")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block network
+
+	      (block conf
+
+		     (filecon "/etc/systemd/network" dir file_context)
+		     (filecon "/etc/systemd/network/.*" any file_context)
+		     (filecon "/etc/systemd/networkd\.conf" file file_context)
+		     (filecon "/etc/systemd/networkd\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/networkd\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/networkd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "network"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "networkd.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "networkd.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/network" dir file_context)
+		     (filecon "/usr/lib/systemd/network/.*" any file_context)
+		     (filecon "/usr/lib/systemd/networkd\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/networkd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "network"))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "network.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/network" dir file_context)
+		     (filecon "/run/systemd/network/.*" any file_context)
+		     (filecon "/run/systemd/networkd\.conf\.d" dir file_context)
+		     (filecon "/rin/systemd/networkd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "network"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "networkd.conf.d")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.template)))
+
+       (block notify
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      ;; is this still a thing?
+	      (allow typeattr self (unix_dgram_socket (sendto)))
+
+	      (call run.writeinherited_file_sock_files (typeattr))
+
+	      (call .sys.sendto_subj_unix_dgram_sockets (typeattr))
+
+	      (block run
+
+		     (filecon "/run/systemd/notify" socket file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "notify")))
+
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.run.systemd.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block nspawn
+
+	      (block conf
+
+		     (filecon "/etc/systemd/nspawn" dir file_context)
+		     (filecon "/etc/systemd/nspawn/.*" any file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "nspawn")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block run
+
+		     (filecon "/run/systemd/nspawn" dir file_context)
+		     (filecon "/run/systemd/nspawn/.*" any file_context)
+		     (filecon "/run/systemd/nspawn-uid" dir file_context)
+		     (filecon "/run/systemd/nspawn-uid/.*" any file_context)
+
+		     (macro dontaudit_getattr_file_dirs ((type ARG1))
+			    (dontaudit ARG1 file (dir (getattr))))
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "nspawn"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "nspawn-uid")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block ntpunits
+
+	      (block conf
+
+		     (filecon "/etc/systemd/ntp-units\.d" dir file_context)
+		     (filecon "/etc/systemd/ntp-units\.d/.*" any file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "ntp-units.conf.d")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/ntp-units\.d" dir file_context)
+		     (filecon "/usr/lib/systemd/ntp-units\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "ntp-units.d")))
+
+		     (blockinherit .file.data.template))
+
+	      (block run
+
+		     (filecon "/run/systemd/ntp-units\.d" dir file_context)
+		     (filecon "/run/systemd/ntp-units\.d/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "ntp-units.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block oom
+
+	      (block conf
+
+		     (filecon "/etc/systemd/oomd\.conf" file file_context)
+		     (filecon "/etc/systemd/oomd\.conf\..*" file file_context)
+		     (filecon "/etc/systemd/oomd\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/oomd\.conf\.d/.*" any file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "oomd.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "oomd.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/oomd\.conf\.d" dir file_context)
+		     (filecon "/usr/lib/systemd/oomd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "oomd.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/oomd\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/oomd\.conf\.d/.*" any file_context)
+		     (filecon "/run/systemd/io\.system\.ManagedOOM" socket
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "oomd.conf.d"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "io.system.ManagedOOM")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block pager
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (dontaudit typeattr self
+			 (capability (dac_override dac_read_search
+						   sys_resource)))
+
+	      (call .devpts.search_fs_pattern.type (typeattr))
+
+	      (call .exec.execute_file_files (typeattr))
+
+	      (call .file.home.dontaudit_readwriteinherited_all_dirs (typeattr))
+	      (call .file.home.dontaudit_readwriteinherited_all_files
+		    (typeattr))
+
+	      (call .sys.termdev.open_all_chr_files (typeattr))
+
+	      (call .terminfo.read_file_pattern.type (typeattr))
+
+	      (call .user.termdev.open_all_chr_files (typeattr)))
+
+       (block portable
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/portable" dir file_context)
+		     (filecon "/usr/lib/systemd/portable/.*" any file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "portable")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)))
+
+       (block private
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call run.write_file_sock_files (typeattr))
+
+	      (call systemd.run.search_file_pattern.type (typeattr))
+
+	      (call .sys.connectto_subj_unix_stream_sockets (typeattr))
+
+	      (block run
+
+		     (filecon "/run/systemd/private" socket file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "private")))
+
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.run.systemd.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block propagate
+
+	      (block run
+
+		     (filecon "/run/systemd/propagate" dir file_context)
+		     (filecon "/run/systemd/propagate/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "propagate")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block pstore
+
+	      (block conf
+
+		     (filecon "/etc/systemd/pstore\.conf" file file_context)
+		     (filecon "/etc/systemd/pstore\.conf\..*" file file_context)
+		     (filecon "/etc/systemd/pstore\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/pstore\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "pstore.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "pstore.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/pstore\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/pstore\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "pstore.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/pstore" dir file_context)
+		     (filecon "/var/lib/systemd/pstore/.*" any file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "pstore")))
+
+		     (blockinherit .file.state.systemd.template))
+
+	      (block run
+
+		     (filecon "/run/systemd/pstore\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/pstore\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "pstore.conf.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block quotacheck
+
+	      (block run
+
+		     (filecon "/run/systemd/quotacheck" file file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "quotacheck")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block randomseed
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/random-seed" file file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file file "random-seed")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.state.systemd.base_template)))
+
+       (block readefiopt
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .efivar.read_fs_files (typeattr))
+	      (call .efivar.search_fs_pattern.type (typeattr)))
+
+       (block resolve
+
+	      (block conf
+
+		     (filecon "/etc/systemd/dnssd" dir file_context)
+		     (filecon "/etc/systemd/dnssd/.*" any file_context)
+		     (filecon "/etc/systemd/resolved\.conf" file file_context)
+		     (filecon "/etc/systemd/resolved\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/resolved\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/resolved\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "dnssd"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "resolved.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "resolved.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/dnssd" dir file_context)
+		     (filecon "/usr/lib/systemd/dnssd/.*" any file_context)
+		     (filecon "/usr/lib/systemd/resolved\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/resolved\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "dnssd"))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "resolved.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/dnssd" dir file_context)
+		     (filecon "/run/systemd/dnssd/.*" any file_context)
+		     (filecon "/run/systemd/resolve" dir file_context)
+		     (filecon "/run/systemd/resolve/.*" any file_context)
+		     (filecon "/run/systemd/resolved\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/resolved\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "dnssd"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "resolve"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "resolve.conf.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.run.systemd.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block rfkill
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/rfkill" dir file_context)
+		     (filecon "/var/lib/systemd/rfkill/.*" any file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "rfkill")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block run
+
+	      (filecon "/run/systemd" dir file_context)
+	      (filecon "/run/systemd/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "systemd")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.run.systemd.base_template)
+
+	      (call .root.associate_fs (file)))
+
+       (block seats
+
+	      (block run
+
+		     (filecon "/run/systemd/seats" dir file_context)
+		     (filecon "/run/systemd/seats/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "seats")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block sessions
+
+	      (block run
+
+		     (filecon "/run/systemd/sessions" dir file_context)
+		     (filecon "/run/systemd/sessions/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "sessions")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_fifo_files)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block shutdown
+
+	      (block run
+
+		     (filecon "/run/systemd/shutdown" dir file_context)
+		     (filecon "/run/systemd/shutdown/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "shutdown")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block sleep
+
+	      (block conf
+
+		     (filecon "/etc/systemd/sleep\.conf" file file_context)
+		     (filecon "/etc/systemd/sleep\.conf\..*" file file_context)
+		     (filecon "/etc/systemd/sleep\.conf\.d" dir file_context)
+		     (filecon "/etc/systemd/sleep\.conf\.d/.*" any file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "sleep.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "sleep.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/sleep\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/sleep\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "sleep.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/sleep\.conf\.d" dir file_context)
+		     (filecon "/run/systemd/sleep\.conf\.d/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "sleep.conf.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block standardinputtext
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .sys.tmpfs.readwriteinherited_file_files (typeattr)))
+
+       (block state
+
+	      (filecon "/var/lib/systemd" dir file_context)
+	      (filecon "/var/lib/systemd/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "systemd")))
+
+	      (blockinherit .file.state.systemd.template)
+
+	      (call .root.associate_fs (file)))
+
+       (block sysext
+
+	      (block run
+
+		     (filecon "/run/systemd/sysext" dir file_context)
+		     (filecon "/run/systemd/sysext/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "sysext")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block timesync
+
+	      (block conf
+
+		     (filecon "/etc/systemd/timesyncd\.conf" file file_context)
+		     (filecon "/etc/systemd/timesyncd\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/timesyncd\.conf\.d" dir
+			      file_context)
+		     (filecon "/etc/systemd/timesyncd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "timesyncd.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "timesyncd.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/timesyncd\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/timesyncd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "timesyncd.conf.d")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/timesync" dir file_context)
+		     (filecon "/run/systemd/timesync/.*" any file_context)
+		     (filecon "/run/systemd/timesyncd\.conf\.d" dir
+			      file_context)
+		     (filecon "/rin/systemd/timesyncd\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "timesync"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "timesyncd.conf.d")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template))
+
+	      (block state
+
+		     (filecon "/var/lib/systemd/clock" file file_context)
+		     (filecon "/var/lib/systemd/timesync" dir file_context)
+		     (filecon "/var/lib/systemd/timesync/.*" any file_context)
+
+		     (macro systemd_state_file_type_transition_file
+			    ((type ARG1))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file dir "timesync"))
+			    (call .systemd.state.file_type_transition
+				  (ARG1 file file "clock")))
+
+		     (blockinherit .file.state.systemd.template)))
+
+       (block unconfined
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (service (status)))
+	      (allow typeattr self
+		     (system (halt reboot reload start status stop)))
+
+	      (call .file.unit.control_all_services (typeattr))
+
+	      (call .fstab.status_file_services (typeattr))
+
+	      (call .sys.control_system (typeattr))
+	      (call .sys.status_self (typeattr))
+
+	      (call .systemd.unit.run.control_file_services (typeattr)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system" dir file_context)
+	      (filecon "/usr/lib/systemd/system/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "system")))
+
+	      (macro systemd_conf_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .systemd.conf.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.unit.template)
+
+	      (block run
+
+		     (filecon "/run/systemd/generator" dir file_context)
+		     (filecon "/run/systemd/generator/.*" any file_context)
+		     (filecon "/run/systemd/generator\.early" dir file_context)
+		     (filecon "/run/systemd/generator\.early/.*" any
+			      file_context)
+		     (filecon "/run/systemd/generator\.late" dir file_context)
+		     (filecon "/run/systemd/generator\.late/.*" any
+			      file_context)
+		     (filecon "/run/systemd/system" dir file_context)
+		     (filecon "/run/systemd/system/.*" any file_context)
+		     (filecon "/run/systemd/system\.attached" dir file_context)
+		     (filecon "/run/systemd/system\.attached/.*" any
+			      file_context)
+		     (filecon "/run/systemd/system\.control" dir file_context)
+		     (filecon "/run/systemd/system\.control/.*" any
+			      file_context)
+		     (filecon "/run/systemd/transient" dir file_context)
+		     (filecon "/run/systemd/transient/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file
+			    ((type ARG1)(class ARG2)(name ARG3))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file ARG2 ARG3)))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_lnk_files)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)
+		     (blockinherit .file.unit.macro_template_services)))
+
+       (block userdb
+
+	      (block run
+
+		     (filecon "/run/systemd/userdb" dir file_context)
+		     (filecon "/run/systemd/userdb/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "userdb")))
+
+		     (blockinherit .file.macro_template_lnk_files)
+		     (blockinherit .file.run.systemd.template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block userhomemount
+
+	      (block run
+
+		     (filecon "/run/systemd/user-home-mount" dir file_context)
+		     (filecon "/run/systemd/user-home-mount/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "user-home-mount")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block users
+
+	      (block run
+
+		     (filecon "/run/systemd/users" dir file_context)
+		     (filecon "/run/systemd/users/.*" any file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "users")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block volatileroot
+
+	      (block run
+
+		     (filecon "/run/systemd/volatile-root" dir file_context)
+		     (filecon "/run/systemd/volatile-root/.*" any file_context)
+		     (filecon "/run/systemd/volatile-sysroot" dir file_context)
+		     (filecon "/run/systemd/volatile-sysroot/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "volatile-root"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "volatile-sysroot")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.systemd.base_template)))
+
+       (block zramgenerator
+
+	      (block conf
+
+		     (filecon "/etc/systemd/zram-generator\.conf" file
+			      file_context)
+		     (filecon "/etc/systemd/zram-generator\.conf\..*" file
+			      file_context)
+		     (filecon "/etc/systemd/zram-generator\.conf\.d" dir
+			      file_context)
+		     (filecon "/etc/systemd/zram-generator\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_conf_file_type_transition_file ((type ARG1))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file dir "zram-generator.conf.d"))
+			    (call .systemd.conf.file_type_transition
+				  (ARG1 file file "zram-generator.conf")))
+
+		     (blockinherit .file.conf.systemd.template))
+
+	      (block data
+
+		     (filecon "/usr/lib/systemd/zram-generator\.conf" file
+			      file_context)
+		     (filecon "/usr/lib/systemd/zram-generator\.conf\..*" file
+			      file_context)
+		     (filecon "/usr/lib/systemd/zram-generator\.conf\.d" dir
+			      file_context)
+		     (filecon "/usr/lib/systemd/zram-generator\.conf\.d/.*" any
+			      file_context)
+
+		     (macro lib_file_type_transition_file ((type ARG1))
+			    (call .lib.file_type_transition
+				  (ARG1 file dir "zram-generator.conf.d"))
+			    (call .lib.file_type_transition
+				  (ARG1 file file "zram-generator.conf")))
+
+		     (blockinherit .file.data.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/systemd/zram-generator\.conf" file
+			      file_context)
+		     (filecon "/run/systemd/zram-generator\.conf\..*" file
+			      file_context)
+		     (filecon "/run/systemd/zram-generator\.conf\.d" dir
+			      file_context)
+		     (filecon "/rin/systemd/zram-generator\.conf\.d/.*" any
+			      file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file dir "zram-generator.conf.d"))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "zram-generator.conf")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template))))
+
+(in dbus
+
+    (call .sys.tmpfs.readwriteinherited_file_files (subj)))
+
+(in dev
+
+    ;; PrivateDevices
+    (call .tmp.associate_fs (file))
+    (call .tmp.associate_fs (typeattr)))
+
+(in exec
+
+    (filecon "/usr/lib/systemd/[^/]+" file file_context))
+
+(in file
+
+    (block unit
+
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit all_macro_template_services)
+
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call data.type (typeattr))
+
+	   (block all_macro_template_services
+
+		  (blockabstract all_macro_template_services)
+
+		  (macro control_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (all))))
+
+		  (macro disable_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (disable))))
+
+		  (macro enable_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (enable))))
+
+		  (macro reload_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (reload))))
+
+		  (macro start_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (start))))
+
+		  (macro status_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (status))))
+
+		  (macro stop_all_services ((type ARG1))
+			 (allow ARG1 typeattr (service (stop)))))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.base_template)
+
+		  (call .file.unit.type (file)))
+
+	   (block macro_template_services
+
+		  (blockabstract macro_template_services)
+
+		  (macro control_file_services ((type ARG1))
+			 (allow ARG1 file (service (all))))
+
+		  (macro disable_file_services ((type ARG1))
+			 (allow ARG1 file (service (disable))))
+
+		  (macro enable_file_services ((type ARG1))
+			 (allow ARG1 file (service (enable))))
+
+		  (macro reload_file_services ((type ARG1))
+			 (allow ARG1 file (service (reload))))
+
+		  (macro start_file_services ((type ARG1))
+			 (allow ARG1 file (service (start))))
+
+		  (macro status_file_services ((type ARG1))
+			 (allow ARG1 file (service (status))))
+
+		  (macro stop_file_services ((type ARG1))
+			 (allow ARG1 file (service (stop)))))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.unit.base_template)
+		  (blockinherit .file.unit.macro_template_services))))
+
+(in file.conf
+
+    (block systemd
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.systemd.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.systemd.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.run
+
+    (block systemd
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_blk_files)
+	   (blockinherit file.all_macro_template_chr_files)
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_fifo_files)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.run.base_template)
+
+		  (call .file.run.systemd.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.run.systemd.base_template))))
+
+(in file.state
+
+    (block systemd
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.state.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.base_template)
+
+		  (call .file.state.systemd.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.state.systemd.base_template))))
+
+(in file.unconfined
+
+    (call .systemd.askpassword.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.backlight.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.boot.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.catalog.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.catalog.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.cgroupsagent.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.coredump.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.coredump.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.coredump.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.coredump.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.defaulthostname.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.dynamicuid.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.fsck.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.home.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .systemd.home.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.home.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.home.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.import.cert.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.import.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.inaccessible.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.incoming.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.inhibit.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.journal.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.journal.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.journal.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.linger.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.login.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .systemd.login.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.login.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.machines.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.netif.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.network.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.network.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.network.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.notify.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.nspawn.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.nspawn.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.ntpunits.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.ntpunits.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.ntpunits.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.oom.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .systemd.oom.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.oom.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.portable.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.private.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.propagate.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.pstore.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.pstore.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.pstore.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.pstore.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.quotacheck.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.randomseed.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.resolve.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.resolve.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.resolve.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.rfkill.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.run.run_file_type_transition_file (typeattr))
+    (call .systemd.seats.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.sessions.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.shutdown.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.sleep.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .systemd.sleep.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.sleep.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.state.state_file_type_transition_file (typeattr))
+    (call .systemd.sysext.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.timesync.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.timesync.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.timesync.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.timesync.state.systemd_state_file_type_transition_file
+	  (typeattr))
+    (call .systemd.unit.lib_file_type_transition_file (typeattr))
+    (call .systemd.unit.systemd_conf_file_type_transition_file
+	  (typeattr dir "system"))
+    (call .systemd.unit.systemd_conf_file_type_transition_file
+	  (typeattr dir "system.attached"))
+    (call .systemd.unit.systemd_conf_file_type_transition_file
+	  (typeattr dir "system.control"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "generator"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "generator.early"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "generator.late"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "system"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "system.attached"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "system.control"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (typeattr dir "transient"))
+    (call .systemd.userdb.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.userhomemount.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.users.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.volatileroot.run.systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .systemd.zramgenerator.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.zramgenerator.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.zramgenerator.run.systemd_run_file_type_transition_file
+	  (typeattr)))
+
+(in fstab
+
+    (macro status_file_services ((type ARG1))
+	   (allow ARG1 file (service (status)))))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (service (all)))
+    (allow typeattr .invalid (system (halt reboot reload start status stop))))
+
+(in lib
+
+    (filecon "/usr/lib/systemd/libsystemd-shared.*\.so" file file_context)
+    (filecon "/usr/lib/systemd/libsystemd-shared\.abignore" file file_context))
+
+(in nss.passwdgroup
+
+    (call .systemd.dynamicuser.type (typeattr)))
+
+(in rbacsep
+
+    (constrain (system (halt reboot reload start status stop))
+	       (or (or (or (eq r1 r2)
+			   (and (eq r1 exempt.roleattr)
+				(neq t1 constrained.typeattr)))
+		       (eq t1 exempt.subj.typeattr))
+		   (and (eq r2 .sys.role) (eq t2 .sys.subj))))
+
+    (constrain (service (disable enable reload start status stop))
+	       (or (or (or (or (eq r1 r2)
+			       (and (eq r1 exempt.roleattr)
+				    (neq t1 constrained.typeattr)))
+			   (eq t1 exempt.subj.typeattr))
+		       (eq t2 exempt.obj.typeattr))
+		   (and (eq r2 exempt.roleattr) (eq t2 typeattr)))))
+
+(in resolv.conf
+
+    (filecon "/usr/lib/systemd/resolv\.conf" file file_context))
+
+(in sys
+
+    (blockinherit .systemd.macro_template_system)
+
+    ;; systemd bug: /run/systemd/unit-root/dev/kmsg
+    (call .kmsg.mounton_nodedev_chr_files (subj))
+
+    (call .rbacsep.exempttarget.type (subj))
+    (call .rbacsep.readstatetarget.type (subj))
+    (call .rbacsep.usefdtarget.type (subj)))
+
+(in sys.agent
+
+    (call .systemd.forked.type (typeattr)))
+
+(in unconfined
+
+    (call .systemd.unconfined.type (typeattr)))
+
+(in unlabeled.unconfined
+
+    (allow typeattr .unlabeled (service (all))))
+
+(in user
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/user@.*\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))

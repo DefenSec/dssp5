@@ -1,0 +1,37 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block brightnessctl
+
+       (blockinherit .dbus.client.template)
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_unix_stream_socket)
+
+       (call .class.list_sysfile_dirs (subj))
+       (call .class.read_sysfile_lnk_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .leds.list_sysfile_dirs (subj))
+       (call .leds.read_sysfile_lnk_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/brightnessctl" file file_context)))
+
+(in user
+
+    (call .brightnessctl.role (role)))
+
+(in wheel
+
+    (call .brightnessctl.role (role)))

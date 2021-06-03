@@ -1,0 +1,107 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block btrfsprogs
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call state.search_file_dirs (ARG1))
+	      (call state.write_file_sock_files (ARG1)))
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (dac_read_search sys_admin)))
+       (allow subj self (process (setsched)))
+       (allow subj self create_unix_stream_stream_socket)
+
+       ;; root of subvolumes are unlabeled
+       (call list_unlabeled_dirs (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.manage_file_sock_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
+       (call blktools.run.manage_file_dirs (subj))
+       (call blktools.run.manage_file_files (subj))
+       (call blktools.run.run_file_type_transition_file (subj))
+
+       (call .block.list_sysfile_dirs (subj))
+       (call .block.read_sysfile_lnk_files (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.list_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_files (subj))
+
+       (call .file.list_all_dirs (subj))
+       (call .file.read_all_files (subj))
+
+       (call .fs.list_all_dirs (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+
+       (call .partitions.read_procfile_files (subj))
+
+       (call .shadow.read.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+
+       (call .stordev.read.type (subj))
+       (call .stordev.read_all_blk_files (subj))
+       (call .stordev.read_all_chr_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/btrfs" file file_context)
+	      (filecon "/usr/bin/btrfs-convert" file file_context)
+	      (filecon "/usr/bin/btrfs-find-root" file file_context)
+	      (filecon "/usr/bin/btrfs-image" file file_context)
+	      (filecon "/usr/bin/btrfs-map-logical" file file_context)
+	      (filecon "/usr/bin/btrfs-select-super" file file_context)
+	      (filecon "/usr/bin/btrfstune" file file_context)
+	      (filecon "/usr/bin/fsck\.btrfs" file file_context)
+	      (filecon "/usr/bin/mkfs\.btrfs" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/btrfs" dir file_context)
+	      (filecon "/var/lib/btrfs/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "btrfs")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)))
+
+(in file.unconfined
+
+    (call .btrfsprogs.state.state_file_type_transition_file (typeattr)))
+
+(in fsck
+
+    (call .btrfsprogs.subj_type_transition (subj)))
+
+(in osprober
+
+    ;; /var/lib/os-prober/mount
+    (call list_unlabeled_dirs (subj)))
+
+(in systemd.dissect
+
+    (call .btrfsprogs.subj_type_transition (subj)))
+
+(in systemd.firstboot
+
+    (call .btrfsprogs.subj_type_transition (subj)))
+
+(in systemd.sysusers
+
+    (call .btrfsprogs.subj_type_transition (subj)))

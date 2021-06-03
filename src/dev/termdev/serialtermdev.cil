@@ -7,9 +7,15 @@
 	      (allow ARG1 typeattr appendinherited_chr_file)
 	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
 
+       (macro getattr_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (getattr))))
+
        (macro readwriteinherited_all_chr_files ((type ARG1))
 	      (allow ARG1 typeattr readwriteinherited_chr_file)
 	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+       (macro setattr_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (setattr))))
 
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
@@ -28,8 +34,8 @@
 
 	      (blockabstract base_template)
 
-	      (context serialtermdev_context
-		       (.sys.id .sys.role serialtermdev (systemlow systemlow)))
+	      (context serialtermdev_context (.sys.id .sys.role serialtermdev
+						      (systemlow systemlow)))
 
 	      (type serialtermdev)
 	      (call .serialtermdev.type (serialtermdev)))
@@ -43,7 +49,8 @@
 
 	      (macro appendinherited_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev appendinherited_chr_file)
-		     (allowx ARG1 serialtermdev (ioctl chr_file (not (0x5412)))))
+		     (allowx ARG1 serialtermdev
+			     (ioctl chr_file (not (0x5412)))))
 
 	      (macro create_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev create_chr_file))
@@ -68,7 +75,8 @@
 
 	      (macro readwriteinherited_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev readwriteinherited_chr_file)
-		     (allowx ARG1 serialtermdev (ioctl chr_file (not (0x5412)))))
+		     (allowx ARG1 serialtermdev
+			     (ioctl chr_file (not (0x5412)))))
 
 	      (macro relabel_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev relabel_chr_file))

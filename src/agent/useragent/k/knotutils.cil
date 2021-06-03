@@ -1,0 +1,38 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block knot
+
+       (block utils
+
+	      (blockinherit .user.agent.template)
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .cryptopol.conf.read_file_files (subj))
+	      (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	      (call .cryptopol.data.read_file_files (subj))
+	      (call .cryptopol.data.search_file_pattern.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .nss.hosts.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/kdig" file file_context)
+		     (filecon "/usr/bin/khost" file file_context)
+		     (filecon "/usr/bin/knsec3hash" file file_context)
+		     (filecon "/usr/bin/knsupdate" file file_context))))
+
+(in user
+
+    (call .knot.utils.role (role)))
+
+(in wheel
+
+    (call .knot.utils.role (role)))

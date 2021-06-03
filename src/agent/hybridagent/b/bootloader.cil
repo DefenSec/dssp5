@@ -1,0 +1,244 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block bootloader
+
+       (block boot
+
+	      (filecon "/boot/grub2" dir file_context)
+	      (filecon "/boot/grub2/.*" any file_context)
+
+	      (filecon "/boot/loader" dir file_context)
+	      (filecon "/boot/loader/.*" any file_context)
+
+	      (macro boot_file_type_transition_file ((type ARG1))
+		     (call .boot.file_type_transition
+			   (ARG1 file dir "grub2"))
+		     (call .boot.file_type_transition
+			   (ARG1 file dir "loader")))
+
+	      (blockinherit .file.boot.template)
+
+	      (call .rbacsep.exempt.obj.type (file)))
+
+       (block conf
+
+	      (filecon "/etc/default/grub" file file_context)
+	      (filecon "/etc/default/grub\..*" file file_context)
+
+	      (filecon "/etc/grub\.d" dir file_context)
+	      (filecon "/etc/grub\.d/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "grub.d"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "grub")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/grub" dir file_context)
+	      (filecon "/usr/lib/grub/.*" any file_context)
+
+	      (filecon "/usr/share/grub" dir file_context)
+	      (filecon "/usr/share/grub/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (blockinherit .file.data.template))
+
+       (block grub2
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self (capability (dac_read_search sys_admin)))
+	      (allow subj self (process (setfscreate)))
+
+	      (call boot.manage_file_files (subj))
+	      (call boot.readwrite_file_dirs (subj))
+
+	      (call conf.execute_file_files (subj))
+	      (call conf.list_file_dirs (subj))
+
+	      (call data.read_file_files (subj))
+	      (call data.search_file_dirs (subj))
+
+	      (call exec.execute_file_files (subj))
+
+	      (call tmp.manage_file_files (subj))
+	      (call tmp.tmp_file_type_transition_file (subj))
+
+	      (call .block.traverse_sysfile_pattern.type (subj))
+
+	      (call .boot.list_file_dirs (subj))
+	      (call .boot.read_file_files (subj))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .dev.list_file_pattern.type (subj))
+
+	      (call .devices.read_procfile_files (subj))
+
+	      (call .devices.read_sysfile_files (subj))
+	      (call .devices.traverse_sysfile_pattern.type (subj))
+
+	      (call .dmcontrol.readwrite_nodedev_chr_files (subj))
+
+	      (call .dos.manage_fs_dirs (subj))
+	      (call .dos.manage_fs_files (subj))
+
+	      (call .efivar.read_fs_files (subj))
+	      (call .efivar.search_fs_pattern.type (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .file.home.dontaudit_listinherited_all_dirs (subj))
+
+	      (call .firmware.search_sysfile_pattern.type (subj))
+
+	      (call .ibac.objchangesys.type (subj))
+
+	      (call .kernelinstall.conf.read_file_files (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .machineid.read_file_files (subj))
+
+	      (call .osprober.subj_type_transition (subj))
+
+	      (call .proc.getattr_fs_pattern.type (subj))
+
+	      (call .root.list_file_dirs (subj))
+
+	      (call .rbac.objchangesys.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+
+	      (call .run.search_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.mapexecute_file_files (subj))
+	      (call .shell.exec.read_file_files (subj))
+
+	      (call .stordev.read.type (subj))
+	      (call .stordev.read_all_blk_files (subj))
+	      (call .stordev.read_all_chr_files (subj))
+
+	      (call .systemd.udev.subj_type_transition (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (call .tmp.deletename_file_dirs (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/grub2-bios-setup" file file_context)
+		     (filecon "/usr/bin/grub2-editenv" file file_context)
+		     (filecon "/usr/bin/grub2-file" file file_context)
+		     (filecon "/usr/bin/grub2-get-kernel-settings" file
+			      file_context)
+		     (filecon "/usr/bin/grub2-install" file file_context)
+		     (filecon "/usr/bin/grub2-menulst2cfg" file file_context)
+		     (filecon "/usr/bin/grub2-mkconfig" file file_context)
+		     (filecon "/usr/bin/grub2-mkimage" file file_context)
+		     (filecon "/usr/bin/grub2-mkpasswd-pbkdf2" file file_context)
+		     (filecon "/usr/bin/grub2-mkrelpath" file file_context)
+		     (filecon "/usr/bin/grub2-mount" file file_context)
+		     (filecon "/usr/bin/grub2-probe" file file_context)
+		     (filecon "/usr/bin/grub2-reboot" file file_context)
+		     (filecon "/usr/bin/grub2-rpm-sort" file file_context)
+		     (filecon "/usr/bin/grub2-script-check" file file_context)
+		     (filecon "/usr/bin/grub2-set-default" file file_context)
+		     (filecon "/usr/bin/grub2-setpassword" file file_context)
+		     (filecon "/usr/bin/grub2-switch-to-blscfg" file
+			      file_context))
+
+	      (block tmp
+
+		     (macro tmp_file_type_transition_file ((type ARG1))
+			    (call .tmp.file_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.tmp.base_template))
+
+	      (block unit
+
+		     (filecon
+		      "/usr/lib/systemd/system/grub-boot-indeterminate\.service.*"
+		      file file_context)
+		     (filecon
+		      "/usr/lib/systemd/system/grub2-systemd-integration\.service.*"
+		      file file_context)
+
+		     (blockinherit .file.unit.template)))
+
+       (block grub2setbootflag
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self (capability (setgid setuid)))
+
+	      (call boot.manage_file_files (subj))
+	      (call boot.readwrite_file_dirs (subj))
+
+	      (call .boot.search_file_pattern.type (subj))
+
+	      (call .rbacsep.exempt.subj.type (subj))
+
+	      (call .user.systemd.agent (subj grub2setbootflag.exec.file))
+
+	      (block exec
+
+		     (filecon "/usr/bin/grub2-set-bootflag" file file_context))
+
+	      (block unit
+
+		  (filecon "/usr/lib/systemd/user/grub-boot-success\.service.*"
+			   file file_context)
+		  (filecon "/usr/lib/systemd/user/grub-boot-success\.timer.*"
+			   file file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in blktools
+
+    (call .bootloader.grub2.use_subj_fds (subj))
+    (call .bootloader.grub2.writeinherited_subj_fifo_files (subj)))
+
+(in btrfsprogs
+
+    (call .bootloader.grub2.use_subj_fds (subj))
+    (call .bootloader.grub2.writeinherited_subj_fifo_files (subj)))
+
+(in file.unconfined
+
+    (call .bootloader.boot.boot_file_type_transition_file (typeattr))
+    (call .bootloader.conf.conf_file_type_transition_file (typeattr))
+    (call .bootloader.data.data_file_type_transition_file (typeattr))
+    (call .bootloader.data.lib_file_type_transition_file (typeattr)))
+
+(in logger
+
+    (call .bootloader.grub2.use_subj_fds (subj))
+    (call .bootloader.grub2.writeinherited_subj_fifo_files (subj)))
+
+(in user
+
+    (call .bootloader.grub2setbootflag.role (role)))
+
+(in wheel
+
+    (call .bootloader.grub2setbootflag.role (role)))

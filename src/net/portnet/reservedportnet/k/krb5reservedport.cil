@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block krb5
+
+       (portcon "dccp" 88 port_context)
+       (portcon "sctp" 88 port_context)
+       (portcon "tcp" 88 port_context)
+       (portcon "udp" 88 port_context)
+
+       (blockinherit .net.port.reserved.template))

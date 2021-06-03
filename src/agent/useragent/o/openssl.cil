@@ -1,0 +1,98 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block openssl
+
+       (blockinherit .user.agent.template)
+
+       (call home.manage_file_files (subj))
+       (call home.user_home_file_type_transition_file (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .cert.read_file_files (subj))
+       (call .cert.search_file_pattern.type (subj))
+
+       (call .cert.home.data.manage_file_dirs (subj))
+       (call .cert.home.data.manage_file_files (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .cryptopol.conf.read_file_files (subj))
+       (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+       (call .cryptopol.data.read_file_files (subj))
+       (call .cryptopol.data.search_file_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.home.deletename_file_dirs (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/openssl" file file_context)
+	      (filecon "/usr/bin/sscg" file file_context))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.rnd" file file_context)
+	      (filecon "HOME_DIR/\.rnd\..*" file file_context)
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".rnd")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.home.base_template))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .openssl.home.user_home_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .openssl.home.manage_file_files (subj))
+    (call .openssl.home.relabel_file_files (subj))
+    (call .openssh.home.user_home_file_type_transition_file (subj))
+
+    (call .openssl.role (role))
+
+    (call .openssl.tmp.manage_file_files (subj))
+    (call .openssl.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .openssl.role (role)))

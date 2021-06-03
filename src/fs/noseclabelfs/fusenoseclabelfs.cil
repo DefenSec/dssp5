@@ -3,6 +3,9 @@
 
 (in fuse
 
+    (filecon "/sys/fs/fuse/connections" dir ())
+    (filecon "/sys/fs/fuse/connections/.*" any ())
+
     (genfscon "fuse" "/" fs_context)
     (genfscon "fuseblk" "/" fs_context)
     (genfscon "fusectl" "/" fs_context)

@@ -1,0 +1,38 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .sieve.home.user_home_file_type_transition_file (typeattr)))
+
+(in sieve
+
+    (block home
+
+	   (filecon "HOME_DIR/\.sieve" dir file_context)
+	   (filecon "HOME_DIR/\.sieve/.*" any file_context)
+
+	   (filecon "HOME_DIR/sieve" dir file_context)
+	   (filecon "HOME_DIR/sieve/.*" any file_context)
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro user_home_file_type_transition_file ((type ARG1))
+		  (call .user.home.file_type_transition
+			(ARG1 file dir ".sieve"))
+		  (call .user.home.file_type_transition
+			(ARG1 file dir "sieve")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.user.home.base_template)))
+
+(in user
+
+    (call .sieve.home.manage_file_dirs (subj))
+    (call .sieve.home.manage_file_files (subj))
+    (call .sieve.home.map_file_files (subj))
+    (call .sieve.home.relabel_file_dirs (subj))
+    (call .sieve.home.relabel_file_files (subj))
+    (call .sieve.home.user_home_file_type_transition_file (subj)))

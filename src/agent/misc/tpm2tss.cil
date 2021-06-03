@@ -1,0 +1,47 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block tpm2tss
+
+       (block conf
+
+	      (filecon "/etc/tpm2-tss" dir file_context)
+	      (filecon "/etc/tpm2-tss/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "tpm2-tss")))
+
+	      (blockinherit .file.conf.template))
+
+       (block run
+
+	      (filecon "/run/tpm2-tss" dir file_context)
+	      (filecon "/run/tpm2-tss/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "tpm2-tss")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.run.base_template))
+
+       (block state
+
+	      (filecon "/var/lib/tpm2-tss" dir file_context)
+	      (filecon "/var/lib/tpm2-tss/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "tpm2-tss")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template)))
+
+(in file.unconfined
+
+    (call .tpm2tss.conf.conf_file_type_transition_file (typeattr))
+    (call .tpm2tss.run.run_file_type_transition_file (typeattr))
+    (call .tpm2tss.state.state_file_type_transition_file (typeattr)))

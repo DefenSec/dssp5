@@ -1,0 +1,78 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block quota
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (setgid setuid sys_admin)))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .editor.conf.read_file_files (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .fs.read_sysctlfile_files (subj))
+       (call .fs.search_sysctlfile_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mount.mountpoint.search_all_dirs (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .quotacheck.quotaon_file_files (subj))
+       (call .quotacheck.read_file_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .stordev.getattr_all_blk_files (subj))
+       (call .stordev.getattr_all_chr_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.home.list_file_dirs (subj))
+
+       (call .sys.home.list_file_dirs (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+       (call .xattr.quotaget_fs (subj))
+       (call .xattr.quotamod_fs (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/convertquota" file file_context)
+	      (filecon "/usr/bin/edquota" file file_context)
+	      (filecon "/usr/bin/quotaon" file file_context)
+	      (filecon "/usr/bin/quotastats" file file_context)
+	      (filecon "/usr/bin/repquota" file file_context)
+	      (filecon "/usr/bin/setquota" file file_context)
+	      (filecon "/usr/bin/xqmstats" file file_context))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.tmp.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/quotaon\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))

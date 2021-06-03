@@ -1,0 +1,116 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block coredumpctl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (process (getsched setfscreate)))
+
+	   (call pager.type (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .conf.list_file_dirs (subj))
+	   (call .conf.read_file_files (subj))
+
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .cryptopol.conf.read_file_files (subj))
+	   (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	   (call .cryptopol.data.read_file_files (subj))
+	   (call .cryptopol.data.search_file_pattern.type (subj))
+
+	   (call .data.list_file_dirs (subj))
+	   (call .data.map_file_files (subj))
+	   (call .data.read_file_files (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .inputrc.read_file_pattern.type (subj))
+
+	   (call .lib.list_file_dirs (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .log.search_file_dirs (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .stat.read_procfile_files (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .systemd.coredump.read_subj_states (subj))
+	   (call .systemd.coredump.state.read_file_files (subj))
+	   (call .systemd.coredump.state.search_file_dirs (subj))
+
+	   (call .systemd.journal.log.map_file_pattern.type (subj))
+	   (call .systemd.journal.log.read_file_pattern.type (subj))
+
+	   (call .systemd.state.search_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .user.home.addname_file_dirs (subj))
+	   (call .user.home.create_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/coredumpctl" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmp.base_template))))
+
+(in user
+
+    (call .systemd.coredumpctl.role (role))
+
+    (call .systemd.coredumpctl.tmp.manage_file_files (subj))
+    (call .systemd.coredumpctl.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .systemd.coredumpctl.role (role)))

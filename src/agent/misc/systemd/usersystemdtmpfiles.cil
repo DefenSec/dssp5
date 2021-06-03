@@ -1,0 +1,200 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.systemd.tmpfiles.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .user.systemd.tmpfiles.home.data.user_home_data_file_type_transition_file
+	  (typeattr))
+    (call .user.systemd.tmpfiles.run.user_run_file_type_transition_file
+	  (typeattr)))
+
+(in user
+
+    (call systemd.tmpfiles.role (role))
+    (call systemd.tmpfiles.subj_type_transition (subj))
+
+    (call systemd.tmpfiles.home.conf.manage_file_dirs (subj))
+    (call systemd.tmpfiles.home.conf.manage_file_files (subj))
+    (call systemd.tmpfiles.home.conf.map_file_files (subj))
+    (call systemd.tmpfiles.home.conf.relabel_file_dirs (subj))
+    (call systemd.tmpfiles.home.conf.relabel_file_files (subj))
+    (call systemd.tmpfiles.home.conf.user_home_conf_file_type_transition_file
+	  (subj))
+
+    (call systemd.tmpfiles.home.data.manage_file_dirs (subj))
+    (call systemd.tmpfiles.home.data.manage_file_files (subj))
+    (call systemd.tmpfiles.home.data.map_file_files (subj))
+    (call systemd.tmpfiles.home.data.relabel_file_dirs (subj))
+    (call systemd.tmpfiles.home.data.relabel_file_files (subj))
+    (call systemd.tmpfiles.home.data.user_home_data_file_type_transition_file
+	  (subj))
+
+    (call systemd.tmpfiles.run.manage_file_dirs (subj))
+    (call systemd.tmpfiles.run.manage_file_files (subj))
+    (call systemd.tmpfiles.run.map_file_files (subj))
+    (call systemd.tmpfiles.run.relabel_file_dirs (subj))
+    (call systemd.tmpfiles.run.relabel_file_files (subj))
+    (call systemd.tmpfiles.run.user_run_file_type_transition_file (subj)))
+
+(in user.systemd
+
+    (block tmpfiles
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .systemd.tmpfiles.exec.mapexecute_file_files (ARG1))
+		  (call .systemd.tmpfiles.exec.read_file_files (ARG1))
+		  (call .systemd.tmpfiles.exec.subj_type_transition (ARG1 subj)))
+
+	   (blockinherit .subj.common.base_template)
+
+	   (roleattribute roleattr)
+	   (roletype roleattr subj)
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call run.list_file_dirs (subj))
+	   (call run.read_file_files (subj))
+
+	   (call .mqueue.deletename_fs_dirs (subj))
+	   (call .mqueue.getattr_fs (subj))
+
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .systemd.tmpfiles.common.type (subj))
+
+	   (call .systemd.tmpfiles.exec.entrypoint_file_files (subj))
+	   (call .systemd.tmpfiles.exec.mapexecute_file_files (subj))
+	   (call .systemd.tmpfiles.exec.read_file_files (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+	   (call .tmp.deletename_fs_dirs (subj))
+
+	   (call .user.agent.type (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.home.data.search_file_pattern.type (subj))
+
+	   (call .user.home.manage_file_pattern.type (subj))
+	   (call .user.home.relabel_file_pattern.type (subj))
+
+	   (call .user.mqueuefs.manage_file_pattern.type (subj))
+	   (call .user.mqueuefs.relabel_file_pattern.type (subj))
+
+	   (call .user.mqueuefs.mqueue_fs_type_transition_file (subj "*"))
+
+	   (call .user.run.manage_file_pattern.type (subj))
+	   (call .user.run.relabel_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj .systemd.tmpfiles.exec.file))
+
+	   (call .user.tmp.manage_file_pattern.type (subj))
+	   (call .user.tmp.relabel_file_pattern.type (subj))
+
+	   (call .user.tmp.tmp_file_type_transition_file (subj dir "*"))
+	   (call .user.tmp.tmp_file_type_transition_file (subj fifo_file "*"))
+	   (call .user.tmp.tmp_file_type_transition_file (subj file "*"))
+	   (call .user.tmp.tmp_file_type_transition_file (subj lnk_file "*"))
+	   (call .user.tmp.tmp_file_type_transition_file (subj sock_file "*"))
+
+	   (call .user.tmpfs.manage_file_pattern.type (subj))
+	   (call .user.tmpfs.relabel_file_pattern.type (subj))
+
+	   (call .user.tmpfs.tmp_fs_type_transition_file (subj dir "*"))
+	   (call .user.tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
+	   (call .user.tmpfs.tmp_fs_type_transition_file (subj file "*"))
+	   (call .user.tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
+	   (call .user.tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
+
+	   (call .xdg.conf.list_file_dirs (subj))
+	   (call .xdg.conf.read_file_files (subj))
+	   (call .xdg.conf.read_file_lnk_files (subj))
+
+	   (block home
+
+		  (block conf
+
+			 (filecon "HOME_DIR/\.config/user-tmpfiles\.d" dir
+				  file_context)
+			 (filecon "HOME_DIR/\.config/user-tmpfiles\.d/.*" any
+				  file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "user-tmpfiles.d")))
+
+			 (blockinherit .file.user.home.conf.template))
+
+		  (block data
+
+			 (filecon "HOME_DIR/\.local/share/user-tmpfiles\.d" dir
+				  file_context)
+			 (filecon "HOME_DIR/\.local/share/user-tmpfiles\.d/.*"
+				  any file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_data_file_type_transition_file
+				((type ARG1))
+				(call .user.home.data.file_type_transition
+				      (ARG1 file dir "user-tmpfiles.d")))
+
+			 (blockinherit .file.user.home.data.template)))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/user-tmpfiles\.d" dir
+			   file_context)
+		  (filecon "/run/user/%{USERID}/user-tmpfiles\.d/.*" any
+			   file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_run_file_type_transition_file ((type ARG1))
+			 (call .user.run.file_type_transition
+			       (ARG1 file dir "user-tmpfiles.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.run.base_template))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/user/systemd-tmpfiles-clean\.service.*"
+		   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/user/systemd-tmpfiles-clean\.timer.*" file
+		   file_context)
+		  (filecon
+		   "/usr/lib/systemd/user/systemd-tmpfiles-setup\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in wheel
+
+    (call .user.systemd.tmpfiles.role (role)))

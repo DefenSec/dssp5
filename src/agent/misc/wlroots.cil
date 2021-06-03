@@ -1,0 +1,97 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wlroots
+
+       (macro type ((type ARG1))
+	      (typeattributeset typeattr ARG1))
+
+       (typeattribute typeattr)
+
+       (call .tmp.deletename_fs_dirs (typeattr))
+
+       (block client
+
+	      (macro read_all_states ((type ARG1))
+		     (allow ARG1 typeattr (state (read))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (macro use_all_fds ((type ARG1))
+		     (allow ARG1 typeattr (fd (use))))
+
+	      (macro writeinherited_all_fifo_files ((type ARG1))
+		     (allow ARG1 typeattr writeinherited_fifo_file))
+
+	      (typeattribute typeattr)
+
+	      (call use_all_fds (typeattr))
+	      (call writeinherited_all_fifo_files (typeattr))
+
+	      (call compositor.tmpfs.map_all_files (typeattr))
+	      (call compositor.tmpfs.readwriteinherited_all_files (typeattr))
+
+	      (call compositor.connectto_all_unix_stream_sockets (typeattr))
+	      (call compositor.use_all_fds (typeattr))
+
+	      (call wlroots.type (typeattr))
+
+	      (call .user.dontaudit_readwrite_serialtermdev_chr_files
+		    (typeattr))
+
+	      (call .user.run.search_file_pattern.type (typeattr))
+
+	      (call .wayland.run.write_file_sock_files (typeattr))
+
+	      (block tmpfs
+
+		     (macro map_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (map))))
+
+		     (macro readwriteinherited_all_files ((type ARG1))
+			    (allow ARG1 typeattr readwriteinherited_file))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)))
+
+       (block compositor
+
+	      (macro connectto_all_unix_stream_sockets ((type ARG1))
+		     (allow ARG1 typeattr (unix_stream_socket (connectto))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (macro use_all_fds ((type ARG1))
+		     (allow ARG1 typeattr (fd (use))))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (process (execmem)))
+
+	      (call client.read_all_states (typeattr))
+	      (call client.use_all_fds (typeattr))
+	      (call client.writeinherited_all_fifo_files (typeattr))
+
+	      (call client.tmpfs.map_all_files (typeattr))
+	      (call client.tmpfs.readwriteinherited_all_files (typeattr))
+
+	      (call wlroots.type (typeattr))
+
+	      (call .wayland.run.manage_file_pattern.type (typeattr))
+
+	      (block tmpfs
+
+		     (macro map_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (map))))
+
+		     (macro readwriteinherited_all_files ((type ARG1))
+			    (allow ARG1 typeattr readwriteinherited_file))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr))))

@@ -1,0 +1,33 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.mail.mail_file_type_transition_file (typeattr "root")))
+
+(in user
+
+    (call mail.manage_file_pattern.type (subj))
+    (call mail.map_file_files (subj))
+    (call mail.relabel_file_pattern.type (subj))
+
+    (block mail
+
+	   (filecon "/var/spool/mail/%{USERNAME}" file file_context)
+	   (filecon "/var/spool/mail/%{USERNAME}\..*" file file_context)
+
+	   (macro dontaudit_getattr_file_files ((type ARG1))
+		  (dontaudit ARG1 file (file (getattr))))
+
+	   (macro getattr_file_files ((type ARG1))
+		  (allow ARG1 file (file (getattr))))
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro mail_file_type_transition_file ((type ARG1)(name ARG2))
+		  (call .mail.file_type_transition
+			(ARG1 file file ARG2)))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.mail.base_template)))

@@ -190,8 +190,8 @@
 		    (fifo_file (append create getattr ioctl link lock open read
 				       rename setattr unlink write)))
 (classpermissionset manage_file
-		    (file (append create getattr ioctl link lock open read rename
-				  setattr unlink write)))
+		    (file (append create getattr ioctl link lock open read
+				  rename setattr unlink write)))
 (classpermissionset manage_lnk_file
 		    (lnk_file (append create getattr link lock read rename
 				      setattr unlink write)))
@@ -311,6 +311,7 @@
 				   write)))
 (classpermissionset writeinherited_fifo_file
 		    (fifo_file (append getattr ioctl lock write)))
-(classpermissionset writeinherited_file (file (append getattr ioctl lock write)))
+(classpermissionset writeinherited_file (file (append getattr ioctl lock
+						      write)))
 (classpermissionset writeinherited_sock_file
 		    (sock_file (append getattr ioctl lock write)))

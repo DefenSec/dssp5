@@ -5,6 +5,9 @@
 
        (filecon "/dev/input/event([0-9]+)?" char nodedev_context)
 
+       (macro setattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (setattr))))
+
        (blockinherit .nodedev.template)
 
        (call .rbacsep.exempt.obj.type (nodedev)))

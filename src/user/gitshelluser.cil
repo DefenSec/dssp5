@@ -1,0 +1,160 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(userprefix gitshell.id gitshell.role)
+
+(block gitshell
+
+       (macro shell_exec_subj_type_transition ((type ARG1))
+	      (allow ARG1 subj (process (transition)))
+
+	      (allow subj ARG1 (process (sigchld)))
+	      (allow subj ARG1 (fd (use)))
+	      (allow subj ARG1 readwriteinherited_fifo_file)
+
+	      (call .shell.exec.mapexecute_file_files (ARG1))
+	      (call .shell.exec.read_file_files (ARG1))
+	      (call .shell.exec.subj_type_transition (ARG1 subj)))
+
+       (blockinherit .user.id_template)
+       (blockinherit .user.unpriv.role_template)
+       (blockinherit .user.unpriv.subj_template)
+
+       (allow subj self create_unix_dgram_socket)
+
+       (call role (role))
+       (call userrole.user (id))
+
+       (call home.execute_file_files (subj))
+       (call home.list_file_dirs (subj))
+       (call home.read_file_files (subj))
+
+       (call .git.client.exec.execute_file_files (subj))
+
+       (call .git.content.ro.list_file_dirs (subj))
+       (call .git.content.ro.map_file_files (subj))
+       (call .git.content.ro.read_file_files (subj))
+       (call .git.content.ro.read_file_lnk_files (subj))
+
+       (call .git.content.rw.execute_file_files (subj))
+       (call .git.content.rw.manage_file_dirs (subj))
+       (call .git.content.rw.manage_file_files (subj))
+       (call .git.content.rw.manage_file_lnk_files (subj))
+
+       (call .openssh.conf.search_file_dirs (subj))
+
+       (call .openssh.server.readwrite_subj_tcp_sockets (subj))
+       (call .openssh.server.readwrite_subj_unix_dgram_sockets (subj))
+       (call .openssh.server.readwrite_subj_unix_stream_sockets (subj))
+       (call .openssh.server.use_subj_fds (subj))
+
+       (call .passwd.subj_type_transition (subj))
+       (call .passwd.role (role))
+
+       (call .ptmx.readwriteinherited_nodedev_chr_files (subj))
+
+       (call .rbacsep.exemptsource.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .unixupdate.role (role))
+
+       (call .user.home.search_file_pattern.type (subj))
+
+       (call .user.git.content.execute_file_files (subj))
+       (call .user.git.content.manage_file_dirs (subj))
+       (call .user.git.content.manage_file_files (subj))
+       (call .user.git.content.manage_file_lnk_files (subj))
+
+       (call .gitshell.openssh.role (role))
+
+       (optional gitshelluser_opensshclient
+		 (call .openssh.home.search_file_dirs (subj)))
+
+       (block home
+
+	      (filecon "HOME_DIR/git-shell-commands" dir file_context)
+	      (filecon "HOME_DIR/git-shell-commands/.*" any file_context)
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file dir "git-shell-commands")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.home.base_template))
+
+       (block openssh
+
+	      (macro create_subj_keyrings ((type ARG1))
+		     (allow ARG1 subj (key (create))))
+
+	      (macro dyntransition_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (dyntransition))))
+
+	      (macro link_subj_keyrings ((type ARG1))
+		     (allow ARG1 subj (key (link))))
+
+	      (macro rlimitinh_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (rlimitinh))))
+
+	      (macro role ((role ARG1))
+		     (roleattributeset roleattr ARG1))
+
+	      (macro search_subj_keyrings ((type ARG1))
+		     (allow ARG1 subj (key (search))))
+
+	      (macro signal_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (signal))))
+
+	      (macro signull_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (signull))))
+
+	      (macro transition_subj_processes ((type ARG1))
+		     (allow ARG1 subj (process (transition))))
+
+	      (macro write_subj_keyrings ((type ARG1))
+		     (allow ARG1 subj (key (write))))
+
+	      (roleattribute roleattr)
+	      (roletype roleattr subj)
+
+	      (call .gitshell.shell_exec_subj_type_transition (subj))
+
+	      (call .ibac.subjchangetarget.type (subj))
+
+	      (call .openssh.server.ptytermdev_type_change
+		    (subj .user.ptytermdev))
+
+	      (call .rbac.subjchangetarget.type (subj))))
+
+(in file.unconfined
+
+    (call .gitshell.home.user_home_file_type_transition_file (typeattr)))
+
+(in openssh.server
+
+    (call .gitshell.openssh.create_subj_keyrings (subj))
+    (call .gitshell.openssh.dyntransition_subj_processes (subj))
+    (call .gitshell.openssh.rlimitinh_subj_processes (subj))
+    (call .gitshell.openssh.signal_subj_processes (subj))
+    (call .gitshell.openssh.signull_subj_processes (subj))
+    (call .gitshell.openssh.transition_subj_processes (subj))
+    (call .gitshell.openssh.write_subj_keyrings (subj)))
+
+(in pam.linked
+
+    (call .gitshell.openssh.link_subj_keyrings (typeattr))
+    (call .gitshell.openssh.search_subj_keyrings (typeattr)))
+
+(in user
+
+    (call .gitshell.home.execute_file_files (subj))
+    (call .gitshell.home.manage_file_dirs (subj))
+    (call .gitshell.home.manage_file_files (subj))
+    (call .gitshell.home.relabel_file_dirs (subj))
+    (call .gitshell.home.relabel_file_files (subj))
+    (call .gitshell.home.user_home_file_type_transition_file (subj)))

@@ -1,0 +1,87 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block atspi
+
+       (block buslauncher
+
+	      (blockinherit .dbus.client.macro_template)
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_unix_dgram_socket)
+	      (allow subj self create_unix_stream_socket)
+
+	      (call registryd.sendmsg_subj_dbus.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .dbus.client.type (subj))
+
+	      (call .dconf.linked.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .glib.data.map_file_pattern.type (subj))
+	      (call .glib.data.read_file_pattern.type (subj))
+
+	      (call .glib.home.conf.manage_file_dirs (subj))
+	      (call .glib.home.conf.manage_file_files (subj))
+	      (call .glib.home.conf.user_home_conf_file_type_transition_file
+		    (subj))
+	      (call .glib.home.conf.watch_file_dirs (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .rbacsep.readstatesource.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .sys.read_subj_states (subj))
+
+	      (call .user.dbus.nameclient.type (subj))
+	      (call .user.dbus.signal_subj_processes (subj))
+	      (call .user.dbus.subj_type_transition (subj))
+
+	      (call .user.systemd.agent (subj exec.file))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/at-spi-bus-launcher" file file_context))
+
+	      (block unit
+
+		     (filecon "/usr/lib/systemd/user/at-spi-dbus-bus\.service.*"
+			      file file_context)
+
+		     (blockinherit .file.user.unit.template)
+
+		     (call .user.dbus.activated.unit.type (file))))
+
+       (block registryd
+
+	      (blockinherit .user.agent.template)
+	      (blockinherit .user.dbus.nameclient.template)
+
+	      (allow subj self (process (getsched setsched)))
+
+	      (call buslauncher.sendmsg_subj_dbus.type (subj))
+
+	      (call .user.systemd.agent (subj exec.file))
+
+	      (block exec
+
+		     (filecon "/usr/bin/at-spi2-registryd" file file_context))))
+
+(in user
+
+    (call .atspi.buslauncher.role (role))
+    (call .atspi.registryd.role (role)))
+
+(in wheel
+
+    (call .atspi.buslauncher.role (role))
+    (call .atspi.registryd.role (role)))

@@ -1,0 +1,844 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .systemd.nspawn.container.obj.listinherited_all_dirs (subj)))
+
+(in mount
+
+    (call .systemd.nspawn.container.obj.getattr_all_dirs (subj)))
+
+(in sys
+
+    (call .systemd.nspawn.container.subj.role (role)))
+
+(in systemd.analyze
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.busctl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj))
+    (call .systemd.nspawn.container.obj.write_all_sock_files (subj)))
+
+(in systemd.cg
+
+    (allow subj self (capability (sys_admin)))
+
+    (call .systemd.nspawn.container.subj.read_all_states (subj))
+    (call .systemd.nspawn.container.unit.status_all_services (subj)))
+
+(in systemd.import
+
+    (call .systemd.nspawn.container.obj.manage_all_dirs (subj))
+    (call .systemd.nspawn.container.obj.manage_all_files (subj))
+    (call .systemd.nspawn.container.obj.manage_all_lnk_files (subj))
+
+    (call .systemd.nspawn.container.obj.relabelto_all_dirs (subj))
+    (call .systemd.nspawn.container.obj.relabelto_all_files (subj))
+    (call .systemd.nspawn.container.obj.relabelto_all_lnk_files (subj)))
+
+(in systemd.journalctl
+
+    (allow subj self
+	   (capability (dac_read_search setgid setuid sys_admin sys_chroot)))
+    (allow subj self (cap_userns (sys_admin sys_ptrace)))
+
+    (call .systemd.nspawn.container.obj.getattr_all_fs (subj))
+
+    (call .systemd.nspawn.container.obj.list_all_dirs (subj))
+    (call .systemd.nspawn.container.obj.map_all_files (subj))
+    (call .systemd.nspawn.container.obj.read_all_files (subj))
+    (call .systemd.nspawn.container.obj.read_all_lnk_files (subj))
+
+    (call .systemd.nspawn.container.subj.read_all_states (subj)))
+
+(in systemd.localectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.loginctl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.machinectl
+
+    (call .systemd.nspawn.container.obj.readwriteinherited_all_chr_files
+	  (subj)))
+
+(in systemd.mount
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.nspawn
+
+    (macro dontaudit_getattr_subj_processes ((type ARG1))
+	   (dontaudit ARG1 subj (process (getattr))))
+
+    (macro search_subj_keyrings ((type ARG1))
+	   (allow ARG1 subj (key (search))))
+
+    (macro setattr_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (setattr))))
+
+    (blockinherit .dbus.client.template)
+    (blockinherit .ptytermdev.template)
+    (blockinherit .hybrid.agent.template)
+
+    (allow subj self
+	   (capability (audit_control chown dac_override dac_read_search fowner
+				      fsetid kill mknod net_admin net_raw setgid
+				      setpcap setuid sys_admin sys_chroot
+				      sys_resource sys_ptrace)))
+
+    (allow subj self
+	   (cap_userns (chown dac_override dac_read_search fowner fsetid kill
+			      mknod net_admin setgid setpcap setuid sys_admin
+			      sys_chroot sys_ptrace)))
+    (allow subj self
+	   (process (getcap setcap setexec setfscreate setrlimit setsched)))
+    (allow subj self create_netlink_kobject_uevent_socket)
+    (allow subj self create_netlink_route_socket)
+    (allow subj self create_rawip_socket)
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self (netlink_route_socket (nlmsg_read nlmsg_write)))
+
+    (call readwrite_ptytermdev_chr_files (subj))
+    (call relabelto_ptytermdev_chr_files (subj))
+    (call setattr_ptytermdev_chr_files (subj))
+
+    (call common.type (subj))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call container.obj.execute_all_files (subj))
+    (call container.obj.getattr_all_fs (subj))
+    (call container.obj.manage_all_file (subj))
+    (call container.obj.mount_all_fs (subj))
+    (call container.obj.mounton_all_chr_files (subj))
+    (call container.obj.mounton_all_dirs (subj))
+    (call container.obj.mounton_all_files (subj))
+    (call container.obj.relabel_all_dirs (subj))
+    (call container.obj.relabel_all_fs (subj))
+    (call container.obj.relabelto_all_chr_files (subj))
+    (call container.obj.remount_all_fs (subj))
+    (call container.obj.unmount_all_fs (subj))
+
+    (call container.subj.nnptransition_all_processes (subj))
+    (call container.subj.rlimitinh_all_processes (subj))
+    (call container.subj.role (roleattr))
+    (call container.subj.setsched_all_processes (subj))
+    (call container.subj.sigkill_all_processes (subj))
+    (call container.subj.signal_all_processes (subj))
+    (call container.subj.transition_all_processes (subj))
+
+    (call logparsenv.type (subj))
+    (call notify.type (subj))
+
+    (call tmp.manage_file_dirs (subj))
+    (call tmp.mounton_file_dirs (subj))
+    (call tmp.tmp_file_type_transition_file (subj))
+
+    (call checkcontext_selinux_security (subj))
+
+    (call .bus.search_sysfile_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.mount_fs (subj))
+    (call .cgroup.mounton_fs_dirs (subj))
+
+    (call .class.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .debug.search_fs_pattern.type (subj))
+
+    (call .dev.traverse_sysfile_pattern.type (subj))
+
+    (call .devices.list_sysfile_pattern.type (subj))
+    (call .devices.readwrite_sysfile_files (subj))
+    (call .devices.read_sysfile_lnk_files (subj))
+
+    (call .devpts.fs_type_transition (subj ptytermdev chr_file "*"))
+    (call .devpts.getattr_fs (subj))
+    (call .devpts.relabelfrom_fs (subj))
+
+    (call .dos.mount_fs (subj))
+
+    (call .e2fsprogs.subj_type_transition (subj))
+
+    (call .fs.mounton_sysfile_dirs (subj))
+
+    (call .fsck.subj_type_transition (subj))
+
+    (call .fstab.read_file_files (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .ibac.changesys.type (subj))
+
+    (call .image.readwrite_file_files (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .locale.data.read_file_pattern.type (subj))
+
+    (call .log.search_file_pattern.type (subj))
+
+    (call .loop.readwrite_stordev_blk_files (subj))
+
+    (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+    (call .net.read_procfile_pattern.type (subj))
+
+    (call .net.mounton_sysctlfile_dirs (subj))
+
+    (call .null.setattr_nodedev_chr_files (subj))
+
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .polkit.ttyagent.subj_type_transition (subj))
+
+    (call .pwdlock.conf_file_type_transition_file (subj "*"))
+    (call .pwdlock.manage_file_files (subj))
+
+    (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+    (call .random.read_nodedev_chr_files (subj))
+
+    (call .random.mounton_sysctlfile_files (subj))
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbac.changesys.type (subj))
+
+    (call .resolv.conf.read_file_files (subj))
+
+    (call .root.mounton_file_dirs (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+    (call .selinux.remount_fs (subj))
+
+    (call .state.search_file_pattern.type (subj))
+
+    (call .stordev.readwrite.type (subj))
+
+    (call .sys.dontaudit_setsched_subj_processes (subj))
+    (call .sys.getrlimit_subj_processes (subj))
+    (call .sys.modulerequest_system (subj))
+    (call .sys.start_system (subj))
+    (call .sys.stop_system (subj))
+    (call .sys.writeinherited_subj_fifo_files (subj))
+
+    (call .sys.mount_fs (subj))
+
+    (call .sys.open_ptytermdev_chr_files (subj))
+
+    (call .systemd.askpassword.client.type (subj))
+
+    (call .systemd.exec.mapexecute_file_files (subj))
+    (call .systemd.exec.read_file_files (subj))
+
+    (call .systemd.journal.log.manage_file_lnk_files (subj))
+    (call .systemd.journal.log.readwrite_file_dirs (subj))
+
+    (call .systemd.machine.sendmsg_subj_dbus.type (subj))
+    (call .systemd.machine.state.manage_file_dirs (subj))
+    (call .systemd.machine.state.manage_file_files (subj))
+
+    (call .systemd.nspawn.run.manage_file_dirs (subj))
+    (call .systemd.nspawn.run.manage_file_files (subj))
+    (call .systemd.nspawn.run.mounton_file_dirs (subj))
+    (call .systemd.nspawn.run.systemd_run_file_type_transition_file (subj))
+
+    (call .systemd.resolve.run.read_file_files (subj))
+    (call .systemd.resolve.run.search_file_dirs (subj))
+    (call .systemd.resolve.sendmsg_subj_dbus.type (subj))
+
+    (call .systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .systemd.unit.run.search_file_dirs (subj))
+    (call .systemd.unit.run.start_file_services (subj))
+    (call .systemd.unit.run.status_file_services (subj))
+
+    (call .tmp.deletename_file_dirs (subj))
+    (call .tmp.relabelfrom_fs (subj))
+
+    (call .tuntap.readwrite_nodedev_chr_files (subj))
+
+    (call .dontaudit_auditaccess_unlabeled_dirs (subj))
+    (call .setattr_unlabeled_dirs (subj))
+
+    (call .user.home.manage_file_files (subj))
+    (call .user.home.readwrite_file_files (subj))
+
+    (call .xattr.mount_fs (subj))
+
+    (block common
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call .acpi.mounton_procfile_dirs (typeattr))
+
+	   (call .asound.mounton_procfile_dirs (typeattr))
+
+	   (call .bus.mounton_procfile_dirs (typeattr))
+
+	   (call .cgroup.getattr_fs_pattern.type (typeattr))
+	   (call .cgroup.manage_fs_dirs (typeattr))
+	   (call .cgroup.manage_fs_files (typeattr))
+	   (call .cgroup.remount_fs (typeattr))
+	   (call .cgroup.unmount_fs (typeattr))
+
+	   (call .fs.mounton_procfile_dirs (typeattr))
+
+	   (call .irq.mounton_procfile_dirs (typeattr))
+
+	   (call .kallsyms.mounton_procfile_files (typeattr))
+
+	   (call .kcore.mounton_procfile_files (typeattr))
+
+	   (call .kernel.mounton_sysctlfile_files (typeattr))
+
+	   (call .keys.mounton_procfile_files (typeattr))
+
+	   (call .kmsg.mounton_procfile_files (typeattr))
+
+	   (call .mqueue.mount_fs (typeattr))
+
+	   (call .ns.read_fs_pattern.type (typeattr))
+
+	   (call .proc.getattr_fs_pattern.type (typeattr))
+	   (call .proc.mount_fs (typeattr))
+	   (call .proc.remount_fs (typeattr))
+
+	   (call .scsi.mounton_procfile_dirs (typeattr))
+
+	   (call .sys.getattr_fs (typeattr))
+	   (call .sys.remount_fs (typeattr))
+	   (call .sys.unmount_fs (typeattr))
+
+	   (call .sysctl.mounton_procfile_dirs (typeattr))
+
+	   (call .sysrqtrigger.mounton_procfile_files (typeattr))
+
+	   (call .timerlist.mounton_procfile_files (typeattr))
+
+	   (call .tmp.getattr_fs_pattern.type (typeattr))
+	   (call .tmp.mount_fs (typeattr))
+	   (call .tmp.remount_fs (typeattr))
+
+	   (call .list_unlabeled_dirs (typeattr))
+	   (call .mounton_unlabeled_dirs (typeattr))
+
+	   (call .xattr.getattr_fs_pattern.type (typeattr))
+	   (call .xattr.remount_fs (typeattr)))
+
+    (block container
+
+	   (blockinherit template)
+
+	   (call .net.egress_netifs (subj))
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+	   (call .net.nodebind_netnode_udp_sockets (subj))
+	   (call .net.port.namebind_all_tcp_sockets (subj))
+	   (call .net.port.namebind_all_udp_sockets (subj))
+	   (call .net.port.nameconnect_all_tcp_sockets (subj))
+	   (call .net.sendto_nodes (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatetarget.type (subj))
+
+	   (optional systemdnspawn_invalidassociationsboolfile
+		     (call .invalidassociations.type (subj)))
+
+	   (optional systemdnspawn_invalidpacketsboolfile
+		     (call .invalidpackets.type (subj)))
+
+	   (optional systemdnspawn_invalidpeersboolfile
+		     (call .invalidpeers.type (subj)))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .systemd.nspawn.container.obj.base_template)
+		  (blockinherit .systemd.nspawn.container.subj.base_template))
+
+	   (block client
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call obj.getattr_all_fs (typeattr))
+
+		  (call obj.list_all_dirs (typeattr))
+		  (call obj.read_all_lnk_files (typeattr))
+		  (call obj.write_all_sock_files (typeattr))
+
+		  (call subj.connectto_all_unix_stream_sockets (typeattr))
+		  (call subj.read_all_states (typeattr)))
+
+	   (block obj
+
+		  (macro entrypoint_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (entrypoint))))
+
+		  (macro getattr_all_dirs ((type ARG1))
+			 (allow ARG1 typeattr (dir (getattr))))
+
+		  (macro map_all_chr_files ((type ARG1))
+			 (allow ARG1 typeattr (chr_file (map))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro mounton_all_chr_files ((type ARG1))
+			 (allow ARG1 typeattr (chr_file (mounton))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (macro watch_all_blk_files ((type ARG1))
+			 (allow ARG1 typeattr (blk_file (watch))))
+
+		  (macro watch_all_chr_files ((type ARG1))
+			 (allow ARG1 typeattr (chr_file (watch))))
+
+		  (macro watch_all_dirs ((type ARG1))
+			 (allow ARG1 typeattr (dirs (watch))))
+
+		  (macro watch_all_fifo_files ((type ARG1))
+			 (allow ARG1 typeattr (fifo_file (watch))))
+
+		  (macro watch_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (watch))))
+
+		  (macro watch_all_lnk_files ((type ARG1))
+			 (allow ARG1 typeattr (lnk_file (watch))))
+
+		  (macro watch_all_sock_files ((type ARG1))
+			 (allow ARG1 typeattr (sock_file (watch))))
+
+		  (macro watchreads_all_chr_files ((type ARG1))
+			 (allow ARG1 typeattr (chr_file (watch_reads))))
+
+		  (typeattribute typeattr)
+
+		  (blockinherit .file.all_macro_template_all_files)
+		  (blockinherit .file.all_macro_template_blk_files)
+		  (blockinherit .file.all_macro_template_chr_files)
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (blockinherit .fs.all_macro_template_fs)
+
+		  (call .noseclabelfs.type (typeattr))
+
+		  (call .rbacsep.exempt.obj.type (typeattr))
+
+		  (call .subj.entry.type (typeattr))
+
+		  (call .tmp.associate_fs (typeattr))
+
+		  (call .xattr.associate_fs_pattern.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .noseclabelfs.base_template)
+
+			 (call .systemd.nspawn.container.obj.type (fs)))
+
+		  (block template
+
+			 (macro entrypoint_fs_files ((type ARG1))
+				(allow ARG1 fs (file (entrypoint))))
+
+			 (macro map_fs_chr_files ((type ARG1))
+				(allow ARG1 fs (chr_file (map))))
+
+			 (macro map_fs_files ((type ARG1))
+				(allow ARG1 fs (file (map))))
+
+			 (macro mounton_fs_chr_files ((type ARG1))
+				(allow ARG1 fs (chr_file (mounton))))
+
+			 (macro watch_fs ((type ARG1))
+				(allow ARG1 fs (filesystem (watch))))
+
+			 (macro watch_fs_file ((type ARG1))
+				(allow ARG1 fs (files (watch))))
+
+			 (macro watchreads_fs_chr_files ((type ARG1))
+				(allow ARG1 fs (chr_file (watch_reads))))
+
+			 (blockabstract template)
+
+			 (blockinherit .fs.macro_template_all_files)
+			 (blockinherit .fs.macro_template_blk_files)
+			 (blockinherit .fs.macro_template_chr_files)
+			 (blockinherit .fs.macro_template_dirs)
+			 (blockinherit .fs.macro_template_fifo_files)
+			 (blockinherit .fs.macro_template_files)
+			 (blockinherit .fs.macro_template_lnk_files)
+			 (blockinherit .fs.macro_template_sock_files)
+			 (blockinherit .fs.macro_template_fs)
+
+			 (blockinherit
+			  .systemd.nspawn.container.obj.base_template)))
+
+	   (block subj
+
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (roleattribute roleattr)
+		  (typeattribute typeattr)
+
+		  (roletype roleattr typeattr)
+
+		  (blockinherit .subj.all_macro_template)
+
+		  (allow typeattr self (cap_userns (not (sys_module))))
+		  (allow typeattr self
+			 (cap2_userns (not (mac_admin mac_override))))
+
+		  (allow typeattr self
+			 (process (not (dyntransition execheap execstack
+						      setcurrent transition))))
+		  (allow typeattr self
+			 (process2 (not (nnp_transition nosuid_transition))))
+
+		  (allow typeattr self (fifo_file (not (execmod map mounton))))
+
+		  (allow typeattr self list_dir)
+		  (allow typeattr self mounton_file)
+		  (allow typeattr self readwrite_file)
+		  (allow typeattr self read_lnk_file)
+
+		  (allow typeattr self (bpf (prog_load prog_run)))
+
+		  (allow typeattr self (fd (use)))
+
+		  (allow typeattr self (key (link search setattr write)))
+
+		  (allow typeattr self (msg (all)))
+		  (allow typeattr self (msgq (all)))
+		  (allow typeattr self (sem (all)))
+		  (allow typeattr self (shm (all)))
+
+		  (allow typeattr self (alg_socket (accept listen)))
+		  (allow typeattr self (bluetooth_socket (accept listen)))
+		  (allow typeattr self (dccp_socket (accept listen)))
+		  (allow typeattr self (netlink_audit_socket (nlmsg_relay)))
+		  (allow typeattr self
+			 (netlink_route_socket (nlmsg_read nlmsg_write)))
+		  (allow typeattr self (sctp_socket (association accept listen)))
+		  (allow typeattr self (sockets (common)))
+		  (allow typeattr self (tcp_socket (accept listen)))
+		  (allow typeattr self (tun_socket (attach_queue)))
+		  (allow typeattr self
+			 (netlink_tcpdiag_socket (nlmsg_read nlmsg_write)))
+		  (allow typeattr self (unix_dgram_socket (sendto)))
+		  (allow typeattr self
+			 (unix_stream_socket (accept connectto listen)))
+		  (allow typeattr self
+			 (netlink_xfrm_socket (nlmsg_read nlmsg_write)))
+
+		  (call common.type (typeattr))
+
+		  (call nspawn.dontaudit_getattr_subj_processes (typeattr))
+		  (call nspawn.read_subj_states (typeattr))
+		  (call nspawn.search_subj_keyrings (typeattr))
+		  (call nspawn.sendto_subj_unix_dgram_sockets (typeattr))
+		  (call nspawn.use_subj_fds (typeattr))
+
+		  (call nspawn.readwrite_ptytermdev_chr_files (typeattr))
+		  (call nspawn.setattr_ptytermdev_chr_files (typeattr))
+
+		  (call nspawn.run.dontaudit_getattr_file_dirs (typeattr))
+
+		  (call nspawn.tmp.list_file_dirs (typeattr))
+		  (call nspawn.tmp.mounton_file_dirs (typeattr))
+		  (call nspawn.tmp.setattr_file_dirs (typeattr))
+
+		  (call .cgroup.watch_fs_files (typeattr))
+
+		  (call .hostname.mounton_sysctlfile_files (typeattr))
+
+		  (call .hugetlb.getattr_fs (typeattr))
+
+		  (call .ipv4.write_sysctlfile_files (typeattr))
+
+		  (call .ipv6.write_sysctlfile_files (typeattr))
+
+		  (call .kcore.read.type (typeattr))
+
+		  (call .kernel.mounton_sysfile_dirs (typeattr))
+
+		  (call .latencystats.mounton_procfile_files (typeattr))
+
+		  ;; /usr/lib/osrelease bind mounted from host
+		  (call .lib.dontaudit_getattr_file_files (typeattr))
+
+		  (call .mcs.constrained.type (typeattr))
+
+		  (call .mqueue.remount_fs (typeattr))
+		  (call .mqueue.unmount_fs (typeattr))
+
+		  (call .mtrr.mounton_procfile_files (typeattr))
+
+		  (call .net.write_sysctlfile_files (typeattr))
+
+		  (call .ns.getattr_fs (typeattr))
+
+		  (call .proc.list_fs_dirs (typeattr))
+		  (call .proc.read_fs_lnk_files (typeattr))
+		  (call .proc.unmount_fs (typeattr))
+
+		  (call .procfile.list_all_dirs (typeattr))
+		  (call .procfile.read_all_files (typeattr))
+		  (call .procfile.read_all_lnk_files (typeattr))
+
+		  (call .selinux.getattr_fs (typeattr))
+		  (call .selinux.list_fs_dirs (typeattr))
+		  (call .selinux.read_fs_files (typeattr))
+
+		  (call .subj.type (typeattr))
+
+		  (call .sys.dontaudit_search_subj_keyrings (typeattr))
+		  (call .sys.modulerequest_system (typeattr))
+
+		  (call .sysfile.list_all_dirs (typeattr))
+		  (call .sysfile.read_all_files (typeattr))
+		  (call .sysfile.read_all_lnk_files (typeattr))
+
+		  (call .systemd.machine.use_subj_fds (typeattr))
+
+		  (call .tmp.unmount_fs (typeattr))
+
+		  (call .watch_unlabeled_dirs (typeattr))
+
+		  (optional systemdnspawn_container_invalidassociationsboolfile
+			    (call .invalidassociations.type (typeattr)))
+
+		  (optional systemdnspawn_container_invalidpacketsboolfile
+			    (call .invalidpackets.type (typeattr)))
+
+		  (optional systemdnspawn_container_invalidpeersboolfile
+			    (call .invalidpeers.type (typeattr)))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (macro role ((role ARG1))
+				(roleattributeset roleattr ARG1))
+
+			 (roleattribute roleattr)
+			 (roletype roleattr subj)
+
+			 (blockinherit .subj.base_template)
+
+			 (call .systemd.nspawn.container.subj.type (subj)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (blockinherit .subj.macro_template)
+
+			 (blockinherit
+			  .systemd.nspawn.container.subj.base_template)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .systemd.nspawn.container.obj.template)
+		  (blockinherit .systemd.nspawn.container.subj.template)
+		  (blockinherit .systemd.nspawn.container.unit.template)
+
+		  (call entrypoint_fs_files (subj))
+		  (call execute_fs_files (subj))
+		  (call getattr_fs (subj))
+		  (call manage_fs_file (subj))
+		  (call map_fs_chr_files (subj))
+		  (call map_fs_files (subj))
+		  (call mounton_fs_dirs (subj))
+		  (call mounton_fs_files (subj))
+		  (call relabel_fs_file (subj))
+		  (call remount_fs (subj))
+		  (call unmount_fs (subj))
+		  (call watch_fs (subj))
+		  (call watch_fs_file (subj))
+
+		  (call watchreads_fs_chr_files (subj))
+
+		  (call .mqueue.deletename_fs_dirs (subj))
+		  (call .mqueue.fs_type_transition (subj fs file "*"))
+
+		  (call .tmp.deletename_fs_dirs (subj))
+		  (call .tmp.fs_type_transition (subj fs files "*")))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-nspawn@.*\.service.*"
+			   file file_context)
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.unit.all_macro_template_services)
+
+		  (call .file.unit.type (typeattr))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (block unit
+
+				(blockinherit .file.macro_template_files)
+				(blockinherit .file.unit.base_template)
+
+				(blockinherit .file.unit.macro_template_services)
+
+				(call .systemd.nspawn.container.unit.type
+				      (file))))))
+
+    (block exec
+
+	   (filecon "/usr/bin/systemd-nspawn" file file_context))
+
+    (block privcontainer
+
+	   ;; echo "1 2 3 4 5 6" | sudo runcon -t systemd.nspawn.subj -- \
+	   ;; systemd-nspawn \
+	   ;; -Z sys.id:sys.role:systemd.nspawn.privcontainer.subj:s0 \
+	   ;; -L sys.id:sys.role:systemd.nspawn.privcontainer.fs:s0 \
+	   ;; --console=pipe -D /var/lib/machines/myprivcontainer /bin/cat | \
+	   ;; awk '{ print $4 }'
+
+	   (blockinherit container.template)
+
+	   (allow subj self (capability (not (sys_module))))
+	   (allow subj self (capability2 (not (mac_admin mac_override))))
+
+	   (call .net.egress_netifs (subj))
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+	   (call .net.nodebind_netnode_udp_sockets (subj))
+	   (call .net.port.namebind_all_tcp_sockets (subj))
+	   (call .net.port.namebind_all_udp_sockets (subj))
+	   (call .net.port.nameconnect_all_tcp_sockets (subj))
+	   (call .net.sendto_nodes (subj))
+
+	   (call .subj.useinteractivefd.type (subj))
+
+	   (call .sys.readwriteinherited_subj_fifo_files (subj))
+	   (call .sys.use_subj_fds (subj))
+
+	   (call .sys.readwriteinherited_ptytermdev_chr_files (subj))
+
+	   (call .sys.user.dontaudit_getattr_subj_processes (subj))
+	   (call .sys.user.dontaudit_read_subj_states (subj))
+
+	   (call .sys.user.readwriteinherited_subj_fifo_files (subj))
+	   (call .sys.user.use_subj_fds (subj))
+
+	   (call .user.readwriteinherited_subj_fifo_files (subj))
+	   (call .user.use_subj_fds (subj))
+
+	   (optional systemdnspawn_privcontainer_invalidassociationsboolfile
+		     (call .invalidassociations.type (subj)))
+
+	   (optional systemdnspawn_privcontainer_invalidpacketsboolfile
+		     (call .invalidpackets.type (subj)))
+
+	   (optional systemdnspawn_privcontainer_invalidpeersboolfile
+		     (call .invalidpeers.type (subj))))
+
+    (block tmp
+
+	   (macro setattr_file_dirs ((type ARG1))
+		  (allow ARG1 file (dir (setattr))))
+
+	   (macro tmp_file_type_transition_file ((type ARG1))
+		  (call .tmp.file_type_transition
+			(ARG1 file dir "*")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_lnk_files)
+	   (blockinherit .file.user.tmp.base_template)))
+
+(in systemd.portablectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.run
+
+    (allow subj self (capability (sys_admin sys_chroot sys_resource)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.systemctl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self (cap_userns (setgid setuid sys_admin sys_chroot)))
+
+    (call .systemd.nspawn.container.client.type (subj)))
+
+(in systemd.timedatectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call .systemd.nspawn.container.client.type (subj)))

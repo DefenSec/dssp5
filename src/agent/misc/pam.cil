@@ -1,0 +1,257 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pam
+
+       (block conf
+
+	      (filecon "/etc/pam\.conf" file file_context)
+	      (filecon "/etc/pam\.conf\..*" file file_context)
+	      (filecon "/etc/pam\.d" dir file_context)
+	      (filecon "/etc/pam\.d/.*" any file_context)
+	      (filecon "/etc/security" dir file_context)
+	      (filecon "/etc/security/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "pam.d"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "security"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "pam.conf")))
+
+	      (blockinherit .file.conf.template)
+
+	      (call .alternatives.alternate.type (file)))
+
+       (block data
+
+	      (filecon "/usr/lib/pam\.d" dir file_context)
+	      (filecon "/usr/lib/pam\.d/.*" any file_context)
+
+	      (filecon "/usr/share/pam\.d" dir file_context)
+	      (filecon "/usr/share/pam\.d/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "pam.d")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "pam.d")))
+
+	      (blockinherit .file.data.template))
+
+       (block linked
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call conf.list_file_dirs (typeattr))
+	      (call conf.read_file_files (typeattr))
+	      (call conf.read_file_lnk_files (typeattr))
+
+	      (call login.link_all_keyrings (typeattr))
+	      (call login.search_all_keyrings (typeattr))
+
+	      (call .computeav_selinux_security (typeattr))
+
+	      (call .environ.read_file_pattern.type (typeattr))
+
+	      (call .log.search_file_pattern.type (typeattr))
+
+	      (call .logindefs.read_file_files (typeattr))
+
+	      (call .rbacsep.usefdsource.type (typeattr))
+
+	      (call .run.search_file_pattern.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+	      (call .selinux.readwrite_fs_pattern.type (typeattr))
+
+	      (call .shadow.dontaudit_read_file_files (typeattr))
+
+	      (call .sys.link_subj_keyrings (typeattr))
+	      (call .sys.search_subj_keyrings (typeattr))
+
+	      (call .systemd.sessions.run.writeinherited_file_fifo_files
+		    (typeattr))
+
+	      (call .sys.user.link_subj_keyrings (typeattr))
+	      (call .sys.user.search_subj_keyrings (typeattr))
+
+	      (call .unixchkpwd.subj_type_transition (typeattr))
+
+	      (call .user.unpriv.link_all_keyrings (typeattr))
+	      (call .user.unpriv.search_all_keyrings (typeattr))
+
+	      (call .utmp.log.append_file_files (typeattr))
+	      (call .utmp.log.dontaudit_writeinherited_file_files (typeattr))
+	      (call .utmp.log.read_file_files (typeattr))
+	      (call .utmp.run.read_file_files (typeattr)))
+
+       (block log
+
+	      (filecon "/var/log/tallylog" file file_context)
+	      (filecon "/var/log/tallylog\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "tallylog")))
+
+	      (blockinherit .file.log.pam.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block login
+
+	      (macro link_all_keyrings ((type ARG1))
+		     (allow ARG1 typeattr (key (link))))
+
+	      (macro search_all_keyrings ((type ARG1))
+		     (allow ARG1 typeattr (key (search))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self
+		     (capability (chown dac_read_search fowner fsetid kill
+					setgid setuid sys_nice sys_resource)))
+	      (allow typeattr self
+		     (process (setexec setkeycreate setrlimit setsched)))
+
+	      (call linked.type (typeattr))
+
+	      (call run.manage_file_files (typeattr))
+	      (call run.readwrite_file_dirs (typeattr))
+
+	      (call .checkcontext_selinux_security (typeattr))
+
+	      (call .computerelabel_selinux_security (typeattr))
+	      (call .computeuser_selinux_security (typeattr))
+
+	      (call .cracklib.data.list_file_dirs (typeattr))
+	      (call .cracklib.data.read_file_files (typeattr))
+
+	      (call .devpts.search_fs_pattern.type (typeattr))
+
+	      (call .ibac.change.type (typeattr))
+
+	      (call .mail.search_file_pattern.type (typeattr))
+
+	      (call .motd.conf.read_file_pattern.type (typeattr))
+	      (call .motd.data.read_file_pattern.type (typeattr))
+	      (call .motd.run.read_file_pattern.type (typeattr))
+
+	      (call .nologin.read_file_files (typeattr))
+
+	      (call .rbac.change.type (typeattr))
+
+	      (call .rbacsep.usefdtarget.type (typeattr))
+
+	      (call .selinux.default.read_file_pattern.type (typeattr))
+
+	      (call .subj.interactivefd.type (typeattr))
+
+	      (call .sys.home.search_file_pattern.type (typeattr))
+
+	      (call .sys.user.create_subj_keyrings (typeattr))
+	      (call .sys.user.rlimitinh_subj_processes (typeattr))
+	      (call .sys.user.signal_subj_processes (typeattr))
+	      (call .sys.user.signull_subj_processes (typeattr))
+	      (call .sys.user.transition_subj_processes (typeattr))
+	      (call .sys.user.write_subj_keyrings (typeattr))
+
+	      (call .unixupdate.subj_type_transition (typeattr))
+
+	      (call .user.mail.getattr_file_files (typeattr))
+
+	      (call .utmp.log.writeinherited_file_files (typeattr))
+	      (call .utmp.run.writeinherited_file_files (typeattr)))
+
+       (block run
+
+	      (filecon "/run/sepermit" dir file_context)
+	      (filecon "/run/sepermit/.*" any file_context)
+
+	      (macro run_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .run.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.run.pam.template)))
+
+(in exec
+
+    (filecon "/etc/security/namespace\.init" file file_context))
+
+(in file.log
+
+    (block pam
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (blockinherit .file.all_macro_template_dirs)
+	      (blockinherit .file.all_macro_template_files)
+
+	      (typeattribute typeattr)
+
+	      (call .file.log.type (typeattr))
+
+	      (block base_template
+
+		     (blockabstract base_template)
+
+		     (blockinherit .file.log.base_template)
+
+		     (call .file.log.pam.type (file)))
+
+	      (block template
+
+		     (blockabstract template)
+
+		     (blockinherit .file.log.pam.base_template)
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files))))
+
+(in file.run
+
+    (block pam
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.run.base_template)
+
+		  (call .file.run.pam.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.run.pam.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .pam.conf.conf_file_type_transition_file (typeattr))
+    (call .pam.data.data_file_type_transition_file (typeattr))
+    (call .pam.data.lib_file_type_transition_file (typeattr))
+    (call .pam.log.log_file_type_transition_file (typeattr))
+    (call .pam.run.run_file_type_transition_file (typeattr dir "sepermit")))

@@ -1,0 +1,110 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block alternatives
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (dac_override dac_read_search)))
+       (allow subj self create_unix_stream_socket)
+       (dontaudit subj self (capability (net_admin)))
+
+       (call alternate.getattr_all_files (subj))
+       (call alternate.manage_all_lnk_files (subj))
+       (call alternate.readwrite_all_dirs (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .conf.getattr_file_files (subj))
+       (call .conf.manage_file_lnk_files (subj))
+       (call .conf.readwrite_file_dirs (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .data.getattr_file_files (subj))
+       (call .data.manage_file_lnk_files (subj))
+       (call .data.readwrite_file_dirs (subj))
+
+       (call .exec.manage_file_lnk_files (subj))
+       (call .exec.readwrite_file_dirs (subj))
+
+       (call .file.exec.getattr_all_files (subj))
+       (call .file.unit.getattr_all_files (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .lib.getattr_file_files (subj))
+       (call .lib.manage_file_lnk_files (subj))
+       (call .lib.readwrite_file_dirs (subj))
+
+       (call .libnl.conf.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .man.data.manage_file_lnk_files (subj))
+       (call .man.data.readwrite_file_dirs (subj))
+
+       (call .pam.conf.manage_file_lnk_files (subj))
+       (call .pam.conf.readwrite_file_dirs (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.readstatesource.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .sys.read_subj_states (subj))
+       (call .sys.reload_system (subj))
+       (call .sys.status_system (subj))
+
+       (call .systemd.conf.search_file_pattern.type (subj))
+
+       (call .systemd.private.type (subj))
+
+       (call .systemd.systemctl.exec.execute_file_files (subj))
+
+       (call .systemd.unit.manage_file_lnk_files (subj))
+       (call .systemd.unit.readwrite_file_dirs (subj))
+
+       (call .systemd.unit.run.search_file_dirs (subj))
+
+       (block alternate
+
+	      (macro getattr_all_files ((type ARG1))
+		     (allow ARG1 typeattr (file (getattr))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (blockinherit .file.all_macro_template_dirs)
+	      (blockinherit .file.all_macro_template_files)
+	      (blockinherit .file.all_macro_template_lnk_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/alternatives" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/alternatives" dir file_context)
+	      (filecon "/var/lib/alternatives/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "alternatives")))
+
+	      (blockinherit .file.state.template)))
+
+(in file.unconfined
+
+    (call .alternatives.state.state_file_type_transition_file (typeattr)))

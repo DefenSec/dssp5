@@ -1,0 +1,40 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block fstrim
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self (capability (dac_override dac_read_search sys_admin)))
+
+       (call .block.traverse_sysfile_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.list_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_files (subj))
+
+       (call .fstab.read_file_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mount.mountpoint.readwrite_all_dirs (subj))
+
+       (call .stordev.getattr_all_blk_files (subj))
+       (call .stordev.getattr_all_chr_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/fstrim" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/fstrim\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/fstrim\.timer.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))

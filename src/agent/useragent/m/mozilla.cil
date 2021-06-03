@@ -1,0 +1,114 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mozilla
+
+       (block data
+
+	      (filecon "/usr/lib/mozilla" dir file_context)
+	      (filecon "/usr/lib/mozilla/.*" any file_context)
+
+	      (filecon "/usr/share/mozilla" dir file_context)
+	      (filecon "/usr/share/mozilla/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "mozilla")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "mozilla")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.template))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.mozilla" dir file_context)
+	      (filecon "HOME_DIR/\.mozilla/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file dir ".mozilla")))
+
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.user.home.mozilla.template)
+
+	      (block cache
+
+		     (filecon "HOME_DIR/\.cache/mozilla" dir file_context)
+		     (filecon "HOME_DIR/\.cache/mozilla/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_cache_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.cache.file_type_transition
+				  (ARG1 file dir "mozilla")))
+
+		     (blockinherit .file.user.home.cache.template))))
+
+(in file.unconfined
+
+    (call .mozilla.data.data_file_type_transition_file (typeattr))
+    (call .mozilla.data.lib_file_type_transition_file (typeattr))
+    (call .mozilla.home.cache.user_home_cache_file_type_transition_file
+	  (typeattr))
+    (call .mozilla.home.user_home_file_type_transition_file (typeattr)))
+
+(in file.user.home
+
+    (block mozilla
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.home.base_template)
+
+		  (call .file.user.home.conf.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.home.mozilla.base_template))))
+
+(in user
+
+    (call .mozilla.home.cache.manage_file_dirs (subj))
+    (call .mozilla.home.cache.manage_file_files (subj))
+    (call .mozilla.home.cache.map_file_files (subj))
+    (call .mozilla.home.cache.relabel_file_dirs (subj))
+    (call .mozilla.home.cache.relabel_file_files (subj))
+    (call .mozilla.home.cache.user_home_cache_file_type_transition_file (subj))
+
+    (call .mozilla.home.manage_file_dirs (subj))
+    (call .mozilla.home.manage_file_files (subj))
+    (call .mozilla.home.manage_file_lnk_files (subj))
+    (call .mozilla.home.map_file_files (subj))
+    (call .mozilla.home.relabel_file_dirs (subj))
+    (call .mozilla.home.relabel_file_files (subj))
+    (call .mozilla.home.relabel_file_lnk_files (subj))
+    (call .mozilla.home.user_home_file_type_transition_file (subj)))

@@ -3,6 +3,9 @@
 
 (block sysfile
 
+       (macro dontaudit_listinherited_all_dirs ((type ARG1))
+	      (dontaudit ARG1 typeattr listinherited_dir))
+
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
 
@@ -20,8 +23,8 @@
 
 	      (blockabstract base_template)
 
-	      (context sysfile_context
-		       (.sys.id .sys.role sysfile (systemlow systemlow)))
+	      (context sysfile_context (.sys.id .sys.role sysfile
+						(systemlow systemlow)))
 
 	      (type sysfile)
 	      (call .sysfile.type (sysfile)))
@@ -163,7 +166,8 @@
 	      (typeattribute typeattr)
 
 	      (allow typeattr sysfile.typeattr (dir (not (execmod))))
-	      (allow typeattr sysfile.typeattr (file (not (entrypoint execmod))))
+	      (allow typeattr sysfile.typeattr
+		     (file (not (entrypoint execmod))))
 	      (allow typeattr sysfile.typeattr
 		     (lnk_file (not (execmod map mounton))))))
 

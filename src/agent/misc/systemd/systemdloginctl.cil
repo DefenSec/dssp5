@@ -1,0 +1,85 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block loginctl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (call pager.type (subj))
+
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.traverse_sysfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .leds.read_sysfile_lnk_files (subj))
+	   (call .leds.search_sysfile_dirs (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .openssh.client.subj_type_transition (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .systemd.journal.log.map_file_pattern.type (subj))
+	   (call .systemd.journal.log.read_file_pattern.type (subj))
+
+	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.machines.run.list_file_dirs (subj))
+	   (call .systemd.machines.run.read_file_files (subj))
+
+	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/loginctl" file file_context))))
+
+(in user
+
+    (call .systemd.loginctl.role (role)))
+
+(in wheel
+
+    (call .systemd.loginctl.role (role)))

@@ -1,0 +1,139 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in sway
+
+    (block lock
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self (process (getcap)))
+	   (allow subj self create_netlink_audit_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call home.conf.list_file_dirs (subj))
+	   (call home.conf.read_file_files (subj))
+
+	   (call sway.client.type (subj))
+
+	   (call tmpfs.manage_file_files (subj))
+	   (call tmpfs.map_file_files (subj))
+	   (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+
+	   (call .devpts.search_fs_pattern.type (subj))
+
+	   (call .font.cache.dontaudit_setattr_file.type (subj))
+	   (call .font.cache.map_file_pattern.type (subj))
+	   (call .font.cache.read_file_pattern.type (subj))
+	   (call .font.conf.read_file_pattern.type (subj))
+	   (call .font.data.map_file_pattern.type (subj))
+	   (call .font.data.read_file_pattern.type (subj))
+
+	   (call .font.home.cache.map_file_pattern.type (subj))
+	   (call .font.home.cache.manage_file_pattern.type (subj))
+	   (call .font.home.cache.user_home_cache_file_type_transition_file
+		 (subj))
+	   (call .font.home.conf.read_file_pattern.type (subj))
+	   (call .font.home.data.map_file_pattern.type (subj))
+	   (call .font.home.data.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .pam.linked.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .wlroots.client.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (call .xkb.data.map_file_pattern.type (subj))
+	   (call .xkb.data.read_file_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/swaylock" file file_context))
+
+	   (block conf
+
+		  (filecon "/etc/swaylock" dir file_context)
+		  (filecon "/etc/swaylock/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "swaylock")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block home
+
+		  (block conf
+
+			 (filecon "HOME_DIR/\.config/swaylock" dir file_context)
+			 (filecon "HOME_DIR/\.config/swaylock/.*" any
+				  file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "swaylock")))
+
+			 (blockinherit .file.user.home.conf.template)))
+
+	   (block tmpfs
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_fs_type_transition_file ((type ARG1))
+			 (call .tmp.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmpfs.base_template)
+
+		  (call .wlroots.client.tmpfs.type (file)))))
+
+(in file.unconfined
+
+    (call .sway.lock.conf.conf_file_type_transition_file (typeattr))
+    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr)))
+
+(in user
+
+    (call .sway.lock.home.conf.manage_file_dirs (typeattr))
+    (call .sway.lock.home.conf.manage_file_files (typeattr))
+    (call .sway.lock.home.conf.map_file_files (typeattr))
+    (call .sway.lock.home.conf.relabel_file_dirs (typeattr))
+    (call .sway.lock.home.conf.relabel_file_files (typeattr))
+    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+
+    (call .sway.lock.role (role))
+
+    (call .sway.lock.tmpfs.manage_file_files (subj))
+    (call .sway.lock.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .sway.lock.role (role)))

@@ -1,0 +1,68 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block localectl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+
+	   (call logparsenv.type (subj))
+	   (call pager.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kbd.data.list_file_dirs (subj))
+	   (call .kbd.data.read_file_files (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .openssh.client.subj_type_transition (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .systemd.locale.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.run.search_file_pattern.type (subj))
+
+	   (call .systemd.machines.run.list_file_dirs (subj))
+	   (call .systemd.machines.run.read_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/localectl" file file_context))))
+
+(in user
+
+    (call .systemd.localectl.role (role)))
+
+(in wheel
+
+    (call .systemd.localectl.role (role)))

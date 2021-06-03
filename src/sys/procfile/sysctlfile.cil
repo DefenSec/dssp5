@@ -17,8 +17,8 @@
 
 	      (blockabstract base_template)
 
-	      (context sysctlfile_context
-		       (.sys.id .sys.role sysctlfile (systemlow systemlow)))
+	      (context sysctlfile_context (.sys.id .sys.role sysctlfile
+						   (systemlow systemlow)))
 
 	      (type sysctlfile)
 	      (call .sysctlfile.type (sysctlfile)))

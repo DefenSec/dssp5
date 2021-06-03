@@ -1,0 +1,219 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .lostfound.systemd_portable_state_file_type_transition_file
+	  (typeattr))
+
+    (call .systemd.portable.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.portable.run.run_file_type_transition_file (typeattr))
+    (call .systemd.portable.state.state_file_type_transition_file (typeattr)))
+
+(in lostfound
+
+       (filecon "/var/lib/portables/\.journal" file ())
+       (filecon "/var/lib/portables/lost\+found" dir file_context)
+
+       (macro systemd_portable_state_file_type_transition_file ((type ARG1))
+	      (call .systemd.portable.state.file_type_transition
+		    (ARG1 file dir "lost+found"))))
+
+(in systemd.portable
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (chown dac_override dac_read_search fowner fsetid kill
+			      mknod setgid sys_admin sys_chroot)))
+    (allow subj self create_netlink_kobject_uevent_socket)
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self create_unix_stream_socket)
+
+    (call conf.manage_file_dirs (subj))
+    (call conf.manage_file_lnk_files (subj))
+    (call conf.conf_file_type_transition_file (subj))
+
+    (call data.read_file_files (subj))
+    (call data.search_file_dirs (subj))
+
+    (call logparsenv.type (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_lnk_files (subj))
+    (call run.run_file_type_transition_file (subj))
+
+    (call state.manage_file_dirs (subj))
+    (call state.state_file_type_transition_file (subj))
+
+    (call tmp.manage_file_dirs (subj))
+    (call tmp.mounton_file_dirs (subj))
+    (call tmp.tmp_file_type_transition_file (subj))
+
+    (call tmpfs.manage_file_files (subj))
+    (call tmpfs.tmp_fs_type_transition_file (subj))
+
+    (call .bus.search_sysfile_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .class.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .debug.search_fs_pattern.type (subj))
+
+    (call .dev.traverse_sysfile_pattern.type (subj))
+
+    (call .devices.list_sysfile_dirs (subj))
+    (call .devices.read_sysfile_files (subj))
+    (call .devices.read_sysfile_lnk_files (subj))
+
+    (call .file.unit.manage_all_files (subj))
+    (call .file.unit.status_all_services (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .loop.readwrite_stordev_blk_files (subj))
+
+    (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+    (call .lostfound.dontaudit_auditaccess_dirs (subj))
+    (call .lostfound.list_file_dirs (subj))
+
+    (call .mount.image.deletename_all_dirs (subj))
+    (call .mount.image.manage_all_files (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .polkit.sendmsg_subj_dbus.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .root.mounton_file_dirs (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .stordev.readwrite.type (subj))
+
+    (call .sys.modulerequest_system (subj))
+    (call .sys.sendmsg_subj_dbus.type (subj))
+    (call .sys.status_system (subj))
+
+    (call .systemd.conf.search_file_pattern.type (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .systemd.notify.type (subj))
+
+    (call .systemd.nspawn.run.manage_file_dirs (subj))
+    (call .systemd.nspawn.run.manage_file_files (subj))
+    (call .systemd.nspawn.run.systemd_run_file_type_transition_file (subj))
+
+    (call .systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .systemd.unit.manage_file_dirs (subj))
+    (call .systemd.unit.manage_file_lnk_files (subj))
+    (call .systemd.unit.systemd_conf_file_type_transition_file
+	  (subj dir "system.attached"))
+    (call .systemd.unit.systemd_conf_file_type_transition_file (subj file "*"))
+
+    (call .systemd.unit.run.manage_file_dirs (subj))
+    (call .systemd.unit.run.manage_file_files (subj))
+    (call .systemd.unit.run.manage_file_lnk_files (subj))
+    (call .systemd.unit.run.status_file_services (subj))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (subj dir "system.attached"))
+    (call .systemd.unit.run.systemd_run_file_type_transition_file
+	  (subj file "*"))
+
+    (call .tmp.deletename_file_dirs (subj))
+
+    (call .trace.search_fs_dirs (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+    (call .xattr.mount_fs (subj))
+    (call .xattr.unmount_fs (subj))
+
+    (block conf
+
+	   (filecon "/etc/portables" dir file_context)
+	   (filecon "/etc/portables/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "portables")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_lnk_files))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-portabled" file file_context))
+
+    (block run
+
+	   (filecon "/run/portables" dir file_context)
+	   (filecon "/run/portables/.*" any file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "portables")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_lnk_files))
+
+    (block state
+
+	   (filecon "/var/lib/portables" dir file_context)
+	   (filecon "/var/lib/portables/.*" any ())
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "portables")))
+
+	   (blockinherit .file.conf.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+
+	   (call .mount.image.type (file))
+	   (call .mount.mountpoint.type (file)))
+
+    (block tmp
+
+	   (macro tmp_file_type_transition_file ((type ARG1))
+		  (call .tmp.file_type_transition
+			(ARG1 file dir "*")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.tmp.base_template))
+
+    (block tmpfs
+
+	   (macro tmp_fs_type_transition_file ((type ARG1))
+		  (call .tmp.fs_type_transition
+			(ARG1 file file "*")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmpfs.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-portabled\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)
+
+	   (call .dbus.activated.unit.type (file))))

@@ -7,4 +7,10 @@
        (filecon "/dev/input/mice" char nodedev_context)
        (filecon "/dev/input/mouse([0-9]+)?" char nodedev_context)
 
+       (macro getattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (getattr))))
+
+       (macro setattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (setattr))))
+
        (blockinherit .nodedev.template))

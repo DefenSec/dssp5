@@ -3,7 +3,6 @@
 
 (block overcommitmemory
 
-       (genfscon "proc" "/sys/vm/overcommit_memory"
-		 sysctlfile_context)
+       (genfscon "proc" "/sys/vm/overcommit_memory" sysctlfile_context)
 
        (blockinherit .sysctlfile.vm.template))

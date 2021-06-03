@@ -1,0 +1,113 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block journalctl
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (unix_dgram_socket (sendto)))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.map_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call logparsenv.type (subj))
+	   (call pager.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .log.search_file_pattern.type (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .polkit.ttyagent.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .systemd.catalog.data.list_file_dirs (subj))
+	   (call .systemd.catalog.data.read_file_files (subj))
+
+	   (call .systemd.catalog.state.manage_file_dirs (subj))
+	   (call .systemd.catalog.state.manage_file_files (subj))
+	   (call .systemd.catalog.state.map_file_files (subj))
+	   (call .systemd.catalog.state.systemd_state_file_type_transition_file
+		 (subj))
+
+	   (call .systemd.journal.connectto_subj_unix_stream_sockets (subj))
+
+	   (call .systemd.journal.log.manage_file_dirs (subj))
+	   (call .systemd.journal.log.manage_file_files (subj))
+	   (call .systemd.journal.log.map_file_files (subj))
+	   (call .systemd.journal.log.read_file_lnk_files (subj))
+	   (call .systemd.journal.log.watch_file_dirs (subj))
+
+	   (call .systemd.machines.run.read_file_files (subj))
+	   (call .systemd.machines.run.search_file_dirs (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .systemd.journal.run.search_file_dirs (subj))
+	   (call .systemd.journal.run.write_file_sock_files (subj))
+
+	   (call .systemd.state.search_file_pattern.type (subj))
+
+	   (call .systemd.askpassword.client.type (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/journalctl" file file_context))
+
+	   (block tmp
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmp.base_template))))
+
+(in user
+
+    (call .systemd.journalctl.role (role))
+
+    (call .systemd.journalctl.tmp.manage_file_files (subj))
+    (call .systemd.journalctl.tmp.map_file_files (subj))
+    (call .systemd.journalctl.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .systemd.journalctl.role (role)))

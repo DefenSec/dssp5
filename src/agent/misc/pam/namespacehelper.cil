@@ -1,0 +1,17 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block namespacehelper
+
+       (blockinherit .hybrid.agent.template)
+
+       (block exec
+
+	      (filecon "/usr/bin/pam_namespace_helper" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/pam_namespace\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))

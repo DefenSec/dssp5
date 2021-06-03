@@ -1,0 +1,67 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.user
+
+    (block tmpfs
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.tmpfs.type (typeattr))
+	   (call .file.user.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.base_template)
+
+		  (call .file.user.tmpfs.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_fifo_files)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.tmpfs.base_template))))
+
+(in user
+
+    (call tmpfs.manage_file_pattern.type (subj))
+    (call tmpfs.map_file_files (subj))
+    (call tmpfs.relabel_file_pattern.type (subj))
+    (call tmpfs.tmp_fs_type_transition_file (subj dir "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
+
+    (call .tmp.deletename_fs_dirs (subj))
+
+    (block tmpfs
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro tmp_fs_type_transition_file
+		  ((type ARG1)(class ARG2)(name ARG3))
+		  (call .tmp.fs_type_transition
+			(ARG1 file ARG2 ARG3)))
+
+	   (blockinherit .file.user.tmpfs.template)))

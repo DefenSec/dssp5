@@ -1,0 +1,68 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block machineidsetup
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self
+		  (capability (dac_override dac_read_search setgid setuid
+					    sys_admin sys_chroot)))
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .conf.deletename_file_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .ibac.objchangesys.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .machineid.conf_file_type_transition_file (subj))
+	   (call .machineid.manage_file_files (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbac.objchangesys.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .root.mounton_file_dirs (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+	   (call .tmp.unmount_fs (subj))
+
+	   (call .var.list_file_dirs (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-machine-id-setup" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-machine-id-commit\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

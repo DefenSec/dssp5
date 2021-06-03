@@ -1,0 +1,50 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pinentry
+
+       (blockinherit .user.agent.template)
+       (blockinherit .user.dbus.client.template)
+
+       (allow subj self (process (getsched setsched)))
+       (allow subj self create_unix_stream_socket)
+
+       (call exec.execute_file_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .gnupg.agent.unix_stream_connect (subj))
+       (call .gnupg.read_subj_states (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.search_file_pattern.type (subj))
+
+       (call .user.run.search_file_pattern.type (subj))
+
+       (call .user.termdev.open_all_chr_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/pinentry" file file_context)
+	      (filecon "/usr/bin/pinentry-curses" file file_context)))
+
+(in user
+
+    (call .pinentry.role (role)))
+
+(in wheel
+
+    (call .pinentry.role (role)))

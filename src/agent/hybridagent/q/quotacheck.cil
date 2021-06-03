@@ -1,0 +1,126 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block quotacheck
+
+       (filecon "HOME_ROOT/aquota\.(user|group)" file file_context)
+       (filecon "/aquota\.(user|group)" file file_context)
+       (filecon "/tmp/aquota\.(user|group)" file file_context)
+       (filecon "/var/aquota\.(user|group)" file file_context)
+       (filecon "/var/tmp/aquota\.(user|group)" file file_context)
+
+       (macro getattr_file_files ((type ARG1))
+	      (allow ARG1 file (file (getattr))))
+
+       (macro home_file_type_transition_file ((type ARG1))
+	      (call .home.file_type_transition
+		    (ARG1 file file "aquota.group"))
+	      (call .home.file_type_transition
+		    (ARG1 file file "aquota.group.new"))
+	      (call .home.file_type_transition
+		    (ARG1 file file "aquota.user"))
+	      (call .home.file_type_transition
+		    (ARG1 file file "aquota.user.new")))
+
+       (macro quotaon_file_files ((type ARG1))
+	      (allow ARG1 file (file (quotaon))))
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file file "aquota.group"))
+	      (call .root.file_type_transition
+		    (ARG1 file file "aquota.group.new"))
+	      (call .root.file_type_transition
+		    (ARG1 file file "aquota.user"))
+	      (call .root.file_type_transition
+		    (ARG1 file file "aquota.user.new")))
+
+       (macro tmp_file_type_transition_file ((type ARG1))
+	      (call .tmp.file_type_transition
+		    (ARG1 file file "aquota.group"))
+	      (call .tmp.file_type_transition
+		    (ARG1 file file "aquota.group.new"))
+	      (call .tmp.file_type_transition
+		    (ARG1 file file "aquota.user"))
+	      (call .tmp.file_type_transition
+		    (ARG1 file file "aquota.user.new")))
+
+       (macro var_file_type_transition_file ((type ARG1))
+	      (call .var.file_type_transition
+		    (ARG1 file file "aquota.group"))
+	      (call .var.file_type_transition
+		    (ARG1 file file "aquota.group.new"))
+	      (call .var.file_type_transition
+		    (ARG1 file file "aquota.user"))
+	      (call .var.file_type_transition
+		    (ARG1 file file "aquota.user.new")))
+
+       (blockinherit .file.base_template)
+       (blockinherit .file.macro_template_files)
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self
+	      (capability (dac_read_search dac_override linux_immutable
+					   sys_admin)))
+
+       (call home_file_type_transition_file (subj))
+       (call manage_file_files (subj))
+       (call quotaon_file_files (subj))
+       (call tmp_file_type_transition_file (subj))
+       (call var_file_type_transition_file (subj))
+
+       (call bootflag.manage_file_files (subj))
+       (call bootflag.root_file_type_transition_file (subj))
+
+       (call .fs.read_sysctlfile_files (subj))
+       (call .fs.search_sysctlfile_pattern.type (subj))
+
+       (call .file.read_all_file (subj))
+
+       (call .home.deletename_file_dirs (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .root.deletename_file_dirs (subj))
+
+       (call .shadow.read.type (subj))
+
+       (call .stordev.read.type (subj))
+       (call .stordev.read_all_blk_files (subj))
+       (call .stordev.read_all_chr_files (subj))
+
+       (call .sys.dontaudit_setsched_subj_processes (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .var.deletename_file_dirs (subj))
+
+       (call .xattr.associate_fs_pattern.type (file))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+       (call .xattr.quotaget_fs (subj))
+       (call .xattr.quotamod_fs (subj))
+       (call .xattr.remount_fs (subj))
+
+       (block bootflag
+
+	      (filecon "/forcequotacheck" file file_context)
+
+	      (macro root_file_type_transition_file ((type ARG1))
+		     (call .root.file_type_transition
+			   (ARG1 file file "forcequotacheck")))
+
+	      (blockinherit .file.bootflag.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/quotacheck" file file_context)))
+
+(in file.unconfined
+
+    (call .quotacheck.bootflag.root_file_type_transition_file (typeattr))
+
+    (call .quotacheck.home_file_type_transition_file (typeattr))
+    (call .quotacheck.root_file_type_transition_file (typeattr))
+    (call .quotacheck.tmp_file_type_transition_file (typeattr))
+    (call .quotacheck.var_file_type_transition_file (typeattr)))

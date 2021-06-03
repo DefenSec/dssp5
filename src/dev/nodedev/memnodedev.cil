@@ -42,8 +42,7 @@
 
 	      (typeattributeset not_typeattr (not typeattr))
 
-	      (neverallow not_typeattr mem.nodedev
-			  (chr_file (append write)))))
+	      (neverallow not_typeattr mem.nodedev (chr_file (append write)))))
 
 (in dev.unconfined
 

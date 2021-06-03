@@ -1,0 +1,26 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block utempter
+
+       (blockinherit .user.agent.template)
+
+       (call .log.search_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .utmp.run.readwrite_file_files (subj))
+
+       (call .utmp.log.write_file_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/utempter/utempter" file file_context)))
+
+(in user
+
+    (call .utempter.role (role)))
+
+(in wheel
+
+    (call .utempter.role (role)))

@@ -3,8 +3,13 @@
 
 (block hugetlb
 
+       (filecon "/dev/hugepages" dir ())
+       (filecon "/dev/hugepages/.*" any ())
+
        (fsuse trans "hugetlbfs" fs_context)
 
        (blockinherit .fs.macro_template_dirs)
        (blockinherit .fs.macro_template_files)
-       (blockinherit .seclabelfs.template))
+       (blockinherit .seclabelfs.template)
+
+       (allow fs self (filesystem (associate))))

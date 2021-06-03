@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .mail.conf.conf_file_type_transition_file (typeattr)))
+
+(in mail
+
+    (block conf
+
+	   (filecon "/etc/mail" dir file_context)
+	   (filecon "/etc/mail/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "mail")))
+
+	   (blockinherit .file.conf.template)))

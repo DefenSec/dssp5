@@ -1,0 +1,123 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.state
+
+    (block samba
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.state.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.base_template)
+
+		  (call .file.state.samba.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.state.samba.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .samba.conf.conf_file_type_transition_file (typeattr))
+    (call .samba.lock.samba_state_file_type_transition_file (typeattr))
+    (call .samba.log.log_file_type_transition_file (typeattr))
+    (call .samba.run.run_file_type_transition_file (typeattr))
+    (call .samba.state.state_file_type_transition_file (typeattr))
+
+    (call .winbindd.run.run_file_type_transition_file (typeattr)))
+
+(in samba
+
+    (block conf
+
+	   (filecon "/etc/samba" dir file_context)
+	   (filecon "/etc/samba/.*" any file_context)
+
+	   (filecon "/etc/sysconfig/samba" file file_context)
+	   (filecon "/etc/sysconfig/samba\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "samba"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "samba")))
+
+	   (blockinherit .file.conf.template))
+
+    (block lock
+
+	   (filecon "/var/lib/samba/lock" dir file_context)
+	   (filecon "/var/lib/samba/lock/.*" any file_context)
+
+	   (macro samba_state_file_type_transition_file ((type ARG1))
+		  (call .samba.state.file_type_transition
+			(ARG1 file dir "lock")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.state.samba.base_template))
+
+    (block log
+
+	   (filecon "/var/log/samba" dir file_context)
+	   (filecon "/var/log/samba/.*" any file_context)
+
+	   (macro log_file_type_transition_file ((type ARG1))
+		  (call .log.file_type_transition
+			(ARG1 file dir "samba")))
+
+	   (blockinherit .file.log.template))
+
+    (block run
+
+	   (filecon "/run/samba" dir file_context)
+	   (filecon "/run/samba/.*" any file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "samba")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.run.base_template))
+
+    (block state
+
+	   (filecon "/var/lib/samba" dir file_context)
+	   (filecon "/var/lib/samba/.*" any file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "samba")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.state.samba.base_template)))
+
+(block winbindd
+
+       (block run
+
+	      (filecon "/run/winbindd" dir file_context)
+	      (filecon "/run/winbindd/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "winbindd")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.run.base_template)))

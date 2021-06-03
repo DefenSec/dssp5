@@ -1,0 +1,115 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.modulesload.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.modulesload.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.modulesload.run.run_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block modulesload
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call logparsenv.type (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call run.list_file_dirs (subj))
+	   (call run.read_file_files (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kmod.map_file_files (subj))
+	   (call .kmod.read_file_files (subj))
+
+	   (call .kmod.conf.list_file_dirs (subj))
+	   (call .kmod.conf.read_file_files (subj))
+
+	   (call .kmod.data.list_file_dirs (subj))
+	   (call .kmod.data.read_file_files (subj))
+
+	   (call .kmod.subj_type_transition (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .mod.search_file_dirs (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sysctl.subj_type_transition (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block conf
+
+		  (filecon "/etc/modules-load\.d" dir file_context)
+		  (filecon "/etc/modules-load\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "modules-load.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/modules-load\.d" dir file_context)
+		  (filecon "/usr/lib/modules-load\.d/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "modules-load.d")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-modules-load" file
+			   file_context))
+
+	   (block run
+
+		  (filecon "/run/modules-load\.d" dir file_context)
+		  (filecon "/run/modules-load\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "modules-load.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.template))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-modules-load\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))

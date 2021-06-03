@@ -1,0 +1,7 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in locale.data
+
+    (filecon "/usr/share/X11/locale" dir file_context)
+    (filecon "/usr/share/X11/locale/.*" any file_context))

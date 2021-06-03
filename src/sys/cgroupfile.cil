@@ -19,8 +19,8 @@
 
 	      (blockabstract base_template)
 
-	      (context cgroupfile_context
-		       (.sys.id .sys.role cgroupfile (systemlow systemlow)))
+	      (context cgroupfile_context (.sys.id .sys.role cgroupfile
+						   (systemlow systemlow)))
 
 	      (type cgroupfile)
 	      (call .cgroupfile.type (cgroupfile)))

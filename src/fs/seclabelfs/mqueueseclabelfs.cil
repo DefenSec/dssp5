@@ -3,8 +3,15 @@
 
 (block mqueue
 
+       (filecon "/dev/mqueue" dir ())
+       (filecon "/dev/mqueue/.*" any ())
+
        (fsuse trans "mqueue" fs_context)
 
        (blockinherit .fs.macro_template_dirs)
        (blockinherit .fs.macro_template_files)
-       (blockinherit .seclabelfs.template))
+       (blockinherit .seclabelfs.template)
+
+       (allow fs self (filesystem (associate)))
+
+       (call .rbacsep.exempt.obj.type (fs)))

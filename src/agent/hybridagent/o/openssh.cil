@@ -1,0 +1,125 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block openssh
+
+       (block conf
+
+	      (filecon "/etc/ssh" dir file_context)
+	      (filecon "/etc/ssh/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "ssh")))
+
+	      (blockinherit .file.conf.openssh.template))
+
+       (block helper
+
+	      (block exec
+
+		     (filecon "/usr/bin/openssh/ssh-pkcs11-helper" file
+			      file_context)
+		     (filecon "/usr/bin/openssh/ssh-sk-helper" file file_context)
+
+		     (blockinherit .file.exec.template)))
+
+       (block keygen
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self (process (setfscreate)))
+
+	      (call .cert.read_file_files (subj))
+	      (call .cert.search_file_pattern.type (subj))
+
+	      (call .checkcontext_selinux_security (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .cryptopol.conf.read_file_files (subj))
+	      (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	      (call .cryptopol.data.read_file_files (subj))
+	      (call .cryptopol.data.search_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .p11kit.conf.read_file_pattern.type (subj))
+
+	      (call .p11kit.data.map_file_files (subj))
+	      (call .p11kit.data.read_file_pattern.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+
+	      (call .selinux.file.read_file_pattern.type (subj))
+	      (call .selinux.readwrite_fs_pattern.type (subj))
+
+	      (optional openssh_opensshclient
+			(call home.manage_file_dirs (subj))
+			(call home.manage_file_files (subj))
+			(call home.user_home_file_type_transition_file (subj)))
+
+	      (block exec
+
+		     (filecon "/usr/bin/ssh-keygen" file file_context)))
+
+       (block keysign
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/openssh/ssh-keysign" file
+			      file_context))))
+
+(in file.conf
+
+    (block openssh
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.openssh.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.openssh.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .openssh.conf.conf_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .openssh.keygen.role (role))
+    (call .openssh.keysign.role (role)))
+
+(in wheel
+
+    (call .openssh.keygen.role (role))
+    (call .openssh.keysign.role (role)))

@@ -1,0 +1,299 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block polkit
+
+       (blockinherit .dbus.nameclient.template)
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (setgid setuid sys_nice)))
+       (allow subj self (process (execmem getsched setsched)))
+       (allow subj self create_unix_dgram_socket)
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+       (call conf.watch_file_dirs (subj))
+
+       (call data.list_file_dirs (subj))
+       (call data.read_file_files (subj))
+       (call data.watch_file_dirs (subj))
+
+       (call helper.exec.execute_file_files (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.state_file_type_transition_file (subj))
+       (call state.watch_file_dirs (subj))
+
+       (call ttyagent.sendmsg_subj_dbus.type (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .cmdline.read_procfile_pattern.type (subj))
+
+       (call .cpu.read_sysfile_pattern.type (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .kernel.read_sysctlfile_pattern.type (subj))
+
+       (call .lib.list_file_dirs (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .subj.common.read_all_states (subj))
+
+       (call .sys.read_subj_states (subj))
+
+       (call .sys.user.read_subj_states (subj))
+       (call .sys.user.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.machines.run.list_file_dirs (subj))
+       (call .systemd.machines.run.read_file_files (subj))
+       (call .systemd.machines.run.watch_file_dirs (subj))
+
+       (call .systemd.seats.run.list_file_dirs (subj))
+       (call .systemd.seats.run.read_file_files (subj))
+       (call .systemd.seats.run.watch_file_dirs (subj))
+
+       (call .systemd.sessions.run.list_file_dirs (subj))
+       (call .systemd.sessions.run.read_file_files (subj))
+       (call .systemd.sessions.run.watch_file_dirs (subj))
+
+       (call .systemd.users.run.list_file_dirs (subj))
+       (call .systemd.users.run.read_file_files (subj))
+       (call .systemd.users.run.watch_file_dirs (subj))
+
+       (call .tmp.getattr_fs_pattern.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (block agenthelper
+
+	      (macro subj_type_transition ((type ARG1))
+		     (allow ARG1 subj (process (signal transition)))
+
+		     (allow subj ARG1 (process (sigchld)))
+		     (allow subj ARG1 (fd (use)))
+		     (allow subj ARG1 readwriteinherited_fifo_file)
+
+		     (call exec.mapexecute_file_files (ARG1))
+		     (call exec.read_file_files (ARG1))
+		     (call exec.subj_type_transition (ARG1 subj)))
+
+	      (blockinherit .dbus.client.template)
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self
+		     (capability (audit_write dac_override dac_read_search
+					      setuid sys_nice)))
+	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_netlink_audit_socket)
+	      (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+	      (call polkit.sendmsg_subj_dbus.type (subj))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .devpts.search_fs_pattern.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .pam.linked.type (subj))
+
+	      (call .proc.getattr_fs_pattern.type (subj))
+
+	      (call .state.search_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/lib/polkit-1/polkit-agent-helper-1" file
+			      file_context)))
+
+       (block check
+
+	      (blockinherit .dbus.client.template)
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self (capability (sys_nice)))
+	      (allow subj self (process (getsched setsched)))
+
+	      (call agenthelper.role (roleattr))
+	      (call agenthelper.subj_type_transition (subj))
+
+	      (call polkit.sendmsg_subj_dbus.type (subj))
+
+	      (call .cgroup.getattr_fs_pattern.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .rbacsep.readstatesource.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.execute_file_files (subj))
+
+	      (call .subj.common.read_all_states (subj))
+
+	      (call .sys.read_subj_states (subj))
+
+	      (call .sys.user.read_subj_states (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/pkaction" file file_context)
+		     (filecon "/usr/bin/pkcheck" file file_context)))
+
+       (block conf
+
+	      (filecon "/etc/polkit-1" dir file_context)
+	      (filecon "/etc/polkit-1/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "polkit-1")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/polkit-1" dir file_context)
+	      (filecon "/usr/share/polkit-1/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "polkit-1")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/lib/polkit-1/polkitd" file file_context))
+
+       (block helper
+
+	      (block exec
+
+		     (filecon "/usr/bin/pkla-admin-identities" file file_context)
+		     (filecon "/usr/bin/pkla-check-authorization" file
+			      file_context)
+
+		     (blockinherit .file.exec.template)))
+
+       (block state
+
+	      (filecon "/var/lib/polkit-1" dir file_context)
+	      (filecon "/var/lib/polkit-1/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "polkit-1")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block ttyagent
+
+	      (macro subj_type_transition ((type ARG1))
+		     (allow ARG1 subj (process (signal transition)))
+
+		     (allow subj ARG1 (process (sigchld)))
+		     (allow subj ARG1 (fd (use)))
+		     (allow subj ARG1 (key (search)))
+		     (allow subj ARG1 (state (read)))
+		     (allow subj ARG1 readwriteinherited_fifo_file)
+
+		     (call exec.mapexecute_file_files (ARG1))
+		     (call exec.read_file_files (ARG1))
+		     (call exec.subj_type_transition (ARG1 subj)))
+
+	      (blockinherit .dbus.client.template)
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self (process (getsched setsched)))
+
+	      (call agenthelper.role (roleattr))
+	      (call agenthelper.subj_type_transition (subj))
+
+	      (call polkit.sendmsg_subj_dbus.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/pkttyagent" file file_context)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/polkit\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)
+
+	      (call .dbus.activated.unit.type (file))))
+
+(in file.unconfined
+
+    (call .polkit.conf.conf_file_type_transition_file (typeattr))
+    (call .polkit.data.data_file_type_transition_file (typeattr))
+    (call .polkit.state.state_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .polkit.check.role (role))
+    (call .polkit.ttyagent.role (role)))
+
+(in wheel
+
+    (call .polkit.check.role (role))
+    (call .polkit.ttyagent.role (role)))

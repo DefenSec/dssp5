@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block irc
+
+       (portcon "dccp" 6667 port_context)
+       (portcon "dccp" 6697 port_context)
+       (portcon "dccp" 7000 port_context)
+       (portcon "sctp" 6667 port_context)
+       (portcon "sctp" 6697 port_context)
+       (portcon "sctp" 7000 port_context)
+       (portcon "tcp" 6667 port_context)
+       (portcon "tcp" 6697 port_context)
+       (portcon "tcp" 7000 port_context)
+       (portcon "udp" 6667 port_context)
+       (portcon "udp" 6697 port_context)
+       (portcon "udp" 7000 port_context)
+
+       (blockinherit .net.port.unreserved.template))

@@ -1,0 +1,27 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+    (macro devpts_fs_type_transition_ptytermdev ((type ARG1))
+	   (call .devpts.fs_type_transition
+		 (ARG1 ptytermdev chr_file "*")))
+
+    (macro open_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (open))))
+
+    (macro setattr_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (setattr))))
+
+    (macro ptytermdev_type_change ((type ARG1)(type ARG2))
+	   (typechange ARG1 ptytermdev chr_file ARG2))
+
+    (macro watch_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (watch))))
+
+    (macro watchreads_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (watch_reads))))
+
+    (blockinherit .ptytermdev.template)
+
+    (call termdev.type (ptytermdev)))

@@ -1,0 +1,169 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.mpd.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .user.mpd.home.conf.user_home_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call mpd.home.conf.manage_file_dirs (subj))
+    (call mpd.home.conf.manage_file_files (subj))
+    (call mpd.home.conf.map_file_files (subj))
+    (call mpd.home.conf.relabel_file_dirs (subj))
+    (call mpd.home.conf.relabel_file_files (subj))
+    (call mpd.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call mpd.home.conf.user_home_file_type_transition_file (subj))
+
+    (call mpd.role (role))
+    (call mpd.subj_type_transition (subj))
+
+    (call mpd.run.manage_file_dirs (subj))
+    (call mpd.run.manage_file_sock_files (subj))
+    (call mpd.run.relabel_file_dirs (subj))
+    (call mpd.run.relabel_file_sock_files (subj))
+    (call mpd.run.user_run_file_type_transition_file (subj))
+
+    (call mpd.tmpfs.manage_file_files (subj))
+    (call mpd.tmpfs.relabel_file_files (subj))
+
+    (block mpd
+
+	   (macro connectto_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_stream_socket (connectto))))
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .mpd.exec.mapexecute_file_files (ARG1))
+		  (call .mpd.exec.read_file_files (ARG1))
+		  (call .mpd.exec.subj_type_transition (ARG1 subj)))
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
+
+	   (blockinherit .subj.common.base_template)
+
+	   (roleattribute roleattr)
+	   (roletype roleattr subj)
+
+	   (call home.conf.manage_file_files (subj))
+	   (call home.conf.readwrite_file_dirs (subj))
+
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_sock_files (subj))
+	   (call run.user_run_file_type_transition_file (subj))
+
+	   (call tmpfs.manage_file_files (subj))
+	   (call tmpfs.map_file_files (subj))
+	   (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	   (call .media.search_file_dirs (subj))
+
+	   (call .media.home.traverse_file_pattern.type (subj))
+
+	   (call .mpd.common.type (subj))
+
+	   (call .pipewire.pulse.client.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .user.agent.type (subj))
+
+	   (call .user.home.list_file_dirs (subj))
+	   (call .user.home.read_file_files (subj))
+	   (call .user.home.read_file_lnk_files (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.run.deletename_file_dirs (subj))
+
+	   (call .user.systemd.agent (subj .mpd.exec.file))
+	   (call .user.systemd.notify.type (subj))
+	   (call .user.systemd.service.nnptransition.type (subj))
+	   (call .user.systemd.socketactivated.tcp.type (subj))
+	   (call .user.systemd.socketactivated.unixstream.type (subj))
+
+	   (block home
+
+		  (block conf
+
+
+			 (filecon "HOME_DIR/\.config/mpd" dir file_context)
+			 (filecon "HOME_DIR/\.config/mpd/.*" any file_context)
+
+			 (filecon "HOME_DIR/\.mpd" dir file_context)
+			 (filecon "HOME_DIR/\.mpd/.*" any file_context)
+
+			 (filecon "HOME_DIR/\.mpdconf" file file_context)
+			 (filecon "HOME_DIR/\.mpdconf\..*" file file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "mpd")))
+
+			 (macro user_home_file_type_transition_file ((type ARG1))
+				(call .user.home.file_type_transition
+				      (ARG1 file dir ".mpd"))
+				(call .user.home.file_type_transition
+				      (ARG1 file file ".mpdconf")))
+
+			 (blockinherit .file.user.home.conf.template)))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/mpd" dir file_context)
+		  (filecon "/run/user/%{USERID}/mpd/.*" any file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_run_file_type_transition_file ((type ARG1))
+			 (call .user.run.file_type_transition
+			       (ARG1 file dir "mpd")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.run.base_template)
+
+		  (call .user.systemd.socketactivated.type (file)))
+
+	   (block tmpfs
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_fs_type_transition_file ((type ARG1))
+			 (call .tmp.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmpfs.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/mpd\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/user/mpd\.socket.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in wheel
+
+    (call .user.mpd.role (role)))

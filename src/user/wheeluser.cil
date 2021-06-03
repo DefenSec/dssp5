@@ -1,0 +1,8 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(userprefix wheel.id wheel.role)
+
+(block wheel
+
+       (blockinherit .user.unpriv.template))

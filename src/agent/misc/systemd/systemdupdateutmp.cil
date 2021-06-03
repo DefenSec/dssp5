@@ -1,0 +1,71 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block updateutmp
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (audit_write)))
+	   (allow subj self create_netlink_audit_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self create_unix_stream_socket)
+	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call logparsenv.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .log.search_file_pattern.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.status_system (subj))
+
+	   (call .systemd.private.type (subj))
+	   (call .systemd.unit.status_file_services (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .systemd.suloginshell.unit.status_file_services
+		 (subj))
+
+	   (call .utmp.log.write_file_files (subj))
+
+	   (call .utmp.run.manage_file_files (subj))
+	   (call .utmp.run.run_file_type_transition_file (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-update-utmp" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-update-utmp-runlevel\.service.*"
+		   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-update-utmp\.service.*" file
+		   file_context)
+
+		  (blockinherit .file.unit.template))))

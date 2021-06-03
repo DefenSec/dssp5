@@ -1,0 +1,37 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dev.unconfined
+
+    (call .sys.user_serialtermdev_type_change (typeattr))
+
+    (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))
+
+(in serialtermdev.unconfined
+
+    (call .sys.user_serialtermdev_type_change (typeattr))
+
+    (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))
+
+(in sys
+
+    (macro loginserialtermdev_all_type_change_serialtermdev ((type ARG1))
+	   (call .loginserialtermdev.all_type_change
+		 (ARG1 serialtermdev)))
+
+    (macro setattr_serialtermdev_chr_files ((type ARG1))
+	   (allow ARG1 serialtermdev (chr_file (setattr))))
+
+    (macro user_serialtermdev_type_change ((type ARG1))
+	   (call .user.serialtermdev_type_change
+		 (ARG1 serialtermdev)))
+
+    (blockinherit .serialtermdev.template)
+
+    (call termdev.type (serialtermdev)))
+
+(in termdev.unconfined
+
+    (call .sys.user_serialtermdev_type_change (typeattr))
+
+    (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))

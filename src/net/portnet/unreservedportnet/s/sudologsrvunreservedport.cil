@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block sudologsrv
+
+       (portcon "dccp" (30343 30344) port_context)
+       (portcon "sctp" (30343 30344) port_context)
+       (portcon "tcp" (30343 30344) port_context)
+       (portcon "udp" (30343 30344) port_context)
+
+       (blockinherit .net.port.unreserved.template))

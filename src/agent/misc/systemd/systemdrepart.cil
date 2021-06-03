@@ -1,0 +1,73 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.repart.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.repart.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.repart.run.run_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block repart
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call run.list_file_dirs (subj))
+	   (call run.read_file_files (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (block conf
+
+		  (filecon "/etc/repart\.d" dir file_context)
+		  (filecon "/etc/repart\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "repart.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/repart\.d" dir file_context)
+		  (filecon "/usr/lib/repart\.d/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "repart.d")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-repart" file file_context))
+
+	   (block run
+
+		  (filecon "/run/repart\.d" dir file_context)
+		  (filecon "/run/repart\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "repart.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-repart\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template))))

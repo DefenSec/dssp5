@@ -1,0 +1,63 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .openldap.conf.conf_file_type_transition_file (typeattr))
+    (call .openldap.certs.openldap_conf_file_type_transition_file (typeattr)))
+
+(block openldap
+
+       (block conf
+
+	      (filecon "/etc/openldap" dir file_context)
+	      (filecon "/etc/openldap/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "openldap")))
+
+	      (blockinherit .file.conf.openldap.template))
+
+       (block certs
+
+	      (filecon "/etc/openldap/certs" dir file_context)
+	      (filecon "/etc/openldap/certs/.*" any file_context)
+
+	      (macro openldap_conf_file_type_transition_file ((type ARG1))
+		     (call .openldap.conf.file_type_transition
+			   (ARG1 file dir "certs")))
+
+	      (blockinherit .file.conf.openldap.template)))
+
+(in file.conf
+
+    (block openldap
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.openldap.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.openldap.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))

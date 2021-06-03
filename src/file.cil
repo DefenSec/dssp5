@@ -3,6 +3,12 @@
 
 (block file
 
+       (macro dontaudit_listinherited_all_dirs ((type ARG1))
+	      (dontaudit ARG1 typeattr listinherited_dir))
+
+       (macro dontaudit_readinherited_all_files ((type ARG1))
+	      (dontaudit ARG1 typeattr readinherited_file))
+
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
 
@@ -82,7 +88,8 @@
 		     (allow ARG1 typeattr readwrite_blk_file))
 
 	      (macro readwriteinherited_all_blk_files ((type ARG1))
-		     (allow ARG1 typeattr readwriteinherited_blk_file))
+		     (allow ARG1 typeattr
+			    readwriteinherited_blk_file))
 
 	      (macro relabel_all_blk_files ((type ARG1))
 		     (allow ARG1 typeattr relabel_blk_file))
@@ -161,6 +168,11 @@
 	      (macro addname_all_dirs ((type ARG1))
 		     (allow ARG1 typeattr addname_dir))
 
+	      (macro all_type_transition
+		     ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
+		     (typetransition ARG1 typeattr ARG3 ARG4 ARG2)
+		     (call addname_all_dirs (ARG1)))
+
 	      (macro create_all_dirs ((type ARG1))
 		     (allow ARG1 typeattr create_dir))
 
@@ -181,11 +193,6 @@
 
 	      (macro mounton_all_dirs ((type ARG1))
 		     (allow ARG1 typeattr mounton_dir))
-
-	      (macro all_type_transition
-		     ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
-		     (typetransition ARG1 typeattr ARG3 ARG4 ARG2)
-		     (call addname_all_dirs (ARG1)))
 
 	      (macro readwrite_all_dirs ((type ARG1))
 		     (allow ARG1 typeattr readwrite_dir))
@@ -424,8 +431,8 @@
 
 	      (typeattribute typeattr)
 
-	      (typeattributeset typeattr (and file.typeattr
-					      (not (exception.typeattr)))))
+	      (typeattributeset typeattr
+				(and file.typeattr (not (exception.typeattr)))))
 
        (block exception
 
@@ -587,6 +594,11 @@
 	      (macro deletename_file_dirs ((type ARG1))
 		     (allow ARG1 file deletename_dir))
 
+	      (macro file_type_transition
+		     ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
+		     (typetransition ARG1 file ARG3 ARG4 ARG2)
+		     (call addname_file_dirs (ARG1)))
+
 	      (macro list_file_dirs ((type ARG1))
 		     (allow ARG1 file list_dir))
 
@@ -598,11 +610,6 @@
 
 	      (macro mounton_file_dirs ((type ARG1))
 		     (allow ARG1 file mounton_dir))
-
-	      (macro file_type_transition
-		     ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
-		     (typetransition ARG1 file ARG3 ARG4 ARG2)
-		     (call addname_file_dirs (ARG1)))
 
 	      (macro readwrite_file_dirs ((type ARG1))
 		     (allow ARG1 file readwrite_dir))

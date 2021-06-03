@@ -1,0 +1,95 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.coredump
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (dac_read_search setgid setpcap setuid sys_ptrace)))
+    (allow subj self (cap_userns (sys_ptrace)))
+    (allow subj self (process (getcap setcap setfscreate)))
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self (unix_stream_socket (connectto)))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
+    (call state.manage_file_dirs (subj))
+    (call state.manage_file_files (subj))
+    (call state.map_file_files (subj))
+
+    (call logparsenv.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cert.read_file_files (subj))
+    (call .cert.traverse_file_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .cryptopol.conf.read_file_files (subj))
+    (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+    (call .cryptopol.data.read_file_files (subj))
+    (call .cryptopol.data.search_file_pattern.type (subj))
+
+    (call .file.exec.map_all_files (subj))
+    (call .file.exec.read_all_files (subj))
+
+    (call .file.lib.map_all_files (subj))
+    (call .file.lib.read_all_files (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .kmsg.write_nodedev_chr_files (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .logindefs.read_file_files (subj))
+
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.readstatetarget.type (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .subj.read_all_states (subj))
+
+    (call .systemd.state.search_file_pattern.type (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .tmp.getattr_fs_pattern.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-coredump" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-coredump@.*\.service.*"
+		    file file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-coredump\.socket.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))

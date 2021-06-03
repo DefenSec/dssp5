@@ -5,5 +5,13 @@
 
        (filecon "/dev/zram[0-9]+" block stordev_context)
 
+       (macro dev_file_type_transition_stordev ((type ARG1))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "zram0")))
+
        (blockinherit .stordev.base_template)
        (blockinherit .stordev.macro_template_blk_files))
+
+(in sys
+
+    (call .zram.dev_file_type_transition_stordev (subj)))

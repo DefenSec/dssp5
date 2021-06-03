@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .font.conf.conf_file_type_transition_file (typeattr)))
+
+(in font
+
+    (block conf
+
+	   (filecon "/etc/fonts" dir file_context)
+	   (filecon "/etc/fonts/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "fonts")))
+
+	   (blockinherit .file.conf.template)))

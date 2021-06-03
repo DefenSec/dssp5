@@ -1,0 +1,60 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pautils
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_unix_stream_socket)
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .machineid.read_file_files (subj))
+
+       (call .pipewire.pulse.client.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/pacat" file file_context)
+	      (filecon "/usr/bin/pacmd" file file_context)
+	      (filecon "/usr/bin/pactl" file file_context)
+	      (filecon "/usr/bin/padsp" file file_context)
+	      (filecon "/usr/bin/padsp-32" file file_context)
+	      (filecon "/usr/bin/pasuspender" file file_context)
+	      (filecon "/usr/bin/pax11publish" file file_context))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)))
+
+(in user
+
+    (call .pautils.role (role))
+
+    (call .pautils.tmpfs.manage_file_files (subj))
+    (call .pautils.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .pautils.role (role)))

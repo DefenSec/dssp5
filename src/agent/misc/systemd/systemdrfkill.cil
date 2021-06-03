@@ -1,0 +1,68 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.rfkill
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self create_netlink_kobject_uevent_socket)
+    (allow subj self create_unix_dgram_socket)
+
+    (call logparsenv.type (subj))
+
+    (call state.manage_file_files (subj))
+    (call state.readwrite_file_dirs (subj))
+
+    (call .bus.search_sysfile_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .class.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .devices.read_sysfile_files (subj))
+    (call .devices.traverse_sysfile_pattern.type (subj))
+
+    (call .event.readwrite_nodedev_chr_files (subj))
+
+    (call .firmware.search_sysfile_pattern.type (subj))
+
+    (call .gcrypt.conf.read_file_pattern.type (subj))
+
+    (call .libnl.conf.read_file_pattern.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .rfkill.readwrite_nodedev_chr_files (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .systemd.notify.type (subj))
+    (call .systemd.state.search_file_pattern.type (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-rfkill" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-rfkill\.service.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-rfkill\.socket.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))

@@ -1,0 +1,57 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block makefs
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (sys_resource)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call .block.traverse_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.list_sysfile_pattern.type (subj))
+	   (call .devices.read_sysfile_files (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .swaptools.subj_type_transition (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .stordev.read.type (subj))
+	   (call .stordev.read_all_blk_files (subj))
+	   (call .stordev.read_all_chr_files (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .zram.list_sysfile_dirs (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-growfs" file file_context)
+		  (filecon "/usr/lib/systemd/systemd-makefs" file file_context))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-growfs@.*\.service.*"
+			   file file_context)
+		  (filecon "/usr/lib/systemd/system/systemd-makefs@.*\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template))))

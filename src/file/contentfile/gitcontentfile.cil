@@ -1,0 +1,116 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .git.content.htaccess.git_content_ra_file_type_transition_file
+	  (typeattr))
+    (call .git.content.htaccess.git_content_ro_file_type_transition_file
+	  (typeattr))
+    (call .git.content.htaccess.git_content_rw_file_type_transition_file
+	  (typeattr))
+    (call
+     .git.content.htaccess.git_content_script_exec_file_type_transition_file
+     (typeattr))
+    (call .git.content.ro.state_file_type_transition_file (typeattr)))
+
+(in git
+
+    (block content
+
+	   (blockinherit .web.content.template)
+
+	   (block htaccess
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htaccess" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htaccess\..*" file
+			   file_context)
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htgroup" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htgroup\..*" file
+			   file_context)
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htpasswd" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htpasswd\..*" file
+			   file_context)
+
+		  (macro git_content_ra_file_type_transition_file ((type ARG1))
+			 (call .git.content.ra.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .git.content.ra.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .git.content.ra.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro git_content_ro_file_type_transition_file ((type ARG1))
+			 (call .git.content.ro.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .git.content.ro.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .git.content.ro.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro git_content_rw_file_type_transition_file ((type ARG1))
+			 (call .git.content.rw.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .git.content.rw.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .git.content.rw.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro git_content_script_exec_file_type_transition_file
+			 ((type ARG1))
+			 (call .git.content.script.exec.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .git.content.script.exec.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .git.content.script.exec.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .web.content.ro.base_template)
+
+		  (call .file.state.type (file)))
+
+	   (block ro
+
+		  (filecon "/var/lib/git" dir file_context)
+		  (filecon "/var/lib/git/.*" any ())
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (blockinherit .file.macro_template_lnk_files)
+
+		  (call .file.state.type (file)))
+
+	   (block rw
+
+		  (call .rbacsep.exempt.obj.type (file))
+
+		  (call .file.state.type (file))
+		  (call .file.tmp.type (file)))
+
+	   (block script
+
+		  (call rw.execute_file_files (subj))
+
+		  (call .cpu.read_sysfile_files (subj))
+		  (call .cpu.search_sysfile_pattern.type (subj))
+
+		  (call .git.client.exec.execute_file_files (subj))
+
+		  (call .overcommitmemory.read_sysctlfile_files (subj))
+
+		  (call .state.search_file_pattern.type (subj))
+
+		  (call .vm.search_sysctlfile_pattern.type (subj))
+
+		  (block exec
+
+			 (filecon "/usr/bin/git-core/git-http-backend" file
+				  file_context)
+
+			 (macro getattr_file_files ((type ARG1))
+				(allow ARG1 file (file (getattr))))))))

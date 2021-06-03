@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mime
+
+       (block data
+
+	      (filecon "/usr/share/applications/mimeinfo\.cache" file
+		       file_context)
+	      (filecon "/usr/share/applications/mimeapps\.list" file
+		       file_context)
+	      (filecon "/usr/share/mime" dir file_context)
+	      (filecon "/usr/share/mime/.*" any file_context)
+	      (filecon "/usr/share/mime-info" dir file_context)
+	      (filecon "/usr/share/mime-info/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "mime"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "mime-info"))
+		     (call .data.file_type_transition
+			   (ARG1 file file "mimeapps.cache"))
+		     (call .data.file_type_transition
+			   (ARG1 file file "mimeapps.list")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .mime.data.data_file_type_transition_file (typeattr)))

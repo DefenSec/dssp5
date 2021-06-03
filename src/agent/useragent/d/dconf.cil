@@ -1,0 +1,160 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dconf
+
+    (blockinherit .dbus.client.macro_template)
+    (blockinherit .hybrid.agent.template)
+
+    (allow subj self (process (getsched setsched)))
+    (dontaudit subj self (capability (sys_nice)))
+
+    (call conf.conf_file_type_transition_file (subj))
+    (call conf.manage_file_dirs (subj))
+    (call conf.manage_file_files (subj))
+    (call conf.manage_file_lnk_files (subj))
+
+    (call service.sendmsg_subj_dbus.type (subj))
+
+    (call .dbus.client.type (subj))
+
+    (call .user.dbus.client.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/bin/dconf" file file_context))
+
+    (block home
+
+	   (block cache
+
+		  (filecon "HOME_DIR/\.cache/dconf" dir file_context)
+		  (filecon "HOME_DIR/\.cache/dconf/.*" any file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_home_cache_file_type_transition_file ((type ARG1))
+			 (call .user.home.cache.file_type_transition
+			       (ARG1 file dir "dconf")))
+
+		  (blockinherit .file.user.home.cache.template))
+
+	   (block conf
+
+		  (filecon "HOME_DIR/\.config/dconf" dir file_context)
+		  (filecon "HOME_DIR/\.config/dconf/.*" any file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_home_conf_file_type_transition_file ((type ARG1))
+			 (call .user.home.conf.file_type_transition
+			       (ARG1 file dir "dconf")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.home.conf.base_template)))
+
+    (block linked
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.map_file_pattern.type (typeattr))
+	   (call conf.read_file_pattern.type (typeattr))
+
+	   (call home.cache.manage_file_pattern.type (typeattr))
+	   (call home.cache.map_file_pattern.type (typeattr))
+
+	   (call home.conf.manage_file_pattern.type (typeattr))
+	   (call home.conf.map_file_pattern.type (typeattr))
+
+	   (call run.manage_file_pattern.type (typeattr))
+	   (call run.map_file_pattern.type (typeattr))
+
+	   (call service.sendmsg_subj_dbus.type (typeattr)))
+
+    (block run
+
+	   (filecon "/run/user/%{USERID}/dconf" dir file_context)
+	   (filecon "/run/user/%{USERID}/dconf/.*" any file_context)
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro user_run_file_type_transition_file ((type ARG1))
+		  (call .user.run.file_type_transition
+			(ARG1 file dir "dconf")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.user.run.base_template))
+
+    (block service
+
+	   (blockinherit .user.agent.template)
+	   (blockinherit .user.dbus.nameclient.template)
+
+	   (allow subj self (process (getsched setsched)))
+
+	   (call home.cache.manage_file_pattern.type (subj))
+	   (call home.cache.map_file_pattern.type (subj))
+
+	   (call home.conf.manage_file_pattern.type (subj))
+	   (call home.conf.map_file_pattern.type (subj))
+
+	   (call run.manage_file_pattern.type (subj))
+	   (call run.map_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj exec.file))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/dconf-service" file file_context))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/dconf\.service.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template)
+
+		  (call .user.dbus.activated.unit.type (file)))))
+
+(in user
+
+    (call .dconf.home.cache.manage_file_dirs (subj))
+    (call .dconf.home.cache.manage_file_files (subj))
+    (call .dconf.home.cache.map_file_files (subj))
+    (call .dconf.home.cache.relabel_file_dirs (subj))
+    (call .dconf.home.cache.relabel_file_files (subj))
+    (call .dconf.home.cache.user_home_cache_file_type_transition_file (subj))
+
+    (call .dconf.home.conf.manage_file_dirs (subj))
+    (call .dconf.home.conf.manage_file_files (subj))
+    (call .dconf.home.conf.map_file_files (subj))
+    (call .dconf.home.conf.relabel_file_dirs (subj))
+    (call .dconf.home.conf.relabel_file_files (subj))
+    (call .dconf.home.conf.user_home_conf_file_type_transition_file (subj))
+
+    (call .dconf.run.manage_file_dirs (subj))
+    (call .dconf.run.manage_file_files (subj))
+    (call .dconf.run.map_file_files (subj))
+    (call .dconf.run.relabel_file_dirs (subj))
+    (call .dconf.run.relabel_file_files (subj))
+    (call .dconf.run.user_run_file_type_transition_file (subj))
+
+    (call .dconf.role (role))
+    (call .dconf.service.role (role)))
+
+(in wheel
+
+    (call .dconf.role (role))
+    (call .dconf.service.role (role)))

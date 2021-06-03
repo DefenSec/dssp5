@@ -1,0 +1,69 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block cracklib
+
+       (blockinherit .hybrid.agent.template)
+
+       (call cache.cache_file_type_transition_file (subj))
+       (call cache.manage_file_dirs (subj))
+       (call cache.manage_file_files (subj))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call data.data_file_type_transition_file (subj))
+       (call data.manage_file_dirs (subj))
+       (call data.manage_file_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block cache
+
+	      (filecon "/var/cache/cracklib" dir file_context)
+	      (filecon "/var/cache/cracklib/.*" any file_context)
+
+	      (macro cache_file_type_transition_file ((type ARG1))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "cracklib")))
+
+	      (blockinherit .file.cache.template))
+
+       (block conf
+
+	      (filecon "/etc/cracklib" dir file_context)
+	      (filecon "/etc/cracklib/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "cracklib")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/cracklib" dir file_context)
+	      (filecon "/usr/share/cracklib/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "cracklib")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/cracklib-check" file file_context)
+	      (filecon "/usr/bin/cracklib-format" file file_context)
+	      (filecon "/usr/bin/cracklib-packer" file file_context)
+	      (filecon "/usr/bin/cracklib-unpacker" file file_context)
+	      (filecon "/usr/bin/create-cracklib-dict" file file_context)))
+
+(in file.unconfined
+
+    (call .cracklib.cache.cache_file_type_transition_file (typeattr))
+    (call .cracklib.conf.conf_file_type_transition_file (typeattr))
+    (call .cracklib.data.data_file_type_transition_file (typeattr)))

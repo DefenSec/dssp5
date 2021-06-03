@@ -1,0 +1,181 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pkgmgr
+
+       (block cache
+
+	      (filecon "/var/cache/dnf" dir file_context)
+	      (filecon "/var/cache/dnf/.*" any file_context)
+
+	      (macro cache_file_type_transition_file ((type ARG1))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "dnf")))
+
+	      (blockinherit .file.cache.template))
+
+       (block conf
+
+	      (filecon "/etc/dnf" dir file_context)
+	      (filecon "/etc/dnf/.*" any file_context)
+	      (filecon "/etc/rpm" dir file_context)
+	      (filecon "/etc/rpm/.*" any file_context)
+	      (filecon "/etc/yum\.repos\.d" dir file_context)
+	      (filecon "/etc/yum\.repos\.d/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dnf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "rpm"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "yum.repos.d")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/rpm" dir file_context)
+	      (filecon "/usr/lib/rpm/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "rpm")))
+
+	      (blockinherit .file.data.template))
+
+       (block log
+
+	      (filecon "/var/log/dnf\.librepo\.log.*" file file_context)
+	      (filecon "/var/log/dnf\.log.*" file file_context)
+	      (filecon "/var/log/dnf\.plugin\.log.*" file file_context)
+	      (filecon "/var/log/dnf\.rpm\.log.*" file file_context)
+	      (filecon "/var/log/hawkey\.log.*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dnf.librepo.log"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dnf.log"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dnf.plugin.log"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dnf.rpm.log"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "hawkey.log")))
+
+	      (blockinherit .file.log.template))
+
+       (block rpmdb
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (call pkgmgr.conf.list_file_dirs (subj))
+	      (call pkgmgr.conf.read_file_files (subj))
+
+	      (call pkgmgr.data.list_file_dirs (subj))
+	      (call pkgmgr.data.read_file_files (subj))
+
+	      (call pkgmgr.state.manage_file_dirs (subj))
+	      (call pkgmgr.state.manage_file_files (subj))
+	      (call pkgmgr.state.map_file_files (subj))
+	      (call pkgmgr.state.state_file_type_transition_file (subj "*"))
+
+	      (call tmp.manage_file_files (subj))
+	      (call tmp.map_file_files (subj))
+	      (call tmp.tmp_file_type_transition_file (subj))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	      ;; /etc/popt.d
+	      (call .conf.list_file_dirs (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
+
+	      (call .proc.getattr_fs_pattern.type (subj))
+
+	      (call .random.read_nodedev_chr_files (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .state.deletename_file_dirs (subj))
+
+	      (call .tmp.deletename_file_dirs (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/rpmdb" file file_context))
+
+	      (block tmp
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro tmp_file_type_transition_file ((type ARG1))
+			    (call .tmp.file_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.tmp.base_template)))
+
+       (block state
+
+	      (filecon "/var/lib/dnf" dir file_context)
+	      (filecon "/var/lib/dnf/.*" any file_context)
+	      (filecon "/var/lib/rpm" dir file_context)
+	      (filecon "/var/lib/rpm/.*" any file_context)
+	      (filecon "/var/lib/rpm-state" dir file_context)
+	      (filecon "/var/lib/rpm-state/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro state_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .state.file_type_transition
+			   (ARG1 file dir ARG2)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.state.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/dnf-makecache\.service.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/dnf-makecache\.timer.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/rpmdb-rebuild\.service.*" file
+		    file_context)
+
+	   (macro systemd_unit_file_type_transition_file ((type ARG1))
+		  (call .systemd.unit.file_type_transition
+			(ARG1 file file "dnf-makecache.service"))
+		  (call .systemd.unit.file_type_transition
+			(ARG1 file file "dnf-makecache.timer"))
+		  (call .systemd.unit.file_type_transition
+			(ARG1 file file "rpmdb-rebuild.service")))
+
+	   (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .pkgmgr.cache.cache_file_type_transition_file (typeattr))
+    (call .pkgmgr.conf.conf_file_type_transition_file (typeattr))
+    (call .pkgmgr.data.lib_file_type_transition_file (typeattr))
+    (call .pkgmgr.log.log_file_type_transition_file (typeattr))
+    (call .pkgmgr.state.state_file_type_transition_file (typeattr "dnf"))
+    (call .pkgmgr.state.state_file_type_transition_file (typeattr "rpm"))
+    (call .pkgmgr.state.state_file_type_transition_file (typeattr "rpm-state"))
+    (call .pkgmgr.unit.systemd_unit_file_type_transition_file (typeattr)))
+
+(in sys.agent
+
+    ;; might want to narrow this down a little, like i did with dracut
+    (call .sys.tmp.appendinherited_file_files (typeattr))
+    (call .sys.tmp.readinherited_file_files (typeattr))
+    (call .sys.tmp.writeinherited_file_fifo_files (typeattr)))
