@@ -1,0 +1,104 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in cgroup
+
+    (filecon "/sys/fs/cgroup" dir ())
+    (filecon "/sys/fs/cgroup/.*" any ())
+
+    (allow fs self (filesystem (associate))))
+
+(in debug
+
+    (filecon "/sys/kernel/debug" dir ())
+    (filecon "/sys/kernel/debug/.*" any ()))
+
+(in devpts
+
+    (filecon "/dev/pts" dir ())
+    (filecon "/dev/pts/.*" any ())
+
+    (allow fs self (filesystem (associate))))
+
+(in dev
+
+    (call .tmp.associate_fs (typeattr)))
+
+(in devtmp
+
+    (filecon "/dev" dir ())
+    (filecon "/dev/.*" any ())
+
+    (allow fs self (filesystem (associate))))
+
+(in dos
+
+    (filecon "/boot/efi" dir ())
+    (filecon "/boot/efi/.*" any ()))
+
+(in fs.unconfined
+
+    (allow typeattr fs.typeattr (chr_file (mounton))))
+
+(in proc
+
+    (filecon "/proc" dir ())
+    (filecon "/proc/.*" any ()))
+
+(in root
+
+    (allow fs self (filesystem (associate))))
+
+(in selinux
+
+    (filecon "/sys/fs/selinux" dir ())
+    (filecon "/sys/fs/selinux/.*" any ()))
+
+(in sys
+
+    (filecon "/sys" dir ())
+    (filecon "/sys/.*" any ())
+
+    (allow fs self (filesystem (associate))))
+
+(in sys.moduleload
+
+    (neverallow not_typeattr .unknown.file (system (module_load))))
+
+(in tmp
+
+    (filecon "/dev/shm" dir ())
+    (filecon "/dev/shm/.*" any ())
+
+    (filecon "/run" dir ())
+    (filecon "/run/.*" any ())
+
+    (filecon "/run/initramfs/.*" any ())
+
+    (filecon "/tmp" dir ())
+    (filecon "/tmp/.*" any ())
+
+    (allow fs self (filesystem (associate)))
+
+    (call .devtmp.associate_fs (fs)))
+
+(in trace
+
+    (filecon "/sys/kernel/tracing" dir ())
+    (filecon "/sys/kernel/tracing/.*" any ()))
+
+(in unknown
+
+    (allow .sys.unconfined.typeattr file (system (module_load)))
+
+    (call .root.associate_fs (file))
+
+    (call .tmp.associate_fs (file)))
+
+(typealias dpkg_script_t)
+(typealiasactual dpkg_script_t sys.subj)
+
+(typealias rpm_script_t)
+(typealiasactual rpm_script_t sys.subj)
+
+(tunable xserver_object_manager false)

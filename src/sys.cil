@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(sidcontext kernel (sys.id sys.role sys.subj (systemlow systemlow)))
+
+(block sys
+
+       (role role)
+       (roletype role subj)
+
+       (user id)
+       (userrole id role)
+
+       (userlevel id systemlow)
+       (userrange id (systemlow systemhigh))
+
+       (blockinherit .subj.template)
+
+       (call .obj.role (role))
+
+       (call .unconfined.type (subj)))

@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class anon_inode ())
+(classorder (unordered anon_inode))
+
+(classcommon anon_inode common_file)
+
+(classpermission manage_anon_inode)
+(classpermissionset manage_anon_inode (anon_inode (create getattr ioctl read)))
+
+(macro manage_invalid_anon_inodes ((type ARG1))
+       (allow ARG1 invalid manage_anon_inode))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid manage_anon_inode))
+
+(in subj.unconfined
+
+    (allow typeattr subj.typeattr manage_anon_inode))

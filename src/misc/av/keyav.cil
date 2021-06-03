@@ -1,0 +1,13 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class key (create link read search setattr view write))
+(classorder (unordered key))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (key (all))))
+
+(in subj.unconfined
+
+    (allow typeattr subj.typeattr (key (all))))

@@ -1,0 +1,10 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class perf_event (cpu kernel open read tracepoint write))
+(classorder (unordered perf_event))
+
+(in subj.unconfined
+
+    (allow typeattr self (perf_event (not (read write))))
+    (allow typeattr subj.typeattr (perf_event (read write))))

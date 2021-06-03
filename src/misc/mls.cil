@@ -1,0 +1,13 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(sensitivity s0)
+(category c0)
+
+(sensitivityorder (s0))
+(categoryorder (c0))
+
+(sensitivitycategory s0 (range c0 c0))
+
+(level systemlow (s0))
+(level systemhigh (s0 (range c0 c0)))

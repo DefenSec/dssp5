@@ -1,0 +1,9 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class bpf (map_create map_read map_write prog_load prog_run))
+(classorder (unordered bpf))
+
+(in subj.unconfined
+
+    (allow typeattr self (bpf (all))))

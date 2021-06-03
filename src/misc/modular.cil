@@ -1,0 +1,5 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(selinuxuserdefault sys.id (systemlow systemlow))
+(userprefix sys.id sys.role)

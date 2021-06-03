@@ -1,0 +1,13 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class msg (receive send))
+(classorder (unordered msg))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (msg (all))))
+
+(in subj.unconfined
+
+    (allow typeattr subj.typeattr (msg (all))))

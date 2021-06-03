@@ -1,0 +1,80 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class ipc ())
+(classorder (unordered ipc))
+
+(class msgq (enqueue))
+(classorder (unordered msgq))
+
+(class sem ())
+(classorder (unordered sem))
+
+(class shm (lock))
+(classorder (unordered shm))
+
+(classcommon ipc common_ipc)
+(classcommon msgq common_ipc)
+(classcommon sem common_ipc)
+(classcommon shm common_ipc)
+
+(common common_ipc
+	(associate create destroy getattr read setattr unix_read unix_write
+		   write))
+
+(classpermission create_ipc)
+(classpermission create_msgq)
+(classpermission create_sem)
+(classpermission create_shm)
+
+(classpermission read_ipc)
+(classpermission read_msgq)
+(classpermission read_sem)
+(classpermission read_shm)
+
+(classpermission readwrite_ipc)
+(classpermission readwrite_msgq)
+(classpermission readwrite_sem)
+(classpermission readwrite_shm)
+
+(classpermissionset create_ipc
+		    (ipc (associate create destroy getattr read setattr unix_read
+				    unix_write write)))
+(classpermissionset create_msgq
+		    (msgq (associate create destroy enqueue getattr read setattr
+				     unix_read unix_write write)))
+(classpermissionset create_sem
+		    (sem (associate create destroy getattr read setattr unix_read
+				    unix_write write)))
+(classpermissionset create_shm
+		    (shm (associate create destroy getattr read setattr unix_read
+				    unix_write write)))
+
+(classpermissionset read_ipc (ipc (associate getattr read unix_read)))
+(classpermissionset read_msgq (msgq (associate getattr read unix_read)))
+(classpermissionset read_sem (sem (associate getattr read unix_read)))
+(classpermissionset read_shm (shm (associate getattr read unix_read)))
+
+(classpermissionset readwrite_ipc
+		    (ipc (associate getattr read unix_read unix_write write)))
+(classpermissionset readwrite_msgq
+		    (msgq (associate enqueue getattr read unix_read unix_write
+				     write)))
+(classpermissionset readwrite_sem
+		    (sem (associate getattr read unix_read unix_write write)))
+(classpermissionset readwrite_shm
+		    (shm (associate getattr read unix_read unix_write write)))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (ipc (all)))
+    (allow typeattr .invalid (msgq (all)))
+    (allow typeattr .invalid (sem (all)))
+    (allow typeattr .invalid (shm (all))))
+
+(in subj.unconfined
+
+    (allow typeattr subj.typeattr (ipc (all)))
+    (allow typeattr subj.typeattr (msgq (all)))
+    (allow typeattr subj.typeattr (sem (all)))
+    (allow typeattr subj.typeattr (shm (all))))

@@ -1,0 +1,9 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class lockdown (confidentiality integrity))
+(classorder (unordered lockdown))
+
+(in subj.unconfined
+
+    (allow typeattr self (lockdown (all))))
