@@ -1,0 +1,15 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block nfs
+
+       (genfscon "afs" "/" fs_context)
+       (genfscon "nfs" "/" fs_context)
+       (genfscon "nfs4" "/" fs_context)
+
+       (blockinherit .fs.macro_template_fifo_files)
+       (blockinherit .fs.macro_template_lnk_files)
+       (blockinherit .fs.macro_template_sock_files)
+       (blockinherit .noseclabelfs.template)
+
+       (call .rbacsep.exempt.obj.type (fs)))

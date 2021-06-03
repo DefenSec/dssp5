@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block kmsg
+
+       (filecon "/dev/kmsg" char nodedev_context)
+
+       (macro mounton_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev mounton_chr_file))
+
+       (blockinherit .nodedev.template))

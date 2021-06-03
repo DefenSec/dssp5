@@ -8,7 +8,7 @@ all: clean policy check
 MCS = true
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
 POLVERS = 33
-SELINUXTYPE = dssp5-base-constrained
+SELINUXTYPE = dssp5
 VERBOSE = false
 
 clean: clean.$(POLVERS)
@@ -39,20 +39,49 @@ config_install:
 \n<selinux>\
 \n</selinux>\
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
+	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+	echo -e """/bin /usr/bin\
+\n/lib /usr/lib\
+\n/lib64 /usr/lib\
+\n/sbin /usr/bin\
+\n/usr/lib64 /usr/lib\
+\n/usr/libexec /usr/bin\
+\n/usr/local/bin /usr/bin\
+\n/usr/local/etc /etc\
+\n/usr/local/lib /usr/lib\
+\n/usr/local/lib64 /usr/lib\
+\n/usr/local/libexec /usr/bin\
+\n/usr/local/sbin /usr/bin\
+\n/usr/local/share /usr/share\
+\n/usr/local/src /usr/src\
+\n/usr/sbin /usr/bin\
+\n/usr/tmp /tmp\
+\n/var/mail /var/spool/mail\
+\n/var/lock /run/lock\
+\n/var/run /run\
+\n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
 ifeq ($(MCS),false)
+	echo -e """cdrom sys.id:sys.role:removable.stordev\
+\ndisk sys.id:sys.role:removable.stordev\
+\nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	echo "sys.role:sys.subj sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 else
+	echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
+\ndisk sys.id:sys.role:removable.stordev:s0\
+\nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	echo "sys.role:sys.subj:s0 sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo "sys.id:sys.role:removable.fs:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 endif
 
 modular_install: config_install
+	install -d -m0700 $(DESTDIR)/var/lib/selinux/$(SELINUXTYPE)
 ifeq ($(MCS),false)
 	sed -i 's/(mls true)/(mls false)/' src/misc/conf.cil
 endif
-	install -d -m0700 $(DESTDIR)/var/lib/selinux/$(SELINUXTYPE)
 ifndef DESTDIR
 ifeq ($(VERBOSE),false)
 	semodule --priority=100 -NP -s $(SELINUXTYPE) -i $(MODULES)

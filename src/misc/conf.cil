@@ -3,3 +3,11 @@
 
 (handleunknown allow)
 (mls true)
+
+(policycap "always_check_network")
+(policycap "cgroup_seclabel")
+(policycap "extended_socket_class")
+(policycap "genfs_seclabel_symlinks")
+(policycap "network_peer_controls")
+(policycap "nnp_nosuid_transition")
+(policycap "open_perms")

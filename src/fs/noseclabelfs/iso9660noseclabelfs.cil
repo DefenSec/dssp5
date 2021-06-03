@@ -1,0 +1,9 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block iso9660
+
+       (genfscon "iso9660" "/" fs_context)
+       (genfscon "udf" "/" fs_context)
+
+       (blockinherit .noseclabelfs.template))

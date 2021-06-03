@@ -576,7 +576,8 @@
 
 	      (typeattribute typeattr)
 
-	      (allow typeattr fs.typeattr (blk_file (not (execmod map mounton))))
+	      (allow typeattr fs.typeattr
+		     (blk_file (not (execmod map mounton))))
 	      (allow typeattr fs.typeattr (chr_file (not (execmod mounton))))
 	      (allow typeattr fs.typeattr (dir (not execmod)))
 	      (allow typeattr fs.typeattr

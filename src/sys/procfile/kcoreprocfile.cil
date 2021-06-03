@@ -41,7 +41,8 @@
 
 	      (typeattributeset not_typeattr (not typeattr))
 
-	      (neverallow not_typeattr procfile (file (append write)))))
+	      (neverallow not_typeattr procfile
+			  (file (append write)))))
 
 (in procfile.unconfined
 

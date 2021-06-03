@@ -1,0 +1,10 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in leds
+
+    (genfscon "sysfs" "/devices/platform/leds" sysfile_context)
+
+    (blockinherit .sysfile.macro_template_files)
+
+    (call .sysfile.devices.type (sysfile)))

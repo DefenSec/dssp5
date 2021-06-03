@@ -5,8 +5,8 @@
 (classorder (unordered infiniband_endport))
 
 (classmap constrainendportobject (managesubnet))
-(classmapping constrainendportobject managesubnet
-	      (infiniband_endport (manage_subnet)))
+(classmapping constrainendportobject
+	      managesubnet (infiniband_endport (manage_subnet)))
 
 (in mcs
 

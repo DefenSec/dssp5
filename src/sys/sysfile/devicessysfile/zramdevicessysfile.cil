@@ -1,0 +1,10 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in zram
+
+    (genfscon "sysfs" "/devices/virtual/block/zram" sysfile_context)
+
+    (blockinherit .sysfile.macro_template_lnk_files)
+
+    (call .sysfile.devices.type (sysfile)))

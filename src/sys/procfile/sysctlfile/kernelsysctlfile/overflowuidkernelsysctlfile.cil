@@ -1,0 +1,8 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block overflowuid
+
+       (genfscon "proc" "/sys/kernel/overflowuid" sysctlfile_context)
+
+       (blockinherit .sysctlfile.kernel.template))

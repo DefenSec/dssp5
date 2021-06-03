@@ -424,8 +424,8 @@
 
 	      (typeattribute typeattr)
 
-	      (typeattributeset typeattr
-				(and file.typeattr (not (exception.typeattr)))))
+	      (typeattributeset typeattr (and file.typeattr
+					      (not (exception.typeattr)))))
 
        (block exception
 

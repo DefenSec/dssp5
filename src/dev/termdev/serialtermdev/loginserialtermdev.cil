@@ -1,0 +1,46 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block loginserialtermdev
+
+       (macro all_type_change ((type ARG1)(type ARG2))
+	      (typechange ARG1 typeattr chr_file ARG2))
+
+       (macro appendinherited_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr appendinherited_chr_file)
+	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+       (macro readwriteinherited_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr readwriteinherited_chr_file)
+	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+       (macro type ((type ARG1))
+	      (typeattributeset typeattr ARG1))
+
+       (macro writeinherited_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr writeinherited_chr_file)
+	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
+
+       (typeattribute typeattr)
+
+       (blockinherit .file.all_macro_template_chr_files)
+
+       (call .serialtermdev.type (typeattr))
+
+       (block base_template
+
+	      (blockabstract base_template)
+
+	      (blockinherit .serialtermdev.base_template)
+
+	      (call .loginserialtermdev.type (serialtermdev)))
+
+       (block template
+
+	      (blockabstract template)
+
+	      (macro serialtermdev_type_change ((type ARG1)(type ARG2))
+		     (typechange ARG1 serialtermdev chr_file ARG2))
+
+	      (blockinherit .loginserialtermdev.base_template)
+	      (blockinherit .serialtermdev.macro_template_chr_files)))

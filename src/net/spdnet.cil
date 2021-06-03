@@ -90,8 +90,7 @@
 			 (allow ARG1 spd (association (polmatch))))
 
 		  (macro polmatchsetcontext_spd_associations ((type ARG1))
-			 (allow ARG1 spd
-				(association (polmatch setcontext))))
+			 (allow ARG1 spd (association (polmatch setcontext))))
 
 		  (macro setcontext_spd_associations ((type ARG1))
 			 (allow ARG1 spd (association (setcontext)))))
