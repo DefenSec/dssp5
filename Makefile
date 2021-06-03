@@ -5,9 +5,10 @@
 
 all: clean policy check
 
+MCS = true
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
 POLVERS = 33
-SELINUXTYPE = dssp5-base
+SELINUXTYPE = dssp5-base-constrained
 VERBOSE = false
 
 clean: clean.$(POLVERS)
@@ -17,9 +18,9 @@ clean.%:
 policy: policy.$(POLVERS)
 policy.%: $(MODULES)
 ifeq ($(VERBOSE),false)
-	secilc -O --policyvers=$* $^
+	secilc -OM $(MCS) --policyvers=$* $^
 else
-	secilc -vvv -O --policyvers=$* $^
+	secilc -vvv -OM $(MCS) --policyvers=$* $^
 endif
 
 check: check.$(POLVERS)
@@ -39,10 +40,18 @@ config_install:
 \n</selinux>\
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+ifeq ($(MCS),false)
 	echo "sys.role:sys.subj sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+else
+	echo "sys.role:sys.subj:s0 sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+endif
 
 modular_install: config_install
+ifeq ($(MCS),false)
+	sed -i 's/(mls true)/(mls false)/' src/misc/conf.cil
+endif
 	install -d -m0700 $(DESTDIR)/var/lib/selinux/$(SELINUXTYPE)
 ifndef DESTDIR
 ifeq ($(VERBOSE),false)
@@ -57,9 +66,16 @@ else
 	semodule --priority=100 -NP -vvv -s $(SELINUXTYPE) -i $(MODULES) -p $(DESTDIR)
 endif
 endif
+ifeq ($(MCS),false)
+	sed -i 's/(mls false)/(mls true)/' src/misc/conf.cil
+endif
 
 monolithic_install: config_install monolithic_install.$(POLVERS)
 monolithic_install.%:
+ifeq ($(MCS),false)
 	echo "__default__:sys.id" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
+else
+	echo "__default__:sys.id:s0-s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
+endif
 	install -m 644 file_contexts $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/
 	install -m 600 policy.$* $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/policy/

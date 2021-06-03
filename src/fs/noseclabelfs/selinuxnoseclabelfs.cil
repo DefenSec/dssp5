@@ -5,4 +5,6 @@
 
     (genfscon "selinuxfs" "/" fs_context)
 
-    (blockinherit .noseclabelfs.template))
+    (blockinherit .noseclabelfs.template)
+
+    (call .rbacsep.exempt.obj.type (fs)))

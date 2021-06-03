@@ -1,9 +1,62 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(classmap constrainobject (append create getattr read relabelto setattr write))
+
 (classmap files
 	  (create delete manage read readwrite relabel relabelfrom relabelto
-		  rename write))
+		  rename watch write))
+
+(classmapping constrainobject append (blk_file (append)))
+(classmapping constrainobject append (chr_file (append)))
+(classmapping constrainobject append (dir (append)))
+(classmapping constrainobject append (file (append)))
+(classmapping constrainobject append (lnk_file (append)))
+(classmapping constrainobject append (sock_file (append)))
+
+(classmapping constrainobject create (blk_file (create)))
+(classmapping constrainobject create (chr_file (create)))
+(classmapping constrainobject create (dir (create)))
+(classmapping constrainobject create (fifo_file (create)))
+(classmapping constrainobject create (file (create)))
+(classmapping constrainobject create (lnk_file (create)))
+(classmapping constrainobject create (sock_file (create)))
+
+(classmapping constrainobject getattr (blk_file (getattr)))
+(classmapping constrainobject getattr (chr_file (getattr)))
+(classmapping constrainobject getattr (dir (getattr)))
+(classmapping constrainobject getattr (file (getattr)))
+(classmapping constrainobject getattr (lnk_file (getattr)))
+(classmapping constrainobject getattr (sock_file (getattr)))
+
+(classmapping constrainobject read (blk_file (read)))
+(classmapping constrainobject read (chr_file (read)))
+(classmapping constrainobject read (dir (read)))
+(classmapping constrainobject read (file (read)))
+(classmapping constrainobject read (lnk_file (read)))
+(classmapping constrainobject read (sock_file (read)))
+
+(classmapping constrainobject relabelto (blk_file (relabelto)))
+(classmapping constrainobject relabelto (chr_file (relabelto)))
+(classmapping constrainobject relabelto (dir (relabelto)))
+(classmapping constrainobject relabelto (fifo_file (relabelto)))
+(classmapping constrainobject relabelto (file (relabelto)))
+(classmapping constrainobject relabelto (lnk_file (relabelto)))
+(classmapping constrainobject relabelto (sock_file (relabelto)))
+
+(classmapping constrainobject setattr (blk_file (setattr)))
+(classmapping constrainobject setattr (chr_file (setattr)))
+(classmapping constrainobject setattr (dir (setattr)))
+(classmapping constrainobject setattr (file (setattr)))
+(classmapping constrainobject setattr (lnk_file (setattr)))
+(classmapping constrainobject setattr (sock_file (setattr)))
+
+(classmapping constrainobject write (blk_file (write)))
+(classmapping constrainobject write (chr_file (write)))
+(classmapping constrainobject write (dir (write)))
+(classmapping constrainobject write (file (write)))
+(classmapping constrainobject write (lnk_file (write)))
+(classmapping constrainobject write (sock_file (write)))
 
 (classmapping files create addname_dir)
 (classmapping files create create_blk_file)
@@ -89,6 +142,14 @@
 (classmapping files rename rename_file)
 (classmapping files rename rename_lnk_file)
 (classmapping files rename rename_sock_file)
+
+(classmapping files watch (blk_file (watch)))
+(classmapping files watch (chr_file (watch)))
+(classmapping files watch (dir (watch)))
+(classmapping files watch (fifo_file (watch)))
+(classmapping files watch (file (watch)))
+(classmapping files watch (lnk_file (watch)))
+(classmapping files watch (sock_file (watch)))
 
 (classmapping files write read_lnk_file)
 (classmapping files write write_blk_file)

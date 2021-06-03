@@ -6,7 +6,9 @@
     (filecon "/sys/fs/cgroup" dir ())
     (filecon "/sys/fs/cgroup/.*" any ())
 
-    (allow fs self (filesystem (associate))))
+    (allow fs self (filesystem (associate)))
+
+    (call .rbacsep.exempt.obj.type (fs)))
 
 (in debug
 

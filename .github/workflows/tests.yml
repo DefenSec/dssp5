@@ -38,4 +38,7 @@ jobs:
           make DESTDIR=${TEST_TOOLCHAIN} LIBSEPOLA=${TEST_TOOLCHAIN}/usr/lib/libsepol.a CFLAGS+="-I${TEST_TOOLCHAIN}/usr/include" LDFLAGS+="-L${TEST_TOOLCHAIN}/usr/lib" -C ${TEST_TOOLCHAIN_SRC}/secilc install
 
       - name: Build dssp5-monolithic
-        run: LD_LIBRARY_PATH="${TEST_TOOLCHAIN}/lib:${TEST_TOOLCHAIN}/usr/lib" PATH="$PATH:${TEST_TOOLCHAIN}/usr/bin:${TEST_TOOLCHAIN}/sbin" make SELINUXTYPE=dssp5-monolithic VERBOSE=true
+        run: LD_LIBRARY_PATH="${TEST_TOOLCHAIN}/lib:${TEST_TOOLCHAIN}/usr/lib" PATH="$PATH:${TEST_TOOLCHAIN}/usr/bin:${TEST_TOOLCHAIN}/sbin" make MCS=false SELINUXTYPE=dssp5-monolithic VERBOSE=true
+
+      - name: Build dssp5-monolithic-mcs
+        run: LD_LIBRARY_PATH="${TEST_TOOLCHAIN}/lib:${TEST_TOOLCHAIN}/usr/lib" PATH="$PATH:${TEST_TOOLCHAIN}/usr/bin:${TEST_TOOLCHAIN}/sbin" make MCS=true SELINUXTYPE=dssp5-monolithic-mcs VERBOSE=true

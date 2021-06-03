@@ -6,6 +6,15 @@
 (class netif (egress ingress))
 (classorder (unordered netif))
 
+(classmap constrainnetifobject (egress))
+(classmapping constrainnetifobject egress (netif (egress)))
+
+(in mcs
+
+    (mlsconstrain (constrainnetifobject (egress))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
 (macro egress_invalid_netifs ((type ARG1))
        (allow ARG1 invalid (netif (egress))))
 

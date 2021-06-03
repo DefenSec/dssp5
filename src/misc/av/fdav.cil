@@ -11,6 +11,22 @@
 
     (allow typeattr .invalid (fd (all))))
 
+(in mcs
+
+    (mlsconstrain (fd (use))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
+(in rbacsep
+
+    (constrain (fd (use))
+	       (or (or (or (eq r1 r2)
+			   (and (eq r1 exempt.roleattr)
+				(neq t1 constrained.typeattr)))
+		       (eq t1 exempt.subj.typeattr))
+		   (and (eq t1 usefdsource.typeattr)
+			(eq t2 usefdtarget.typeattr)))))
+
 (in subj
 
     (block interactivefd

@@ -4,6 +4,16 @@
 (class infiniband_endport (manage_subnet))
 (classorder (unordered infiniband_endport))
 
+(classmap constrainendportobject (managesubnet))
+(classmapping constrainendportobject managesubnet
+	      (infiniband_endport (manage_subnet)))
+
+(in mcs
+
+    (mlsconstrain (constrainendportobject (managesubnet))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
 (macro managesubnet_invalid_endports ((type ARG1))
        (allow ARG1 invalid (infiniband_endport (manage_subnet))))
 

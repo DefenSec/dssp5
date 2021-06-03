@@ -8,4 +8,6 @@
        (filecon "/dev/full" char nodedev_context)
        (filecon "/dev/null" char nodedev_context)
 
-       (blockinherit .nodedev.template))
+       (blockinherit .nodedev.template)
+
+       (call .rbacsep.exempt.obj.type (nodedev)))

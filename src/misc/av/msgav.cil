@@ -8,6 +8,20 @@
 
     (allow typeattr .invalid (msg (all))))
 
+(in mcs
+
+    (mlsconstrain (msg (send))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
+(in rbacsep
+
+    (constrain (msg (send))
+	       (or (or (eq r1 r2)
+		       (and (eq r1 exempt.roleattr)
+			    (neq t1 constrained.typeattr)))
+		   (eq t1 exempt.subj.typeattr))))
+
 (in subj.unconfined
 
     (allow typeattr subj.typeattr (msg (all))))

@@ -303,8 +303,7 @@
 (macro search_unlabeled_dirs ((type ARG1))
        (allow ARG1 unlabeled search_dir))
 
-(macro unlabeled_type_transition
-       ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
+(macro unlabeled_type_transition ((type ARG1)(type ARG2)(class ARG3)(name ARG4))
        (typetransition ARG1 unlabeled ARG3 ARG4 ARG2)
        (call addname_unlabeled_dirs (ARG1)))
 
