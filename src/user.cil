@@ -66,6 +66,7 @@
 	   (typeattribute typeattr)
 
 	   (allow typeattr self (cap_userns (kill sys_ptrace)))
+	   (allow typeattr self (fd (use)))
 	   (allow typeattr self
 		  (process (getattr getrlimit getsched ptrace setfscreate
 				    setpgid setrlimit setsched)))

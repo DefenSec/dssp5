@@ -384,6 +384,7 @@
 (in user
 
     (call .sudo.client.type (subj))
+    (call .sudo.sigchld_subj_processes (subj))
     (call .sudo.visudo.client.type (subj)))
 
 (in user.agent
