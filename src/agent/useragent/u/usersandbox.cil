@@ -171,8 +171,6 @@
 			 (type subj)
 			 (typebounds .user.subj subj)
 
-			 (call .user.home.readwriteinherited_file_files (subj))
-
 			 (call .user.sandbox.agent.type (subj))
 
 			 (call .user.systemd.run.pipe.client.type (subj))
