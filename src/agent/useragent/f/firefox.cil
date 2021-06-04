@@ -269,6 +269,9 @@
        (optional firefox_waypipe
 		 (call .waypipe.agent (subj exec.file)))
 
+       (optional firefox_wfrecorder
+		 (call .wfrecorder.tmp.read_file_files (subj)))
+
        (block common
 
 	      (macro type ((type ARG1))
