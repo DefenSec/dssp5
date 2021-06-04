@@ -236,6 +236,7 @@
        (call .themes.data.read_file_pattern.type (subj))
 
        (call .tmp.deletename_file_dirs (subj))
+       (call .tmp.watch_file_dirs (subj))
 
        (call .user.dbus.nameclient.type (subj))
 
