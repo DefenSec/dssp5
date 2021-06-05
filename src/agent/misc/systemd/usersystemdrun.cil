@@ -113,10 +113,7 @@
 		  (call file.readwriteinherited_all_files (typeattr))
 
 		  (call pipe.readwriteinherited_all_fifo_files (typeattr))
-		  (call pipe.use_all_fds (typeattr))
-
-		  (call .user.termdev.readwriteinherited_all_chr_files
-			(typeattr)))
+		  (call pipe.use_all_fds (typeattr)))
 
 	   (block file
 
