@@ -148,6 +148,8 @@
 
 		  (call .user.agent.type (typeattr))
 
+		  (call .user.open_ptytermdev_chr_files (typeattr))
+
 		  (call .utmp.run.read_file_files (typeattr))
 
 		  (call .vm.search_sysctlfile_pattern.type (typeattr))
