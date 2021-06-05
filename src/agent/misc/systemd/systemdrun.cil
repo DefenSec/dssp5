@@ -57,6 +57,8 @@
 
     (call .sys.shell_exec_subj_type_transition (subj))
 
+    (call .sys.termdev.open_all_chr_files (subj))
+
     (call .systemd.notify.type (subj))
     (call .systemd.private.type (subj))
     (call .systemd.unit.run.start_file_services (subj))
@@ -64,8 +66,6 @@
 
     (call .systemd.machines.run.list_file_dirs (subj))
     (call .systemd.machines.run.read_file_files (subj))
-
-    (call .user.termdev.open_all_chr_files (subj))
 
     (block common
 
@@ -134,10 +134,7 @@
 		  (call file.readwriteinherited_all_files (typeattr))
 
 		  (call pipe.readwriteinherited_all_fifo_files (typeattr))
-		  (call pipe.use_all_fds (typeattr))
-
-		  (call .user.termdev.readwriteinherited_all_chr_files
-			(typeattr)))
+		  (call pipe.use_all_fds (typeattr)))
 
 	   (block file
 
