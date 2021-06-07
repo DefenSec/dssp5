@@ -85,6 +85,10 @@
 
     (call .gh.home.data.user_home_data_file_type_transition_file (typeattr)))
 
+(in openssh.client
+
+    (call .gh.use_subj_fds (subj)))
+
 (in user
 
     (call .gh.home.data.manage_file_dirs (subj))
