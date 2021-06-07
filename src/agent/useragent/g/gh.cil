@@ -47,6 +47,9 @@
 
        (call .openssh.keygen.subj_type_transition (subj))
 
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
        (call .sys.search_fs_pattern.type (subj))
 
        ;; ~/.local/bin/web-browser (BROWSER=web-browser)
