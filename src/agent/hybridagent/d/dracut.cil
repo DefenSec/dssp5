@@ -6,8 +6,10 @@
        (blockinherit hybrid.agent.template)
 
        (allow subj self
-	      (capability (dac_override dac_read_search fsetid mknod sys_admin)))
-       (allow subj self (process (setfscreate getsched)))
+	      (capability (dac_override dac_read_search fsetid mknod
+					sys_admin)))
+       ;; execmem needed by grep
+       (allow subj self (process (getsched execmem setfscreate)))
        (allow subj self create_unix_stream_socket)
        (dontaudit subj self (capability (net_admin)))
 
@@ -51,6 +53,8 @@
        (call .module.search_sysfile_pattern.type (subj))
 
        (call .modules.read_procfile_pattern.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
 
        (call .power.read_sysfile_files (subj))
        (call .power.search_sysfile_pattern.type (subj))
