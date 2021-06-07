@@ -62,6 +62,9 @@
 	   (macro dontaudit_search_file_dirs ((type ARG1))
 		  (dontaudit ARG1 file search_dir))
 
+	   (macro getattr_file_files ((type ARG1))
+		  (allow ARG1 file (file (getattr))))
+
 	   (macro home_file_type_transition_file
 		  ((type ARG1)(class ARG2)(name ARG3))
 		  (call .home.file_type_transition

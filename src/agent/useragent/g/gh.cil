@@ -26,6 +26,8 @@
 
        (call .git.client.subj_type_transition (subj))
 
+       (call .git.home.getattr_file_dirs (subj))
+
        (call .http.https.nameconnect_port_tcp_sockets (subj))
 
        (call .kernel.read_sysfile_files (subj))
@@ -46,6 +48,8 @@
        (call .sys.search_fs_pattern.type (subj))
 
        (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+       (call .user.home.getattr_file_files (subj))
 
        (call .user.home.data.create_file_dir_pattern.type (subj))
 
@@ -87,7 +91,8 @@
 
 (in openssh.client
 
-    (call .gh.use_subj_fds (subj)))
+    (call .gh.use_subj_fds (subj))
+    (call .gh.writeinherited_subj_fifo_files (subj)))
 
 (in user
 
