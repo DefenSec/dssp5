@@ -61,6 +61,8 @@
 
        (call .snd.readwrite_nodedev_chr_files (subj))
 
+       (call .state.search_file_pattern.type (subj))
+
        (block exec
 
 	      (filecon "/usr/bin/mpg123" file file_context)
