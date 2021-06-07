@@ -43,6 +43,8 @@
 
        (call .openssh.conf.search_file_dirs (subj))
 
+       (call .openssh.home.dontaudit_search_file_dirs (subj))
+
        (call .openssh.keygen.subj_type_transition (subj))
 
        (call .sys.search_fs_pattern.type (subj))

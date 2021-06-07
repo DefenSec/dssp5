@@ -324,6 +324,9 @@
 	   (filecon "HOME_DIR/\.ssh" dir file_context)
 	   (filecon "HOME_DIR/\.ssh/.*" any file_context)
 
+	   (macro dontaudit_search_file_dirs ((type ARG1))
+		  (dontaudit ARG1 file search_dir))
+
 	   (macro getattr_file_files ((type ARG1))
 		  (allow ARG1 file (file (getattr))))
 
