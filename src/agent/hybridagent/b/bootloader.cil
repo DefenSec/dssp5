@@ -132,6 +132,8 @@
 	      (call .shell.exec.mapexecute_file_files (subj))
 	      (call .shell.exec.read_file_files (subj))
 
+	      (call .state.search_file_pattern.type (subj))
+
 	      (call .stordev.read.type (subj))
 	      (call .stordev.read_all_blk_files (subj))
 	      (call .stordev.read_all_chr_files (subj))
