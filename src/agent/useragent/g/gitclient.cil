@@ -30,6 +30,9 @@
 	   (macro entrypoint_file_files ((type ARG1))
 		  (allow ARG1 file (file (entrypoint))))
 
+	   (macro getattr_file_dirs ((type ARG1))
+		  (allow ARG1 file (dir (getattr))))
+
 	   (macro map_file_files ((type ARG1))
 		  (allow ARG1 file (file (map))))
 
