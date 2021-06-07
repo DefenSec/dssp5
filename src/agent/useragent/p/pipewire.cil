@@ -90,6 +90,8 @@
 
 	      (call .selinux.linked.type (typeattr))
 
+	      (call .state.search_file_pattern.type (typeattr))
+
 	      (call .systemd.journal.relay_msgs.type (typeattr))
 
 	      (call .user.home.conf.search_file_dirs (typeattr)))

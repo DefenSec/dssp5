@@ -21,6 +21,8 @@
 
        (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
        (call .class.traverse_sysfile_pattern.type (subj))
 
        (call .cmdline.read_procfile_files (subj))
