@@ -27,8 +27,6 @@
     (call .devices.read_sysfile_files (subj))
     (call .devices.traverse_sysfile_pattern.type (subj))
 
-    (call .e2fsprogs.subj_type_transition (subj))
-
     (call .fsck.subj_type_transition (subj))
 
     (call .gcrypt.conf.read_file_pattern.type (subj))

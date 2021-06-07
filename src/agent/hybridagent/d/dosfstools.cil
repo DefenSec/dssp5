@@ -35,6 +35,10 @@
 
     (call .dosfstools.subj_type_transition (subj)))
 
+(in systemd.fsck
+
+    (call .dosfstools.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .dosfstools.subj_type_transition (subj)))
