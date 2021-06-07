@@ -102,6 +102,10 @@
 
     (call .btrfsprogs.subj_type_transition (subj)))
 
+(in systemd.fsck
+
+    (call .btrfsprogs.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .btrfsprogs.subj_type_transition (subj)))
