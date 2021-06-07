@@ -49,11 +49,14 @@
 
        (call .sys.search_fs_pattern.type (subj))
 
+       ;; ~/.local/bin/web-browser (BROWSER=web-browser)
+       (call .user.exec_home_subj_type_transition (subj))
+
        (call .user.home.conf.create_file_dir_pattern.type (subj))
 
-       (call .user.home.getattr_file_files (subj))
-
        (call .user.home.data.create_file_dir_pattern.type (subj))
+
+       (call .user.home.getattr_file_files (subj))
 
        (block exec
 
