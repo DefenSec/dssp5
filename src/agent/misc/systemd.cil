@@ -1542,7 +1542,8 @@
 
 (in dbus
 
-    (call .sys.tmpfs.readwriteinherited_file_files (subj)))
+    ;; for systemd-run --pipe and machinectl
+    (call .file.except.readwriteinherited_all_files (subj)))
 
 (in dev
 
