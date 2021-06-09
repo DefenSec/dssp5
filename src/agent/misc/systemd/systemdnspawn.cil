@@ -200,6 +200,9 @@
 
     (call .e2fsprogs.subj_type_transition (subj))
 
+    ;; for privcontainer fd passing
+    (call .file.except.readwriteinherited_all_files (subj))
+
     (call .fs.mounton_sysfile_dirs (subj))
 
     (call .fsck.subj_type_transition (subj))
