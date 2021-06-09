@@ -9,6 +9,16 @@
 
     (call .systemd.nspawn.container.obj.getattr_all_dirs (subj)))
 
+(in sudo
+
+    ;; sudo runcon -t systemd.nspawn.subj -- \
+    ;; systemd-nspawn -Z sys.id:sys.role:systemd.nspawn.privcontainer.subj:s0 \
+    ;; -L sys.id:sys.role:systemd.nspawn.privcontainer.fs:s0 \
+    ;; --resolv-conf=replace-host -a --volatile=overlay \
+    ;; -D /var/lib/machines/myprivcontaine --console=pipe cat </etc/virc
+
+    (call .file.except.readwriteinherited_all_files (subj)))
+
 (in sys
 
     (call .systemd.nspawn.container.subj.role (role)))
@@ -765,6 +775,8 @@
 
 	   (allow subj self (capability (not (sys_module))))
 	   (allow subj self (capability2 (not (mac_admin mac_override))))
+
+	   (call .file.except.readwriteinherited_all_files (subj))
 
 	   (call .net.egress_netifs (subj))
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
