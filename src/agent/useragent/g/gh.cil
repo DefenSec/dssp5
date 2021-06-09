@@ -16,6 +16,9 @@
        (call home.data.manage_file_files (subj))
        (call home.data.user_home_data_file_type_transition_file (subj))
 
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
        (call .cert.read_file_pattern.type (subj))
 
        (call .cryptopol.conf.read_file_files (subj))
@@ -23,6 +26,11 @@
 
        (call .cryptopol.data.read_file_files (subj))
        (call .cryptopol.data.search_file_pattern.type (subj))
+
+       (call .editor.conf.read_file_files (subj))
+
+       ;; fall-back to generic editors
+       (call .exec.execute_file_files (subj))
 
        (call .git.client.subj_type_transition (subj))
 
@@ -52,6 +60,8 @@
 
        (call .sys.search_fs_pattern.type (subj))
 
+       (call .tmp.deletename_file_dirs (subj))
+
        ;; ~/.local/bin/web-browser (BROWSER=web-browser)
        (call .user.exec_home_subj_type_transition (subj))
 
@@ -60,6 +70,9 @@
        (call .user.home.data.create_file_dir_pattern.type (subj))
 
        (call .user.home.getattr_file_files (subj))
+
+       (optional gh_emacs
+		 (call .emacs.client.subj_type_transition (subj)))
 
        (block exec
 
@@ -89,7 +102,16 @@
 			    (call .user.home.data.file_type_transition
 				  (ARG1 file dir "gh")))
 
-		     (blockinherit .file.user.home.data.template))))
+		     (blockinherit .file.user.home.data.template)))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
 
 (in file.unconfined
 
@@ -116,7 +138,10 @@
     (call .gh.home.conf.relabel_file_files (subj))
     (call .gh.home.conf.user_home_conf_file_type_transition_file (subj))
 
-    (call .gh.role (role)))
+    (call .gh.role (role))
+
+    (call .gh.tmp.manage_file_files (subj))
+    (call .gh.tmp.relabel_file_files (subj)))
 
 (in wheel
 

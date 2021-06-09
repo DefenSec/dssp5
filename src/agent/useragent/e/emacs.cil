@@ -248,6 +248,9 @@
        (optional emacs_firefox
 		 (call .firefox.exec.dontaudit_auditaccess_file_files (subj)))
 
+       (optional emacs_gh
+		 (call .gh.tmp.readwrite_file_files (subj)))
+
        (optional emacs_postfix
 		 (call .postfix.sendmail.mailer.type (subj)))
 
