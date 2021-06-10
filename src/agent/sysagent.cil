@@ -19,7 +19,7 @@
 
 	   (call .agent.type (typeattr))
 
-	   (call .sys.user.readinherited_subj_fifo_files (typeattr))
+	   (call .sys.user.readwriteinherited_subj_fifo_files (typeattr))
 	   (call .sys.user.use_subj_fds (typeattr))
 
 	   ;; emergency shell
