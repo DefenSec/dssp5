@@ -191,9 +191,11 @@
 			    (call .systemd.askpassword.role (roleattr))
 			    (call .systemd.askpassword.ttyagent.role (roleattr))
 
-			    (call .systemd.conf.traverse_file_pattern.type (typeattr))
+			    (call .systemd.conf.traverse_file_pattern.type
+				  (typeattr))
 
-			    (call .systemd.journal.log.map_file_pattern.type (typeattr))
+			    (call .systemd.journal.log.map_file_pattern.type
+				  (typeattr))
 			    (call .systemd.journal.log.read_file_pattern.type
 				  (typeattr))
 

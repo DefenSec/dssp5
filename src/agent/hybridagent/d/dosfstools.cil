@@ -3,7 +3,7 @@
 
 (block dosfstools
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.data.read_file_pattern.type (subj))

@@ -40,14 +40,13 @@
 
 	   (call .stordev.unconfined.type (subj))
 
+	   (call .sys.agent.type (subj))
+
 	   (call .sys.getattr_fs (subj))
 
 	   (call .tmp.addname_fs_dirs (subj))
 	   (call .tmp.create_fs_dirs (subj))
 	   (call .tmp.relabelfrom_fs_dirs (subj))
-
-	   (call .hybrid.agent.exec.type (exec.file))
-	   (call .hybrid.agent.type (subj))
 
 	   (block common
 
@@ -117,7 +116,9 @@
 
 	   (block exec
 
-		  (filecon "/usr/bin/systemd-tmpfiles" file file_context))
+		  (filecon "/usr/bin/systemd-tmpfiles" file file_context)
+
+		  (call .hybrid.agent.exec.type (exec.file)))
 
 	   (block run
 

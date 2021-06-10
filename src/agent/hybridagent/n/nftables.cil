@@ -3,7 +3,7 @@
 
 (block nftables
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (net_admin)))
        (allow subj self create_netlink_netfilter_socket)
@@ -59,7 +59,7 @@
 			   (ARG1 file file "*")))
 
 	      (blockinherit .file.macro_template_files)
-	      (blockinherit .file.user.tmp.base_template))
+	      (blockinherit .file.tmp.base_template))
 
        (block unit
 

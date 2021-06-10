@@ -11,7 +11,7 @@
 
     (block repart
 
-	   (blockinherit .hybrid.agent.template)
+	   (blockinherit .sys.agent.template)
 
 	   (call conf.list_file_dirs (subj))
 	   (call conf.read_file_files (subj))

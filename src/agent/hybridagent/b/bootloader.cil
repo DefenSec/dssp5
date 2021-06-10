@@ -57,7 +57,7 @@
 
        (block grub2
 
-	      (blockinherit .hybrid.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (allow subj self (capability (dac_read_search sys_admin)))
 	      (allow subj self (process (setfscreate)))
@@ -155,7 +155,8 @@
 		     (filecon "/usr/bin/grub2-menulst2cfg" file file_context)
 		     (filecon "/usr/bin/grub2-mkconfig" file file_context)
 		     (filecon "/usr/bin/grub2-mkimage" file file_context)
-		     (filecon "/usr/bin/grub2-mkpasswd-pbkdf2" file file_context)
+		     (filecon "/usr/bin/grub2-mkpasswd-pbkdf2" file
+			      file_context)
 		     (filecon "/usr/bin/grub2-mkrelpath" file file_context)
 		     (filecon "/usr/bin/grub2-mount" file file_context)
 		     (filecon "/usr/bin/grub2-probe" file file_context)

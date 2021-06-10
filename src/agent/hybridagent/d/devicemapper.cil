@@ -3,7 +3,7 @@
 
 (block devicemapper
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (sys_admin)))
 
@@ -49,4 +49,5 @@
 
 (in file.unconfined
 
-    (call .devicemapper.cryptsetup.run.run_file_type_transition_file (typeattr)))
+    (call .devicemapper.cryptsetup.run.run_file_type_transition_file
+	  (typeattr)))

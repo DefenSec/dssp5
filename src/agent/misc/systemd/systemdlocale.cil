@@ -68,7 +68,8 @@
 
 	   (block exec
 
-		  (filecon "/usr/lib/systemd/systemd-localed" file file_context))
+		  (filecon "/usr/lib/systemd/systemd-localed" file
+			   file_context))
 
 	   (block unit
 

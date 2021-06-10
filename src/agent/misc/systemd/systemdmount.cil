@@ -6,7 +6,7 @@
     (block mount
 
 	   (blockinherit .dbus.client.template)
-	   (blockinherit .user.agent.template)
+	   (blockinherit .hybrid.agent.template)
 
 	   (allow subj self create_unix_stream_socket)
 	   (dontaudit subj self (capability (net_admin)))

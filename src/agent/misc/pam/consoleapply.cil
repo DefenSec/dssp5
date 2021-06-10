@@ -3,7 +3,7 @@
 
 (block consoleapply
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call .rbacsep.constrained.type (subj))
 

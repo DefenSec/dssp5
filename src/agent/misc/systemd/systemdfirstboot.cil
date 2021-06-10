@@ -5,7 +5,7 @@
 
     (block firstboot
 
-	   (blockinherit .hybrid.agent.template)
+	   (blockinherit .sys.agent.template)
 
 	   (allow subj self
 		  (capability (dac_override dac_read_search sys_admin
@@ -144,7 +144,7 @@
 			       (ARG1 file dir "*")))
 
 		  (blockinherit .file.macro_template_dirs)
-		  (blockinherit .file.user.tmp.base_template))
+		  (blockinherit .file.tmp.base_template))
 
 	   (block unit
 

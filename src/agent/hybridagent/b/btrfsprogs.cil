@@ -8,7 +8,7 @@
 	      (call state.search_file_dirs (ARG1))
 	      (call state.write_file_sock_files (ARG1)))
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (dac_read_search sys_admin)))
        (allow subj self (process (setsched)))

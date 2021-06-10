@@ -68,7 +68,7 @@
 
        (block rpmdb
 
-	      (blockinherit .hybrid.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (call pkgmgr.conf.list_file_dirs (subj))
 	      (call pkgmgr.conf.read_file_files (subj))
@@ -120,7 +120,7 @@
 				  (ARG1 file file "*")))
 
 		     (blockinherit .file.macro_template_files)
-		     (blockinherit .file.user.tmp.base_template)))
+		     (blockinherit .file.tmp.base_template)))
 
        (block state
 

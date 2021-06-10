@@ -169,7 +169,7 @@
 
        (block cli
 
-	      (blockinherit .hybrid.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (allow subj self (capability (chown dac_read_search)))
 	      (allow subj self (process (setexec)))
@@ -226,7 +226,7 @@
 				  (ARG1 file file "*")))
 
 		     (blockinherit .file.macro_template_files)
-		     (blockinherit .file.user.tmp.base_template)))
+		     (blockinherit .file.tmp.base_template)))
 
        (block conf
 

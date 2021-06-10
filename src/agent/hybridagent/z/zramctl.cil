@@ -3,7 +3,7 @@
 
 (block zramctl
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call .block.search_sysfile_pattern.type (subj))
 

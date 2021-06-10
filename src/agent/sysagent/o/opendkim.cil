@@ -86,12 +86,12 @@
 
     (block exec
 
-           (filecon "/usr/bin/opendkim" file file_context))
+	   (filecon "/usr/bin/opendkim" file file_context))
 
     (block run
 
-           (filecon "/run/opendkim" dir file_context)
-           (filecon "/run/opendkim/.*" any file_context)
+	   (filecon "/run/opendkim" dir file_context)
+	   (filecon "/run/opendkim/.*" any file_context)
 
 	   (macro run_file_type_transition_file ((type ARG1))
 		  (call .run.file_type_transition
@@ -103,8 +103,8 @@
 
     (block spool
 
-           (filecon "/var/spool/opendkim" dir file_context)
-           (filecon "/var/spool/opendkim/.*" any file_context)
+	   (filecon "/var/spool/opendkim" dir file_context)
+	   (filecon "/var/spool/opendkim/.*" any file_context)
 
 	   (macro spool_file_type_transition_file ((type ARG1))
 		  (call .spool.file_type_transition

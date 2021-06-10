@@ -39,9 +39,9 @@
 
     (call service.noatsecure.noatsecure_all_processes (subj))
 
-    (call .hybrid.agent.type (subj))
-
     (call .ns.read_fs_pattern.type (subj))
+
+    (call .sys.agent.type (subj))
 
     (call .sys.sendmsg_subj_dbus.type (subj))
     (call .sys.start_system (subj))

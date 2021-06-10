@@ -44,7 +44,7 @@
 
        (blockinherit .file.data.base_template)
        (blockinherit .file.macro_template_files)
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (sys_admin sys_module)))
        (allow subj self (key (write)))

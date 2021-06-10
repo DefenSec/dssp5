@@ -3,7 +3,7 @@
 
 (block blktools
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (sys_admin)))
 

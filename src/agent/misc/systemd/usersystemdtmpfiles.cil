@@ -3,10 +3,12 @@
 
 (in file.unconfined
 
-    (call .user.systemd.tmpfiles.home.conf.user_home_conf_file_type_transition_file
-	  (typeattr))
-    (call .user.systemd.tmpfiles.home.data.user_home_data_file_type_transition_file
-	  (typeattr))
+    (call
+     .user.systemd.tmpfiles.home.conf.user_home_conf_file_type_transition_file
+     (typeattr))
+    (call
+     .user.systemd.tmpfiles.home.data.user_home_data_file_type_transition_file
+     (typeattr))
     (call .user.systemd.tmpfiles.run.user_run_file_type_transition_file
 	  (typeattr)))
 
@@ -54,7 +56,8 @@
 
 		  (call .systemd.tmpfiles.exec.mapexecute_file_files (ARG1))
 		  (call .systemd.tmpfiles.exec.read_file_files (ARG1))
-		  (call .systemd.tmpfiles.exec.subj_type_transition (ARG1 subj)))
+		  (call .systemd.tmpfiles.exec.subj_type_transition
+			(ARG1 subj)))
 
 	   (blockinherit .subj.common.base_template)
 

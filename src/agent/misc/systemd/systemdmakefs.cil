@@ -49,9 +49,11 @@
 
 	   (block unit
 
-		  (filecon "/usr/lib/systemd/system/systemd-growfs@.*\.service.*"
-			   file file_context)
-		  (filecon "/usr/lib/systemd/system/systemd-makefs@.*\.service.*"
-			   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-growfs@.*\.service.*" file
+		   file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-makefs@.*\.service.*" file
+		   file_context)
 
 		  (blockinherit .file.unit.template))))

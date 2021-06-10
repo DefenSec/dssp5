@@ -3,7 +3,7 @@
 
 (block kernelinstall
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (dac_override dac_read_search)))
        (allow subj self (process (getsched setfscreate)))

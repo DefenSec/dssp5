@@ -3,7 +3,7 @@
 
 (block kbd
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (sys_tty_config)))
 

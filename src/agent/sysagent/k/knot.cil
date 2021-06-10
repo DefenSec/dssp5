@@ -107,7 +107,7 @@
 
 	   (blockinherit .hybrid.agent.template)
 
-           (allow subj self
+	   (allow subj self
 		  (capability (dac_override dac_read_search setgid setuid)))
 
 	   (call unix_stream_connect (subj))
@@ -200,7 +200,7 @@
 
     (block exec
 
-           (filecon "/usr/bin/knotd" file file_context))
+	   (filecon "/usr/bin/knotd" file file_context))
 
     (block conf
 
@@ -218,8 +218,8 @@
 
     (block keys
 
-           (filecon "/var/lib/knot/keys" dir file_context)
-           (filecon "/var/lib/knot/keys/.*" any file_context)
+	   (filecon "/var/lib/knot/keys" dir file_context)
+	   (filecon "/var/lib/knot/keys/.*" any file_context)
 
 	   (macro knot_state_file_type_transition_file ((type ARG1))
 		  (call .knot.state.file_type_transition
@@ -232,8 +232,8 @@
 
     (block run
 
-           (filecon "/run/knot" dir file_context)
-           (filecon "/run/knot/.*" any file_context)
+	   (filecon "/run/knot" dir file_context)
+	   (filecon "/run/knot/.*" any file_context)
 
 	   (macro run_file_type_transition_file ((type ARG1))
 		  (call .run.file_type_transition

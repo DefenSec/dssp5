@@ -3,7 +3,7 @@
 
 (block translateshell
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .user.agent.template)
 
        (allow subj self create_tcp_socket)
 

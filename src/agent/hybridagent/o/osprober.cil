@@ -3,7 +3,7 @@
 
 (block osprober
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (dac_read_search sys_admin)))
 

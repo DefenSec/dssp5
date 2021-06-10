@@ -22,7 +22,7 @@
 
 (in systemd.sysext
 
-    (blockinherit .hybrid.agent.template)
+    (blockinherit .sys.agent.template)
 
     (allow subj self (capability (dac_read_search net_admin sys_admin
 						  sys_resource)))
@@ -199,7 +199,7 @@
 			(ARG1 file dir "*")))
 
 	   (blockinherit .file.macro_template_dirs)
-	   (blockinherit .file.user.tmp.base_template))
+	   (blockinherit .file.tmp.base_template))
 
     (block tmpfs
 
@@ -210,7 +210,7 @@
 
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_files)
-	   (blockinherit .file.user.tmpfs.base_template))
+	   (blockinherit .file.tmpfs.base_template))
 
     (block unit
 
@@ -223,19 +223,3 @@
 
     (call .systemd.sysext.use_subj_fds (typeattr))
     (call .systemd.sysext.tmpfs.list_file_dirs (typeattr)))
-
-(in user
-
-    (call .systemd.sysext.tmp.manage_file_dirs (subj))
-    (call .systemd.sysext.tmp.relabel_file_dirs (subj))
-
-    (call .systemd.sysext.tmpfs.manage_file_dirs (subj))
-    (call .systemd.sysext.tmpfs.manage_file_files (subj))
-    (call .systemd.sysext.tmpfs.relabel_file_dirs (subj))
-    (call .systemd.sysext.tmpfs.relabel_file_files (subj))
-
-    (call .systemd.sysext.role (role)))
-
-(in wheel
-
-    (call .systemd.sysext.role (role)))

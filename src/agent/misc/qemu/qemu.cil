@@ -191,8 +191,8 @@
 		     (allow ARG1 subj (tun_socket (relabelfrom))))
 
 	      (allow subj self
-		     (capability (dac_override dac_read_search ipc_lock net_admin
-					       setgid setuid)))
+		     (capability (dac_override dac_read_search ipc_lock
+					       net_admin setgid setuid)))
 	      (allow subj self create_tcp_stream_socket)
 	      (allow subj self create_tun_socket)
 	      (allow subj self (tun_socket (relabelfrom relabelto)))
@@ -390,7 +390,8 @@
 
 				   (blockinherit .file.macro_template_dirs)
 				   (blockinherit .file.macro_template_files)
-				   (blockinherit .file.macro_template_lnk_files))
+				   (blockinherit
+				    .file.macro_template_lnk_files))
 
 			    (block template
 

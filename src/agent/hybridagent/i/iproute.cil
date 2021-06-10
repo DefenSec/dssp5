@@ -3,7 +3,7 @@
 
 (block iproute
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (net_admin sys_admin sys_module)))
        (allow subj self create_netlink_route_socket)
