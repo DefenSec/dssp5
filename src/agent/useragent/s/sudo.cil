@@ -293,7 +293,7 @@
 
        (block visudo
 
-	      (blockinherit .user.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (allow subj self (capability (dac_read_search dac_override)))
 
@@ -384,8 +384,7 @@
 (in user
 
     (call .sudo.client.type (subj))
-    (call .sudo.sigchld_subj_processes (subj))
-    (call .sudo.visudo.client.type (subj)))
+    (call .sudo.sigchld_subj_processes (subj)))
 
 (in user.agent
 
