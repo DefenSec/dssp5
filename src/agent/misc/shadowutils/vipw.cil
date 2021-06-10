@@ -3,7 +3,7 @@
 
 (block vipw
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (chown dac_override dac_read_search)))
        (allow subj self (process (setfscreate setpgid)))
