@@ -81,8 +81,9 @@
 
 	   (block unit
 
-		  (filecon "/usr/lib/systemd/system/systemd-timedated\.service.*"
-			   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-timedated\.service.*" file
+		   file_context)
 
 		  (blockinherit .file.unit.template)
 

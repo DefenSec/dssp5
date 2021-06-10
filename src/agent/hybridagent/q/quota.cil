@@ -3,7 +3,7 @@
 
 (block quota
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (setgid setuid sys_admin)))
 

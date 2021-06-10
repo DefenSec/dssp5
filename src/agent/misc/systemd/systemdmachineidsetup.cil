@@ -5,7 +5,7 @@
 
     (block machineidsetup
 
-	   (blockinherit .hybrid.agent.template)
+	   (blockinherit .sys.agent.template)
 
 	   (allow subj self
 		  (capability (dac_override dac_read_search setgid setuid

@@ -3,7 +3,7 @@
 
 (block fsck
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call run.manage_file_dirs (subj))
        (call run.manage_file_files (subj))

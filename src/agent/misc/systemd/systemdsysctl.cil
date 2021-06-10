@@ -5,7 +5,7 @@
 
     (block sysctl
 
-	   (blockinherit .hybrid.agent.template)
+	   (blockinherit .sys.agent.template)
 
 	   (allow subj self (capability (net_admin sys_ptrace sys_resource)))
 	   (allow subj self create_unix_dgram_socket)

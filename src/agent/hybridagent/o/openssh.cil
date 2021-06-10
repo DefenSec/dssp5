@@ -20,7 +20,8 @@
 
 		     (filecon "/usr/bin/openssh/ssh-pkcs11-helper" file
 			      file_context)
-		     (filecon "/usr/bin/openssh/ssh-sk-helper" file file_context)
+		     (filecon "/usr/bin/openssh/ssh-sk-helper" file
+			      file_context)
 
 		     (blockinherit .file.exec.template)))
 

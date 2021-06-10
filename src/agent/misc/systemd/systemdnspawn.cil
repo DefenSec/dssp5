@@ -114,7 +114,7 @@
 
     (blockinherit .dbus.client.template)
     (blockinherit .ptytermdev.template)
-    (blockinherit .hybrid.agent.template)
+    (blockinherit .sys.agent.template)
 
     (allow subj self
 	   (capability (audit_control chown dac_override dac_read_search fowner
@@ -584,7 +584,8 @@
 		  (allow typeattr self (netlink_audit_socket (nlmsg_relay)))
 		  (allow typeattr self
 			 (netlink_route_socket (nlmsg_read nlmsg_write)))
-		  (allow typeattr self (sctp_socket (association accept listen)))
+		  (allow typeattr self
+			 (sctp_socket (association accept listen)))
 		  (allow typeattr self (sockets (common)))
 		  (allow typeattr self (tcp_socket (accept listen)))
 		  (allow typeattr self (tun_socket (attach_queue)))
@@ -734,8 +735,9 @@
 
 	   (block unit
 
-		  (filecon "/usr/lib/systemd/system/systemd-nspawn@.*\.service.*"
-			   file file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-nspawn@.*\.service.*" file
+		   file_context)
 
 		  (macro type ((type ARG1))
 			 (typeattributeset typeattr ARG1))
@@ -756,7 +758,8 @@
 				(blockinherit .file.macro_template_files)
 				(blockinherit .file.unit.base_template)
 
-				(blockinherit .file.unit.macro_template_services)
+				(blockinherit
+				 .file.unit.macro_template_services)
 
 				(call .systemd.nspawn.container.unit.type
 				      (file))))))
@@ -825,7 +828,7 @@
 
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_lnk_files)
-	   (blockinherit .file.user.tmp.base_template)))
+	   (blockinherit .file.tmp.base_template)))
 
 (in systemd.portablectl
 

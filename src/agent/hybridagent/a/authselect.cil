@@ -3,7 +3,7 @@
 
 (block authselect
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (process (setfscreate)))
 

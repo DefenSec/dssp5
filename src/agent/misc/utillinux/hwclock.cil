@@ -3,7 +3,7 @@
 
 (block hwclock
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self (capability (audit_write sys_time)))
        (allow subj self (process (getcap)))

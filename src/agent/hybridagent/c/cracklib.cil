@@ -3,7 +3,7 @@
 
 (block cracklib
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call cache.cache_file_type_transition_file (subj))
        (call cache.manage_file_dirs (subj))

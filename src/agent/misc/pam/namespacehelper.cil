@@ -3,7 +3,7 @@
 
 (block namespacehelper
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (block exec
 

@@ -14,7 +14,7 @@
 	   (macro dontaudit_readwriteinherited_subj_udp_sockets ((type ARG1))
 		  (allow ARG1 subj readwriteinherited_udp_socket))
 
-	   (blockinherit .hybrid.agent.template)
+	   (blockinherit .sys.agent.template)
 
 	   (allow subj self
 		  (capability (chown dac_override dac_read_search fowner fsetid

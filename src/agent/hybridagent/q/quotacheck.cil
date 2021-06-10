@@ -57,7 +57,7 @@
 
        (blockinherit .file.base_template)
        (blockinherit .file.macro_template_files)
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self
 	      (capability (dac_read_search dac_override linux_immutable

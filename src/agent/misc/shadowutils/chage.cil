@@ -3,7 +3,7 @@
 
 (block chage
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self
 	      (capability (audit_write dac_override dac_read_search

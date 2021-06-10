@@ -34,7 +34,7 @@
 	      (call tokenlogin.run.write_file_sock_files (ARG1))
 	      (call run.search_file_dirs (ARG1)))
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self
 	      (capability (chown dac_override dac_read_search fsetid kill
@@ -184,7 +184,7 @@
 
        (block cli
 
-	      (blockinherit .hybrid.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (allow subj self
 		     (capability (dac_override dac_read_search net_admin setgid
@@ -418,7 +418,8 @@
 
 	      (block exec
 
-		     (filecon "/usr/bin/dovecot/dovecot-lda" file file_context)))
+		     (filecon "/usr/bin/dovecot/dovecot-lda" file
+			      file_context)))
 
        (block lmtp
 
@@ -525,7 +526,7 @@
 
        (block mkcert
 
-	      (blockinherit .hybrid.agent.template)
+	      (blockinherit .sys.agent.template)
 
 	      (call cert.manage_file_files (subj))
 	      (call cert.readwrite_file_dirs (subj))

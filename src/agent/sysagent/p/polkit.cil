@@ -214,7 +214,8 @@
 
 	      (block exec
 
-		     (filecon "/usr/bin/pkla-admin-identities" file file_context)
+		     (filecon "/usr/bin/pkla-admin-identities" file
+			      file_context)
 		     (filecon "/usr/bin/pkla-check-authorization" file
 			      file_context)
 

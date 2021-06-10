@@ -3,7 +3,7 @@
 
 (block e2fsprogs
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call conf.read_file_files (subj))
 

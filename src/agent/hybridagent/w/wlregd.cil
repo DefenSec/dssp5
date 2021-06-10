@@ -3,7 +3,7 @@
 
 (block wlregdb
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (call .exec.execute_file_files (subj))
 
