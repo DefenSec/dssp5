@@ -6,7 +6,7 @@
 
 (block useradd
 
-       (blockinherit .hybrid.agent.template)
+       (blockinherit .sys.agent.template)
 
        (allow subj self
 	      (capability (audit_write chown dac_override dac_read_search fowner
