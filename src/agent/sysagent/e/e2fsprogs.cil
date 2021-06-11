@@ -130,6 +130,10 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
+(in systemd.journalctl
+
+    (call .e2fsprogs.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .e2fsprogs.subj_type_transition (subj)))
