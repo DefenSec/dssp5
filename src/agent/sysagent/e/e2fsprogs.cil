@@ -133,3 +133,7 @@
 (in systemd.sysusers
 
     (call .e2fsprogs.subj_type_transition (subj)))
+
+(in systemd.tmpfiles
+
+    (call .e2fsprogs.subj_type_transition (subj)))
