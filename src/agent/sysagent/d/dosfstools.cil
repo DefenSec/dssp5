@@ -39,6 +39,10 @@
 
     (call .dosfstools.subj_type_transition (subj)))
 
+(in systemd.journalctl
+
+    (call .dosfstools.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .dosfstools.subj_type_transition (subj)))
