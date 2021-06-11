@@ -21,6 +21,7 @@
 		  (capability (chown dac_override dac_read_search fowner fsetid
 				     mknod)))
 	   (allow subj self (process (getcap)))
+	   (allow subj self create_netlink_kobject_uevent_socket)
 
 	   (call common.type (subj))
 
@@ -30,7 +31,19 @@
 	   (call .list_unlabeled_dirs (subj))
 	   (call .relabelfrom_unlabeled (subj))
 
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .debug.search_fs_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_pattern.type (subj))
+
 	   (call .file.unconfined.type (subj))
+
+	   (call .fsck.subj_type_transition (subj))
 
 	   (call .ibac.objchange.type (subj))
 
@@ -41,12 +54,24 @@
 	   (call .stordev.unconfined.type (subj))
 
 	   (call .sys.agent.type (subj))
+	   (call .sys.dontaudit_setsched_subj_processes (subj))
 
 	   (call .sys.getattr_fs (subj))
 
 	   (call .tmp.addname_fs_dirs (subj))
 	   (call .tmp.create_fs_dirs (subj))
 	   (call .tmp.relabelfrom_fs_dirs (subj))
+
+	   (call .xattr.mount_fs (subj))
+	   (call .xattr.unmount_fs (subj))
+
+	   (optional systemdtmpfiles_systemdnspawn
+		     (call .systemd.nspawn.container.obj.manage_all_dirs
+			   (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_files
+			   (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_lnk_files
+			   (subj)))
 
 	   (block common
 

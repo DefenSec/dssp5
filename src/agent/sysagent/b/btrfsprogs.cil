@@ -109,3 +109,7 @@
 (in systemd.sysusers
 
     (call .btrfsprogs.subj_type_transition (subj)))
+
+(in systemd.tmpfiles
+
+    (call .btrfsprogs.subj_type_transition (subj)))
