@@ -383,14 +383,13 @@
 
     (filecon "/usr/bin/sudo/sesh" file file_context))
 
-(in user
-
-    (call .sudo.client.type (subj))
-    (call .sudo.sigchld_subj_processes (subj)))
-
-(in user.agent
+(in sys.agent
 
     (call .sudo.sigchld_subj_processes (typeattr)))
+
+(in user
+
+    (call .sudo.client.type (subj)))
 
 (in user.priv
 
