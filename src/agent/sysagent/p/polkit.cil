@@ -134,7 +134,7 @@
        (block check
 
 	      (blockinherit .dbus.client.template)
-	      (blockinherit .user.agent.template)
+	      (blockinherit .hybrid.agent.template)
 
 	      (allow subj self (capability (sys_nice)))
 	      (allow subj self (process (getsched setsched)))
