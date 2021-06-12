@@ -293,6 +293,17 @@
 
        (block visudo
 
+	      (macro subj_type_transition ((type ARG1))
+		     (allow ARG1 subj (process (noatsecure transition)))
+
+		     (allow subj ARG1 (process (sigchld)))
+		     (allow subj ARG1 (fd (use)))
+		     (allow subj ARG1 readwriteinherited_fifo_file)
+
+		     (call exec.mapexecute_file_files (ARG1))
+		     (call exec.read_file_files (ARG1))
+		     (call exec.subj_type_transition (ARG1 subj)))
+
 	      (blockinherit .sys.agent.template)
 
 	      (allow subj self (capability (dac_read_search dac_override)))
@@ -322,15 +333,6 @@
 	      (call .shell.exec.execute_file_files (subj))
 
 	      (call .terminfo.read_file_pattern.type (subj))
-
-	      (block client
-
-		     (macro type ((type ARG1))
-			    (typeattributeset typeattr ARG1))
-
-		     (typeattribute typeattr)
-
-		     (call visudo.noatsecure_subj_processes (typeattr)))
 
 	      (block exec
 
