@@ -59,6 +59,7 @@
        (call .subj.common.read_all_states (subj))
 
        (call .sys.read_subj_states (subj))
+       (call .sys.sendmsg_subj_dbus.type (subj))
 
        (call .sys.user.read_subj_states (subj))
        (call .sys.user.sendmsg_subj_dbus.type (subj))

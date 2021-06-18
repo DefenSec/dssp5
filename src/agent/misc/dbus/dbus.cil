@@ -30,7 +30,12 @@
        (call .sys.status_system (subj))
 
        (call .systemd.notify.type (subj))
+
        (call .systemd.sessions.run.writeinherited_file_fifo_files (subj))
+
+       (call .systemd.unit.start_file_services (subj))
+       (call .systemd.unit.status_file_services (subj))
+       (call .systemd.unit.stop_file_services (subj))
 
        (call .systemd.inhibit.run.writeinherited_file_fifo_files (subj))
 
