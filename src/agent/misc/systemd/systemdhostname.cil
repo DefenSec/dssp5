@@ -37,6 +37,9 @@
 	   (call .devices.read_sysfile_files (subj))
 	   (call .devices.traverse_sysfile_pattern.type (subj))
 
+	   (call .firmware.read_sysfile_files (subj))
+	   (call .firmware.search_sysfile_pattern.type (subj))
+
 	   (call .gcrypt.conf.read_file_pattern.type (subj))
 
 	   (call .hypervisor.search_sysfile_pattern.type (subj))
