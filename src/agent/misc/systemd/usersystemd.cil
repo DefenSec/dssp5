@@ -277,6 +277,8 @@
 	   (call unit.run.manage_file_files (subj))
 	   (call unit.run.user_systemd_run_file_type_transition_file (subj))
 
+	   (call .bpf.search_fs_pattern.type (subj))
+
 	   (call .bus.search_sysfile_pattern.type (subj))
 
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
