@@ -41,6 +41,8 @@
 
        (call .file.unconfined.type (subj))
 
+       (call .firmware.read_sysfile_pattern.type (subj))
+
        (call .hypervisor.search_sysfile_pattern.type (subj))
 
        (call .ibac.objchangesys.type (subj))

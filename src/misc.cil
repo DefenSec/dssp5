@@ -1320,6 +1320,16 @@
 
 (in firmware
 
+    (block read_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr)))
+
     (block search_sysfile_pattern
 
 	   (macro type ((type ARG1))

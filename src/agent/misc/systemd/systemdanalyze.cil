@@ -73,8 +73,7 @@
 	   (call .file.unit.read_all_files (subj))
 	   (call .file.unit.status_all_services (subj))
 
-	   (call .firmware.read_sysfile_files (subj))
-	   (call .firmware.search_sysfile_pattern.type (subj))
+	   (call .firmware.read_sysfile_pattern.type (subj))
 
 	   (call .fstab.status_file_services (subj))
 
