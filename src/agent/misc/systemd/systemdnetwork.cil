@@ -96,6 +96,8 @@
     (call .net.nodebind_netnode_udp_sockets (subj))
     (call .net.sendto_nodes (subj))
 
+    (call .ns.read_fs_pattern.type (subj))
+
     (call .nss.passwdgroup.type (subj))
 
     (call .osrelease.read_sysctlfile_pattern.type (subj))
