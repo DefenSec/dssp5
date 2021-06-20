@@ -24,6 +24,9 @@
 
 	   (call .dbus.client.type (subj))
 
+	   ;; units in /usr/lib/dracut
+	   (call .dracut.data.search_file_dirs (subj))
+
 	   (call .editor.conf.read_file_files (subj))
 
 	   (call .file.unit.control_all_services (subj))
