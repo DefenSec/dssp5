@@ -72,6 +72,9 @@
        (call .sys.dontaudit_setsched_subj_processes (subj))
        (call .sys.modulerequest_system (subj))
 
+       ;; /var/run
+       (call .var.read_file_lnk_files (subj))
+
        (call .user.systemd.agent (subj exec.file))
 
        (block exec
