@@ -63,6 +63,9 @@
 
        (call .search_unlabeled_dirs (subj))
 
+       ;; mount -o context=\"...\"
+       (call .seclabelfs.relabel_all_fs (subj))
+
        (call .selinux.linked.type (subj))
 
        (call .stordev.readwrite.type (subj))
