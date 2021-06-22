@@ -43,6 +43,8 @@
        (call .fs.getattr_all_fs (subj))
        (call .fs.mount_all_fs (subj))
        (call .fs.remount_all_fs (subj))
+       ;; mount -o fscontext=\"...\" 
+       (call .fs.relabel_all_fs (subj))
        (call .fs.unmount_all_fs (subj))
 
        (call .fs.read_sysctlfile_files (subj))
@@ -62,9 +64,6 @@
        (call .rbacsep.constrained.type (subj))
 
        (call .search_unlabeled_dirs (subj))
-
-       ;; mount -o context=\"...\"
-       (call .seclabelfs.relabel_all_fs (subj))
 
        (call .selinux.linked.type (subj))
 
