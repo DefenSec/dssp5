@@ -25,6 +25,7 @@
        (call .mount.run.search_file_dirs (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))

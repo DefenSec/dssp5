@@ -41,6 +41,7 @@
 	   (call .rbac.objchangesys.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
 
 	   (call .root.mounton_file_dirs (subj))
 

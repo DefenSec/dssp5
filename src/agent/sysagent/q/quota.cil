@@ -30,6 +30,7 @@
        (call .quotacheck.read_file_files (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .selinux.linked.type (subj))
 

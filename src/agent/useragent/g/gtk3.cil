@@ -72,7 +72,6 @@
 	      (blockinherit .hybrid.agent.template)
 
 	      (call .rbacsep.constrained.type (subj))
-	      (call .rbacsep.usefdsource.type (subj))
 
 	      (call .icons.data.manage_file_dirs (subj))
 	      (call .icons.data.manage_file_files (subj))

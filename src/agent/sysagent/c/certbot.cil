@@ -62,6 +62,8 @@
 
        (call .osrelease.read_sysctlfile_pattern.type (subj))
 
+       (call .rbacsep.usefdsource.type (subj))
+
        (call .tmp.deletename_file_dirs (subj))
 
        (call .systemd.logparsenv.type (subj))

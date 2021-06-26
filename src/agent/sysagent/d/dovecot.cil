@@ -101,6 +101,7 @@
        (call .pop.pops.namebind_port_tcp_sockets (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .sieve.namebind_port_tcp_sockets (subj))
 
@@ -237,6 +238,7 @@
 
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.readstatesource.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
 
 	      (call .sys.read_subj_states (subj))
 
@@ -549,6 +551,7 @@
 	      (call .openssl.exec.execute_file_files (subj))
 
 	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
 
 	      (call .shell.exec.mapexecute_file_files (subj))
 	      (call .shell.exec.read_file_files (subj))

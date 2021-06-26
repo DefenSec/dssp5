@@ -14,6 +14,7 @@
        (call .net.read_procfile_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .sys.modulerequest_system (subj))
 

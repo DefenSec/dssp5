@@ -56,6 +56,7 @@
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .stordev.readwrite.type (subj))
        (call .stordev.readwrite_all_blk_files (subj))

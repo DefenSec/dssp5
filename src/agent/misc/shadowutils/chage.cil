@@ -42,6 +42,7 @@
        (call .rbac.objchangesys.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .selinux.file.read_file_pattern.type (subj))
        (call .selinux.map_fs_files (subj))

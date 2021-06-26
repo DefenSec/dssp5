@@ -60,6 +60,7 @@
        (call .proc.getattr_fs_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .runuser.search_file_pattern.type (subj))
 
