@@ -385,7 +385,8 @@
 
 (in sys.agent
 
-    (call .sudo.sigchld_subj_processes (typeattr)))
+    (call .sudo.sigchld_subj_processes (typeattr))
+    (call .sudo.use_subj_fds (typeattr)))
 
 (in user
 
