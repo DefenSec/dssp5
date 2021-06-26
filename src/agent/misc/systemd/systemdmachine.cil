@@ -6,6 +6,7 @@
     (call .ptmx.readwriteinherited_nodedev_chr_files (subj))
 
     (call .systemd.machine.readwriteinherited_ptytermdev_chr_files (subj))
+    (call .systemd.machine.use_subj_fds (subj))
 
     (call .systemd.nspawn.container.obj.readwriteinherited_all_chr_files
 	  (subj)))
