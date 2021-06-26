@@ -76,11 +76,13 @@
 	      (call .sys.link_subj_keyrings (typeattr))
 	      (call .sys.search_subj_keyrings (typeattr))
 
-	      (call .systemd.sessions.run.writeinherited_file_fifo_files
-		    (typeattr))
-
 	      (call .sys.user.link_subj_keyrings (typeattr))
 	      (call .sys.user.search_subj_keyrings (typeattr))
+
+	      (call .systemd.login.use_subj_fds (typeattr))
+
+	      (call .systemd.sessions.run.writeinherited_file_fifo_files
+		    (typeattr))
 
 	      (call .unixchkpwd.subj_type_transition (typeattr))
 
