@@ -307,6 +307,9 @@
     (call .dontaudit_auditaccess_unlabeled_dirs (subj))
     (call .setattr_unlabeled_dirs (subj))
 
+    (call .user.readwriteinherited_subj_fifo_files (subj))
+    (call .user.use_subj_fds (subj))
+
     (call .user.home.manage_file_files (subj))
     (call .user.home.readwrite_file_files (subj))
 
@@ -792,7 +795,7 @@
 	   (call .net.port.nameconnect_all_tcp_sockets (subj))
 	   (call .net.sendto_nodes (subj))
 
-	   (call .subj.useinteractivefd.type (subj))
+	   (call .sudo.use_subj_fds (subj))
 
 	   (call .sys.readwriteinherited_subj_fifo_files (subj))
 	   (call .sys.use_subj_fds (subj))
