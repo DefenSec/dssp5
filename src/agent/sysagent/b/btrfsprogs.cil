@@ -55,6 +55,9 @@
 
        (call .zram.list_sysfile_dirs (subj))
 
+       (optional btrfsprogs_systemdnspawn
+		 (call .systemd.nspawn.container.obj.read_all_files (subj)))
+
        (block exec
 
 	      (filecon "/usr/bin/btrfs" file file_context)
