@@ -29,6 +29,7 @@
        (call .locale.data.read_file_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (block cache
 

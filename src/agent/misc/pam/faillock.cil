@@ -22,6 +22,7 @@
        (call .proc.getattr_fs_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .sys.termdev.open_all_chr_files (subj))
 

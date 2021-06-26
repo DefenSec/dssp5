@@ -44,6 +44,7 @@
        (call .rbac.objchangesys.type (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .shell.exec.execute_file_files (subj))
 

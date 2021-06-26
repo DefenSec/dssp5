@@ -39,6 +39,7 @@
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .run.search_file_pattern.type (subj))
 

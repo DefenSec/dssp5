@@ -56,8 +56,6 @@
 
        (call .ptmx.readwrite_nodedev_chr_files (subj))
 
-       (call .rbacsep.constrained.type (subj))
-
        (call .selinux.linked.type (subj))
 
        (call .shell.exec.execute_file_files (subj))

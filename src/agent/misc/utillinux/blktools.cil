@@ -36,6 +36,7 @@
        (call .partitions.read_procfile_files (subj))
 
        (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
 
        (call .run.search_file_pattern.type (subj))
 

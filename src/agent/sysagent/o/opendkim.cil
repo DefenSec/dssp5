@@ -44,6 +44,9 @@
 
     (call .random.read_sysctlfile_pattern.type (subj))
 
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
     (call .selinux.linked.type (subj))
 
     (call .systemd.journal.relay_msgs.type (subj))
