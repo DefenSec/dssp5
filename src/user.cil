@@ -185,7 +185,6 @@
 
 	   (call .subj.dontaudit_getattr_all_sockets (typeattr))
 	   (call .subj.dontaudit_ps_all_states (typeattr))
-	   (call .subj.useinteractivefd.type (typeattr))
 
 	   (call .sysfile.dontaudit_listinherited_all_dirs (typeattr))
 
