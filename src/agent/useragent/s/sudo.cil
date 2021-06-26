@@ -114,7 +114,6 @@
        (call .stordev.getattr_all_blk_files (subj))
 
        (call .subj.common.dontaudit_ps_all_states (subj))
-       (call .subj.interactivefd.type (subj))
 
        (call .sudologsrv.nameconnect_port_tcp_sockets (subj))
 
@@ -395,6 +394,7 @@
 (in user.priv
 
     (call .sudo.conf.read_file_files (typeattr))
+    (call .sudo.use_subj_fds (typeattr))
 
     (call .sys.termdev.readwrite_all_chr_files (typeattr))
     (call .sys.termdev.user_all_type_change (typeattr)))
