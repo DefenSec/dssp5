@@ -63,8 +63,6 @@
 
        (call .random.read_nodedev_chr_files (subj))
 
-       (call .selinux.linked.type (subj))
-
        (call .terminfo.read_file_pattern.type (subj))
 
        (call .user.exec_subj_type_transition (subj))
