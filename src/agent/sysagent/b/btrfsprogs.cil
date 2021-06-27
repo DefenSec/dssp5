@@ -29,6 +29,9 @@
        (call .block.list_sysfile_dirs (subj))
        (call .block.read_sysfile_lnk_files (subj))
 
+       (call .btrfs.list_sysfile_dirs (subj))
+       (call .btrfs.read_sysfile_files (subj))
+
        (call .dev.traverse_sysfile_pattern.type (subj))
 
        (call .devices.list_sysfile_pattern.type (subj))
@@ -38,6 +41,8 @@
        (call .file.read_all_files (subj))
 
        (call .fs.list_all_dirs (subj))
+
+       (call .fs.search_sysfile_pattern.type (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
 
