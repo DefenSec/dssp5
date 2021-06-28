@@ -257,6 +257,9 @@
     (call .selinux.mapread_fs_pattern.type (subj))
     (call .selinux.remount_fs (subj))
 
+    ;; typeattributeset not allowed in booleanif (systemdnspawn_bind_users)
+    (call .shadow.read.type (subj))
+
     (call .state.search_file_pattern.type (subj))
 
     (call .stordev.readwrite.type (subj))

@@ -6,17 +6,22 @@
 (tunableif systemdnspawn_bind_users
 	   (true
 
+	    (call .file.user.home.list_all_dirs
+		  (.systemd.nspawn.container.subj))
+	    (call .file.user.home.read_all_fifo_files
+		  (.systemd.nspawn.container.subj))
+	    (call .file.user.home.read_all_files
+		  (.systemd.nspawn.container.subj))
+	    (call .file.user.home.read_all_lnk_files
+		  (.systemd.nspawn.container.subj))
+	    (call .file.user.home.read_all_sock_files
+		  (.systemd.nspawn.container.subj))
+
+	    (call .home.search_file_dirs (.systemd.nspawn.subj))
+
 	    (call .logindefs.read_file_files (.systemd.nspawn.subj))
 
-	    (call .shadow.read.type (.systemd.nspawn.subj))
-	    (call .shadow.read_file_files (.systemd.nspawn.subj))
-
-	    (call .file.user.home.read_all_pattern.type
-		  (.systemd.nspawn.container.subj)))
-
-	   (false
-
-	    (call .rbacsep.constrained.type (.systemd.nspawn.container.subj))))
+	    (call .shadow.read_file_files (.systemd.nspawn.subj))))
 
 (block systemdnspawn_bind_peers
 
