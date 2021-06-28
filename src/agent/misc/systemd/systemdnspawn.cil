@@ -317,6 +317,7 @@
     (call .user.home.readwrite_file_files (subj))
 
     (call .xattr.mount_fs (subj))
+    (call .xattr.unmount_fs (subj))
 
     (block common
 
