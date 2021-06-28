@@ -1,0 +1,26 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(tunable systemdnspawn_bind_users false)
+
+(tunableif systemdnspawn_bind_users
+	   (true
+
+	    (call .logindefs.read_file_files (.systemd.nspawn.subj))
+
+	    (call .shadow.read.type (.systemd.nspawn.subj))
+	    (call .shadow.read_file_files (.systemd.nspawn.subj))
+
+	    (call .file.user.home.read_all_pattern.type
+		  (.systemd.nspawn.container.subj)))
+
+	   (false
+
+	    (call .rbacsep.constrained.type (.systemd.nspawn.container.subj))))
+
+(block systemdnspawn_bind_peers
+
+       (genfscon "selinuxfs" "/booleans/systemdnspawn_bind_users"
+		 booleanfile_context)
+
+       (blockinherit .booleanfile.template))
