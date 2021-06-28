@@ -88,6 +88,8 @@
        (call .fs.getattr_sysctlfile_files (subj))
        (call .fs.search_sysctlfile_pattern.type (subj))
 
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
        (call .imap.namebind_port_tcp_sockets (subj))
        (call .imap.imaps.namebind_port_tcp_sockets (subj))
 
@@ -106,6 +108,8 @@
        (call .sieve.namebind_port_tcp_sockets (subj))
 
        (call .spool.search_file_pattern.type (subj))
+
+       (call .systemd.notify.type (subj))
 
        (call .systemd.journal.relay_msgs.type (subj))
 
