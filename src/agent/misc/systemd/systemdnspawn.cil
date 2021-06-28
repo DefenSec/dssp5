@@ -394,6 +394,7 @@
 	   (call .net.port.nameconnect_all_tcp_sockets (subj))
 	   (call .net.sendto_nodes (subj))
 
+	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.readstatetarget.type (subj))
 
 	   (optional systemdnspawn_invalidassociationsboolfile
