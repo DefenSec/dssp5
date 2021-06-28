@@ -17,11 +17,14 @@
 	    (call .file.user.home.read_all_sock_files
 		  (.systemd.nspawn.container.subj))
 
+	    (call .home.read_file_lnk_files (.systemd.nspawn.subj))
 	    (call .home.search_file_dirs (.systemd.nspawn.subj))
 
 	    (call .logindefs.read_file_files (.systemd.nspawn.subj))
 
-	    (call .shadow.read_file_files (.systemd.nspawn.subj))))
+	    (call .shadow.read_file_files (.systemd.nspawn.subj))
+
+	    (call .user.home.getattr_file_dirs (.systemd.nspawn.subj))))
 
 (block systemdnspawn_bind_peers
 
