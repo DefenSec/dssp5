@@ -5,7 +5,7 @@
 
        (blockinherit .sys.agent.template)
 
-       (allow subj self (capability (setgid setuid)))
+       (allow subj self (capability (net_bind_service setgid setuid)))
        (allow subj self create_netlink_tcpdiag_socket)
        (allow subj self create_tcp_stream_socket)
        (allow subj self create_unix_dgram_socket)
