@@ -655,6 +655,7 @@
 		  (call .procfile.read_all_files (typeattr))
 		  (call .procfile.read_all_lnk_files (typeattr))
 
+		  (call .selinux.dontaudit_remount_fs (typeattr))
 		  (call .selinux.getattr_fs (typeattr))
 		  (call .selinux.list_fs_dirs (typeattr))
 		  (call .selinux.read_fs_files (typeattr))
