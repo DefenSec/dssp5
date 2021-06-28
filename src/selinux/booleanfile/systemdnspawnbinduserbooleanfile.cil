@@ -6,15 +6,17 @@
 (tunableif systemdnspawn_bind_users
 	   (true
 
-	    (call .file.user.home.list_all_dirs
+	    (call .file.user.home.manage_all_dirs
 		  (.systemd.nspawn.container.subj))
-	    (call .file.user.home.read_all_fifo_files
+	    (call .file.user.home.manage_all_fifo_files
 		  (.systemd.nspawn.container.subj))
-	    (call .file.user.home.read_all_files
+	    (call .file.user.home.manage_all_files
 		  (.systemd.nspawn.container.subj))
-	    (call .file.user.home.read_all_lnk_files
+	    (call .file.user.home.manage_all_lnk_files
 		  (.systemd.nspawn.container.subj))
-	    (call .file.user.home.read_all_sock_files
+	    (call .file.user.home.manage_all_sock_files
+		  (.systemd.nspawn.container.subj))
+	    (call .file.user.home.map_all_files
 		  (.systemd.nspawn.container.subj))
 
 	    (call .home.read_file_lnk_files (.systemd.nspawn.subj))
