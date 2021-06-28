@@ -135,6 +135,10 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
+(in systemd.machineidsetup
+
+    (call .e2fsprogs.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .e2fsprogs.subj_type_transition (subj)))

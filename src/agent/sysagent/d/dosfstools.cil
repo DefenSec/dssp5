@@ -44,6 +44,10 @@
 
     (call .dosfstools.subj_type_transition (subj)))
 
+(in systemd.machineidsetup
+
+    (call .dosfstools.subj_type_transition (subj)))
+
 (in systemd.sysusers
 
     (call .dosfstools.subj_type_transition (subj)))
