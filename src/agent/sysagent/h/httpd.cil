@@ -11,7 +11,7 @@
        (allow subj self (capability (chown dac_override dac_read_search kill
 					   net_admin net_bind_service setgid
 					   setuid)))
-       (allow subj self (process (getpgid)))
+       (allow subj self (process (getpgid getsched)))
        (allow subj self create_tcp_stream_socket)
        (allow subj self create_sem)
        (allow subj self create_shm)

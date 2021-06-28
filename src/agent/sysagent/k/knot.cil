@@ -57,7 +57,7 @@
     (blockinherit .sys.agent.template)
 
     (allow subj self (capability (net_bind_service setpcap)))
-    (allow subj self (process (getcap setcap setsched)))
+    (allow subj self (process (getcap getsched setcap setsched)))
     (allow subj self create_tcp_stream_socket)
     (allow subj self create_unix_dgram_socket)
     (allow subj self (unix_stream_socket (accept listen)))
@@ -109,6 +109,7 @@
 
 	   (allow subj self
 		  (capability (dac_override dac_read_search setgid setuid)))
+	   (allow subj self (process (getsched)))
 
 	   (call unix_stream_connect (subj))
 
