@@ -22,6 +22,9 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
+	   ;; /usr/share/vim/vim.defaults
+	   (call .data.read_file_files (subj))
+
 	   (call .dbus.client.type (subj))
 
 	   ;; units in /usr/lib/dracut
@@ -31,10 +34,13 @@
 
 	   (call .file.unit.control_all_services (subj))
 	   (call .file.unit.manage_all_files (subj))
+	   (call .file.unit.relabel_all_files (subj))
 
 	   (call .fstab.status_file_services (subj))
 
 	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .ibac.objchangesys.type (subj))
 
 	   (call .kernel.read_sysfile_files (subj))
 	   (call .kernel.search_sysfile_pattern.type (subj))
@@ -61,6 +67,8 @@
 	   (call .proc.getattr_fs_pattern.type (subj))
 
 	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbac.objchangesys.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.readstatesource.type (subj))
