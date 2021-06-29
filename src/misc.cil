@@ -107,6 +107,8 @@
 (in dev
 
     (filecon "/dev" dir file_context)
+    (filecon "/dev/.*" block file_context)
+    (filecon "/dev/.*" char file_context)
     (filecon "/dev/.*" dir file_context)
     (filecon "/dev/.*" file file_context)
     (filecon "/dev/.*" pipe file_context)
