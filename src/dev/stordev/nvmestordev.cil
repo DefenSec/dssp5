@@ -3,6 +3,7 @@
 
 (block nvme
 
+       (filecon "/dev/ng[0-9]n[^/]+" char stordev_context)
        (filecon "/dev/nvme[0-9]+" char stordev_context)
        (filecon "/dev/nvme[0-9]n[^/]+" block stordev_context)
 
