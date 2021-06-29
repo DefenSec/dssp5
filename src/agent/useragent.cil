@@ -38,8 +38,6 @@
 
 	   (call .rbacsep.usefdsource.type (typeattr))
 
-	   (call .subj.useinteractivefd.type (typeattr))
-
 	   (block client
 
 		  (macro type ((type ARG1))

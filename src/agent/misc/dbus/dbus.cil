@@ -29,8 +29,6 @@
        (call .sys.sendmsg_subj_dbus.type (subj))
        (call .sys.status_system (subj))
 
-       (call .systemd.login.use_subj_fds (subj))
-
        (call .systemd.notify.type (subj))
 
        (call .systemd.sessions.run.writeinherited_file_fifo_files (subj))

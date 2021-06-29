@@ -396,6 +396,7 @@
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.readstatetarget.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
 
 	   (optional systemdnspawn_invalidassociationsboolfile
 		     (call .invalidassociations.type (subj)))
@@ -665,6 +666,9 @@
 		  (call .selinux.read_fs_files (typeattr))
 
 		  (call .subj.type (typeattr))
+		  (call .subj.useinteractivefd.type (typeattr))
+
+		  (call .sudo.use_subj_fds (typeattr))
 
 		  (call .sys.dontaudit_search_subj_keyrings (typeattr))
 		  (call .sys.modulerequest_system (typeattr))
@@ -672,8 +676,6 @@
 		  (call .sysfile.list_all_dirs (typeattr))
 		  (call .sysfile.read_all_files (typeattr))
 		  (call .sysfile.read_all_lnk_files (typeattr))
-
-		  (call .systemd.machine.use_subj_fds (typeattr))
 
 		  (call .tmp.unmount_fs (typeattr))
 
@@ -799,8 +801,6 @@
 	   (call .net.port.namebind_all_udp_sockets (subj))
 	   (call .net.port.nameconnect_all_tcp_sockets (subj))
 	   (call .net.sendto_nodes (subj))
-
-	   (call .sudo.use_subj_fds (subj))
 
 	   (call .sys.readwriteinherited_subj_fifo_files (subj))
 	   (call .sys.use_subj_fds (subj))
