@@ -10,6 +10,8 @@
 
        (call .subj.common.type (typeattr))
 
+       (call .subj.useinteractivefd.type (typeattr))
+
        (block exec
 
 	      (macro dontaudit_auditaccess_all_files ((type ARG1))
