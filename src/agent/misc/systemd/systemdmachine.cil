@@ -276,6 +276,10 @@
 
     (call .systemd.machine.sendmsg_subj_dbus.type (subj)))
 
+(in systemd.stdiobridge
+
+    (call .systemd.machine.sendmsg_subj_dbus.type (subj)))
+
 (in unixchkpwd
 
     (call .systemd.machine.readwriteinherited_ptytermdev_chr_files (subj)))
