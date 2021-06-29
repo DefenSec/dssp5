@@ -89,6 +89,8 @@
 
 	      (call .devpts.getattr_fs (typeattr))
 
+	      (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
 	      (call .kernel.read_sysctlfile_pattern.type (typeattr))
 
 	      (call .kvm.readwrite_nodedev_chr_files (typeattr))
