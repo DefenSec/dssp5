@@ -37,6 +37,8 @@
 
 	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
 
+	   (call .systemd.machine.sendmsg_subj_dbus.type (subj))
+
 	   (call .systemd.machines.run.list_file_dirs (subj))
 	   (call .systemd.machines.run.read_file_files (subj))
 
