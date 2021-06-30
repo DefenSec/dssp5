@@ -3,17 +3,52 @@
 
 (block irqbalance
 
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.search_file_dirs (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
        (blockinherit .sys.agent.template)
+
+       (allow subj self (process (getcap getsched setcap)))
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self create_unix_stream_stream_socket)
 
        (call conf.read_file_files (subj))
 
        (call run.manage_file_dirs (subj))
+       (call run.manage_file_sock_files (subj))
        (call run.run_file_type_transition_file (subj))
+
+       (call .bus.list_sysfile_pattern.type (subj))
+       (call .bus.read_sysfile_lnk_files (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .cpu.read_sysfile_pattern.type (subj))
+
+       (call .devices.list_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_files (subj))
+
+       (call .interrupts.read_procfile_files (subj))
+
+       (call .irq.readwrite_procfile_files (subj))
+       (call .irq.search_procfile_dirs (subj))
+
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .node.read_sysfile_pattern.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
        (call .run.deletename_file_dirs (subj))
+
+       (call .stat.read_procfile_files (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
 
        (block conf
 
@@ -40,7 +75,9 @@
 		     (call .run.file_type_transition
 			   (ARG1 file dir "irqbalance")))
 
-	      (blockinherit .file.run.template))
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.run.base_template))
 
        (block unit
 
