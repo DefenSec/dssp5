@@ -94,6 +94,8 @@
 
 	   (block script
 
+		  (allow subj self (process (getsched)))
+
 		  (call rw.execute_file_files (subj))
 
 		  (call .cpu.read_sysfile_files (subj))
