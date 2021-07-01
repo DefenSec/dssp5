@@ -58,7 +58,7 @@
 
        (block script
 
-	      (allow subj self (process (execmem)))
+	      (allow subj self (process (execmem getsched)))
 
 	      (call conf.read_file_files (subj))
 
