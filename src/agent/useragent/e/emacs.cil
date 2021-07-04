@@ -55,6 +55,8 @@
        (call tmp.tmp_file_type_transition_file (subj file "*"))
        (call tmp.tmp_file_type_transition_file (subj lnk_file "*"))
 
+       (call .acpi.search_procfile_dirs (subj))
+
        (call .cert.map_file_files (subj))
        (call .cert.read_file_pattern.type (subj))
 
@@ -66,6 +68,9 @@
 
        (call .ci.getattr_fs_pattern.type (subj))
        (call .ci.manage_fs_pattern.type (subj))
+
+       (call .class.list_sysfile_pattern.type (subj))
+       (call .class.read_sysfile_lnk_files (subj))
 
        (call .conf.list_file_dirs (subj))
 
@@ -80,6 +85,9 @@
        (call .curl.exec.execute_file_files (subj))
 
        (call .dbus.client.type (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.search_sysfile_pattern.type (subj))
 
        (call .devpts.search_fs_pattern.type (subj))
 
@@ -120,6 +128,8 @@
        (call .lib.home.manage_file_files (subj))
        (call .lib.home.manage_file_lnk_files (subj))
        (call .lib.home.user_home_data_file_type_transition_file (subj))
+
+       (call .loadavg.read_procfile_files (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.data.read_file_pattern.type (subj))
