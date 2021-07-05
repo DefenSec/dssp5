@@ -165,6 +165,9 @@
 
 	   (call .vm.search_sysctlfile_pattern.type (subj))
 
+	   (optional git_client_emacs
+		     (call .emacs.tmp.readwriteinherited_file_files (subj)))
+
 	   (block exec
 
 		  (filecon "/usr/bin/git" file file_context)
