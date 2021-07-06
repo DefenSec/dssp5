@@ -56,6 +56,8 @@
        (call .stordev.read_all_blk_files (subj))
        (call .stordev.read_all_chr_files (subj))
 
+       (call .var.read_file_lnk_files (subj))
+
        (call .xattr.getattr_fs_pattern.type (subj))
 
        (call .zram.list_sysfile_dirs (subj))
