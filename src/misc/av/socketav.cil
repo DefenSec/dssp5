@@ -1022,6 +1022,7 @@
     (allow typeattr self (netlink_tcpdiag_socket (nlmsg_read nlmsg_write)))
     (allow typeattr self (netlink_xfrm_socket (nlmsg_read nlmsg_write)))
     (allow typeattr self (packet_socket (map)))
+    (allow typeattr self (tun_socket (relabelto)))
 
     (allow typeattr subj.typeattr (alg_socket (accept listen)))
     (allow typeattr subj.typeattr (bluetooth_socket (accept listen)))
@@ -1029,7 +1030,7 @@
     (allow typeattr subj.typeattr (sctp_socket (association accept listen)))
     (allow typeattr subj.typeattr (sockets (common)))
     (allow typeattr subj.typeattr (tcp_socket (accept listen)))
-    (allow typeattr subj.typeattr (tun_socket (attach_queue)))
+    (allow typeattr subj.typeattr (tun_socket (attach_queue relabelfrom)))
     (allow typeattr subj.typeattr (unix_dgram_socket (sendto)))
     (allow typeattr subj.typeattr
 	   (unix_stream_socket (accept connectto listen))))
