@@ -30,8 +30,6 @@
 
        (call .cgroup.getattr_fs_pattern.type (subj))
 
-       (call .cmdline.read_procfile_pattern.type (subj))
-
        (call .data.getattr_file_files (subj))
 
        (call .exec.dontaudit_setattr_file_dirs (subj))
@@ -52,6 +50,8 @@
        (call .rbacsep.usefdsource.type (subj))
 
        (call .shell.exec.execute_file_files (subj))
+
+       (call .systemd.logparsenv.type (subj))
 
        (call .terminfo.read_file_pattern.type (subj))
 
