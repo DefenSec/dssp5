@@ -58,8 +58,6 @@
 
 	      (call .cgroup.getattr_fs_pattern.type (typeattr))
 
-	      (call .cmdline.read_procfile_pattern.type (typeattr))
-
 	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
 
 	      (call .cryptopol.conf.read_file_files (typeattr))
@@ -89,9 +87,9 @@
 
 	      (call .shell.exec.execute_file_files (typeattr))
 
-	      (call .sys.read_subj_states (typeattr))
+	      (call .systemd.journal.relay_msgs.type (typeattr))
 
-	      (call .systemd.journal.relay_msgs.type (typeattr)))
+	      (call .systemd.logparsenv.type (typeattr)))
 
        (block exec
 

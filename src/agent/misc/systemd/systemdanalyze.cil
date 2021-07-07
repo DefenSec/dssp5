@@ -17,7 +17,6 @@
 	   (allow subj self create_unix_stream_socket)
 	   (allow subj self (lockdown (confidentiality)))
 	   (allow subj self (unix_stream_socket (listen)))
-	   (dontaudit subj self (capability (net_admin)))
 
 	   (call tmp.manage_file_dirs (subj))
 	   (call tmp.manage_file_files (subj))
@@ -27,6 +26,7 @@
 	   (call tmpfs.manage_file_files (subj))
 	   (call tmpfs.tmp_fs_type_transition_file (subj))
 
+	   (call logparsenv.type (subj))
 	   (call pager.type (subj))
 
 	   (call .bus.search_sysfile_pattern.type (subj))
@@ -39,8 +39,6 @@
 
 	   (call .class.list_sysfile_dirs (subj))
 	   (call .class.read_sysfile_lnk_files (subj))
-
-	   (call .cmdline.read_procfile_pattern.type (subj))
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
@@ -133,7 +131,6 @@
 
 	   (call .swaps.read_procfile_files (subj))
 
-	   (call .sys.read_subj_states (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.status_self (subj))
 	   (call .sys.status_system (subj))
