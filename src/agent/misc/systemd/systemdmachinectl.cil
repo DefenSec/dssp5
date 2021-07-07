@@ -38,6 +38,8 @@
 
 	   (call .net.read_procfile_pattern.type (subj))
 
+	   (call .ns.read_fs_pattern.type (subj))
+
 	   (call .openssh.client.subj_type_transition (subj))
 
 	   (call .polkit.ttyagent.subj_type_transition (subj))
