@@ -25,7 +25,7 @@
 
        (call .class.traverse_sysfile_pattern.type (subj))
 
-       (call .cmdline.read_procfile_files (subj))
+       (call .cmdline.read_procfile_pattern.type (subj))
 
        (call .cpuinfo.read_procfile_files (subj))
 

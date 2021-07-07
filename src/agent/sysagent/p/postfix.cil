@@ -28,6 +28,10 @@
        (call state.read_file_files (subj))
        (call state.setattr_file_dirs (subj))
 
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .cmdline.read_procfile_pattern.type (subj))
+
        (call .data.getattr_file_files (subj))
 
        (call .exec.dontaudit_setattr_file_dirs (subj))
