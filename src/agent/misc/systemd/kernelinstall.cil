@@ -25,7 +25,7 @@
 
        (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
-       (call .cmdline.read_procfile_files (subj))
+       (call .cmdline.read_procfile_pattern.type (subj))
 
        (call .crypto.read_sysctlfile_pattern.type (subj))
 
