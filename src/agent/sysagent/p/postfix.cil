@@ -1039,6 +1039,8 @@
 	      (call master.agent (subj exec.file))
 	      (call master.unix_stream_connect_private (subj))
 
+	      (call .net.nodebind_netnode_tcp_sockets (subj))
+
 	      (call .nss.services.type (subj))
 
 	      (call .rbacsep.constrained.type (subj))
