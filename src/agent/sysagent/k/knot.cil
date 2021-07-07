@@ -76,8 +76,6 @@
 
     (call .cgroup.getattr_fs_pattern.type (subj))
 
-    (call .cmdline.read_procfile_pattern.type (subj))
-
     (call .dns.namebind_port_tcp_sockets (subj))
     (call .dns.namebind_port_udp_sockets (subj))
     (call .dns.nameconnect_port_tcp_sockets (subj))
@@ -97,9 +95,9 @@
     (call .rbacsep.constrained.type (subj))
     (call .rbacsep.usefdsource.type (subj))
 
-    (call .sys.read_subj_states (subj))
-
     (call .systemd.journal.relay_msgs.type (subj))
+
+    (call .systemd.logparsenv.type (subj))
 
     (call .systemd.notify.type (subj))
 
