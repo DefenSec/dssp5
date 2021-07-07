@@ -37,8 +37,7 @@
     (allow subj self
 	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
 
-    (call .systemd.nspawn.container.client.type (subj))
-    (call .systemd.nspawn.container.obj.write_all_sock_files (subj)))
+    (call .systemd.nspawn.container.client.type (subj)))
 
 (in systemd.cg
 
@@ -95,8 +94,8 @@
 	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
 
     (call .systemd.nspawn.container.client.type (subj))
-    (call .systemd.nspawn.container.obj.readwriteinherited_all_chr_files (subj))
-    (call .systemd.nspawn.container.obj.write_all_sock_files (subj)))
+    (call .systemd.nspawn.container.obj.readwriteinherited_all_chr_files
+	  (subj)))
 
 (in systemd.mount
 
