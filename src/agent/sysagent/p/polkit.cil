@@ -29,8 +29,6 @@
 
        (call .cgroup.getattr_fs_pattern.type (subj))
 
-       (call .cmdline.read_procfile_pattern.type (subj))
-
        (call .cpu.read_sysfile_pattern.type (subj))
 
        (call .cpuinfo.read_procfile_files (subj))
@@ -58,13 +56,14 @@
 
        (call .subj.common.read_all_states (subj))
 
-       (call .sys.read_subj_states (subj))
        (call .sys.sendmsg_subj_dbus.type (subj))
 
        (call .sys.user.read_subj_states (subj))
        (call .sys.user.sendmsg_subj_dbus.type (subj))
 
        (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
 
        (call .systemd.machines.run.list_file_dirs (subj))
        (call .systemd.machines.run.read_file_files (subj))
