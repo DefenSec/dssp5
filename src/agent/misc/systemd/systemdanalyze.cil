@@ -131,6 +131,7 @@
 
 	   (call .swaps.read_procfile_files (subj))
 
+	   (call .sys.reload_system (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.status_self (subj))
 	   (call .sys.status_system (subj))
