@@ -9,6 +9,7 @@
 	   (blockinherit .hybrid.agent.template)
 
 	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
 
 	   (call pager.type (subj))
 

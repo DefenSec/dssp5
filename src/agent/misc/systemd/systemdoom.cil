@@ -35,6 +35,8 @@
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
     (call .cgroup.getattr_fs_pattern.type (subj))
+    (call .cgroup.list_fs_dirs (subj))
+    (call .cgroup.read_fs_files (subj))
 
     (call .crypto.read_sysctlfile_pattern.type (subj))
 
