@@ -186,6 +186,33 @@
 
 		     (call .root.associate_fs (file))))
 
+       (block credentials
+
+	      (block run
+
+		     (filecon "/run/credentials" dir file_context)
+		     (filecon "/run/credentials/.*" any ())
+
+		     (macro run_file_type_transition_file ((type ARG1))
+			    (call .run.file_type_transition
+				  (ARG1 file dir "credentials")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.base_template)))
+
+       (block defaulthostname
+
+	      (block run
+
+		     (filecon "/run/systemd/default-hostname" file file_context)
+
+		     (macro systemd_run_file_type_transition_file ((type ARG1))
+			    (call .systemd.run.file_type_transition
+				  (ARG1 file file "default-hostname")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.systemd.base_template)))
+
        (block dynamicuid
 
 	      (block run
@@ -200,19 +227,6 @@
 		     (blockinherit .file.macro_template_dirs)
 		     (blockinherit .file.macro_template_files)
 		     (blockinherit .file.macro_template_lnk_files)
-		     (blockinherit .file.run.systemd.base_template)))
-
-       (block defaulthostname
-
-	      (block run
-
-		     (filecon "/run/systemd/default-hostname" file file_context)
-
-		     (macro systemd_run_file_type_transition_file ((type ARG1))
-			    (call .systemd.run.file_type_transition
-				  (ARG1 file file "default-hostname")))
-
-		     (blockinherit .file.macro_template_files)
 		     (blockinherit .file.run.systemd.base_template)))
 
        (block dynamicuser
@@ -1756,6 +1770,7 @@
 	  (typeattr))
     (call .systemd.coredump.state.systemd_state_file_type_transition_file
 	  (typeattr))
+    (call .systemd.credentials.run.run_file_type_transition_file (typeattr))
     (call .systemd.defaulthostname.run.systemd_run_file_type_transition_file
 	  (typeattr))
     (call .systemd.dynamicuid.run.systemd_run_file_type_transition_file
