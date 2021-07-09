@@ -1,0 +1,10 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block ifenslave
+
+       (blockinherit .sys.agent.template)
+
+       (block exec
+
+	      (filecon "/usr/bin/ifenslave" file file_context)))

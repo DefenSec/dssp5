@@ -1,0 +1,20 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block iputils
+
+       (blockinherit .hybrid.agent.template)
+
+       (block exec
+
+	      (filecon "/usr/bin/arping" file file_context)
+	      (filecon "/usr/bin/ping" file file_context)
+	      (filecon "/usr/bin/tracepath" file file_context)))
+
+(in user
+
+    (call .iputils.role (role)))
+
+(in wheel
+
+    (call .iputils.role (role)))
