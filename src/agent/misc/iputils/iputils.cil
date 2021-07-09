@@ -16,7 +16,7 @@
 
        (call .net.nodebind_netnode_icmp_sockets (subj))
 
-       (call .net.read_procfile_files (subj))
+       (call .net.read_procfile_pattern.type (subj))
 
        (call .nss.hosts.type (subj))
 
