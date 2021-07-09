@@ -5,6 +5,9 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self create_rawip_socket)
+       (allow subj self create_udp_socket)
+
        (block conf
 
 	      (filecon "/etc/sysconfig/rdisc" file file_context)
