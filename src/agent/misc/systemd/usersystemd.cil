@@ -313,6 +313,8 @@
 
 	   (call .file.user.unit.read_all_files (subj))
 
+	   (call .firmware.search_sysfile_pattern.type (subj))
+
 	   (call .fs.read_sysctlfile_files (subj))
 	   (call .fs.search_sysctlfile_pattern.type (subj))
 
