@@ -15,7 +15,9 @@
        (call data.execute_file_files (subj))
 
        (call .boot.manage_file_files (subj))
+       (call .boot.manage_file_lnk_files (subj))
        (call .boot.readwrite_file_dirs (subj))
+       (call .boot.relabel_file_lnk_files (subj))
        (call .boot.relabelto_file_files (subj))
 
        (call .bootloader.boot.manage_file_files (subj))
