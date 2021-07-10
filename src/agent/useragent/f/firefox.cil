@@ -214,6 +214,7 @@
 
        (call .seclabelfs.getattr_all_fs (subj))
 
+       (call .selinux.default.read_file_pattern.type (subj))
        (call .selinux.file.read_file_pattern.type (subj))
 
        (call .selinux.read_fs_files (subj))
