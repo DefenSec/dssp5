@@ -1378,6 +1378,9 @@
 	      (filecon "/usr/lib/systemd/system" dir file_context)
 	      (filecon "/usr/lib/systemd/system/.*" any file_context)
 
+	      (macro getattr_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (getattr))))
+
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
 			   (ARG1 file dir "system")))
