@@ -11,6 +11,7 @@
 		    (ARG1 file dir "boot")))
 
        (blockinherit .file.boot.template)
+       (blockinherit .file.macro_template_lnk_files)
 
        (call .mount.mountpoint.type (file)))
 
@@ -23,6 +24,7 @@
 
 	   (blockinherit file.all_macro_template_dirs)
 	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
 
 	   (typeattribute typeattr)
 
