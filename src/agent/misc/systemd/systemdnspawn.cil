@@ -656,6 +656,7 @@
 
 		  (call .ns.getattr_fs (typeattr))
 
+		  (call .proc.dontaudit_setattr_fs_dirs (typeattr))
 		  (call .proc.list_fs_dirs (typeattr))
 		  (call .proc.read_fs_lnk_files (typeattr))
 		  (call .proc.unmount_fs (typeattr))
