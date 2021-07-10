@@ -74,6 +74,10 @@
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
 
+       (call .systemd.conf.search_file_pattern.type (subj))
+
+       (call .systemd.unit.getattr_file_dirs (subj))
+
        (block conf
 
 	      (filecon "/etc/kernel" dir file_context)
