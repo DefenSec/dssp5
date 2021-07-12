@@ -9,8 +9,9 @@
 
        (call .acpi.search_procfile_dirs (subj))
 
-       (call .blktools.run.read_file_files (subj))
-       (call .blktools.run.search_file_dirs (subj))
+       (call .blktools.run.manage_file_dirs (subj))
+       (call .blktools.run.manage_file_files (subj))
+       (call .blktools.run.run_file_type_transition_file (subj))
 
        (call .block.traverse_sysfile_pattern.type (subj))
 
@@ -18,8 +19,7 @@
 
        (call .dev.traverse_sysfile_pattern.type (subj))
 
-       (call .devices.read_sysfile_files (subj))
-       (call .devices.search_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_pattern.type (subj))
 
        (call .ext4.read_sysfile_files (subj))
        (call .ext4.search_sysfile_dirs (subj))
