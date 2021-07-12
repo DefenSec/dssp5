@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self (capability (sys_admin)))
+
        (call .dev.traverse_sysfile_pattern.type (subj))
 
        (call .devices.read_sysfile_pattern.type (subj))
