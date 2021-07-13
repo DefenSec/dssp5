@@ -21,9 +21,7 @@
 
        (call .mount.mountpoint.type (file))
 
-       (call .root.associate_fs (file))
-
-       (call .xattr.associate_fs_pattern.type (file)))
+       (call .root.associate_fs (file)))
 
 (in file
 
@@ -46,6 +44,8 @@
 	   (call file.type (typeattr))
 
 	   (call .tmp.associate_fs (typeattr))
+
+	   (call .xattr.associate_fs_pattern.type (typeattr))
 
 	   (block base_template
 
