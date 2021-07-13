@@ -45,6 +45,7 @@
 	   (call .state.search_file_pattern.type (subj))
 
 	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
 
 	   (call .systemd.askpassword.client.type (subj))
 
