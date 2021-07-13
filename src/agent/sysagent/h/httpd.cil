@@ -143,6 +143,9 @@
        (optional httpd_certbot
 		 (call .certbot.conf.read_file_pattern.type (subj)))
 
+       (optional httpd_phpfpmunreservedport
+		 (call .phpfpm.nameconnect_port_tcp_sockets (subj)))
+
        (block cache
 
 	      (filecon "/var/cache/httpd" dir file_context)
