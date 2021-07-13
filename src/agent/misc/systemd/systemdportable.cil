@@ -77,6 +77,8 @@
 
     (call .gcrypt.conf.read_file_pattern.type (subj))
 
+    (call .kernel.read_sysfile_files (subj))
+
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .loop.readwrite_stordev_blk_files (subj))
