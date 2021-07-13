@@ -16,8 +16,8 @@
        (call tmp.mapexecute_file_files (subj))
        (call tmp.tmp_file_type_transition_file (subj))
 
-       (call .cert.read_file_files (subj))
-       (call .cert.traverse_file_pattern.type (subj))
+       (call .cert.map_file_files (subj))
+       (call .cert.read_file_pattern.type (subj))
 
        (call .ci.getattr_fs_pattern.type (subj))
        (call .ci.manage_fs_pattern.type (subj))
@@ -52,6 +52,11 @@
        (call .nfs.manage_fs_pattern.type (subj))
 
        (call .nss.hosts.type (subj))
+
+       (call .p11kit.conf.read_file_pattern.type (subj))
+
+       (call .p11kit.data.map_file_files (subj))
+       (call .p11kit.data.read_file_pattern.type (subj))
 
        (call .privoxy.nameconnect_port_tcp_sockets (subj))
 
