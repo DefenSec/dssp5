@@ -112,7 +112,7 @@
     (call .sys.sendmsg_subj_dbus.type (subj))
     (call .sys.status_system (subj))
 
-    (call .systemd.conf.search_file_pattern.type (subj))
+    (call .systemd.conf.deletename_file_dirs (subj))
 
     (call .systemd.journal.relay_msgs.type (subj))
 
