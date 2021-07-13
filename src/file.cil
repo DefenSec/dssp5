@@ -841,7 +841,7 @@
 	      (allow typeattr file.typeattr
 		     (lnk_file (not (execmod map mounton))))
 	      (allow typeattr file.typeattr
-		     (sock_file (not (execmod map mounton))))))
+		     (sock_file (not (execmod map))))))
 
 (in unconfined
 
