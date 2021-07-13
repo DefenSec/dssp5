@@ -9,6 +9,8 @@
 
        (call .mount.image.type (file))
 
+       (call .tmp.associate_fs (file))
+
        (call .xattr.associate_fs_pattern.type (file)))
 
 (block mount
