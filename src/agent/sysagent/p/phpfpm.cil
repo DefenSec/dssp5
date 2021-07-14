@@ -26,6 +26,7 @@
 
        (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
        (call .smtp.nameconnect_port_tcp_sockets (subj))
+       (call .smtp.smtps.nameconnect_port_tcp_sockets (subj))
 
        (optional wordpress_postfix
 		 (call .postfix.sendmail.mailer.type (subj))
@@ -38,6 +39,11 @@
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file file "wordpress-fpm.conf"))))
+
+       (block rw
+
+	      (filecon "/var/lib/wordpress-fpm" dir file_context)
+	      (filecon "/var/lib/wordpress-fpm/.*" any file_context))
 
        (block unit
 
@@ -138,9 +144,42 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_sock_files))))
 
+(in file.state.php
+
+    (block phpfpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.state.php.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.php.base_template)
+
+		  (call .file.state.php.phpfpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.state.php.phpfpm.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
 (in file.tmp
 
     (block phpfpm
+
+	   (macro map_all_file_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
 
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
@@ -161,6 +200,9 @@
 
 	   (block template
 
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
 		  (macro tmp_file_type_transition_file ((type ARG1))
 			 (call .tmp.file_type_transition
 			       (ARG1 file file "*")))
@@ -173,8 +215,10 @@
 (in file.unconfined
 
     (call .phpfpm.conf.conf_file_type_transition_file (typeattr))
+    (call .phpfpm.data.data_file_type_transition_file (typeattr))
     (call .phpfpm.log.log_file_type_transition_file (typeattr))
-    (call .phpfpm.run.run_file_type_transition_file (typeattr)))
+    (call .phpfpm.run.run_file_type_transition_file (typeattr))
+    (call .phpfpm.state.php_state_file_type_transition_file (typeattr)))
 
 (in file.unit
 
@@ -212,10 +256,10 @@
 
     (call namebind_port_tcp_sockets (subj))
 
+    (call exec.subj_type_transition (.sys.subj subj))
+
     (call log.log_file_type_transition_file (subj))
     (call run.run_file_type_transition_file (subj))
-
-    (call exec.subj_type_transition (.sys.subj subj))
 
     (call .http.nameconnect_port_tcp_sockets (subj))
     (call .http.https.nameconnect_port_tcp_sockets (subj))
@@ -226,6 +270,7 @@
 
     (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
     (call .smtp.nameconnect_port_tcp_sockets (subj))
+    (call .smtp.smtps.nameconnect_port_tcp_sockets (subj))
 
     (call .web.ra.append_file_files (subj))
     (call .web.ra.create_file_files (subj))
@@ -268,6 +313,17 @@
 		  (call .conf.file_type_transition
 			(ARG1 file dir "php-fpm.d"))))
 
+    (block data
+
+	   (filecon "/usr/share/fpm" dir file_context)
+	   (filecon "/usr/share/fpm/.*" any file_context)
+
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "fpm")))
+
+	   (blockinherit .file.data.template))
+
     (block exec
 
 	   (filecon "/usr/bin/php-fpm" file file_context)
@@ -295,17 +351,54 @@
 	   (allow typeattr self create_unix_stream_stream_socket)
 	   (allow typeattr self create_unix_dgram_socket)
 
+	   (call data.read_file_files (typeattr))
+	   (call data.search_file_dirs (typeattr))
+
 	   (call exec.entrypoint_file_files (typeattr))
 	   (call exec.mapexecute_file_files (typeattr))
 	   (call exec.read_file_files (typeattr))
 
 	   (call .exec.execute_file_files (typeattr))
 
+	   (call .cert.read_file_pattern.type (typeattr))
+
+	   (call .cpu.read_sysfile_files (typeattr))
+	   (call .cpu.search_sysfile_pattern.type (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .cryptopol.conf.read_file_files (typeattr))
+	   (call .cryptopol.conf.traverse_file_pattern.type (typeattr))
+
+	   (call .cryptopol.data.read_file_files (typeattr))
+	   (call .cryptopol.data.search_file_pattern.type (typeattr))
+
+	   (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
+	   (call .kernel.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .locale.data.map_file_pattern.type (typeattr))
+	   (call .locale.data.read_file_pattern.type (typeattr))
+
 	   (call .nss.passwdgroup.type (typeattr))
+
+	   (call .php.conf.list_file_dirs (typeattr))
+	   (call .php.conf.read_file_files (typeattr))
+	   (call .php.conf.read_file_lnk_files (typeattr))
+
+	   (call .php.state.search_file_dirs (typeattr))
+
+	   (call .random.read_nodedev_chr_files (typeattr))
+
+	   (call .random.read_sysctlfile_pattern.type (typeattr))
 
 	   (call .run.deletename_file_dirs (typeattr))
 
 	   (call .shell.exec.execute_file_files (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+
+	   (call .state.search_file_pattern.type (typeattr))
 
 	   (call .sys.agent.type (typeattr))
 
@@ -340,7 +433,11 @@
 		  (call run.manage_file_files (subj))
 		  (call run.manage_file_sock_files (subj))
 
+		  (call state.manage_file_dirs (subj))
+		  (call state.manage_file_files (subj))
+
 		  (call tmp.manage_file_files (subj))
+		  (call tmp.map_file_files (subj))
 		  (call tmp.tmp_file_type_transition_file (subj))
 
 		  (call .phpfpm.instance.type (subj))
@@ -359,6 +456,10 @@
 		  (block run
 
 			 (blockinherit .file.run.phpfpm.template))
+
+		  (block state
+
+			 (blockinherit .file.state.php.phpfpm.template))
 
 		  (block tmp
 
@@ -385,6 +486,23 @@
 	   (macro run_file_type_transition_file ((type ARG1))
 		  (call .run.file_type_transition
 			(ARG1 file dir "php-fpm"))))
+
+    (block state
+
+	   (filecon "/var/lib/php/opcache" dir file_context)
+	   (filecon "/var/lib/php/opcache/.*" any file_context)
+	   (filecon "/var/lib/php/session" dir file_context)
+	   (filecon "/var/lib/php/session/.*" any file_context)
+	   (filecon "/var/lib/php/wsdlcache" dir file_context)
+	   (filecon "/var/lib/php/wsdlcache/.*" any file_context)
+
+	   (macro php_state_file_type_transition_file ((type ARG1))
+		  (call .php.state.file_type_transition
+			(ARG1 file dir "opcache"))
+		  (call .php.state.file_type_transition
+			(ARG1 file dir "session"))
+		  (call .php.state.file_type_transition
+			(ARG1 file dir "wsdlcache"))))
 
     (block unit
 
