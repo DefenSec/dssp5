@@ -48,8 +48,7 @@
 		     (call .state.file_type_transition
 			   (ARG1 file dir "php")))
 
-	      (blockinherit .file.macro_template_dirs)
-	      (blockinherit .file.state.php.base_template)))
+	      (blockinherit .file.state.php.template)))
 
 (in file.state
 
