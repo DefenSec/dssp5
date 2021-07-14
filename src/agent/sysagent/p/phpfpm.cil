@@ -1,55 +1,6 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(block wordpress
-
-       (blockinherit .phpfpm.instance.template)
-       (blockinherit .web.content.template)
-
-       (allow subj self create_tcp_stream_socket)
-
-       (call rw.manage_file_dirs (subj))
-       (call rw.manage_file_fifo_files (subj))
-       (call rw.manage_file_files (subj))
-       (call rw.manage_file_lnk_files (subj))
-       (call rw.manage_file_sock_files (subj))
-       (call rw.map_file_files (subj))
-
-       (call .http.nameconnect_port_tcp_sockets (subj))
-       (call .http.https.nameconnect_port_tcp_sockets (subj))
-
-       (call .net.nodebind_netnode_tcp_sockets (subj))
-
-       (call .nss.hosts.type (subj))
-
-       (call .phpfpm.namebind_port_tcp_sockets (subj))
-
-       (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
-       (call .smtp.nameconnect_port_tcp_sockets (subj))
-       (call .smtp.smtps.nameconnect_port_tcp_sockets (subj))
-
-       (optional wordpress_postfix
-		 (call .postfix.sendmail.mailer.type (subj))
-		 (call .postfix.sendmail.mailer.tmp.type (tmp.file)))
-
-       (block conf
-
-	      (filecon "/etc/wordpress-fpm\.conf" file file_context)
-
-	      (macro conf_file_type_transition_file ((type ARG1))
-		     (call .conf.file_type_transition
-			   (ARG1 file file "wordpress-fpm.conf"))))
-
-       (block rw
-
-	      (filecon "/var/lib/wordpress-fpm" dir file_context)
-	      (filecon "/var/lib/wordpress-fpm/.*" any file_context))
-
-       (block unit
-
-	      (filecon "/usr/lib/systemd/system/wordpress\.service.*" file
-		       file_context)))
-
 (in file.conf
 
     (block phpfpm
@@ -362,8 +313,7 @@
 
 	   (call .cert.read_file_pattern.type (typeattr))
 
-	   (call .cpu.read_sysfile_files (typeattr))
-	   (call .cpu.search_sysfile_pattern.type (typeattr))
+	   (call .cpu.read_sysfile_pattern.type (typeattr))
 
 	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
 
