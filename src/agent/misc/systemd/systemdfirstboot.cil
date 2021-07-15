@@ -44,6 +44,8 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
+	   (call .debug.search_fs_pattern.type (subj))
+
 	   (call .dev.traverse_sysfile_pattern.type (subj))
 
 	   (call .devices.read_sysfile_pattern.type (subj))
@@ -59,6 +61,8 @@
 	   (call .kbd.data.list_file_dirs (subj))
 	   (call .kbd.data.read_file_files (subj))
 	   (call .kbd.data.read_file_lnk_files (subj))
+
+	   (call .kernel.read_sysfile_files (subj))
 
 	   (call .kernelinstall.conf.manage_file_files (subj))
 	   (call .kernelinstall.conf.readwrite_file_dirs (subj))
