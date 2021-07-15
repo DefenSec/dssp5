@@ -13,6 +13,8 @@
 
 	   (blockinherit .sys.agent.template)
 
+	   (allow subj self create_netlink_kobject_uevent_socket)
+
 	   (call conf.list_file_dirs (subj))
 	   (call conf.read_file_files (subj))
 
@@ -22,8 +24,49 @@
 	   (call run.list_file_dirs (subj))
 	   (call run.read_file_files (subj))
 
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .debug.search_fs_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_pattern.type (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kernel.read_sysfile_files (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .loop.readwrite_stordev_blk_files (subj))
+
+	   (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+	   (call .mount.image.readwrite_all_files (subj))
+	   (call .mount.image.search_all_dirs (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .stordev.readwrite.type (subj))
+
+	   (call .sys.dontaudit_setsched_subj_processes (subj))
+
+	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
 
 	   (block conf
 
