@@ -62,8 +62,6 @@
 
 	   (call .stordev.readwrite.type (subj))
 
-	   (call .sys.dontaudit_setsched_subj_processes (subj))
-
 	   (call .systemd.udev.run.read_file_pattern.type (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
