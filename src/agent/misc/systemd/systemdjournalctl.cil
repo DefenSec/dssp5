@@ -30,6 +30,8 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
+	   (call .debug.search_fs_pattern.type (subj))
+
 	   (call .dev.traverse_sysfile_pattern.type (subj))
 
 	   (call .devices.read_sysfile_pattern.type (subj))
@@ -37,6 +39,8 @@
 	   (call .fsck.subj_type_transition (subj))
 
 	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .kernel.read_sysfile_files (subj))
 
 	   (call .libnl.conf.read_file_pattern.type (subj))
 
