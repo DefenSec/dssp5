@@ -7,6 +7,41 @@
     (call .git.home.user_home_file_type_transition_file (typeattr))
     (call .git.home.conf.user_home_conf_file_type_transition_file (typeattr)))
 
+(in file.home
+
+    (block git
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.home.base_template)
+
+		  (call .file.home.git.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.home.git.base_template))))
+
 (in git
 
     (block data
@@ -27,6 +62,9 @@
 	   (filecon "HOME_DIR/.*\.git" dir file_context)
 	   (filecon "HOME_DIR/.*\.git/.*" any file_context)
 
+	   (filecon "HOME_DIR/\.git-credentials" file file_context)
+	   (filecon "HOME_DIR/\.git-credentials\..*" file file_context)
+
 	   (macro entrypoint_file_files ((type ARG1))
 		  (allow ARG1 file (file (entrypoint))))
 
@@ -41,7 +79,9 @@
 
 	   (macro user_home_file_type_transition_file ((type ARG1))
 		  (call .user.home.file_type_transition
-			(ARG1 file dir ".git")))
+			(ARG1 file dir ".git"))
+		  (call .user.home.file_type_transition
+			(ARG1 file file ".git-credentials")))
 
 	   (blockinherit .file.home.git.template)
 
@@ -182,41 +222,6 @@
 
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.user.tmp.base_template))))
-
-(in file.home
-
-    (block git
-
-	   (macro map_all_files ((type ARG1))
-		  (allow ARG1 typeattr (file (map))))
-
-	   (macro type ((type ARG1))
-		  (typeattributeset typeattr ARG1))
-
-	   (blockinherit .file.all_macro_template_dirs)
-	   (blockinherit .file.all_macro_template_files)
-	   (blockinherit .file.all_macro_template_lnk_files)
-
-	   (typeattribute typeattr)
-
-	   (call .file.user.home.type (typeattr))
-
-	   (block base_template
-
-		  (blockabstract base_template)
-
-		  (blockinherit .file.user.home.base_template)
-
-		  (call .file.home.git.type (file)))
-
-	   (block template
-
-		  (blockabstract template)
-
-		  (blockinherit .file.macro_template_dirs)
-		  (blockinherit .file.macro_template_files)
-		  (blockinherit .file.macro_template_lnk_files)
-		  (blockinherit .file.home.git.base_template))))
 
 (in gnupg
 
