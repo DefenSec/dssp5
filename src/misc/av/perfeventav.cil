@@ -4,6 +4,10 @@
 (class perf_event (cpu kernel open read tracepoint write))
 (classorder (unordered perf_event))
 
+(in invalid.unconfined
+
+    (allow typeattr .invalid (perf_event (read write))))
+
 (in subj.unconfined
 
     (allow typeattr self (perf_event (not (read write))))

@@ -38,17 +38,17 @@
 (classpermission readwrite_shm)
 
 (classpermissionset create_ipc
-		    (ipc (associate create destroy getattr read setattr unix_read
-				    unix_write write)))
+		    (ipc (associate create destroy getattr read setattr
+				    unix_read unix_write write)))
 (classpermissionset create_msgq
 		    (msgq (associate create destroy enqueue getattr read setattr
 				     unix_read unix_write write)))
 (classpermissionset create_sem
-		    (sem (associate create destroy getattr read setattr unix_read
-				    unix_write write)))
+		    (sem (associate create destroy getattr read setattr
+				    unix_read unix_write write)))
 (classpermissionset create_shm
-		    (shm (associate create destroy getattr read setattr unix_read
-				    unix_write write)))
+		    (shm (associate create destroy getattr read setattr
+				    unix_read unix_write write)))
 
 (classpermissionset read_ipc (ipc (associate getattr read unix_read)))
 (classpermissionset read_msgq (msgq (associate getattr read unix_read)))

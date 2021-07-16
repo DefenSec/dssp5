@@ -4,6 +4,10 @@
 (class bpf (map_create map_read map_write prog_load prog_run))
 (classorder (unordered bpf))
 
+(in invalid.unconfined
+
+    (allow typeattr .invalid (bpf (map_read map_write prog_run))))
+
 (in subj.unconfined
 
     (allow typeattr self (bpf (not (map_read map_write prog_run))))
