@@ -4,15 +4,6 @@
 (class association (polmatch recvfrom sendto setcontext))
 (classorder (unordered association))
 
-(classmap constrainassociationsubject (sendto))
-(classmapping constrainassociationsubject sendto (association (sendto)))
-
-(in mcs
-
-    (mlsconstrain (constrainassociationsubject (sendto))
-		  (or (dom h1 h2)
-		      (neq t1 constrained.typeattr))))
-
 (macro polmatch_invalid_associations ((type ARG1))
        (allow ARG1 invalid (association (polmatch))))
 
@@ -42,6 +33,12 @@
 (in invalid.unconfined
 
     (allow typeattr .invalid (association (not (setcontext)))))
+
+(in mcs
+
+    (mlsconstrain (association (sendto))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
 
 (in net
 

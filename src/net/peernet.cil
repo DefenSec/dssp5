@@ -20,6 +20,12 @@
 
     (allow typeattr .invalid (peer (all))))
 
+(in mcs
+
+    (mlsconstrain (peer (recv))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
 (in net
 
     (blockinherit peer.template)
