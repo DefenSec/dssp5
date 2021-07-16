@@ -27,6 +27,9 @@
     (call state.manage_file_files (subj))
     (call state.map_file_files (subj))
 
+    (call tmpfs.manage_file_files (subj))
+    (call tmpfs.tmp_fs_type_transition_file (subj))
+
     (call logparsenv.type (subj))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
@@ -35,6 +38,8 @@
     (call .cert.traverse_file_pattern.type (subj))
 
     (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .corepattern.write_sysctlfile_files (subj))
 
     (call .crypto.read_sysctlfile_pattern.type (subj))
 
@@ -57,6 +62,8 @@
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .logindefs.read_file_files (subj))
+
+    (call .ns.read_fs_pattern.type (subj))
 
     (call .nss.passwdgroup.type (subj))
 
@@ -84,6 +91,15 @@
     (block exec
 
 	   (filecon "/usr/lib/systemd/systemd-coredump" file file_context))
+
+    (block tmpfs
+
+	   (macro tmp_fs_type_transition_file ((type ARG1))
+		  (call .tmp.fs_type_transition
+			(ARG1 file file "*")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmpfs.base_template))
 
     (block unit
 
