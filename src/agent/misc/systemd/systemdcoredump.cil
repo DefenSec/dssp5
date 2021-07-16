@@ -39,7 +39,7 @@
 
     (call .cgroup.getattr_fs_pattern.type (subj))
 
-    (call .corepattern.writeinherited_sysctlfile_files (subj))
+    (call .corepattern.dontaudit_writeinherited_sysctlfile_files (subj))
 
     (call .crypto.read_sysctlfile_pattern.type (subj))
 
