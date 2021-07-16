@@ -144,6 +144,8 @@
 	   (call .user.exec_subj_type_transition (subj))
 	   (call .user.nnptransition_subj_processes (subj))
 
+	   (call .user.home.cache.create_file_dir_pattern.type (subj))
+
 	   (call .user.home.manage_file_dirs (subj))
 	   (call .user.home.manage_file_files (subj))
 	   (call .user.home.manage_file_lnk_files (subj))
