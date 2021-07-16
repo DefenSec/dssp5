@@ -6,7 +6,8 @@
     (call .git.data.data_file_type_transition_file (typeattr))
     (call .git.home.user_home_file_type_transition_file (typeattr))
     (call .git.home.cache.user_home_cache_file_type_transition_file (typeattr))
-    (call .git.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+    (call .git.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .git.home.conf.user_home_file_type_transition_file (typeattr)))
 
 (in file.home
 
@@ -45,86 +46,16 @@
 
 (in git
 
-    (block data
-
-	   (filecon "/usr/share/git-core" dir file_context)
-	   (filecon "/usr/share/git-core/.*" any file_context)
-
-	   (macro data_file_type_transition_file ((type ARG1))
-		  (call .data.file_type_transition
-			(ARG1 file dir "git-core")))
-
-	   (blockinherit .file.data.base_template)
-	   (blockinherit .file.macro_template_dirs)
-	   (blockinherit .file.macro_template_files))
-
-    (block home
-
-	   (filecon "HOME_DIR/.*\.git" dir file_context)
-	   (filecon "HOME_DIR/.*\.git/.*" any file_context)
-
-	   (filecon "HOME_DIR/\.git-credentials" file file_context)
-	   (filecon "HOME_DIR/\.git-credentials\..*" file file_context)
-
-	   (macro entrypoint_file_files ((type ARG1))
-		  (allow ARG1 file (file (entrypoint))))
-
-	   (macro getattr_file_dirs ((type ARG1))
-		  (allow ARG1 file (dir (getattr))))
-
-	   (macro map_file_files ((type ARG1))
-		  (allow ARG1 file (file (map))))
-
-	   (macro subj_type_transition ((type ARG1)(type ARG2))
-		  (typetransition ARG1 file process "*" ARG2))
-
-	   (macro user_home_file_type_transition_file ((type ARG1))
-		  (call .user.home.file_type_transition
-			(ARG1 file dir ".git"))
-		  (call .user.home.file_type_transition
-			(ARG1 file file ".git-credentials")))
-
-	   (blockinherit .file.home.git.template)
-
-	   (block cache
-
-		  (filecon "HOME_DIR/\.cache/git" dir file_context)
-		  (filecon "HOME_DIR/\.cache/git/.*" any file_context)
-
-		  (macro user_home_cache_file_type_transition_file ((type ARG1))
-			 (call .user.home.cache.file_type_transition
-			       (ARG1 file dir "git")))
-
-		  (blockinherit .file.macro_template_dirs)
-		  (blockinherit .file.macro_template_sock_files)
-		  (blockinherit .file.home.git.base_template)
-
-		  (call .file.user.home.cache.type (file)))
-
-	   (block conf
-
-		  (filecon "HOME_DIR/\.config/git" dir file_context)
-		  (filecon "HOME_DIR/\.config/git/.*" any file_context)
-
-		  (macro map_file_files ((type ARG1))
-			 (allow ARG1 file (file (map))))
-
-		  (macro user_home_conf_file_type_transition_file ((type ARG1))
-			 (call .user.home.conf.file_type_transition
-			       (ARG1 file dir "git")))
-
-		  (blockinherit .file.macro_template_dirs)
-		  (blockinherit .file.macro_template_files)
-		  (blockinherit .file.home.git.base_template)
-
-		  (call .file.user.home.conf.type (file))))
-
     (block client
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
 
 	   (blockinherit .user.agent.template)
 
 	   (allow subj self (process (execmem getsched)))
 	   (allow subj self create_tcp_socket)
+	   (allow subj self (unix_stream_socket (accept connectto listen)))
 
 	   (call nameconnect_port_tcp_sockets (subj))
 
@@ -140,10 +71,15 @@
 	   (call home.manage_file_lnk_files (subj))
 	   (call home.user_home_file_type_transition_file (subj))
 
+	   (call home.cache.manage_file_dirs (subj))
+	   (call home.cache.manage_file_sock_files (subj))
+	   (call home.cache.user_home_cache_file_type_transition_file (subj))
+
 	   (call home.conf.manage_file_dirs (subj))
 	   (call home.conf.manage_file_files (subj))
 	   (call home.conf.map_file_files (subj))
 	   (call home.conf.user_home_conf_file_type_transition_file (subj))
+	   (call home.conf.user_home_file_type_transition_file (subj))
 
 	   (call tmp.manage_file_files (subj))
 	   (call tmp.tmp_file_type_transition_file (subj))
@@ -237,7 +173,92 @@
 			       (ARG1 file file "*")))
 
 		  (blockinherit .file.macro_template_files)
-		  (blockinherit .file.user.tmp.base_template))))
+		  (blockinherit .file.user.tmp.base_template)))
+
+    (block data
+
+	   (filecon "/usr/share/git-core" dir file_context)
+	   (filecon "/usr/share/git-core/.*" any file_context)
+
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "git-core")))
+
+	   (blockinherit .file.data.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files))
+
+    (block home
+
+	   (filecon "HOME_DIR/.*\.git" dir file_context)
+	   (filecon "HOME_DIR/.*\.git/.*" any file_context)
+
+	   (macro entrypoint_file_files ((type ARG1))
+		  (allow ARG1 file (file (entrypoint))))
+
+	   (macro getattr_file_dirs ((type ARG1))
+		  (allow ARG1 file (dir (getattr))))
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro subj_type_transition ((type ARG1)(type ARG2))
+		  (typetransition ARG1 file process "*" ARG2))
+
+	   (macro user_home_file_type_transition_file ((type ARG1))
+		  (call .user.home.file_type_transition
+			(ARG1 file dir ".git")))
+
+	   (blockinherit .file.home.git.template)
+
+	   (block cache
+
+		  (filecon "HOME_DIR/\.cache/git" dir file_context)
+		  (filecon "HOME_DIR/\.cache/git/.*" any file_context)
+
+		  (macro user_home_cache_file_type_transition_file ((type ARG1))
+			 (call .user.home.cache.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.home.git.base_template)
+
+		  (call .file.user.home.cache.type (file)))
+
+	   (block conf
+
+		  (filecon "HOME_DIR/\.config/git" dir file_context)
+		  (filecon "HOME_DIR/\.config/git/.*" any file_context)
+
+		  (filecon "HOME_DIR/\.git-credentials" file file_context)
+		  (filecon "HOME_DIR/\.git-credentials\..*" file file_context)
+
+		  (filecon "HOME_DIR/\.gitconfig" file file_context)
+		  (filecon "HOME_DIR/\.gitconfig\..*" file file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_home_conf_file_type_transition_file ((type ARG1))
+			 (call .user.home.conf.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".git-credentials"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".git-credentials.lock"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".gitconfig"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".gitconfig.lock")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.home.git.base_template)
+
+		  (call .file.user.home.conf.type (file)))))
 
 (in gnupg
 
@@ -267,6 +288,8 @@
 	   (call .git.home.read_file_files (ARG1))
 	   (call .git.home.subj_type_transition (ARG1 subj)))
 
+    (call .git.client.readwrite_subj_tcp_sockets (subj))
+    (call .git.client.readwrite_subj_unix_stream_sockets (subj))
     (call .git.client.role (role))
 
     (call .git.client.tmp.manage_file_files (subj))
@@ -296,7 +319,8 @@
     (call .git.home.conf.map_file_files (subj))
     (call .git.home.conf.relabel_file_dirs (subj))
     (call .git.home.conf.relabel_file_files (subj))
-    (call .git.home.conf.user_home_conf_file_type_transition_file (subj)))
+    (call .git.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .git.home.conf.user_home_file_type_transition_file (subj)))
 
 (in wheel
 
