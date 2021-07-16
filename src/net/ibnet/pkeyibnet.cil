@@ -4,21 +4,18 @@
 (class infiniband_pkey (access))
 (classorder (unordered infiniband_pkey))
 
-(classmap constrainpkeyobject (access))
-(classmapping constrainpkeyobject access (infiniband_pkey (access)))
-
-(in mcs
-
-    (mlsconstrain (constrainpkeyobject (access))
-		  (or (dom h1 h2)
-		      (neq t1 constrained.typeattr))))
-
 (macro access_invalid_pkeys ((type ARG1))
        (allow ARG1 invalid (infiniband_pkey (access))))
 
 (in invalid.unconfined
 
     (allow typeattr .invalid (infiniband_pkey (all))))
+
+(in mcs
+
+    (mlsconstrain (infiniband_pkey (access))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
 
 (in net.ib
 
