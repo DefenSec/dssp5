@@ -4,38 +4,6 @@
 (class packet (forward_in forward_out recv relabelto send))
 (classorder (unordered packet))
 
-(classmap constrainpacketobject (forwardout relabelto send))
-(classmapping constrainpacketobject forwardout (packet (forward_out)))
-(classmapping constrainpacketobject relabelto (packet (relabelto)))
-(classmapping constrainpacketobject send (packet (send)))
-
-(in ibac
-
-    (constrain (constrainpacketobject (relabelto))
-	       (or (or (or (eq u1 u2)
-			   (and (eq t1 objchangesys.typeattr) (eq u2 .sys.id)))
-		       (eq t1 objchange.typeattr))
-		   (eq t1 exempt.typeattr))))
-
-(in mcs
-
-    (mlsconstrain (constrainpacketobject (relabelto))
-		  (or (neq t1 constrained.typeattr)
-		      (and (dom h1 h2) (eq l2 h2))))
-
-    (mlsconstrain (constrainpacketobject (forwardout send))
-		  (or (dom h1 h2)
-		      (neq t1 constrained.typeattr))))
-
-(in rbac
-
-    (constrain (constrainpacketobject (relabelto))
-	       (or (or (or (eq r1 r2)
-			   (and (eq t1 objchangesys.typeattr)
-				(eq r2 .sys.role)))
-		       (eq t1 objchange.typeattr))
-		   (eq t1 exempt.typeattr))))
-
 (macro forward_invalid_packets ((type ARG1))
        (allow ARG1 invalid (packet (forward_in forward_out))))
 
@@ -70,9 +38,36 @@
 
 	    (call net.packet.forward_all_packets (invalid))))
 
+(in ibac
+
+    (constrain (packet (relabelto))
+	       (or (or (or (eq u1 u2)
+			   (and (eq t1 objchangesys.typeattr) (eq u2 .sys.id)))
+		       (eq t1 objchange.typeattr))
+		   (eq t1 exempt.typeattr))))
+
 (in invalid.unconfined
 
     (allow typeattr .invalid (packet (not (relabelto)))))
+
+(in mcs
+
+    (mlsconstrain (packet (relabelto))
+		  (or (neq t1 constrained.typeattr)
+		      (and (dom h1 h2) (eq l2 h2))))
+
+    (mlsconstrain (packet (forward_out send))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
+(in rbac
+
+    (constrain (packet (relabelto))
+	       (or (or (or (eq r1 r2)
+			   (and (eq t1 objchangesys.typeattr)
+				(eq r2 .sys.role)))
+		       (eq t1 objchange.typeattr))
+		   (eq t1 exempt.typeattr))))
 
 (in net
 
@@ -94,7 +89,8 @@
 		  (blockabstract all_macro_template)
 
 		  (macro forward_all_packets ((type ARG1))
-			 (allow ARG1 typeattr (packet (forward_in forward_out))))
+			 (allow ARG1 typeattr
+				(packet (forward_in forward_out))))
 
 		  (macro forwardin_all_packets ((type ARG1))
 			 (allow ARG1 typeattr (packet (forward_in))))
