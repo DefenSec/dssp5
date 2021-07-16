@@ -8,13 +8,21 @@
 
     (allow typeattr .invalid (passwd (all))))
 
+(in mcs
+
+    (mlsconstrain (passwd (chfn chsh crontab passwd rootok))
+		  (or (dom h1 h2)
+		      (neq t1 constrained.typeattr))))
+
 (in rbacsep
 
     (constrain (passwd (chfn chsh crontab passwd rootok))
-	       (or (or (eq r1 r2)
-		       (and (eq r1 exempt.roleattr)
-			    (neq t1 constrained.typeattr)))
-		   (eq t1 exempt.subj.typeattr))))
+	       (or (or (or (eq r1 r2)
+			   (and (eq r1 exempt.roleattr)
+				(neq t1 constrained.typeattr)))
+		       (eq t1 exempt.subj.typeattr))
+		   (and (eq t1 exemptsource.typeattr)
+			(eq t2 exempttarget.typeattr)))))
 
 (in subj.unconfined
 
