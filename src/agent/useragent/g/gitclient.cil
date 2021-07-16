@@ -5,6 +5,7 @@
 
     (call .git.data.data_file_type_transition_file (typeattr))
     (call .git.home.user_home_file_type_transition_file (typeattr))
+    (call .git.home.cache.user_home_cache_file_type_transition_file (typeattr))
     (call .git.home.conf.user_home_conf_file_type_transition_file (typeattr)))
 
 (in file.home
@@ -84,6 +85,21 @@
 			(ARG1 file file ".git-credentials")))
 
 	   (blockinherit .file.home.git.template)
+
+	   (block cache
+
+		  (filecon "HOME_DIR/\.cache/git" dir file_context)
+		  (filecon "HOME_DIR/\.cache/git/.*" any file_context)
+
+		  (macro user_home_cache_file_type_transition_file ((type ARG1))
+			 (call .user.home.cache.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.home.git.base_template)
+
+		  (call .file.user.home.cache.type (file)))
 
 	   (block conf
 
@@ -268,6 +284,12 @@
     (call .git.home.relabel_file_files (subj))
     (call .git.home.relabel_file_lnk_files (subj))
     (call .git.home.user_home_file_type_transition_file (subj))
+
+    (call .git.home.cache.manage_file_dirs (subj))
+    (call .git.home.cache.manage_file_sock_files (subj))
+    (call .git.home.cache.relabel_file_dirs (subj))
+    (call .git.home.cache.relabel_file_sock_files (subj))
+    (call .git.home.cache.user_home_cache_file_type_transition_file (subj))
 
     (call .git.home.conf.manage_file_dirs (subj))
     (call .git.home.conf.manage_file_files (subj))
