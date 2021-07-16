@@ -6,4 +6,5 @@
 
 (in subj.unconfined
 
-    (allow typeattr self (bpf (all))))
+    (allow typeattr self (bpf (not (map_read map_write prog_run))))
+    (allow typeattr subj.typeattr (bpf (map_read map_write prog_run))))
