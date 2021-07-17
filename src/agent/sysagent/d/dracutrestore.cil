@@ -71,6 +71,8 @@
 		     (call .selinux.default.read_file_pattern.type (subj))
 		     (call .selinux.file.read_file_pattern.type (subj))
 		     (call .selinux.readwrite_fs_pattern.type (subj))
+		     (call .sys.tmpfs.dontaudit_getattr_file_dirs (subj))
+		     (call .sys.tmpfs.dontaidit_getattr_file_files (subj))
 		     (call .trace.search_fs_pattern.type (subj)))
 
 	   (block exec
