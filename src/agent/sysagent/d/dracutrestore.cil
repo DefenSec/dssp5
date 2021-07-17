@@ -21,11 +21,14 @@
 
 	   (call .boot.mounton_file_dirs (subj))
 	   (call .boot.read_file_files (subj))
-	   (call .boot.search_file_pattern.type (subj))
+	   (call .boot.traverse_file_pattern.type (subj))
 
 	   (call .bootloader.boot.search_file_dirs (subj))
 
 	   (call .console.readwrite_serialtermdev_chr_files (subj))
+
+	   (call .dos.read_fs_files (subj))
+	   (call .dos.search_fs_dirs (subj))
 
 	   (call .exec.execute_file_files (subj))
 
@@ -35,6 +38,9 @@
 	   (call .locale.data.read_file_pattern.type (subj))
 
 	   (call .machineid.read_file_files (subj))
+
+	   (call .mod.read_file_files (subj))
+	   (call .mod.search_file_dirs (subj))
 
 	   (call .mount.exec.execute_file_files (subj))
 
@@ -72,7 +78,6 @@
 		     (call .selinux.file.read_file_pattern.type (subj))
 		     (call .selinux.readwrite_fs_pattern.type (subj))
 		     (call .sys.tmpfs.dontaudit_getattr_file_dirs (subj))
-		     (call .sys.tmpfs.dontaidit_getattr_file_files (subj))
 		     (call .trace.search_fs_pattern.type (subj)))
 
 	   (block exec
