@@ -35,7 +35,7 @@
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
 
-	   (call .overcommitmemory.read_sysctlfile_files (subj))
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
 	   (call .state.search_file_pattern.type (subj))
 
@@ -47,8 +47,6 @@
 	   (call .user.git.content.map_file_files (subj))
 	   (call .user.git.content.read_file_files (subj))
 	   (call .user.git.content.read_file_lnk_files (subj))
-
-	   (call .vm.search_sysctlfile_pattern.type (subj))
 
 	   (block exec
 

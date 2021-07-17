@@ -2710,6 +2710,19 @@
 
 	   (call .kernel.search_sysctlfile_pattern.type (typeattr))))
 
+(in overcommitmemory
+
+    (block read_sysctlfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysctlfile_files (typeattr))
+
+	   (call .vm.search_sysctlfile_pattern.type (typeattr))))
+
 (in p11kit.conf
 
     (block read_file_pattern

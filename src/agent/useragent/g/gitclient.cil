@@ -131,7 +131,7 @@
 
 	   (call .openssh.client.subj_type_transition (subj))
 
-	   (call .overcommitmemory.read_sysctlfile_files (subj))
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
 	   (call .selinux.linked.type (subj))
 
@@ -156,8 +156,6 @@
 	   (call .user.git_home_subj_type_transition (subj))
 
 	   (call .user.shell_exec_subj_type_transition (subj))
-
-	   (call .vm.search_sysctlfile_pattern.type (subj))
 
 	   (optional git_client_emacs
 		     (call .emacs.tmp.readwriteinherited_file_files (subj)))

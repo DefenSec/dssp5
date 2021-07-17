@@ -25,11 +25,9 @@
 
        (call .openssh.client.subj_type_transition (subj))
 
-       (call .overcommitmemory.read_sysctlfile_files (subj))
+       (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
        (call .stordev.readwrite.type (subj))
-
-       (call .vm.search_sysctlfile_pattern.type (subj))
 
        (block exec
 
