@@ -120,8 +120,6 @@
 
 	   (call .proc.getattr_fs_pattern.type (subj))
 
-	   (call .root.list_file_dirs (subj))
-
 	   (call .rbacsep.readstatesource.type (subj))
 	   (call .rbacsep.readstatetarget.type (subj))
 
@@ -138,6 +136,8 @@
 	   (call .sys.status_self (subj))
 	   (call .sys.status_system (subj))
 	   (call .sys.use_subj_fds (subj))
+
+	   (call .sys.home.list_file_dirs (subj))
 
 	   (call .sys.getattr_fs (subj))
 	   (call .sys.dontaudit_auditaccess_fs_dirs (subj))
