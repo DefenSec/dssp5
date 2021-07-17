@@ -115,7 +115,7 @@
        (call .nss.hosts.type (subj))
        (call .nss.passwdgroup.type (subj))
 
-       (call .overcommitmemory.read_sysctlfile_files (subj))
+       (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
        (call .p11kit.conf.read_file_pattern.type (subj))
 
@@ -139,8 +139,6 @@
        (call .systemd.notify.type (subj))
 
        (call .tmp.deletename_file_dirs (subj))
-
-       (call .vm.search_sysctlfile_pattern.type (subj))
 
        (call .web.content.script.webserver.type (subj))
 
