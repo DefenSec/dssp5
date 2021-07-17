@@ -13,9 +13,6 @@
        (macro dontaudit_getattr_fs_dirs ((type ARG1))
 	      (dontaudit ARG1 fs (dir (getattr))))
 
-       (macro dontaudit_getattr_fs_files ((type ARG1))
-	      (dontaudit ARG1 fs (file (getattr))))
-
        (blockinherit .fs.macro_template_all_files)
        (blockinherit .fs.macro_template_blk_files)
        (blockinherit .fs.macro_template_chr_files)
