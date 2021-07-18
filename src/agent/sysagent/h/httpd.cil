@@ -84,8 +84,7 @@
        (call .exec.mapexecute_file_files (subj))
        (call .exec.read_file_files (subj))
 
-       ;; /usr/share/testpage
-       (call .data.dontaudit_read_file_lnk_files (subj))
+       (call .data.read_file_lnk_files (subj))
 
        (call .dos.getattr_fs_pattern.type (subj))
        (call .dos.manage_fs_pattern.type (subj))
