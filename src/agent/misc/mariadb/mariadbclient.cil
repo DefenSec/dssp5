@@ -13,7 +13,7 @@
 
     (block client
 
-	   (blockinherit .user.agent.template)
+	   (blockinherit .hybrid.agent.template)
 
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
@@ -36,7 +36,7 @@
 	   (block conf
 
 		  (filecon "/etc/my\.cnf" file file_context)
-		  (filecon "/etc/my\.cnf\.*" file file_context)
+		  (filecon "/etc/my\.cnf\..*" file file_context)
 		  (filecon "/etc/my\.cnf\.d/client\.cnf" file file_context)
 		  (filecon "/etc/my\.cnf\.d/client\.cnf\..*" file file_context)
 
@@ -51,7 +51,21 @@
 		  (blockinherit .file.conf.mariadb.base_template)
 		  (blockinherit .file.macro_template_files))
 
-	   (block exec)
+	   (block exec
+
+		  (filecon "/usr/bin/mariadb" file file_context)
+		  (filecon "/usr/bin/mariadb-access" file file_context)
+		  (filecon "/usr/bin/mariadb-admin" file file_context)
+		  (filecon "/usr/bin/mariadb-binlog" file file_context)
+		  (filecon "/usr/bin/mariadb-check" file file_context)
+		  (filecon "/usr/bin/mariadb-dump" file file_context)
+		  (filecon "/usr/bin/mariadb-find-rows" file file_context)
+		  (filecon "/usr/bin/mariadb-import" file file_context)
+		  (filecon "/usr/bin/mariadb-plugin" file file_context)
+		  (filecon "/usr/bin/mariadb-show" file file_context)
+		  (filecon "/usr/bin/mariadb-slap" file file_context)
+		  (filecon "/usr/bin/mariadb-waitpid" file file_context)
+		  (filecon "/usr/bin/msql2mysql" file file_context))
 
 	   (block home
 
