@@ -1,0 +1,182 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .mariadb.server.cert.cert_file_type_transition_file (typeattr))
+    (call .mariadb.server.conf.mariadb_conf_file_type_transition_file
+	  (typeattr))
+    (call .mariadb.server.log.log_file_type_transition_file (typeattr))
+    (call .mariadb.server.run.run_file_type_transition_file (typeattr))
+    (call .mariadb.server.state.state_file_type_transition_file (typeattr)))
+
+(in mariadb
+
+    (block server
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self (unix_stream_socket (accept listen)))
+
+	   (call cert.list_file_dirs (subj))
+	   (call cert.read_file_files (subj))
+
+	   (call conf.read_file_files (subj))
+
+	   (call log.append_file_files (subj))
+	   (call log.create_file_files (subj))
+	   (call log.delete_file_files (subj))
+	   (call log.manage_file_dirs (subj))
+	   (call log.read_file_files (subj))
+	   (call log.rename_file_files (subj))
+	   (call log.setattr_file_files (subj))
+
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_sock_files (subj))
+
+	   (call state.manage_file_dirs (subj))
+	   (call state.manage_file_files (subj))
+
+	   (call .mysql.namebind_port_tcp_sockets (subj))
+	   (call .mysql.admin.namebind_port_tcp_sockets (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .systemd.notify.type (subj))
+
+	   (block cert
+
+		  (filecon "/etc/pki/mariadb-server" dir file_context)
+		  (filecon "/etc/pki/mariadb-server/.*" any file_context)
+
+		  (macro cert_file_type_transition_file ((type ARG1))
+			 (call .cert.file_type_transition
+			       (ARG1 file dir "mariadb-server")))
+
+		  (blockinherit .file.cert.template))
+
+	   (block conf
+
+		  (filecon "/etc/my\.cnf\.d/enable_encryption\.preset" file
+			   file_context)
+		  (filecon "/etc/my\.cnf\.d/enable_encryption\.preset\..*" file
+			   file_context)
+		  (filecon "/etc/my\.cnf\.d/mariadb-server\.cnf" file
+			   file_context)
+		  (filecon "/etc/my\.cnf\.d/mariadb-server\.cnf\..*" file
+			   file_context)
+		  (filecon "/etc/my\.cnf\.d/spider\.cnf" file file_context)
+		  (filecon "/etc/my\.cnf\.d/spider\.cnf\..*" file file_context)
+
+		  (macro mariadb_conf_file_type_transition_file ((type ARG1))
+			 (call mariadb.conf.file_type_transition
+			       (ARG1 file file "enable_encryption.preset"))
+			 (call mariadb.conf.file_type_transition
+			       (ARG1 file file "mariadb-server.cnf"))
+			 (call mariadb.conf.file_type_transition
+			       (ARG1 file file "spider.cnf")))
+
+		  (blockinherit .file.conf.mariadb.base_template)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/bin/mariadb-check-socket" file file_context)
+		  (filecon "/usr/bin/mariadb-check-upgrade" file file_context)
+		  (filecon "/usr/bin/mariadb-prepare-db-dir" file file_context)
+		  (filecon "/usr/bin/mariadbd-safe" file file_context)
+		  (filecon "/usr/bin/mariadbd-safe-helper" file file_context)
+		  (filecon "/usr/bin/mariadbd" file file_context))
+
+	   (block log
+
+		  (filecon "/var/log/mariadb" dir file_context)
+		  (filecon "/var/log/mariadb/.*" any file_context)
+
+		  (macro log_file_type_transition_file ((type ARG1))
+			 (call .log.file_type_transition
+			       (ARG1 file dir "mariadb")))
+
+		  (macro setattr_file_files ((type ARG1))
+			 (allow ARG1 file (file (setattr))))
+
+		  (blockinherit .file.log.template))
+
+	   (block run
+
+		  (filecon "/run/mariadb" dir file_context)
+		  (filecon "/run/mariadb/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "mariadb")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block state
+
+		  (filecon "/var/lib/mysql" dir file_context)
+		  (filecon "/var/lib/mysql/.*" any file_context)
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "mysql")))
+
+		  (blockinherit .file.state.template))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.tmp.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/mariadb\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/mariadb@.*\.service.*" file
+			   file_context)
+
+		  (blockinherit .file.unit.template)))
+
+    (block utils
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (block exec
+
+		  (filecon "/usr/bin/aria_chk" file file_context)
+		  (filecon "/usr/bin/aria_dump_log" file file_context)
+		  (filecon "/usr/bin/aria_ftdump" file file_context)
+		  (filecon "/usr/bin/aria_pack" file file_context)
+		  (filecon "/usr/bin/aria_read_log" file file_context)
+		  (filecon "/usr/bin/innochecksum" file file_context)
+		  (filecon "/usr/bin/mariadb-conv" file file_context)
+		  (filecon "/usr/bin/mariadb-install-db" file file_context)
+		  (filecon "/usr/bin/mariadb-secure-installation" file
+			   file_context)
+		  (filecon "/usr/bin/mariadb-service-convert" file file_context)
+		  (filecon "/usr/bin/mariadb-tzinfo-to-sql" file file_context)
+		  (filecon "/usr/bin/my_print_defaults" file file_context)
+		  (filecon "/usr/bin/myisam_ftdump" file file_context)
+		  (filecon "/usr/bin/myisamchk" file file_context)
+		  (filecon "/usr/bin/myisamlog" file file_context)
+		  (filecon "/usr/bin/myisampack" file file_context)
+		  (filecon "/usr/bin/replace" file file_context)
+		  (filecon "/usr/bin/resolve_stack_dump" file file_context)
+		  (filecon "/usr/bin/resolveip" file file_context)
+		  (filecon "/usr/bin/wsrep_sst_mariabackup" file file_context)
+		  (filecon "/usr/bin/wsrep_sst_mysqldump" file file_context)
+		  (filecon "/usr/bin/wsrep_sst_rsync" file file_context))))
