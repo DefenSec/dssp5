@@ -126,6 +126,8 @@
        (call .p11kit.data.map_file_files (subj))
        (call .p11kit.data.read_file_pattern.type (subj))
 
+       (call .pixmaps.data.read_file_pattern.type (subj))
+
        (call .random.read_nodedev_chr_files (subj))
 
        (call .random.read_sysctlfile_pattern.type (subj))
@@ -255,10 +257,15 @@
 
        (block data
 
+	      (filecon "/usr/share/fedora-testpage" dir file_context)
+	      (filecon "/usr/share/fedora-testpage/.*" any file_context)
+
 	      (filecon "/usr/share/httpd" dir file_context)
 	      (filecon "/usr/share/httpd/.*" any file_context)
 
 	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "fedora-testpage"))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "httpd")))
 
