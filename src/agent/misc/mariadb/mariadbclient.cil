@@ -7,7 +7,8 @@
     (call .mariadb.client.conf.conf_file_type_transition_file (typeattr))
     (call .mariadb.client.conf.mariadb_conf_file_type_transition_file
 	  (typeattr))
-    (call .mariadb.client.home.user_home_file_type_transition_file (typeattr)))
+    (call .mariadb.client.home.user_home_file_type_transition_file
+	  (typeattr ".my.cnf")))
 
 (in mariadb
 
@@ -15,12 +16,30 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self create_tcp_socket)
+
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
 
 	   (call conf.read_file_files (subj))
 
 	   (call home.read_file_files (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .cryptopol.conf.read_file_files (subj))
+	   (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	   (call .cryptopol.data.read_file_files (subj))
+	   (call .cryptopol.data.search_file_pattern.type (subj))
+
+	   (call .mysql.nameconnect_port_tcp_sockets (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.services.type (subj))
 
 	   (block cert
 
@@ -72,9 +91,10 @@
 		  (filecon "HOME_DIR/\.my\.cnf" file file_context)
 		  (filecon "HOME_DIR/\.my\.cnf\..*" file file_context)
 
-		  (macro user_home_file_type_transition_file ((type ARG1))
+		  (macro user_home_file_type_transition_file
+			 ((type ARG1)(name ARG2))
 			 (call .user.home.file_type_transition
-			       (ARG1 file file ".my.cnf")))
+			       (ARG1 file file ARG2)))
 
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.user.home.base_template))))
@@ -83,7 +103,8 @@
 
     (call .mariadb.client.home.manage_file_files (subj))
     (call .mariadb.client.home.relabel_file_files (subj))
-    (call .mariadb.client.home.user_home_file_type_transition_file (subj))
+    (call .mariadb.client.home.user_home_file_type_transition_file
+	  (subj ".my.cnf"))
 
     (call .mariadb.client.role (role)))
 
