@@ -215,6 +215,8 @@
     (call .http.nameconnect_port_tcp_sockets (subj))
     (call .http.https.nameconnect_port_tcp_sockets (subj))
 
+    (call .mysql.nameconnect_port_tcp_sockets (subj))
+
     (call .net.nodebind_netnode_tcp_sockets (subj))
 
     (call .nss.hosts.type (subj))
