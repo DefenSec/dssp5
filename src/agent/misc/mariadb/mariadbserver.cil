@@ -30,20 +30,15 @@
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
 
-	   (call conf.read_file_files (subj))
-
 	   (call data.read_file_files (subj))
 	   (call data.search_file_dirs (subj))
 
 	   (call exec.execute_file_files (subj))
 
-	   (call log.append_file_files (subj))
-	   (call log.create_file_files (subj))
-	   (call log.delete_file_files (subj))
-	   (call log.manage_file_dirs (subj))
-	   (call log.read_file_files (subj))
-	   (call log.rename_file_files (subj))
-	   (call log.setattr_file_files (subj))
+	   (call log.manage_file_files (subj))
+	   (call log.readwrite_file_dirs (subj))
+
+	   (call mariadb.conf.list_file_dirs (subj))
 
 	   (call run.manage_file_dirs (subj))
 	   (call run.manage_file_files (subj))
@@ -68,7 +63,12 @@
 
 	   (call .debug.search_fs_pattern.type (subj))
 
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.search_sysfile_pattern.type (subj))
+
 	   (call .exec.execute_file_files (subj))
+
+	   (call .file.conf.mariadb.read_all_files (subj))
 
 	   (call .gcrypt.conf.read_file_pattern.type (subj))
 
@@ -76,6 +76,8 @@
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.data.read_file_pattern.type (subj))
+
+	   (call .log.search_file_pattern.type (subj))
 
 	   (call .mysql.namebind_port_tcp_sockets (subj))
 	   (call .mysql.admin.namebind_port_tcp_sockets (subj))
@@ -91,6 +93,8 @@
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
+	   (call .runuser.search_file_pattern.type (subj))
+
 	   (call .seclabelfs.getattr_all_fs (subj))
 
 	   (call .selinux.default.read_file_pattern.type (subj))
@@ -99,6 +103,8 @@
 
 	   (call .shell.exec.mapexecute_file_files (subj))
 	   (call .shell.exec.read_file_files (subj))
+
+	   (call .state.search_file_pattern.type (subj))
 
 	   (call .sys.read_subj_states (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
@@ -167,9 +173,6 @@
 			 (call .log.file_type_transition
 			       (ARG1 file dir "mariadb")))
 
-		  (macro setattr_file_files ((type ARG1))
-			 (allow ARG1 file (file (setattr))))
-
 		  (blockinherit .file.log.template))
 
 	   (block run
@@ -189,6 +192,9 @@
 
 		  (filecon "/var/lib/mysql" dir file_context)
 		  (filecon "/var/lib/mysql/.*" any file_context)
+
+		  (macro setattr_file_dirs ((type ARG1))
+			 (allow ARG1 file (dir (setattr))))
 
 		  (macro state_file_type_transition_file ((type ARG1))
 			 (call .state.file_type_transition
@@ -220,6 +226,31 @@
     (block utils
 
 	   (blockinherit .hybrid.agent.template)
+
+	   (call data.read_file_files (subj))
+	   (call data.search_file_dirs (subj))
+
+	   (call exec.execute_file_files (subj))
+
+	   (call mariadb.conf.list_file_dirs (subj))
+
+	   (call server.subj_type_transition (subj))
+
+	   (call server.state.search_file_dirs (subj))
+	   (call server.state.setattr_file_dirs (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .file.conf.mariadb.read_all_files (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .state.search_file_pattern.type (subj))
 
 	   (block exec
 
