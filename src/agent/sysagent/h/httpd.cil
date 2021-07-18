@@ -203,12 +203,27 @@
 	      (call httpd.run.read_file_files (subj))
 	      (call httpd.run.run_file_type_transition_file (subj))
 
+	      (call httpd.unit.start_file_services (subj))
+	      (call httpd.unit.status_file_services (subj))
+	      (call httpd.unit.stop_file_services (subj))
+
 	      (call tmp.manage_file_files (subj))
 	      (call tmp.tmp_file_type_transition_file (subj))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	      (call .dev.list_file_pattern.type (subj))
 
 	      (call .devpts.search_fs_pattern.type (subj))
+
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	      (call .libnl.conf.read_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.data.read_file_pattern.type (subj))
 
 	      (call .log.search_file_pattern.type (subj))
 
@@ -216,13 +231,22 @@
 
 	      (call .polkit.ttyagent.subj_type_transition (subj))
 
+	      (call .proc.getattr_fs_pattern.type (subj))
+
 	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.readstatesource.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .selinux.linked.type (subj))
 
 	      (call .shell.exec.mapexecute_file_files (subj))
 	      (call .shell.exec.read_file_files (subj))
 
+	      (call .sys.read_subj_states (subj))
+
 	      (call .systemd.askpassword.client.type (subj))
+
+	      (call .systemd.private.type (subj))
 
 	      (call .systemd.systemctl.exec.execute_file_files (subj))
 
