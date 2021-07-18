@@ -23,6 +23,9 @@
 
 	   (call conf.read_file_files (subj))
 
+	   (call data.read_file_files (subj))
+	   (call data.search_file_dirs (subj))
+
 	   (call home.read_file_files (subj))
 
 	   (call .cert.read_file_files (subj))
@@ -36,10 +39,21 @@
 	   (call .cryptopol.data.read_file_files (subj))
 	   (call .cryptopol.data.search_file_pattern.type (subj))
 
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
 	   (call .mysql.nameconnect_port_tcp_sockets (subj))
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.services.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .sys.home.manage_file_files (subj))
+	   (call .sys.home.readwrite_file_dirs (subj))
+
+	   (call .user.home.manage_file_files (subj))
+	   (call .user.home.readwrite_file_dirs (subj))
 
 	   (block cert
 
