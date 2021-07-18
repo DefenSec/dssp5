@@ -16,18 +16,26 @@
 
 	   (macro unix_stream_connect ((type ARG1))
 		  (call connectto_subj_unix_stream_sockets (ARG1))
-		  (call run.search_file_dirs (ARG1))
-		  (call run.write_file_sock_files (ARG1)))
+		  (call state.search_file_dirs (ARG1))
+		  (call state.write_file_sock_files (ARG1)))
 
+	   (blockinherit .dbus.client.template)
 	   (blockinherit .sys.agent.template)
 
+	   (allow subj self (process (getsched setrlimit)))
 	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self (unix_stream_socket (accept listen)))
 
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
 
 	   (call conf.read_file_files (subj))
+
+	   (call data.read_file_files (subj))
+	   (call data.search_file_dirs (subj))
+
+	   (call exec.execute_file_files (subj))
 
 	   (call log.append_file_files (subj))
 	   (call log.create_file_files (subj))
@@ -38,18 +46,73 @@
 	   (call log.setattr_file_files (subj))
 
 	   (call run.manage_file_dirs (subj))
-	   (call run.manage_file_sock_files (subj))
+	   (call run.manage_file_files (subj))
 
 	   (call state.manage_file_dirs (subj))
 	   (call state.manage_file_files (subj))
+	   (call state.manage_file_sock_files (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call unit.status_file_services (subj))
+
+	   (call utils.subj_type_transition (subj))
+
+	   (call .block.list_sysfile_dirs (subj))
+	   (call .block.read_sysfile_lnk_files (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .debug.search_fs_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .gcrypt.conf.read_file_pattern.type (subj))
+
+	   (call .libnl.conf.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
 
 	   (call .mysql.namebind_port_tcp_sockets (subj))
 	   (call .mysql.admin.namebind_port_tcp_sockets (subj))
 
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+	   (call .nss.services.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
+	   (call .seclabelfs.getattr_all_fs (subj))
+
+	   (call .selinux.default.read_file_pattern.type (subj))
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+
 	   (call .systemd.notify.type (subj))
+
+	   (call .systemd.systemctl.exec.execute_file_files (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .trace.search_fs_pattern.type (subj))
+
+	   (call .zram.read_sysfile_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
 
 	   (block cert
 
@@ -119,7 +182,7 @@
 			       (ARG1 file dir "mariadb")))
 
 		  (blockinherit .file.macro_template_dirs)
-		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.run.base_template))
 
 	   (block state
@@ -131,7 +194,10 @@
 			 (call .state.file_type_transition
 			       (ARG1 file dir "mysql")))
 
-		  (blockinherit .file.state.template))
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.state.base_template))
 
 	   (block tmp
 
