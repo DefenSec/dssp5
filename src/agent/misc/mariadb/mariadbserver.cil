@@ -59,7 +59,18 @@
 
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .cryptopol.conf.read_file_files (subj))
+	   (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	   (call .cryptopol.data.read_file_files (subj))
+	   (call .cryptopol.data.search_file_pattern.type (subj))
 
 	   (call .debug.search_fs_pattern.type (subj))
 
@@ -88,6 +99,8 @@
 	   (call .nss.passwdgroup.type (subj))
 	   (call .nss.services.type (subj))
 
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
 	   (call .proc.getattr_fs_pattern.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
@@ -108,9 +121,9 @@
 
 	   (call .state.search_file_pattern.type (subj))
 
-	   (call .sys.read_subj_states (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 
+	   (call .systemd.logparsenv.type (subj))
 	   (call .systemd.notify.type (subj))
 
 	   (call .systemd.systemctl.exec.execute_file_files (subj))
