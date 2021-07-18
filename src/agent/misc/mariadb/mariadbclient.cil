@@ -16,17 +16,19 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self (capability (dac_read_search)))
 	   (allow subj self create_tcp_socket)
 
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
 
-	   (call conf.read_file_files (subj))
-
 	   (call data.read_file_files (subj))
 	   (call data.search_file_dirs (subj))
 
+	   (call home.dontaudit_writeinherited_file_files (subj))
 	   (call home.read_file_files (subj))
+
+	   (call mariadb.conf.list_file_dirs (subj))
 
 	   (call .cert.read_file_files (subj))
 	   (call .cert.search_file_pattern.type (subj))
@@ -39,6 +41,8 @@
 	   (call .cryptopol.data.read_file_files (subj))
 	   (call .cryptopol.data.search_file_pattern.type (subj))
 
+	   (call .file.conf.mariadb.read_all_files (subj))
+
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.data.read_file_pattern.type (subj))
 
@@ -47,10 +51,16 @@
 	   (call .nss.hosts.type (subj))
 	   (call .nss.services.type (subj))
 
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.execute_file_files (subj))
+
 	   (call .state.search_file_pattern.type (subj))
 
 	   (call .sys.home.manage_file_files (subj))
 	   (call .sys.home.readwrite_file_dirs (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
 
 	   (call .user.home.manage_file_files (subj))
 	   (call .user.home.readwrite_file_dirs (subj))
@@ -104,6 +114,9 @@
 
 		  (filecon "HOME_DIR/\.my\.cnf" file file_context)
 		  (filecon "HOME_DIR/\.my\.cnf\..*" file file_context)
+
+		  (macro dontaudit_writeinherited_file_files ((type ARG1))
+			 (dontaudit ARG1 file writeinherited_file))
 
 		  (macro user_home_file_type_transition_file
 			 ((type ARG1)(name ARG2))
