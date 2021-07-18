@@ -249,6 +249,9 @@
     (call .web.script.exec.map_file_files (subj))
     (call .web.script.exec.read_file_files (subj))
 
+    (optional phpfpm_mariadbserver
+	      (call .mariadb.server.unix_stream_connect (subj)))
+
     (optional phpfpm_postfix
 	      (call .postfix.sendmail.mailer.type (subj))
 	      (call .postfix.sendmail.mailer.tmp.type (tmp.file)))
