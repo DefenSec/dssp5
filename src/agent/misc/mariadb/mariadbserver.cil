@@ -229,6 +229,8 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self (capability (dac_override dac_read_search)))
+
 	   (call client.home.manage_file_files (subj))
 	   (call client.home.user_home_file_type_transition_file
 		 (subj "*"))
