@@ -263,6 +263,9 @@
 
 	   (call .state.search_file_pattern.type (subj))
 
+	   (call .sys.home.manage_file_files (subj))
+	   (call .sys.home.readwrite_file_dirs (subj))
+
 	   (call .terminfo.read_file_pattern.type (subj))
 
 	   (call .user.home.deletename_file_dirs (subj))
