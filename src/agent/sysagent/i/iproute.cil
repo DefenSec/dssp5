@@ -46,6 +46,7 @@
        (call .ns.read_fs_pattern.type (subj))
        (call .ns.unmount_fs (subj))
 
+       (call .nss.protocols.type (subj))
        (call .nss.services.type (subj))
 
        (call .proc.list_fs_dirs (subj))
