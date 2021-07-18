@@ -225,17 +225,13 @@
 	      (call .locale.data.map_file_pattern.type (subj))
 	      (call .locale.data.read_file_pattern.type (subj))
 
-	      (call .log.search_file_pattern.type (subj))
-
 	      (call .nss.passwdgroup.type (subj))
 
 	      (call .polkit.ttyagent.subj_type_transition (subj))
 
 	      (call .proc.getattr_fs_pattern.type (subj))
 
-	      (call .rbacsep.constrained.type (subj))
-	      (call .rbacsep.readstatesource.type (subj))
-	      (call .rbacsep.usefdsource.type (subj))
+	      (call .random.read_sysctlfile_pattern.type (subj))
 
 	      (call .selinux.linked.type (subj))
 
@@ -246,6 +242,9 @@
 
 	      (call .systemd.askpassword.client.type (subj))
 
+	      (call .systemd.journal.log.map_file_pattern.type (subj))
+	      (call .systemd.journal.log.read_file_pattern.type (subj))
+
 	      (call .systemd.private.type (subj))
 
 	      (call .systemd.systemctl.exec.execute_file_files (subj))
@@ -253,6 +252,9 @@
 	      (call .terminfo.read_file_pattern.type (subj))
 
 	      (call .tmp.deletename_file_dirs (subj))
+	      (call .tmp.getattr_fs_pattern.type (subj))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
 
 	      (block exec
 
