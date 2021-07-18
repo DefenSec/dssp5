@@ -93,6 +93,8 @@
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
+	   (call .root.list_file_dirs (subj))
+
 	   (call .runuser.search_file_pattern.type (subj))
 
 	   (call .seclabelfs.getattr_all_fs (subj))
@@ -227,6 +229,12 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (call client.home.manage_file_files (subj))
+	   (call client.home.user_home_file_type_transition_file
+		 (subj "*"))
+
+	   (call client.subj_type_transition (subj))
+
 	   (call data.read_file_files (subj))
 	   (call data.search_file_dirs (subj))
 
@@ -243,6 +251,9 @@
 
 	   (call .file.conf.mariadb.read_all_files (subj))
 
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
+
 	   (call .nss.passwdgroup.type (subj))
 
 	   (call .selinux.linked.type (subj))
@@ -251,6 +262,10 @@
 	   (call .shell.exec.read_file_files (subj))
 
 	   (call .state.search_file_pattern.type (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .user.home.deletename_file_dirs (subj))
 
 	   (block exec
 
@@ -277,3 +292,7 @@
 		  (filecon "/usr/bin/wsrep_sst_mariabackup" file file_context)
 		  (filecon "/usr/bin/wsrep_sst_mysqldump" file file_context)
 		  (filecon "/usr/bin/wsrep_sst_rsync" file file_context))))
+
+(in mariadb.client
+
+    (call .mariadb.server.unix_stream_connect (subj)))
