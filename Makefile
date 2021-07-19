@@ -89,8 +89,11 @@ config_install:
 \n/usr/local/src /usr/src\
 \n/usr/sbin /usr/bin\
 \n/usr/tmp /tmp\
-\n/var/mail /var/spool/mail\
+\n/var/cache/private /var/cache\
+\n/var/lib/private /var/lib\
 \n/var/lock /run/lock\
+\n/var/log/private /var/log\
+\n/var/mail /var/spool/mail\
 \n/var/run /run\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
 	echo "privsep_preauth=openssh.server.privsep.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/openssh_contexts
