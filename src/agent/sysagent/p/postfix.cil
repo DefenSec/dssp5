@@ -46,6 +46,8 @@
        (call .nss.hosts.type (subj))
        (call .nss.passwdgroup.type (subj))
 
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
@@ -1039,6 +1041,15 @@
 	      (call master.agent (subj exec.file))
 	      (call master.unix_stream_connect_private (subj))
 
+	      (call .cert.read_file_files (subj))
+	      (call .cert.traverse_file_pattern.type (subj))
+
+	      (call .cryptopol.conf.read_file_files (subj))
+	      (call .cryptopol.conf.traverse_file_pattern.type (subj))
+
+	      (call .cryptopol.data.read_file_files (subj))
+	      (call .cryptopol.data.search_file_pattern.type (subj))
+
 	      (call .net.nodebind_netnode_tcp_sockets (subj))
 
 	      (call .nss.services.type (subj))
@@ -1046,6 +1057,7 @@
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
 
+	      (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
 	      (call .smtp.nameconnect_port_tcp_sockets (subj))
 
 	      (optional postfix_smtp_dovecot

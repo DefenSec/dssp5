@@ -77,6 +77,8 @@
 
        (call .systemd.unit.run.search_file_dirs (subj))
 
+       (call .terminfo.read_file_pattern.type (subj))
+
        (block alternate
 
 	      (macro getattr_all_files ((type ARG1))
