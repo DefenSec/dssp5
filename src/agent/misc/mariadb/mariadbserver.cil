@@ -52,6 +52,7 @@
 
 	   (call unit.status_file_services (subj))
 
+	   (call utils.nnptransition_subj_processes (subj))
 	   (call utils.subj_type_transition (subj))
 
 	   (call .block.list_sysfile_dirs (subj))
@@ -262,6 +263,8 @@
 	   (call server.state.search_file_dirs (subj))
 	   (call server.state.setattr_file_dirs (subj))
 
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
 	   (call .exec.execute_file_files (subj))
 
 	   (call .file.conf.mariadb.read_all_files (subj))
@@ -271,6 +274,8 @@
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
 
 	   (call .selinux.linked.type (subj))
 
