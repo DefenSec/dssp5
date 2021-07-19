@@ -12,8 +12,8 @@
 
     (allow subj self
 	   (capability (audit_control chown dac_read_search dac_override fowner
-				      setgid setuid sys_admin)))
-    (dontaudit subj self (cap_userns (sys_ptrace)))
+				      setgid setuid sys_admin sys_ptrace)))
+    (allow subj self (cap_userns (kill sys_ptrace)))
     (allow subj self (capability2 (syslog)))
     (allow subj self create_unix_dgram_socket)
     (allow subj self create_unix_stream_stream_socket)
