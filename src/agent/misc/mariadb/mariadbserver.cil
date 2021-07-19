@@ -104,6 +104,8 @@
 
 	   (call .proc.getattr_fs_pattern.type (subj))
 
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
@@ -258,6 +260,7 @@
 
 	   (call mariadb.conf.list_file_dirs (subj))
 
+	   (call server.nnptransition_subj_processes (subj))
 	   (call server.subj_type_transition (subj))
 
 	   (call server.state.search_file_dirs (subj))
