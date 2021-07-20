@@ -1,0 +1,67 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wireplumber
+
+       (blockinherit .user.agent.template)
+
+       (call .user.systemd.agent (subj exec.file))
+
+       (block conf
+
+	      (filecon "/etc/wireplumber" dir file_context)
+	      (filecon "/etc/wireplumber/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "wireplumber")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/wireplumber" dir file_context)
+	      (filecon "/usr/share/wireplumber/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "wireplumber")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/wireplumber" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/user/wireplumber\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/user/wireplumber@.*\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template))
+
+       (block util
+
+	      (blockinherit .user.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/wpctl" file file_context)
+		     (filecon "/usr/bin/wpexec" file file_context))))
+
+(in file.unconfined
+
+    (call .wireplumber.conf.conf_file_type_transition_file (typeattr))
+    (call .wireplumber.data.data_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .wireplumber.role (role))
+    (call .wireplumber.util.role (role)))
+
+(in wheel
+
+    (call .wireplumber.role (role))
+    (call .wireplumber.util.role (role)))

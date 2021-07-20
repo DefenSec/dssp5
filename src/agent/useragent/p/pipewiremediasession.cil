@@ -1,0 +1,82 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in pipewire
+
+    (call mediasession.nnptransition_subj_processes (subj))
+    (call mediasession.read_subj_states (subj))
+    (call mediasession.subj_type_transition (subj))
+
+    (block mediasession
+
+	   (blockinherit .dbus.client.macro_template)
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_bluetooth_socket)
+	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self (bluetooth_socket (listen)))
+
+	   (call common.type (subj))
+
+	   (call home.conf.manage_file_dirs (subj))
+	   (call home.conf.manage_file_files (subj))
+	   (call home.conf.map_file_files (subj))
+	   (call home.conf.user_home_conf_file_type_transition_file (subj))
+	   (call home.conf.user_home_file_type_transition_file (subj))
+
+	   (call pipewire.readwrite_subj_unix_stream_sockets (subj))
+	   (call pipewire.unix_stream_connect (subj))
+
+	   (call .bluez.sendmsg_subj_dbus.type (subj))
+
+	   (call .bus.list_sysfile_dirs (subj))
+	   (call .bus.read_sysfile_lnk_files (subj))
+
+	   (call .class.list_sysfile_dirs (subj))
+	   (call .class.read_sysfile_files (subj))
+	   (call .class.read_sysfile_lnk_files (subj))
+
+	   (call .dbus.client.type (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+	   (call .dev.watch_file_dirs (subj))
+
+	   (call .snd.map_nodedev_chr_files (subj))
+	   (call .snd.readwrite_nodedev_chr_files (subj))
+
+	   (call .systemd.machines.run.list_file_dirs (subj))
+	   (call .systemd.machines.run.read_file_files (subj))
+	   (call .systemd.machines.run.watch_file_dirs (subj))
+
+	   (call .systemd.seats.run.list_file_dirs (subj))
+	   (call .systemd.seats.run.read_file_files (subj))
+	   (call .systemd.seats.run.watch_file_dirs (subj))
+
+	   (call .systemd.sessions.run.list_file_dirs (subj))
+	   (call .systemd.sessions.run.read_file_files (subj))
+	   (call .systemd.sessions.run.watch_file_dirs (subj))
+
+	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .systemd.users.run.list_file_dirs (subj))
+	   (call .systemd.users.run.read_file_files (subj))
+	   (call .systemd.users.run.watch_file_dirs (subj))
+
+	   (call .user.dbus.nameclient.type (subj))
+
+	   (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+	   (call .v4l.readwrite_nodedev_chr_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/pipewire-media-session" file
+			   file_context))))
+
+(in user
+
+    (call .pipewire.mediasession.role (role)))
+
+(in wheel
+
+    (call .pipewire.mediasession.role (role)))
