@@ -16,12 +16,6 @@
 
        (call home.conf.list_file_dirs (subj))
 
-       (call mediasession.nnptransition_subj_processes (subj))
-       (call mediasession.read_subj_states (subj))
-       (call mediasession.subj_type_transition (subj))
-
-       (call pulse.read_subj_states (subj))
-
        (call run.manage_file_files (subj))
        (call run.manage_file_sock_files (subj))
        (call run.user_run_file_type_transition_file (subj))
@@ -32,7 +26,11 @@
 
        (call .class.traverse_sysfile_pattern.type (subj))
 
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
        (call .dbus.client.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
 
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
@@ -77,10 +75,6 @@
 
 	      (call .locale.data.map_file_pattern.type (typeattr))
 	      (call .locale.data.read_file_pattern.type (typeattr))
-
-	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
-
-	      (call .gcrypt.conf.read_file_pattern.type (typeattr))
 
 	      (call .nss.passwdgroup.type (typeattr))
 
