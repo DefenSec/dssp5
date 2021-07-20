@@ -6,6 +6,7 @@
        (blockinherit .user.agent.template)
 
        (call .user.systemd.agent (subj exec.file))
+       (call .user.systemd.service.nnptransition.type (subj))
 
        (block conf
 

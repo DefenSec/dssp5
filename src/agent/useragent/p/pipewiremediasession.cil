@@ -67,6 +67,7 @@
 	   (call .user.home.conf.create_file_dir_pattern.type (subj))
 
 	   (call .user.systemd.agent (subj exec.file))
+	   (call .user.systemd.service.nnptransition.type (subj))
 
 	   (call .v4l.readwrite_nodedev_chr_files (subj))
 
