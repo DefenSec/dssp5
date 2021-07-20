@@ -3,10 +3,79 @@
 
 (block wireplumber
 
+       (blockinherit .dbus.client.macro_template)
        (blockinherit .user.agent.template)
+
+       (allow subj self (process (getsched setsched)))
+       (allow subj self create_bluetooth_socket)
+       (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self (bluetooth_socket (listen)))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.map_file_files (subj))
+       (call conf.read_file_files (subj))
+
+       (call data.read_file_files (subj))
+       (call data.search_file_dirs (subj))
+
+       (call home.conf.manage_file_dirs (subj))
+       (call home.conf.manage_file_files (subj))
+       (call home.conf.user_home_conf_file_type_transition_file (subj))
+
+       (call .alsa.conf.read_file_files (subj))
+
+       (call .alsa.data.read_file_files (subj))
+       (call .alsa.data.search_file_dirs (subj))
+
+       (call .bus.list_sysfile_pattern.type (subj))
+       (call .bus.read_sysfile_lnk_files (subj))
+
+       (call .class.list_sysfile_pattern.type (subj))
+       (call .class.read_sysfile_lnk_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dbus.client.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+       (call .dev.watch_file_dirs (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.traverse_sysfile_pattern.type (subj))
+
+       (call .gcrypt.conf.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pipewire.unix_stream_connect (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .snd.map_nodedev_chr_files (subj))
+       (call .snd.readwrite_nodedev_chr_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+       (call .user.dbus.nameclient.type (subj))
+
+       (call .user.run.search_file_pattern.type (subj))
 
        (call .user.systemd.agent (subj exec.file))
        (call .user.systemd.service.nnptransition.type (subj))
+
+       (call .v4l.readwrite_nodedev_chr_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional wireplumber_bluez
+		 (call .bluez.sendmsg_subj_dbus.type (subj)))
 
        (block conf
 
@@ -16,6 +85,9 @@
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "wireplumber")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
 
 	      (blockinherit .file.conf.template))
 
@@ -34,6 +106,21 @@
 
 	      (filecon "/usr/bin/wireplumber" file file_context))
 
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/wireplumber" dir file_context)
+		     (filecon "HOME_DIR/\.config/wireplumber/.*" any
+			      file_context)
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "wireplumber")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
        (block unit
 
 	      (filecon "/usr/lib/systemd/user/wireplumber\.service.*" file
@@ -41,7 +128,7 @@
 	      (filecon "/usr/lib/systemd/user/wireplumber@.*\.service.*" file
 		       file_context)
 
-	      (blockinherit .file.unit.template))
+	      (blockinherit .file.user.unit.template))
 
        (block util
 
@@ -55,9 +142,22 @@
 (in file.unconfined
 
     (call .wireplumber.conf.conf_file_type_transition_file (typeattr))
-    (call .wireplumber.data.data_file_type_transition_file (typeattr)))
+    (call .wireplumber.data.data_file_type_transition_file (typeattr))
+    (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr)))
+
+(in pipewire
+
+    (call .wireplumber.read_subj_states (subj)))
 
 (in user
+
+    (call .wireplumber.home.conf.manage_file_dirs (subj))
+    (call .wireplumber.home.conf.manage_file_files (subj))
+    (call .wireplumber.home.conf.relabel_file_dirs (subj))
+    (call .wireplumber.home.conf.relabel_file_files (subj))
+    (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
+	  (subj))
 
     (call .wireplumber.role (role))
     (call .wireplumber.util.role (role)))

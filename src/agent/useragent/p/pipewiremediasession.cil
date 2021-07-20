@@ -29,10 +29,10 @@
 
 	   (call .bluez.sendmsg_subj_dbus.type (subj))
 
-	   (call .bus.list_sysfile_dirs (subj))
+	   (call .bus.list_sysfile_pattern.type (subj))
 	   (call .bus.read_sysfile_lnk_files (subj))
 
-	   (call .class.list_sysfile_dirs (subj))
+	   (call .class.list_sysfile_pattern.type (subj))
 	   (call .class.read_sysfile_files (subj))
 	   (call .class.read_sysfile_lnk_files (subj))
 
