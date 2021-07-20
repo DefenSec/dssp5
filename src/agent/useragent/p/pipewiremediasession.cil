@@ -66,12 +66,22 @@
 
 	   (call .user.home.conf.create_file_dir_pattern.type (subj))
 
+	   (call .user.systemd.agent (subj exec.file))
+
 	   (call .v4l.readwrite_nodedev_chr_files (subj))
 
 	   (block exec
 
 		  (filecon "/usr/bin/pipewire-media-session" file
-			   file_context))))
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/user/pipewire-media-session\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.user.unit.template))))
 
 (in user
 
