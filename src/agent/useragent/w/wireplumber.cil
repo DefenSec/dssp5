@@ -9,6 +9,7 @@
        (allow subj self (process (getsched setsched)))
        (allow subj self create_bluetooth_socket)
        (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self create_unix_dgram_socket)
        (allow subj self (bluetooth_socket (listen)))
 
        (call conf.list_file_dirs (subj))
@@ -58,6 +59,8 @@
        (call .snd.readwrite_nodedev_chr_files (subj))
 
        (call .state.search_file_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
 
        (call .systemd.udev.run.read_file_pattern.type (subj))
 
