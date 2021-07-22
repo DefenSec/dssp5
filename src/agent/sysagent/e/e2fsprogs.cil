@@ -53,6 +53,8 @@
        (call .mount.image.search_all_dirs (subj))
        (call .mount.mountpoint.dontaudit_getattr_all_dirs (subj))
 
+       (call .nss.passwdgroup.type (subj))
+
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rbacsep.constrained.type (subj))
