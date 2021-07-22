@@ -44,6 +44,8 @@
        (call .mime.data.map_file_pattern.type (subj))
        (call .mime.read_file_pattern.type (subj))
 
+       (call .pixmaps.data.read_file_pattern.type (subj))
+
        (call .selinux.linked.type (subj))
 
        (call .user.systemd.agent (subj exec.file))
