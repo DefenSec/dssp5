@@ -363,6 +363,8 @@
 
 	   (call .tmp.deletename_file_dirs (typeattr))
 
+	   (call .xattr.getattr_fs_pattern.type (typeattr))
+
 	   (block template
 
 		  (macro unix_stream_connect ((type ARG1))
