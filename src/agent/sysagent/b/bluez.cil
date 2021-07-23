@@ -39,8 +39,6 @@
 
        (call .lib.list_file_dirs (subj))
 
-       (call .pipewire.mediasession.sendmsg_subj_dbus.type (subj))
-
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rbacsep.exempttarget.type (subj))
@@ -65,6 +63,12 @@
        (call .usb.readwrite_nodedev_chr_files (subj))
 
        (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional bluez_pipewiremediasession
+		 (call .pipewire.mediasession.sendmsg_subj_dbus.type (subj)))
+
+       (optional bluez_wireplumber
+		 (call .wireplumber.sendmsg_subj_dbus.type (subj)))
 
        (block cli
 
