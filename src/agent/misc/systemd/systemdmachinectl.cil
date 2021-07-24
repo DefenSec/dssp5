@@ -16,7 +16,6 @@
 
 	   (allow subj self (process (setrlimit)))
 	   (allow subj self create_udp_socket)
-	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self create_unix_stream_socket)
 	   (dontaudit subj self (capability (net_admin)))
 
@@ -93,9 +92,14 @@
 	   (call .user.signal_subj_processes (subj))
 	   (call .user.termdev.open_all_chr_files (subj))
 
-	   (call .user.systemd.notify.type (subj))
-
 	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional systemdmachinectl_emacs
+		     (allow subj self create_unix_dgram_socket)
+
+		     (call .user.dontaudit_open_subj_fifo_files (subj))
+
+		     (call .user.systemd.notify.type (subj)))
 
 	   (block exec
 
