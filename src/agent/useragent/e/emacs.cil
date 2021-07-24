@@ -228,6 +228,8 @@
 
        (call .uptime.read_procfile_files (subj))
 
+       (call .user.agent.sigkill_all_processes (subj))
+
        (call .user.dbus.client.type (subj))
 
        (call .user.devpts_fs_type_transition_ptytermdev (subj))
