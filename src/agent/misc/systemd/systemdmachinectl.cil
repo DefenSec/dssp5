@@ -16,6 +16,7 @@
 
 	   (allow subj self (process (setrlimit)))
 	   (allow subj self create_udp_socket)
+	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self create_unix_stream_socket)
 	   (dontaudit subj self (capability (net_admin)))
 
@@ -88,9 +89,11 @@
 
 	   (call .user.exec_subj_type_transition (subj))
 	   (call .user.home.create_file_files (subj))
-	   (call .user.home.read_file_files (subj))
+	   (call .user.home.readwrite_file_files (subj))
 	   (call .user.signal_subj_processes (subj))
 	   (call .user.termdev.open_all_chr_files (subj))
+
+	   (call .user.systemd.notify.type (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
 
