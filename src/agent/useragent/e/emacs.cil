@@ -17,7 +17,7 @@
        (blockinherit .user.agent.template)
 
        (allow subj self (process (setpgid)))
-       (allow subj self create_tcp_socket)
+       (allow subj self create_tcp_stream_socket)
        (allow subj self create_unix_dgram_socket)
        (allow subj self (unix_stream_socket (accept connectto listen)))
 
@@ -119,6 +119,8 @@
 
        (call .http.nameconnect_port_tcp_sockets (subj))
        (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .ident.unreserved.namebind_port_tcp_sockets (subj))
 
        (call .imap.imaps.nameconnect_port_tcp_sockets (subj))
 
