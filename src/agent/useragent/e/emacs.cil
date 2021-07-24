@@ -108,7 +108,6 @@
 
        (call .gcrypt.conf.read_file_pattern.type (subj))
 
-       (call .git.client.signal_subj_processes (subj))
        (call .git.client.subj_type_transition (subj))
 
        (call .git.home.manage_file_files (subj))
@@ -211,8 +210,6 @@
        (call .subj.common.read_all_states (subj))
        (call .subj.interactivefd.type (subj))
 
-       (call .sudo.sigkill_subj_processes (subj))
-
        (call .sudo.tmp.readwrite_file_files (subj))
 
        (call .systemd.logparsenv.type (subj))
@@ -228,6 +225,7 @@
        (call .uptime.read_procfile_files (subj))
 
        (call .user.agent.sigkill_all_processes (subj))
+       (call .user.agent.signal_all_processes (subj))
 
        (call .user.dbus.client.type (subj))
 
