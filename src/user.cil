@@ -3,6 +3,9 @@
 
 (in user
 
+    (macro dontaudit_open_subj_fifo_files ((type ARG1))
+	   (dontaudit ARG1 subj (fifo_file (open))))
+
     (macro role ((role ARG1))
 	   (roleattributeset roleattr ARG1))
 
