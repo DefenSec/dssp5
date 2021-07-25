@@ -95,11 +95,7 @@
 	   (call .xattr.getattr_fs_pattern.type (subj))
 
 	   (optional systemdmachinectl_emacs
-		     (allow subj self create_unix_dgram_socket)
-
-		     (call .user.dontaudit_open_subj_fifo_files (subj))
-
-		     (call .user.systemd.notify.type (subj)))
+		     (call .user.dontaudit_open_subj_fifo_files (subj)))
 
 	   (block exec
 
