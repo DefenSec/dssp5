@@ -101,6 +101,7 @@
        (call .exec.home.manage_file_lnk_files (subj))
        (call .exec.home.user_home_data_file_type_transition_file (subj))
 
+       (call .file.exec.auditexecuteaccess_all_files (subj))
        (call .file.user.home.dontaudit_relabel_all_files (subj))
 
        (call .fuse.getattr_fs_pattern.type (subj))
@@ -248,6 +249,9 @@
        (call .user.mail.read_file_files (subj))
 
        (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.sigkill_subj_processes (subj))
+       (call .user.signal_subj_processes (subj))
 
        (call .user.systemd.agent (subj exec.file))
        (call .user.systemd.notify.type (subj))
