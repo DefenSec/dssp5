@@ -130,6 +130,8 @@
        (call .lib.home.manage_file_lnk_files (subj))
        (call .lib.home.user_home_data_file_type_transition_file (subj))
 
+       (call .libnotify.sendmsg_all_dbus.type (subj))
+
        (call .loadavg.read_procfile_files (subj))
 
        (call .locale.data.map_file_pattern.type (subj))

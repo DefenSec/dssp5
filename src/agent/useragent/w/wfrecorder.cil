@@ -54,6 +54,8 @@
 
        (call .kernel.read_sysctlfile_pattern.type (subj))
 
+       (call .libcmrt.conf.read_file_files (subj))
+
        (call .libdrm.data.read_file_pattern.type (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
