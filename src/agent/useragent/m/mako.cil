@@ -55,6 +55,9 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
+       (optional mako_emacs
+		 (call .emacs.sendmsg_subj_dbus.type (subj)))
+
        (optional mako_sway
 		 (call .sway.bar.sendmsg_subj_dbus.type (subj)))
 
