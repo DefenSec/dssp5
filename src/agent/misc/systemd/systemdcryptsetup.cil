@@ -7,6 +7,7 @@
 
 	   (blockinherit .sys.agent.template)
 
+	   (allow subj self (process (getsched)))
 	   (allow subj self (capability (sys_admin)))
 	   (allow subj self create_unix_dgram_socket)
 
