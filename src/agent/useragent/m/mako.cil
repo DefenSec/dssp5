@@ -7,6 +7,7 @@
        (blockinherit .user.dbus.nameclient.template)
 
        (allow subj self (process (getsched setsched)))
+       (allow subj self create_unix_dgram_socket)
        (allow subj self create_unix_stream_socket)
 
        (call conf.list_file_dirs (subj))
@@ -41,12 +42,17 @@
 
        (call .libnotify.type (subj))
 
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
        (call .mime.data.map_file_pattern.type (subj))
        (call .mime.read_file_pattern.type (subj))
 
        (call .pixmaps.data.read_file_pattern.type (subj))
 
        (call .selinux.linked.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
 
        (call .user.systemd.agent (subj exec.file))
        (call .user.systemd.service.noatsecure.type (subj))
