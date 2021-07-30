@@ -26,9 +26,12 @@
        (call lib.list_file_dirs (subj))
 
        (call plugincontainer.noatsecure_subj_processes (subj))
+       (call plugincontainer.ptrace_subj_processes (subj))
        (call plugincontainer.share_subj_processes (subj))
        (call plugincontainer.signal_subj_processes (subj))
        (call plugincontainer.subj_type_transition (subj))
+       (call plugincontainer.use_subj_fds (subj))
+       (call plugincontainer.writeinherited_subj_fifo_files (subj))
 
        (call tmp.manage_file_dirs (subj))
        (call tmp.manage_file_files (subj))
