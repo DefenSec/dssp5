@@ -390,9 +390,6 @@
 
 	   (blockinherit template)
 
-	   (call .ipv4.write_sysctlfile_files (subj))
-	   (call .ipv6.write_sysctlfile_files (subj))
-
 	   (call .net.egress_netifs (subj))
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
 	   (call .net.nodebind_netnode_udp_sockets (subj))
@@ -401,11 +398,11 @@
 	   (call .net.port.nameconnect_all_tcp_sockets (subj))
 	   (call .net.sendto_nodes (subj))
 
-	   (call .net.write_sysctlfile_files (subj))
-
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.readstatetarget.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .sysctlfile.net.write_all_files (subj))
 
 	   (optional systemdnspawn_invalidassociationsboolfile
 		     (call .invalidassociations.type (subj)))
