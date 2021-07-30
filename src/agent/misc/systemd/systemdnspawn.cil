@@ -632,10 +632,6 @@
 
 		  (call .hugetlb.getattr_fs (typeattr))
 
-		  (call .ipv4.write_sysctlfile_files (typeattr))
-
-		  (call .ipv6.write_sysctlfile_files (typeattr))
-
 		  (call .kcore.read.type (typeattr))
 
 		  (call .kernel.mounton_sysfile_dirs (typeattr))
@@ -651,8 +647,6 @@
 		  (call .mqueue.unmount_fs (typeattr))
 
 		  (call .mtrr.mounton_procfile_files (typeattr))
-
-		  (call .net.write_sysctlfile_files (typeattr))
 
 		  (call .ns.getattr_fs (typeattr))
 
@@ -677,6 +671,9 @@
 
 		  (call .sys.dontaudit_search_subj_keyrings (typeattr))
 		  (call .sys.modulerequest_system (typeattr))
+
+		  (call .sysctlfile.dontaudit_writeinherited_all_files
+			(typeattr))
 
 		  (call .sysfile.list_all_dirs (typeattr))
 		  (call .sysfile.read_all_files (typeattr))
