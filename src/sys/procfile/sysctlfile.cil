@@ -4,7 +4,7 @@
 (block sysctlfile
 
        (macro dontaudit_writeinherited_all_files ((type ARG1))
-	      (dontaudit ARG1 typeattr (file (write))))
+	      (dontaudit ARG1 typeattr writeinherited_file))
 
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
