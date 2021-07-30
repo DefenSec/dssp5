@@ -19,6 +19,7 @@
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.data.read_file_pattern.type (subj))
 
+	   (call .mime.data.map_file_pattern.type (subj))
 	   (call .mime.read_file_pattern.type (subj))
 
 	   (call .selinux.linked.type (subj))
