@@ -67,6 +67,10 @@
 
     (neverallow not_typeattr .unknown.file (system (module_load))))
 
+(in sys.unconfined
+
+    (allow typeattr subj (system (reboot reload start status stop))))
+
 (in tmp
 
     (filecon "/dev/shm" dir ())
