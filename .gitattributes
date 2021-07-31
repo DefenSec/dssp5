@@ -2,4 +2,5 @@
 /.github export-ignore
 /.gitignore export-ignore
 * text=auto
+*.cil linguist-detectable=true
 *.cil whitespace=trailing-space
