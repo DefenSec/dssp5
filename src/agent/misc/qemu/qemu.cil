@@ -718,6 +718,8 @@
 	      (call .cryptopol.data.read_file_files (subj))
 	      (call .cryptopol.data.search_file_pattern.type (subj))
 
+	      (call .gcrypt.conf.read_file_pattern.type (subj))
+
 	      (call .proc.getattr_fs_pattern.type (subj))
 
 	      (call .random.read_nodedev_chr_files (subj))
