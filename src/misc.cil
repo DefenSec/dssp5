@@ -607,6 +607,10 @@
 	   (call .tmp.fs_type_transition
 		 (ARG1 file ARG2 ARG3))))
 
+(in sys.unconfined
+
+    (allow typeattr subj (system (reboot reload start status stop))))
+
 (in tmp
 
     (filecon "/dev/shm" dir fs_context)
