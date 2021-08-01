@@ -31,6 +31,9 @@
 	   (call common.type (typeattr))
 
 	   (call .ibac.subjchangetarget.type (typeattr))
+
+	   (call .obj.role (roleattr))
+
 	   (call .rbac.subjchangetarget.type (typeattr))
 
 	   (call .rbacsep.usefdsource.type (typeattr))
