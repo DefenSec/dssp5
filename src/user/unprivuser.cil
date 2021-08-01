@@ -72,7 +72,9 @@
 		  (blockinherit .user.id_template)
 		  (blockinherit .user.unpriv.role_template)
 
-		  (call userrole.user (id)))
+		  (call userrole.user (id))
+
+		  (call .user.role (role)))
 
 	   (block userrole
 

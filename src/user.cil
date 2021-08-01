@@ -311,13 +311,4 @@
 
 	   (roleattribute roleattr)
 
-	   (roletype roleattr subj))
-
-    (block template
-
-	   (blockabstract template)
-
-	   (blockinherit .user.role_template)
-	   (blockinherit .user.subj_template)
-
-	   (call role (role))))
+	   (roletype roleattr subj)))
