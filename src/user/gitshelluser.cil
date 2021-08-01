@@ -5,17 +5,6 @@
 
 (block gitshell
 
-       (macro shell_exec_subj_type_transition ((type ARG1))
-	      (allow ARG1 subj (process (transition)))
-
-	      (allow subj ARG1 (process (sigchld)))
-	      (allow subj ARG1 (fd (use)))
-	      (allow subj ARG1 readwriteinherited_fifo_file)
-
-	      (call .shell.exec.mapexecute_file_files (ARG1))
-	      (call .shell.exec.read_file_files (ARG1))
-	      (call .shell.exec.subj_type_transition (ARG1 subj)))
-
        (blockinherit .user.id_template)
        (blockinherit .user.unpriv.role_template)
        (blockinherit .user.unpriv.subj_template)
