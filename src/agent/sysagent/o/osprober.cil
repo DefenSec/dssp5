@@ -6,6 +6,7 @@
        (blockinherit .sys.agent.template)
 
        (allow subj self (capability (dac_read_search sys_admin)))
+       (allow subj self (process (setfscreate)))
 
        (call data.read_file_files (subj))
        (call data.search_file_dirs (subj))
@@ -13,6 +14,7 @@
        (call exec.execute_file_files (subj))
 
        (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
        (call state.mounton_file_dirs (subj))
 
        (call tmp.manage_file_dirs (subj))
@@ -65,6 +67,10 @@
 
        (call .swaps.read_procfile_files (subj))
 
+       (call .sys.home.list_file_dirs (subj))
+
+       (call .sys.tmp.delete_file_files (subj))
+
        (call .systemd.udev.data.search_file_dirs (subj))
        (call .systemd.udev.subj_type_transition (subj))
 
@@ -76,11 +82,18 @@
 
        (call .user.home.list_file_dirs (subj))
 
+       (call .var.read_file_lnk_files (subj))
+
        (call .xattr.getattr_fs_pattern.type (subj))
        (call .xattr.mount_fs (subj))
        (call .xattr.unmount_fs (subj))
 
        (call .zram.list_sysfile_dirs (subj))
+
+       (optional osprober_systemdnspawn
+		 (call .systemd.nspawn.container.obj.read_all_files (subj))
+		 (call .systemd.nspawn.container.obj.read_all_lnk_files (subj))
+		 (call .systemd.nspawn.container.obj.search_all_dirs (subj)))
 
        (block data
 

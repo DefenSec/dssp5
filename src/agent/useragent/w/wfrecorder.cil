@@ -97,6 +97,8 @@
        (call .user.home.manage_file_files (subj))
        (call .user.home.readwrite_file_files (subj))
 
+       (call .v4l.readwrite_nodedev_chr_files (subj))
+
        (call .wlroots.client.type (subj))
 
        (block exec
