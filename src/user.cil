@@ -6,21 +6,15 @@
     (macro dontaudit_open_subj_fifo_files ((type ARG1))
 	   (dontaudit ARG1 subj (fifo_file (open))))
 
-    (macro role ((role ARG1))
-	   (roleattributeset roleattr ARG1))
-
     (macro type ((type ARG1))
 	   (typeattributeset typeattr ARG1))
 
-    (roleattribute roleattr)
     (typeattribute typeattr)
 
     (blockinherit all_macro_template)
 
     ;; access to user agents is governed per-unpriv-role with rbac
     (call agent.client.type (subj))
-
-    (call .obj.role (roleattr))
 
     (call .ci.getattr_fs_pattern.type (subj))
     (call .ci.manage_fs_pattern.type (subj))
@@ -254,8 +248,6 @@
 	   (roleallow roleallow.roleattr role)
 
 	   (userrole userrole.userattr role)
-
-	   (call .user.role (role))
 
 	   (block roleallow
 

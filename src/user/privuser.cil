@@ -25,6 +25,8 @@
 	   (call .cryptopol.data.read_file_files (typeattr))
 	   (call .cryptopol.data.search_file_pattern.type (typeattr))
 
+	   (call .obj.role (roleattr))
+
 	   (call .rbac.subjchangetarget.type (typeattr))
 
 	   (call .rbacsep.exempt.role (roleattr))
