@@ -1499,6 +1499,9 @@
     (macro connectto_all_unix_stream_sockets ((type ARG1))
 	   (allow ARG1 typeattr (unix_stream_socket (connectto))))
 
+    (macro dontaudit_getattr_all_sockets ((type ARG1))
+	   (dontaudit ARG1 typeattr (sockets (getattr))))
+
     (macro getattr_all_sockets ((type ARG1))
 	   (allow ARG1 typeattr (sockets (getattr))))
 
@@ -1524,6 +1527,9 @@
 
     (macro connectto_subj_unix_stream_sockets ((type ARG1))
 	   (allow ARG1 subj (unix_stream_socket (connectto))))
+
+    (macro dontaudit_getattr_subj_sockets ((type ARG1))
+	   (dontaudit ARG1 subj (sockets (getattr))))
 
     (macro getattr_subj_sockets ((type ARG1))
 	   (allow ARG1 subj (sockets (getattr))))

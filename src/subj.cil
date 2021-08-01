@@ -30,17 +30,11 @@
 
 	      (blockabstract all_macro_template)
 
-	      (macro dontaudit_getattr_all_sockets ((type ARG1))
-		     (dontaudit ARG1 typeattr (sockets (getattr))))
-
 	      (macro dontaudit_ps_all_states ((type ARG1))
 		     (dontaudit ARG1 typeattr (state (ps))))
 
 	      (macro dontaudit_read_all_states ((type ARG1))
 		     (dontaudit ARG1 typeattr (state (read))))
-
-	      (macro getattr_all_sockets ((type ARG1))
-		     (allow ARG1 typeattr (sockets (getattr))))
 
 	      (macro getpgid_all_processes ((type ARG1))
 		     (allow ARG1 typeattr (process (getpgid))))
@@ -215,17 +209,11 @@
 
 	      (blockabstract macro_template)
 
-	      (macro dontaudit_getattr_subj_sockets ((type ARG1))
-		     (dontaudit ARG1 subj (sockets (getattr))))
-
 	      (macro dontaudit_ps_subj_states ((type ARG1))
 		     (dontaudit ARG1 subj (state (ps))))
 
 	      (macro dontaudit_read_subj_states ((type ARG1))
 		     (dontaudit ARG1 subj (state (read))))
-
-	      (macro getattr_subj_sockets ((type ARG1))
-		     (allow ARG1 subj (sockets (getattr))))
 
 	      (macro getpgid_subj_processes ((type ARG1))
 		     (allow ARG1 subj (process (getpgid))))
