@@ -58,6 +58,10 @@ config_install:
 \n/sbin /usr/bin\
 \n/sysroot /\
 \n/sysroot/bin /usr/bin\
+\n/sysroot/etc/systemd/system /usr/lib/systemd/system\
+\n/sysroot/etc/systemd/system.attached /usr/lib/systemd/system\
+\n/sysroot/etc/systemd/system.control /usr/lib/systemd/system\
+\n/sysroot/etc/systemd/user /usr/lib/systemd/user\
 \n/sysroot/lib /usr/lib\
 \n/sysroot/lib64 /usr/lib\
 \n/sysroot/sbin /usr/bin\
