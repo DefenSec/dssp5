@@ -41,8 +41,11 @@
 (in file.unconfined
 
     (call .shadow.conf_file_type_transition_file (typeattr "gshadow"))
+    (call .shadow.conf_file_type_transition_file (typeattr "gshadow-"))
     (call .shadow.conf_file_type_transition_file (typeattr "nshadow"))
+    (call .shadow.conf_file_type_transition_file (typeattr "nshadow-"))
     (call .shadow.conf_file_type_transition_file (typeattr "shadow"))
+    (call .shadow.conf_file_type_transition_file (typeattr "shadow-"))
     (call .shadow.db_file_type_transition_file (typeattr "shadow.db"))
     (call .shadow.db_file_type_transition_file (typeattr "shadow.tdb"))
 
