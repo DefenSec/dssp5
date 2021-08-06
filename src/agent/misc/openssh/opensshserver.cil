@@ -3,6 +3,7 @@
 
 (in file.unconfined
 
+    (call .openssh.server.conf.conf_file_type_transition_file (typeattr))
     (call .openssh.server.conf.openssh_conf_file_type_transition_file
 	  (typeattr))
     (call .openssh.server.run.run_file_type_transition_file (typeattr)))

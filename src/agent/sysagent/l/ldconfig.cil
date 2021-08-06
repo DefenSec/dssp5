@@ -92,7 +92,7 @@
 
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
-			   (ARG1 file file "ls.so.cache"))
+			   (ARG1 file file "ld.so.cache"))
 		     (call .conf.file_type_transition
 			   (ARG1 file file "ld.so.cache~"))
 		     (call .conf.file_type_transition

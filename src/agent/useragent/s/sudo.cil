@@ -372,7 +372,8 @@
     (call .sudo.conf.conf_file_type_transition_file (typeattr))
     (call .sudo.db.db_file_type_transition_file (typeattr))
     (call .sudo.log.log_file_type_transition_file (typeattr))
-    (call .sudo.run.run_file_type_transition_file (typeattr)))
+    (call .sudo.run.run_file_type_transition_file (typeattr))
+    (call .sudo.sudoers.conf_file_type_transition_file (typeattr)))
 
 (in lib
 
