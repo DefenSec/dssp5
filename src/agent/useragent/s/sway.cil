@@ -44,8 +44,7 @@
        (call .class.list_sysfile_dirs (subj))
        (call .class.read_sysfile_lnk_files (subj))
 
-       (call .cpu.read_sysfile_files (subj))
-       (call .cpu.search_sysfile_pattern.type (subj))
+       (call .cpu.read_sysfile_pattern.type (subj))
 
        (call .cpuinfo.read_procfile_files (subj))
 
