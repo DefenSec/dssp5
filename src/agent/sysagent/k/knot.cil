@@ -69,6 +69,7 @@
     (call keys.read_file_files (subj))
 
     (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
     (call run.manage_file_sock_files (subj))
     (call run.run_file_type_transition_file (subj))
 
@@ -239,6 +240,7 @@
 			(ARG1 file dir "knot")))
 
 	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
 	   (blockinherit .file.macro_template_sock_files)
 	   (blockinherit .file.run.base_template))
 
