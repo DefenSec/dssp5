@@ -29,9 +29,8 @@
 
        (call .zram.read_stordev_blk_files (subj))
 
-       (call .zram.list_sysfile_dirs (subj))
-       (call .zram.read_sysfile_lnk_files (subj))
-       (call .zram.readwrite_sysfile_files (subj))
+       (call .zramcontrol.readwrite_sysfile_files (subj))
+       (call .zramcontrol.search_sysfile_dirs (subj))
 
        (block exec
 

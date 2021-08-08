@@ -432,10 +432,6 @@
 	   (call .xdg.conf.read_file_files (subj))
 	   (call .xdg.conf.read_file_lnk_files (subj))
 
-	   (call .zram.read_sysfile_files (subj))
-	   (call .zram.read_sysfile_lnk_files (subj))
-	   (call .zram.search_sysfile_dirs (subj))
-
 	   (block conf
 
 		  (filecon "/etc/systemd/user\.conf" file file_context)

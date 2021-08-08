@@ -40,8 +40,6 @@
 
 	   (call .systemd.journal.relay_msgs.type (subj))
 
-	   (call .zram.list_sysfile_dirs (subj))
-
 	   (block exec
 
 		  (filecon "/usr/lib/systemd/systemd-growfs" file file_context)
