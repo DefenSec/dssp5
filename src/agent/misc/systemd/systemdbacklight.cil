@@ -28,9 +28,6 @@
 
     (call .gcrypt.conf.read_file_pattern.type (subj))
 
-    (call .leds.read_sysfile_lnk_files (subj))
-    (call .leds.search_sysfile_dirs (subj))
-
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .osrelease.read_sysctlfile_pattern.type (subj))

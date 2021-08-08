@@ -119,9 +119,6 @@
 
 	   (call .kmod.subj_type_transition (subj))
 
-	   (call .leds.list_sysfile_dirs (subj))
-	   (call .leds.read_sysfile_lnk_files (subj))
-
 	   (call .libnl.conf.read_file_pattern.type (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
