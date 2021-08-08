@@ -254,6 +254,10 @@
 	   (call .xdg.conf.read_file_lnk_files (subj))
 	   (call .xdg.conf.search_file_dirs (subj))
 
+	   (call .zram.read_sysfile_files (subj))
+	   (call .zram.read_sysfile_lnk_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
+
 	   (block exec
 
 		  (filecon "/usr/bin/systemd-analyze" file file_context))
