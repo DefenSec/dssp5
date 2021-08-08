@@ -102,9 +102,6 @@
     (call .kvm.getattr_nodedev_chr_files (subj))
     (call .kvm.setattr_nodedev_chr_files (subj))
 
-    (call .leds.list_sysfile_dirs (subj))
-    (call .leds.read_sysfile_lnk_files (subj))
-
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .locale.data.map_file_pattern.type (subj))
@@ -222,10 +219,6 @@
     (call .v4l.setattr_nodedev_chr_files (subj))
 
     (call .xattr.getattr_fs_pattern.type (subj))
-
-    (call .zram.list_sysfile_dirs (subj))
-    (call .zram.read_sysfile_lnk_files (subj))
-    (call .zram.readwrite_sysfile_files (subj))
 
     (block exec
 

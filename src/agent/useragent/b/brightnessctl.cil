@@ -17,9 +17,6 @@
 
        (call .gcrypt.conf.read_file_pattern.type (subj))
 
-       (call .leds.list_sysfile_dirs (subj))
-       (call .leds.read_sysfile_lnk_files (subj))
-
        (call .selinux.linked.type (subj))
 
        (call .systemd.login.sendmsg_subj_dbus.type (subj))
