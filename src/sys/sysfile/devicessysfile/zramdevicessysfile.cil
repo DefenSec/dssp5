@@ -5,6 +5,6 @@
 
     (genfscon "sysfs" "/devices/virtual/block/zram" sysfile_context)
 
-    (blockinherit .sysfile.macro_template_lnk_files)
-
-    (call .sysfile.devices.type (sysfile)))
+    (blockinherit .sysfile.devices.template)
+    (blockinherit .sysfile.macro_template_dirs)
+    (blockinherit .sysfile.macro_template_lnk_files))
