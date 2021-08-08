@@ -5,5 +5,8 @@
 
        (genfscon "sysfs" "/class/zram-control" sysfile_context)
 
+       (macro getattr_sysfile_files ((type ARG1))
+	      (allow ARG1 sysfile (file (getattr))))
+
        (blockinherit .sysfile.class.template)
        (blockinherit .sysfile.macro_template_dirs))

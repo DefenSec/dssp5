@@ -135,6 +135,9 @@
 
 	   (call .trace.search_fs_pattern.type (subj))
 
+	   (call .zram.read_sysfile_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
+
 	   (block cert
 
 		  (filecon "/etc/pki/mariadb-server" dir file_context)

@@ -196,6 +196,13 @@
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
 
+	   (call .zram.read_sysfile_lnk_files (subj))
+	   (call .zram.readwrite_sysfile_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
+
+	   (call .zramcontrol.getattr_sysfile_files (subj))
+	   (call .zramcontrol.list_sysfile_dirs (subj))
+
 	   (block conf
 
 		  (filecon "/etc/udev" dir file_context)

@@ -88,6 +88,8 @@
        (call .xattr.mount_fs (subj))
        (call .xattr.unmount_fs (subj))
 
+       (call .zram.list_sysfile_dirs (subj))
+
        (optional osprober_systemdnspawn
 		 (call .systemd.nspawn.container.obj.read_all_files (subj))
 		 (call .systemd.nspawn.container.obj.read_all_lnk_files (subj))

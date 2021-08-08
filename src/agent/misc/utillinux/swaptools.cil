@@ -54,6 +54,8 @@
        (call .swap.readwrite_file_files (subj))
        (call .swap.relabel_file_files (subj))
 
+       (call .zram.list_sysfile_dirs (subj))
+
        (block exec
 
 	      (filecon "/usr/bin/mkswap" file file_context)
