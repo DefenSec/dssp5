@@ -69,6 +69,9 @@
        (call .systemd.fsck.writeinherited_subj_fifo_files (subj))
        (call .systemd.fsck.use_subj_fds (subj))
 
+       (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_files (subj))
+
        (block conf
 
 	      (filecon "/etc/mke2fs\.conf" file file_context)

@@ -55,6 +55,7 @@
        (call .swap.relabel_file_files (subj))
 
        (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_files (subj))
 
        (block exec
 
