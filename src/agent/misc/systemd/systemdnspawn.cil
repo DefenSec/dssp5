@@ -280,6 +280,8 @@
 
     (call .rbac.changesys.type (subj))
 
+    (call .rbacsep.readstatetarget.type (subj))
+
     (call .resolv.conf.read_file_files (subj))
 
     (call .root.mounton_file_dirs (subj))
