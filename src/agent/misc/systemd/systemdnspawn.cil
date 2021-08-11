@@ -110,6 +110,9 @@
     (macro dontaudit_getattr_subj_processes ((type ARG1))
 	   (dontaudit ARG1 subj (process (getattr))))
 
+    (macro readwrite_subj_semaphores ((type ARG1))
+	   (allow ARG1 subj readwrite_sem))
+
     (macro search_subj_keyrings ((type ARG1))
 	   (allow ARG1 subj (key (search))))
 
@@ -131,11 +134,14 @@
 			      mknod net_admin setgid setpcap setuid sys_admin
 			      sys_chroot sys_ptrace)))
     (allow subj self
-	   (process (getcap setcap setexec setfscreate setrlimit setsched)))
+	   (process (getcap getsched setcap setexec setfscreate setrlimit
+			    setsched)))
     (allow subj self create_netlink_kobject_uevent_socket)
     (allow subj self create_netlink_route_socket)
     (allow subj self create_rawip_socket)
+    (allow subj self create_sem)
     (allow subj self create_unix_dgram_socket)
+    (allow subj self (key (search write)))
     (allow subj self (netlink_route_socket (nlmsg_read nlmsg_write)))
 
     (call readwrite_ptytermdev_chr_files (subj))
@@ -177,6 +183,8 @@
 
     (call checkcontext_selinux_security (subj))
 
+    (call .block.traverse_sysfile_pattern.type (subj))
+
     (call .bus.search_sysfile_pattern.type (subj))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
@@ -192,6 +200,12 @@
 
     (call .dev.traverse_sysfile_pattern.type (subj))
 
+    (call .devicemapper.cryptsetup.run.manage_file_dirs (subj))
+    (call .devicemapper.cryptsetup.run.manage_file_files (subj))
+    (call .devicemapper.cryptsetup.run.run_file_type_transition_file (subj))
+
+    (call .devices.read_procfile_files (subj))
+
     (call .devices.list_sysfile_pattern.type (subj))
     (call .devices.readwrite_sysfile_files (subj))
     (call .devices.read_sysfile_lnk_files (subj))
@@ -199,6 +213,12 @@
     (call .devpts.fs_type_transition (subj ptytermdev chr_file "*"))
     (call .devpts.getattr_fs (subj))
     (call .devpts.relabelfrom_fs (subj))
+
+    (call .devtmp.getattr_fs (subj))
+
+    (call .dm.read_stordev_blk_files (subj))
+
+    (call .dmcontrol.readwrite_nodedev_chr_files (subj))
 
     (call .dos.mount_fs (subj))
 
@@ -273,6 +293,8 @@
     (call .sys.dontaudit_setsched_subj_processes (subj))
     (call .sys.getrlimit_subj_processes (subj))
     (call .sys.modulerequest_system (subj))
+    (call .sys.ipcinfo_system (subj))
+    (call .sys.search_subj_keyrings (subj))
     (call .sys.start_system (subj))
     (call .sys.stop_system (subj))
     (call .sys.writeinherited_subj_fifo_files (subj))
@@ -282,6 +304,11 @@
     (call .sys.open_ptytermdev_chr_files (subj))
 
     (call .systemd.askpassword.client.type (subj))
+
+    (call .systemd.askpassword.run.manage_file_dirs (subj))
+    (call .systemd.askpassword.run.manage_file_files (subj))
+    (call .systemd.askpassword.run.manage_file_sock_files (subj))
+    (call .systemd.askpassword.run.systemd_run_file_type_transition_file (subj))
 
     (call .systemd.exec.mapexecute_file_files (subj))
     (call .systemd.exec.read_file_files (subj))
@@ -843,6 +870,15 @@
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_lnk_files)
 	   (blockinherit .file.tmp.base_template)))
+
+(in devicemapper
+
+    (call .systemd.nspawn.readwrite_subj_semaphores (subj)))
+
+(in systemd.askpassword.ttyagent
+
+    (call .systemd.nspawn.read_subj_states (subj))
+    (call .systemd.nspawn.sendto_subj_unix_dgram_sockets (subj)))
 
 (in systemd.portablectl
 
