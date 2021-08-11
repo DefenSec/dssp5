@@ -227,6 +227,7 @@
     ;; for privcontainer fd passing
     (call .file.except.readwriteinherited_all_files (subj))
 
+    (call .fs.list_sysfile_dirs (subj))
     (call .fs.mounton_sysfile_dirs (subj))
 
     (call .fsck.subj_type_transition (subj))
@@ -302,6 +303,8 @@
     (call .sys.mount_fs (subj))
 
     (call .sys.open_ptytermdev_chr_files (subj))
+
+    (call .sysfile.fs.search_all_dirs (subj))
 
     (call .systemd.askpassword.client.type (subj))
 
