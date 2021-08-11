@@ -219,6 +219,8 @@
 
     (call .image.readwrite_file_files (subj))
 
+    (call .kernel.read_sysfile_files (subj))
+
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .locale.data.read_file_pattern.type (subj))
