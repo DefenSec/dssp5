@@ -14,6 +14,12 @@
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
 
+       (macro watch_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (watch))))
+
+       (macro watchreads_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (watch_reads))))
+
        (macro writeinherited_all_chr_files ((type ARG1))
 	      (allow ARG1 typeattr writeinherited_chr_file)
 	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
