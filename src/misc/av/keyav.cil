@@ -54,4 +54,7 @@
 	   (allow ARG1 subj (key (link))))
 
     (macro search_subj_keyrings ((type ARG1))
-	   (allow ARG1 subj (key (search)))))
+	   (allow ARG1 subj (key (search))))
+
+    (macro write_subj_keyrings ((type ARG1))
+	   (allow ARG1 subj (key (write)))))
