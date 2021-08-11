@@ -19,9 +19,6 @@
 	   (macro dyntransition_subj_processes ((type ARG1))
 		  (allow ARG1 subj (process (dyntransition))))
 
-	   (macro readwrite_subj_semaphores ((type ARG1))
-		  (allow ARG1 subj readwrite_sem))
-
 	   (macro role ((role ARG1))
 		  (roleattributeset roleattr ARG1))
 
