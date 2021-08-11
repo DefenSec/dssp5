@@ -1570,3 +1570,11 @@
     (allow typeattr subj.typeattr (unix_dgram_socket (sendto)))
     (allow typeattr subj.typeattr
 	   (unix_stream_socket (accept connectto listen))))
+
+(in sys
+
+    (macro readwrite_subj_netlink_audit_sockets ((type ARG1))
+	   (allow ARG1 subj readwrite_netlink_audit_socket))
+
+    (macro readwrite_subj_netlink_kobject_uevent_sockets ((type ARG1))
+	   (allow ARG1 subj readwrite_netlink_kobject_uevent_socket)))
