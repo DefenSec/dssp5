@@ -64,9 +64,6 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
-       (optional bluez_pipewiremediasession
-		 (call .pipewire.mediasession.sendmsg_subj_dbus.type (subj)))
-
        (optional bluez_wireplumber
 		 (call .wireplumber.sendmsg_subj_dbus.type (subj)))
 
