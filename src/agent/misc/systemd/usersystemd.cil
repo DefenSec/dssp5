@@ -194,10 +194,9 @@
 	   (macro writeinherited_subj_fifo_files ((type ARG1))
 		  (allow ARG1 subj writeinherited_fifo_file))
 
-	   (blockinherit .dbus.client.template)
+	   (blockinherit .dbus.macro_template)
 	   (blockinherit .subj.common.base_template)
 	   (blockinherit .systemd.macro_template_system)
-	   (blockinherit .user.dbus.nameclient.template)
 
 	   (roleattribute roleattr)
 	   (roletype roleattr subj)
@@ -301,6 +300,8 @@
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .data.list_file_dirs (subj))
+
+	   (call .dbus.client.type (subj))
 
 	   (call .dev.traverse_sysfile_pattern.type (subj))
 
@@ -406,6 +407,8 @@
 	   (call .tmp.getattr_fs_pattern.type (subj))
 
 	   (call .user.agent.type (subj))
+
+	   (call .user.dbus.nameclient.type (subj))
 
 	   (call .user.exec_home_subj_type_transition (subj))
 	   (call .user.exec_subj_type_transition (subj))
