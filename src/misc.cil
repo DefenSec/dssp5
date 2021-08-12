@@ -3559,17 +3559,13 @@
 
 (in terminfo.data.read_file_pattern
 
-    (call .emacs.data.search_file_dirs (typeattr))
-
-    (call .kitty.data.search_file_dirs (typeattr)))
+    (call .emacs.data.search_file_dirs (typeattr)))
 
 (in terminfo.read_file_pattern
 
     (call conf.read_file_pattern.type (typeattr))
 
-    (call .emacs.data.search_file_dirs (typeattr))
-
-    (call .kitty.data.search_file_dirs (typeattr)))
+    (call .emacs.data.search_file_dirs (typeattr)))
 
 (in themes.data
 

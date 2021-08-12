@@ -286,9 +286,6 @@
 	   (optional opensshclient_client_opensshserver
 		     (call .user.openssh.unix_stream_connect (subj)))
 
-	   (optional opensshclient_client_kitty
-		     (call .kitty.tmp.writeinherited_file_files (subj)))
-
 	   (block conf
 
 		  (filecon "/etc/ssh/ssh_config" file file_context)

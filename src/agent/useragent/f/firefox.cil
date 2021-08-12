@@ -267,10 +267,6 @@
        (call .xkb.data.map_file_pattern.type (subj))
        (call .xkb.data.read_file_pattern.type (subj))
 
-       (optional firefox_kitty
-		 (call .kitty.tmp.read_file_files (subj))
-		 (call .kitty.tmp.search_file_dirs (subj)))
-
        (optional firefox_waypipe
 		 (call .waypipe.agent (subj exec.file)))
 
