@@ -171,14 +171,13 @@
 	   (call .systemd.nspawn.run.systemd_run_file_type_transition_file
 		 (subj))
 
-	   ;; machinectl remove with tar
+	   ;; machinectl remove with tar and machinectl copy-to
 	   (call .systemd.nspawn.container.obj.delete_all_dirs (subj))
 	   (call .systemd.nspawn.container.obj.delete_all_fifo_files (subj))
-	   (call .systemd.nspawn.container.obj.delete_all_files (subj))
 	   (call .systemd.nspawn.container.obj.delete_all_lnk_files (subj))
 	   (call .systemd.nspawn.container.obj.delete_all_sock_files (subj))
 
-	   (call .systemd.nspawn.container.obj.read_all_files (subj))
+	   (call .systemd.nspawn.container.obj.manage_all_files (subj))
 	   (call .systemd.nspawn.container.obj.read_all_lnk_files (subj))
 	   (call .systemd.nspawn.container.obj.readwrite_all_chr_files (subj))
 	   (call .systemd.nspawn.container.obj.readwrite_all_dirs (subj))
