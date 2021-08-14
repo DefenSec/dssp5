@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 env:
   SELINUX_USERSPACE_VERSION: secilc-3.2
+  TEST_TOOLCHAIN: /tmp/selinux
+  TEST_TOOLCHAIN_SRC: /tmp/selinux-src
 
 jobs:
   build:
@@ -23,11 +25,6 @@ jobs:
             flex \
             libpcre3-dev \
             xmlto
-
-      - name: Configure environment
-        run: |
-          echo "TEST_TOOLCHAIN_SRC=/tmp/selinux-src" >> $GITHUB_ENV
-          echo "TEST_TOOLCHAIN=/tmp/selinux" >> $GITHUB_ENV
 
       - name: Build toolchain
         run: |
