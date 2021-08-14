@@ -276,6 +276,8 @@
 
 	   (call .terminfo.read_file_pattern.type (subj))
 
+	   (call .tmp.deletename_file_dirs (subj))
+
 	   (call .user.home.manage_file_dirs (subj))
 	   (call .user.home.manage_file_files (subj))
 
