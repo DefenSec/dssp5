@@ -4,8 +4,8 @@ on: [push, pull_request]
 
 env:
   SELINUX_USERSPACE_VERSION: secilc-3.2
-  TEST_TOOLCHAIN: /tmp/selinux
-  TEST_TOOLCHAIN_SRC: /tmp/selinux-src
+  TOOLCHAIN_PATH: /tmp/selinux
+  TOOLCHAIN_SRC_PATH: /tmp/selinux-src
 
 jobs:
   build:
@@ -17,22 +17,32 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache toolchain
+        id: cache-toolchain
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.TOOLCHAIN_PATH }}
+            ${{ env.TOOLCHAIN_SRC_PATH }}
+          key: ${{ env.SELINUX_USERSPACE_VERSION }}
+
       - name: Install dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install --no-install-recommends --no-install-suggests -qqy \
+          sudo apt-get install --no-install-recommends -qq \
             bison \
             flex \
             libpcre3-dev \
             xmlto
 
       - name: Build toolchain
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
         run: |
-          git clone https://github.com/SELinuxProject/selinux.git ${TEST_TOOLCHAIN_SRC} -b ${SELINUX_USERSPACE_VERSION}
-          make DESTDIR=${TEST_TOOLCHAIN} -C ${TEST_TOOLCHAIN_SRC}/libsepol install
-          make DESTDIR=${TEST_TOOLCHAIN} LIBSEPOLA=${TEST_TOOLCHAIN}/usr/lib/libsepol.a CFLAGS+="-I${TEST_TOOLCHAIN}/usr/include" LDFLAGS+="-L${TEST_TOOLCHAIN}/usr/lib" -C ${TEST_TOOLCHAIN_SRC}/libselinux install
-          make DESTDIR=${TEST_TOOLCHAIN} LIBSEPOLA=${TEST_TOOLCHAIN}/usr/lib/libsepol.a CFLAGS+="-I${TEST_TOOLCHAIN}/usr/include" LDFLAGS+="-L${TEST_TOOLCHAIN}/usr/lib" -C ${TEST_TOOLCHAIN_SRC}/policycoreutils/setfiles install
-          make DESTDIR=${TEST_TOOLCHAIN} LIBSEPOLA=${TEST_TOOLCHAIN}/usr/lib/libsepol.a CFLAGS+="-I${TEST_TOOLCHAIN}/usr/include" LDFLAGS+="-L${TEST_TOOLCHAIN}/usr/lib" -C ${TEST_TOOLCHAIN_SRC}/secilc install
+          git clone https://github.com/SELinuxProject/selinux.git ${TOOLCHAIN_SRC_PATH} -b ${SELINUX_USERSPACE_VERSION}
+          make DESTDIR=${TOOLCHAIN_PATH} -C ${TOOLCHAIN_SRC_PATH}/libsepol install
+          make DESTDIR=${TOOLCHAIN_PATH} LIBSEPOLA=${TOOLCHAIN_PATH}/usr/lib/libsepol.a CFLAGS+="-I${TOOLCHAIN_PATH}/usr/include" LDFLAGS+="-L${TOOLCHAIN_PATH}/usr/lib" -C ${TOOLCHAIN_SRC_PATH}/libselinux install
+          make DESTDIR=${TOOLCHAIN_PATH} LIBSEPOLA=${TOOLCHAIN_PATH}/usr/lib/libsepol.a CFLAGS+="-I${TOOLCHAIN_PATH}/usr/include" LDFLAGS+="-L${TOOLCHAIN_PATH}/usr/lib" -C ${TOOLCHAIN_SRC_PATH}/policycoreutils/setfiles install
+          make DESTDIR=${TOOLCHAIN_PATH} LIBSEPOLA=${TOOLCHAIN_PATH}/usr/lib/libsepol.a CFLAGS+="-I${TOOLCHAIN_PATH}/usr/include" LDFLAGS+="-L${TOOLCHAIN_PATH}/usr/lib" -C ${TOOLCHAIN_SRC_PATH}/secilc install
 
       - name: Build dssp5-monolithic
-        run: LD_LIBRARY_PATH="${TEST_TOOLCHAIN}/lib:${TEST_TOOLCHAIN}/usr/lib" PATH="$PATH:${TEST_TOOLCHAIN}/usr/bin:${TEST_TOOLCHAIN}/sbin" make SELINUXTYPE=dssp5-monolithic VERBOSE=true
+        run: LD_LIBRARY_PATH="${TOOLCHAIN_PATH}/lib:${TOOLCHAIN_PATH}/usr/lib" PATH="$PATH:${TOOLCHAIN_PATH}/usr/bin:${TOOLCHAIN_PATH}/sbin" make SELINUXTYPE=dssp5-monolithic VERBOSE=true
