@@ -27,6 +27,7 @@ jobs:
           key: ${{ env.SELINUX_USERSPACE_VERSION }}
 
       - name: Install dependencies
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
         run: |
           sudo apt-get update -qq
           sudo apt-get install --no-install-recommends -qq \
