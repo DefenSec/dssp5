@@ -32,7 +32,7 @@ config_install:
 	install -d $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users
 	install -d $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/logins
 	install -d -m0700 $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/policy
-	echo -e """<!DOCTYPE busconfig PUBLIC\
+	/bin/echo -e """<!DOCTYPE busconfig PUBLIC\
  \"-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN\"\
 \n	\"http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd\">\
 \n<busconfig>\
@@ -41,7 +41,7 @@ config_install:
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
 	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
-	echo -e """/bin /usr/bin\
+	/bin/echo -e """/bin /usr/bin\
 \n/lib /usr/lib\
 \n/lib64 /usr/lib\
 \n/sbin /usr/bin\
@@ -62,14 +62,14 @@ config_install:
 \n/var/run /run\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
 ifeq ($(MCS),false)
-	echo -e """cdrom sys.id:sys.role:removable.stordev\
+	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev\
 \ndisk sys.id:sys.role:removable.stordev\
 \nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	echo "sys.role:sys.subj sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 else
-	echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
+	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
 \ndisk sys.id:sys.role:removable.stordev:s0\
 \nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	echo "sys.role:sys.subj:s0 sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
