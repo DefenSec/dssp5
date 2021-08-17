@@ -31,7 +31,7 @@ config_install:
 	install -d $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users
 	install -d $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/logins
 	install -d -m0700 $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/policy
-	echo -e """<!DOCTYPE busconfig PUBLIC\
+	/bin/echo -e """<!DOCTYPE busconfig PUBLIC\
  \"-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN\"\
 \n	\"http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd\">\
 \n<busconfig>\
