@@ -6,7 +6,7 @@
 all: clean policy check
 
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
-POLVERS = 33
+POLVERS = 32
 SELINUXTYPE = dssp5-base
 VERBOSE = false
 
