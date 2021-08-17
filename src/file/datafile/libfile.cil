@@ -9,10 +9,12 @@
 
 (block textrel
 
-       (macro execmod_file_files ((type ARG1))
-	      (allow ARG1 file (file (execmod))))
+       (block lib
 
-       (blockinherit .file.lib.template))
+	      (macro execmod_file_files ((type ARG1))
+		     (allow ARG1 file (file (execmod))))
+
+	      (blockinherit .file.lib.template)))
 
 (in file
 
