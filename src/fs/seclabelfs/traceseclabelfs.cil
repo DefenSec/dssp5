@@ -3,6 +3,9 @@
 
 (block trace
 
+       (filecon "/sys/kernel/tracing" dir ())
+       (filecon "/sys/kernel/tracing/.*" any ())
+
        (genfscon "tracefs" "/" fs_context)
 
        (blockinherit .fs.macro_template_dirs)

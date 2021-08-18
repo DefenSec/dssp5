@@ -3,6 +3,9 @@
 
 (block efivar
 
+       (filecon "/sys/firmware/efi/efivars" dir ())
+       (filecon "/sys/firmware/efi/efivars/.*" any ())
+
        (genfscon "efivarfs" "/" fs_context)
 
        (blockinherit .noseclabelfs.template))

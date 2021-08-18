@@ -3,6 +3,17 @@
 
 (in sys
 
+    (call tmpfs.tmp_fs_type_transition_file (subj dir "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
+    (call tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
+
     (block tmpfs
+
+	   (macro tmp_fs_type_transition_file
+		  ((type ARG1)(class ARG2)(name ARG3))
+		  (call .tmp.fs_type_transition
+			(ARG1 file ARG2 ARG3)))
 
 	   (blockinherit .file.tmpfs.template)))

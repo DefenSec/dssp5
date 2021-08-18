@@ -3,6 +3,25 @@
 
 (block cert
 
+       (filecon "/etc/ca-certificates" dir file_context)
+       (filecon "/etc/ca-certificates/.*" any file_context)
+
+       (filecon "/etc/ssl" dir file_context)
+       (filecon "/etc/ssl/.*" any file_context)
+
+       (filecon "/usr/share/ca-certificates" dir file_context)
+       (filecon "/usr/share/ca-certificates/.*" any file_context)
+
+       (macro conf_file_type_transition_file ((type ARG1))
+	      (call .conf.file_type_transition
+		    (ARG1 file dir "ca-certificates"))
+	      (call .conf.file_type_transition
+		    (ARG1 file dir "ssl")))
+
+       (macro data_file_type_transition_file ((type ARG1))
+	      (call .data.file_type_transition
+		    (ARG1 file dir "ca-certificates")))
+
        (blockinherit .file.cert.template))
 
 (in file

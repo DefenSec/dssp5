@@ -3,6 +3,9 @@
 
 (in selinux
 
+    (filecon "/sys/fs/selinux" dir ())
+    (filecon "/sys/fs/selinux/.*" any ())
+
     (genfscon "selinuxfs" "/" fs_context)
 
     (blockinherit .noseclabelfs.template)

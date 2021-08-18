@@ -3,9 +3,16 @@
 
 (in sys
 
+    (filecon "/sys" dir fs_context)
+    (filecon "/sys/.*" any ())
+
     (genfscon "sysfs" "/" fs_context)
 
     (blockinherit .fs.macro_template_dirs)
     (blockinherit .fs.macro_template_files)
     (blockinherit .fs.macro_template_lnk_files)
-    (blockinherit .seclabelfs.template))
+    (blockinherit .seclabelfs.template)
+
+    (allow fs self (filesystem (associate)))
+
+    (call .xattr.associate_fs (fs)))

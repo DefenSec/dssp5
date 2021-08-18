@@ -3,6 +3,13 @@
 
 (block spool
 
+       (filecon "/var/spool" dir file_context)
+       (filecon "/var/spool/.*" any file_context)
+
+       (macro var_file_type_transition_file ((type ARG1))
+	      (call .var.file_type_transition
+		    (ARG1 file dir "spool")))
+
        (blockinherit .file.spool.template))
 
 (in file

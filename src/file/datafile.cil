@@ -3,6 +3,20 @@
 
 (block data
 
+       (filecon "/opt" dir file_context)
+       (filecon "/opt/.*" any file_context)
+
+       (filecon "/usr" dir file_context)
+       (filecon "/usr/.*" any file_context)
+
+       (filecon "/tmp" symlink file_context)
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "opt"))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "usr")))
+
        (blockinherit .file.data.template))
 
 (in file

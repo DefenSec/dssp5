@@ -3,6 +3,9 @@
 
 (in debug
 
+    (filecon "/sys/kernel/debug" dir ())
+    (filecon "/sys/kernel/debug/.*" any ())
+
     (genfscon "debugfs" "/" fs_context)
 
     (blockinherit .fs.macro_template_dirs)
