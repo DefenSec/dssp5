@@ -8,7 +8,7 @@ all: clean policy check
 MCS = true
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
 POLVERS = 32
-SELINUXTYPE = dssp5
+SELINUXTYPE = dssp5-debian
 VERBOSE = false
 
 clean: clean.$(POLVERS)
