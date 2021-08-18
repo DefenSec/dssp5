@@ -74,3 +74,8 @@
 
 		  (blockinherit .file.exec.base_template)
 		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .exec.data_file_type_transition_file (typeattr))
+    (call .exec.root_file_type_transition_file (typeattr)))

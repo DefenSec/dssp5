@@ -13,3 +13,7 @@
        (blockinherit .file.data.template)
 
        (call .xattr.associate_fs (file)))
+
+(in file.unconfined
+
+    (call .src.data_file_type_transition_file (typeattr)))

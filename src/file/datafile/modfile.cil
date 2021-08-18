@@ -54,6 +54,10 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.mod.base_template))))
 
+(in file.unconfined
+
+    (call .mod.lib_file_type_transition_file (typeattr)))
+
 (in sys
 
     (call .file.mod.load_all_files (unconfined.typeattr)))

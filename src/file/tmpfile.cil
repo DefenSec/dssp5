@@ -87,6 +87,12 @@
 		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.tmp.base_template))))
 
+(in file.unconfined
+
+    (call .tmp.data_file_type_transition_file (typeattr))
+    (call .tmp.root_file_type_transition_file (typeattr))
+    (call .tmp.var_file_type_transition_file (typeattr)))
+
 (in sys
 
     (call .tmp.sys_tmp_file_type_transition_file (subj)))

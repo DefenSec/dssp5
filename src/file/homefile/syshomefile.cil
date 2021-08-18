@@ -16,3 +16,7 @@
 	   (blockinherit .file.macro_template_all_files)
 	   (blockinherit .file.macro_template_blk_files)
 	   (blockinherit .file.macro_template_chr_files)))
+
+(in file.unconfined
+
+    (call .sys.home.root_file_type_transition_file (typeattr)))

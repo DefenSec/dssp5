@@ -58,3 +58,8 @@
 		  (blockinherit .file.macro_template_lnk_files)
 		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.run.base_template))))
+
+(in file.unconfined
+
+    (call .run.root_file_type_transition_file (typeattr))
+    (call .run.var_file_type_transition_file (typeattr)))

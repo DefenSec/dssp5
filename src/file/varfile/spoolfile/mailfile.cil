@@ -47,3 +47,8 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files)
 		  (blockinherit .file.mail.base_template))))
+
+(in file.unconfined
+
+    (call .mail.spool_file_type_transition_file (typeattr))
+    (call .mail.var_file_type_transition_file (typeattr)))
