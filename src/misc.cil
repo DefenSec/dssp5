@@ -18,3 +18,23 @@
 (in sys.unconfined
 
     (allow typeattr subj (system (reboot reload start status stop))))
+
+(in xattr
+
+    (block associate_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (associate))))
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr)))))
