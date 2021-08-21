@@ -42,6 +42,8 @@
     (call .nss.hosts.type (subj))
     (call .nss.passwdgroup.type (subj))
 
+    (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
     (call .random.read_sysctlfile_pattern.type (subj))
 
     (call .rbacsep.constrained.type (subj))
