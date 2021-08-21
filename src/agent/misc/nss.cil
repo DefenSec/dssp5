@@ -3,6 +3,8 @@
 
 (block nss
 
+       (filecon "/etc/default/nss" file file_context)
+       (filecon "/etc/default/nss\..*" file file_context)
        (filecon "/etc/nsswitch\.conf" file file_context)
        (filecon "/etc/nsswitch\.conf\..*" file file_context)
        (filecon "/etc/host\.conf" file file_context)
@@ -11,6 +13,8 @@
        (macro conf_file_type_transition_file ((type ARG1))
 	      (call .conf.file_type_transition
 		    (ARG1 file file "host.conf"))
+	      (call .conf.file_type_transition
+		    (ARG1 file file "nss"))
 	      (call .conf.file_type_transition
 		    (ARG1 file file "nsswitch.conf")))
 
