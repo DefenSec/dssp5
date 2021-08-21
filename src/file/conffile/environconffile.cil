@@ -16,7 +16,7 @@
 
 	   (macro conf_file_type_transition_file ((type ARG1))
 		  (call .conf.file_type_transition
-			(ARG1 file dir "environmanet.d"))
+			(ARG1 file dir "environment.d"))
 		  (call .conf.file_type_transition
 			(ARG1 file file "environment")))
 
