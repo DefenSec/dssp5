@@ -1,10 +1,6 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(in file.unconfined
-
-    (call .environ.run.run_file_type_transition_file (typeattr)))
-
 (in environ
 
     (block run
@@ -17,3 +13,7 @@
 			(ARG1 file dir "environment.d")))
 
 	   (blockinherit .file.run.template)))
+
+(in file.unconfined
+
+    (call .environ.run.run_file_type_transition_file (typeattr)))
