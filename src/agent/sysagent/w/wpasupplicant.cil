@@ -26,6 +26,10 @@
        (call conf.manage_file_files (subj))
        (call conf.readwrite_file_dirs (subj))
 
+       (call log.append_file_files (subj))
+       (call log.create_file_files (subj))
+       (call log.log_file_type_transition_file (subj))
+
        (call run.manage_file_dirs (subj))
        (call run.manage_file_sock_files (subj))
        (call run.run_file_type_transition_file (subj))
@@ -137,6 +141,18 @@
 
 	      (filecon "/usr/bin/wpa_supplicant" file file_context))
 
+       (block log
+
+	      (filecon "/var/log/wpa_supplicant\.log" file file_context)
+	      (filecon "/var/log/wpa_supplicant\.log\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "wpa_supplicant.log")))
+
+	      (blockinherit .file.log.base_template)
+	      (blockinherit .file.macro_template_files))
+
        (block run
 
 	      (filecon "/run/wpa_supplicant" dir file_context)
@@ -164,6 +180,7 @@
 (in file.unconfined
 
     (call .wpasupplicant.conf.conf_file_type_transition_file (typeattr))
+    (call .wpasupplicant.log.log_file_type_transition_file (typeattr))
     (call .wpasupplicant.run.run_file_type_transition_file (typeattr)))
 
 (in user
