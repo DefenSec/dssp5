@@ -55,6 +55,8 @@
 
 	   (call .selinux.linked.type (subj))
 
+	   (call .state.search_file_pattern.type (subj))
+
 	   (call .sys.read_subj_states (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.status_system (subj))
