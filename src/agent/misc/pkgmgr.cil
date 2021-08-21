@@ -18,6 +18,8 @@
 
 	      (filecon "/etc/dnf" dir file_context)
 	      (filecon "/etc/dnf/.*" any file_context)
+	      (filecon "/etc/dpkg" dir file_context)
+	      (filecon "/etc/dpkg/.*" any file_context)
 	      (filecon "/etc/rpm" dir file_context)
 	      (filecon "/etc/rpm/.*" any file_context)
 	      (filecon "/etc/yum\.repos\.d" dir file_context)
@@ -26,6 +28,8 @@
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "dnf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dpkg"))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "rpm"))
 		     (call .conf.file_type_transition
@@ -37,6 +41,18 @@
 
 	      (filecon "/usr/lib/rpm" dir file_context)
 	      (filecon "/usr/lib/rpm/.*" any file_context)
+
+	      (filecon "/usr/share/debootstrap" dir file_context)
+	      (filecon "/usr/share/debootstrap/.*" any file_context)
+
+	      (filecon "/usr/share/dpkg" dir file_context)
+	      (filecon "/usr/share/dpkg/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "debootstrap"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dpkg")))
 
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
@@ -50,6 +66,7 @@
 	      (filecon "/var/log/dnf\.log.*" file file_context)
 	      (filecon "/var/log/dnf\.plugin\.log.*" file file_context)
 	      (filecon "/var/log/dnf\.rpm\.log.*" file file_context)
+	      (filecon "/var/log/dpkg\.log.*" file file_context)
 	      (filecon "/var/log/hawkey\.log.*" file file_context)
 
 	      (macro log_file_type_transition_file ((type ARG1))
@@ -61,6 +78,8 @@
 			   (ARG1 file file "dnf.plugin.log"))
 		     (call .log.file_type_transition
 			   (ARG1 file file "dnf.rpm.log"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dpkg.log"))
 		     (call .log.file_type_transition
 			   (ARG1 file file "hawkey.log")))
 
@@ -126,6 +145,8 @@
 
 	      (filecon "/var/lib/dnf" dir file_context)
 	      (filecon "/var/lib/dnf/.*" any file_context)
+	      (filecon "/var/lib/dpkg" dir file_context)
+	      (filecon "/var/lib/dpkg/.*" any file_context)
 	      (filecon "/var/lib/rpm" dir file_context)
 	      (filecon "/var/lib/rpm/.*" any file_context)
 	      (filecon "/var/lib/rpm-state" dir file_context)
@@ -166,9 +187,11 @@
 
     (call .pkgmgr.cache.cache_file_type_transition_file (typeattr))
     (call .pkgmgr.conf.conf_file_type_transition_file (typeattr))
+    (call .pkgmgr.data.data_file_type_transition_file (typeattr))
     (call .pkgmgr.data.lib_file_type_transition_file (typeattr))
     (call .pkgmgr.log.log_file_type_transition_file (typeattr))
     (call .pkgmgr.state.state_file_type_transition_file (typeattr "dnf"))
+    (call .pkgmgr.state.state_file_type_transition_file (typeattr "dpkg"))
     (call .pkgmgr.state.state_file_type_transition_file (typeattr "rpm"))
     (call .pkgmgr.state.state_file_type_transition_file (typeattr "rpm-state"))
     (call .pkgmgr.unit.systemd_unit_file_type_transition_file (typeattr)))
