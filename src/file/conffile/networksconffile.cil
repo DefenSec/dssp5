@@ -1,0 +1,23 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block networks
+
+       (filecon "/etc/netconfig" file file_context)
+       (filecon "/etc/nekconfig\..*" file file_context)
+
+       (filecon "/etc/networks" file file_context)
+       (filecon "/etc/networks\..*" file file_context)
+
+       (macro conf_file_type_transition_file ((type ARG1))
+	      (call .conf.file_type_transition
+		    (ARG1 file file "netconfig"))
+	      (call .conf.file_type_transition
+		    (ARG1 file file "networks")))
+
+       (blockinherit .file.conf.base_template)
+       (blockinherit .file.macro_template_files))
+
+(in file.unconfined
+
+    (call .networks.conf_file_type_transition_file (typeattr)))
