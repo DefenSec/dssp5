@@ -3,6 +3,12 @@
 
 (in sys
 
+    (call hugetlbfs.hugetlb_fs_type_transition_file (subj "*"))
+
     (block hugetlbfs
+
+	   (macro hugetlb_fs_type_transition_file ((type ARG1)(name ARG2))
+		  (call .hugetlb.fs_type_transition
+			(ARG1 file file ARG2)))
 
 	   (blockinherit .file.hugetlbfs.template)))

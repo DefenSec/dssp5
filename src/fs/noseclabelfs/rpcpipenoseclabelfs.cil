@@ -3,6 +3,9 @@
 
 (block rpcpipe
 
+       (filecon "/run/rpc_pipefs" dir ())
+       (filecon "/run/rpc_pipefs/.*" any ())
+
        (genfscon "rpc_pipefs" "/" fs_context)
 
        (blockinherit .fs.macro_template_fs)

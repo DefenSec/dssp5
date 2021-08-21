@@ -8,7 +8,7 @@ all: clean policy check
 MCS = true
 MODULES = $(shell find src -type f -name '*.cil' -printf '%p ')
 POLVERS = 32
-SELINUXTYPE = dssp5
+SELINUXTYPE = dssp5-debian
 VERBOSE = false
 
 clean: clean.$(POLVERS)
@@ -43,15 +43,17 @@ config_install:
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
 	/bin/echo -e """/bin /usr/bin\
 \n/lib /usr/lib\
+\n/lib32 /usr/lib\
 \n/lib64 /usr/lib\
+\n/libx32 /usr/lib\
 \n/sbin /usr/bin\
+\n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
+\n/usr/libx32 /usr/lib\
 \n/usr/local/bin /usr/bin\
 \n/usr/local/etc /etc\
 \n/usr/local/lib /usr/lib\
-\n/usr/local/lib64 /usr/lib\
-\n/usr/local/libexec /usr/bin\
 \n/usr/local/sbin /usr/bin\
 \n/usr/local/share /usr/share\
 \n/usr/local/src /usr/src\

@@ -1,0 +1,22 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block environ
+
+       (block data
+
+	      (filecon "/usr/lib/environment\.d" dir file_context)
+	      (filecon "/usr/lib/environment\.d/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "environment.d")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)))
+
+(in file.unconfined
+
+    (call .environ.data.lib_file_type_transition_file (typeattr)))

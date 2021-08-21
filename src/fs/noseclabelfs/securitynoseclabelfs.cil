@@ -3,6 +3,9 @@
 
 (block security
 
+       (filecon "/sys/kernel/security" dir ())
+       (filecon "/sys/kernel/security/.*" any ())
+
        (genfscon "securityfs" "/" fs_context)
 
        (blockinherit .fs.macro_template_lnk_files)

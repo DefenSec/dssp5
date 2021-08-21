@@ -584,7 +584,8 @@
 		     (fifo_file (not (execmod map mounton))))
 	      (allow typeattr fs.typeattr (file (not (entrypoint execmod))))
 	      (allow typeattr fs.typeattr (filesystem (not associate)))
-	      (allow typeattr fs.typeattr (lnk_file (not (execmod map mounton))))
+	      (allow typeattr fs.typeattr
+		     (lnk_file (not (execmod map mounton))))
 	      (allow typeattr fs.typeattr
 		     (sock_file (not (execmod map mounton))))))
 

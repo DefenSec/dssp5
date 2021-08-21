@@ -3,7 +3,12 @@
 
 (block proc
 
+       (filecon "/proc" dir fs_context)
+       (filecon "/proc/.*" any ())
+
        (genfscon "proc" "/" fs_context)
 
        (blockinherit .fs.macro_template_lnk_files)
-       (blockinherit .noseclabelfs.template))
+       (blockinherit .noseclabelfs.template)
+
+       (call .xattr.associate_fs (fs)))

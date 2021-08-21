@@ -3,6 +3,13 @@
 
 (block boot
 
+       (filecon "/boot" dir file_context)
+       (filecon "/boot/.*" any file_context)
+
+       (macro root_file_type_transition_file ((type ARG1))
+	      (call .root.file_type_transition
+		    (ARG1 file dir "boot")))
+
        (blockinherit .file.boot.template))
 
 (in file
@@ -36,3 +43,7 @@
 		  (blockinherit .file.boot.base_template)
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .boot.root_file_type_transition_file (typeattr)))
