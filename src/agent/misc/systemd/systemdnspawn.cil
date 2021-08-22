@@ -48,10 +48,12 @@
 
 (in systemd.import
 
+    (call .systemd.nspawn.container.obj.manage_all_chr_files (subj))
     (call .systemd.nspawn.container.obj.manage_all_dirs (subj))
     (call .systemd.nspawn.container.obj.manage_all_files (subj))
     (call .systemd.nspawn.container.obj.manage_all_lnk_files (subj))
 
+    (call .systemd.nspawn.container.obj.relabelto_all_chr_files (subj))
     (call .systemd.nspawn.container.obj.relabelto_all_dirs (subj))
     (call .systemd.nspawn.container.obj.relabelto_all_files (subj))
     (call .systemd.nspawn.container.obj.relabelto_all_lnk_files (subj)))

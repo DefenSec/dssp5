@@ -90,10 +90,11 @@
 
     (call .tmp.deletename_file_dirs (subj))
 
+    (call .manage_unlabeled_chr_files (subj))
     (call .manage_unlabeled_dirs (subj))
     (call .manage_unlabeled_files (subj))
     (call .manage_unlabeled_lnk_files (subj))
-
+    (call .relabelfrom_unlabeled_chr_files (subj))
     (call .relabelfrom_unlabeled_dirs (subj))
     (call .relabelfrom_unlabeled_files (subj))
     (call .relabelfrom_unlabeled_lnk_files (subj))
