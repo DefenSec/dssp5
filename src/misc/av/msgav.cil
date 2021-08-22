@@ -4,6 +4,8 @@
 (class msg (receive send))
 (classorder (unordered msg))
 
+(defaultrole msg source)
+
 (in invalid.unconfined
 
     (allow typeattr .invalid (msg (all))))
