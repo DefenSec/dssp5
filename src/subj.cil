@@ -132,8 +132,7 @@
 	      (call .exec.traverse_file_pattern.type (typeattr))
 
 	      (call .lib.mapexecute_file_files (typeattr))
-	      (call .lib.read_file_files (typeattr))
-	      (call .lib.traverse_file_pattern.type (typeattr))
+	      (call .lib.read_file_pattern.type (typeattr))
 
 	      (call .null.readwrite_nodedev_chr_files (typeattr))
 

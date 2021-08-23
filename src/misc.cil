@@ -1929,6 +1929,21 @@
 
 (in lib
 
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))
+
+	   (call .root.traverse_file_pattern.type (typeattr)))
+
     (block search_file_pattern
 
 	   (macro type ((type ARG1))

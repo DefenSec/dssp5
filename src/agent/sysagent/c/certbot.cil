@@ -50,8 +50,6 @@
 
        (call .ldconfig.exec.execute_file_files (subj))
 
-       (call .lib.list_file_dirs (subj))
-
        (call .log.search_file_pattern.type (subj))
 
        (call .mime.read_file_pattern.type (subj))

@@ -37,8 +37,6 @@
 
        (call .event.readwrite_nodedev_chr_files (subj))
 
-       (call .lib.list_file_dirs (subj))
-
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rbacsep.exempttarget.type (subj))
