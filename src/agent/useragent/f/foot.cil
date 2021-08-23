@@ -177,7 +177,7 @@
     (call .foot.home.conf.relabel_file_dirs (subj))
     (call .foot.home.conf.relabel_file_files (subj))
     (call .foot.home.conf.relabel_file_lnk_files (subj))
-    (call .foot.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .foot.home.conf.user_home_conf_file_type_transition_file (subj))
 
     (call .foot.role (role))
 

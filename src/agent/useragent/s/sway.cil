@@ -434,12 +434,12 @@
 
     (call .sway.readwrite_subj_unix_stream_sockets (subj))
 
-    (call .sway.home.conf.manage_file_dirs (typeattr))
-    (call .sway.home.conf.manage_file_files (typeattr))
-    (call .sway.home.conf.map_file_files (typeattr))
-    (call .sway.home.conf.relabel_file_dirs (typeattr))
-    (call .sway.home.conf.relabel_file_files (typeattr))
-    (call .sway.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .sway.home.conf.manage_file_dirs (subj))
+    (call .sway.home.conf.manage_file_files (subj))
+    (call .sway.home.conf.map_file_files (subj))
+    (call .sway.home.conf.relabel_file_dirs (subj))
+    (call .sway.home.conf.relabel_file_files (subj))
+    (call .sway.home.conf.user_home_conf_file_type_transition_file (subj))
 
     (call .sway.nag.role (role))
 
@@ -448,11 +448,11 @@
 
     (call .sway.role (role))
 
-    (call .sway.run.manage_file_sock_files (typeattr))
-    (call .sway.run.relabel_file_sock_files (typeattr))
+    (call .sway.run.manage_file_sock_files (subj))
+    (call .sway.run.relabel_file_sock_files (subj))
 
-    (call .sway.tmpfs.manage_file_files (typeattr))
-    (call .sway.tmpfs.relabel_file_files (typeattr)))
+    (call .sway.tmpfs.manage_file_files (subj))
+    (call .sway.tmpfs.relabel_file_files (subj)))
 
 (in wheel
 
