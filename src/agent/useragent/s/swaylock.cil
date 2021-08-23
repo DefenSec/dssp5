@@ -1,6 +1,12 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in file.unconfined
+
+    (call .sway.lock.conf.conf_file_type_transition_file (typeattr))
+    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr)))
+
 (in sway
 
     (block lock
@@ -112,12 +118,6 @@
 		  (blockinherit .file.user.tmpfs.base_template)
 
 		  (call .wlroots.client.tmpfs.type (file)))))
-
-(in file.unconfined
-
-    (call .sway.lock.conf.conf_file_type_transition_file (typeattr))
-    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file
-	  (typeattr)))
 
 (in user
 
