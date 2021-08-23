@@ -327,8 +327,6 @@
 
 	   (call .kernel.read_sysctlfile_files (subj))
 
-	   (call .lib.list_file_dirs (subj))
-
 	   (call .libnl.conf.read_file_pattern.type (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))

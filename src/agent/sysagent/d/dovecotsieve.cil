@@ -96,8 +96,6 @@
 	   (call .fuse.getattr_fs_pattern.type (subj))
 	   (call .fuse.manage_fs_pattern.type (subj))
 
-	   (call .lib.list_file_dirs (subj))
-
 	   (call .nfs.getattr_fs_pattern.type (subj))
 	   (call .nfs.manage_fs_pattern.type (subj))
 

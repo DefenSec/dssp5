@@ -37,8 +37,6 @@
 
     (call .gcrypt.conf.read_file_pattern.type (subj))
 
-    (call .lib.list_file_dirs (subj))
-
     (call .libnl.conf.read_file_pattern.type (subj))
 
     (call .osrelease.read_sysctlfile_pattern.type (subj))
