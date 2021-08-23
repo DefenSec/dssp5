@@ -156,7 +156,8 @@
 
        (block unit
 
-	      (filecon "/usr/lib/systemd/user/mako\.service.*" file file_context)
+	      (filecon "/usr/lib/systemd/user/mako\.service.*" file
+		       file_context)
 
 	      (blockinherit .file.user.unit.template)
 
@@ -169,12 +170,12 @@
 
 (in user
 
-    (call .mako.home.conf.manage_file_dirs (typeattr))
-    (call .mako.home.conf.manage_file_files (typeattr))
-    (call .mako.home.conf.map_file_files (typeattr))
-    (call .mako.home.conf.relabel_file_dirs (typeattr))
-    (call .mako.home.conf.relabel_file_files (typeattr))
-    (call .mako.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .mako.home.conf.manage_file_dirs (subj))
+    (call .mako.home.conf.manage_file_files (subj))
+    (call .mako.home.conf.map_file_files (subj))
+    (call .mako.home.conf.relabel_file_dirs (subj))
+    (call .mako.home.conf.relabel_file_files (subj))
+    (call .mako.home.conf.user_home_conf_file_type_transition_file (subj))
 
     (call .mako.makoctl.role (role))
 

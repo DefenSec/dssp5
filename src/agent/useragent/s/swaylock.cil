@@ -121,13 +121,12 @@
 
 (in user
 
-    (call .sway.lock.home.conf.manage_file_dirs (typeattr))
-    (call .sway.lock.home.conf.manage_file_files (typeattr))
-    (call .sway.lock.home.conf.map_file_files (typeattr))
-    (call .sway.lock.home.conf.relabel_file_dirs (typeattr))
-    (call .sway.lock.home.conf.relabel_file_files (typeattr))
-    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file
-	  (typeattr))
+    (call .sway.lock.home.conf.manage_file_dirs (subj))
+    (call .sway.lock.home.conf.manage_file_files (subj))
+    (call .sway.lock.home.conf.map_file_files (subj))
+    (call .sway.lock.home.conf.relabel_file_dirs (subj))
+    (call .sway.lock.home.conf.relabel_file_files (subj))
+    (call .sway.lock.home.conf.user_home_conf_file_type_transition_file (subj))
 
     (call .sway.lock.role (role))
 
