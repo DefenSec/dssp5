@@ -8,17 +8,16 @@
 	      (filecon "/etc/nanorc" file file_context)
 	      (filecon "/etc/nanorc\..*" file file_context)
 
-	      (filecon "/etc/virc" file file_context)
-	      (filecon "/etc/virc\..*" file file_context)
+	      (filecon "/etc/vim" dir file_context)
+	      (filecon "/etc/vim/.*" any file_context)
 
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
-			   (ARG1 file file "nanorc"))
+			   (ARG1 file dir "vim"))
 		     (call .conf.file_type_transition
-			   (ARG1 file file "virc")))
+			   (ARG1 file file "nanorc")))
 
-	      (blockinherit .file.conf.base_template)
-	      (blockinherit .file.macro_template_files)))
+	      (blockinherit .file.conf.template)))
 
 (in file.unconfined
 

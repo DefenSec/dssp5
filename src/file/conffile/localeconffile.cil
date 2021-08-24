@@ -17,6 +17,8 @@
 	   (filecon "/etc/locale\.conf\..*" file file_context)
 	   (filecon "/etc/locale\.gen" file file_context)
 	   (filecon "/etc/locale\.gen\..*" file file_context)
+	   (filecon "/etc/timezone" file file_context)
+	   (filecon "/etc/timezone\..*" file file_context)
 
 	   (macro conf_file_type_transition_file ((type ARG1))
 		  (call .conf.file_type_transition
@@ -26,7 +28,9 @@
 		  (call .conf.file_type_transition
 			(ARG1 file file "locale.conf"))
 		  (call .conf.file_type_transition
-			(ARG1 file file "locale.gen")))
+			(ARG1 file file "locale.gen"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "timezone")))
 
 	   (blockinherit .file.conf.base_template)
 	   (blockinherit .file.macro_template_files)))
