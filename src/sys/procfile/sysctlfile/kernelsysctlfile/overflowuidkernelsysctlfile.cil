@@ -3,6 +3,7 @@
 
 (block overflowuid
 
+       (genfscon "proc" "/sys/kernel/overflowgid" sysctlfile_context)
        (genfscon "proc" "/sys/kernel/overflowuid" sysctlfile_context)
 
        (blockinherit .sysctlfile.kernel.template))
