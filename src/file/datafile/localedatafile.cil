@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block locale
+
+       (block data
+
+	      (filecon "/usr/lib/locale" dir file_context)
+	      (filecon "/usr/lib/locale/.*" any file_context)
+
+	      (filecon "/usr/share/locale" dir file_context)
+	      (filecon "/usr/share/locale/.*" any file_context)
+	      (filecon "/usr/share/zoneinfo" dir file_context)
+	      (filecon "/usr/share/zoneinfo/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "locale"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "zoneinfo")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "locale")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .locale.data.data_file_type_transition_file (typeattr))
+    (call .locale.data.lib_file_type_transition_file (typeattr)))
