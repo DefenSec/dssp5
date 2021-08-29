@@ -146,7 +146,8 @@
 
        (call .media.search_file_pattern.type (subj))
 
-       (call .media.home.traverse_file_pattern.type (subj))
+       (call .media.home.list_file_dirs (subj))
+       (call .media.home.read_file_lnk_files (subj))
 
        (call .meminfo.read_procfile_files (subj))
 
