@@ -12,4 +12,7 @@
        (genfscon "vfat" "/" fs_context)
        (genfscon "exfat" "/" fs_context)
 
+       (macro map_fs_files ((type ARG1))
+	      (allow ARG1 fs (file (map))))
+
        (blockinherit .noseclabelfs.template))
