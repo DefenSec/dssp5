@@ -1,0 +1,41 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block reprepro
+
+       (blockinherit .user.agent.template)
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .gnupg.subj_type_transition (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.readwrite_file_dirs (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/changestool" file file_context)
+	      (filecon "/usr/bin/reprepro" file file_context)
+	      (filecon "/usr/bin/rredtool" file file_context)))
+
+(in user
+
+    (call .reprepro.role (role)))
+
+(in wheel
+
+    (call .reprepro.role (role)))
