@@ -5,16 +5,25 @@
 
        (blockinherit .user.agent.template)
 
+       (allow subj self (process (getsched)))
+
        (call .ci.getattr_fs_pattern.type (subj))
        (call .ci.manage_fs_pattern.type (subj))
 
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
        (call .dos.getattr_fs_pattern.type (subj))
        (call .dos.manage_fs_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
 
        (call .fuse.getattr_fs_pattern.type (subj))
        (call .fuse.manage_fs_pattern.type (subj))
 
        (call .gnupg.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
 
        (call .media.search_file_pattern.type (subj))
 
@@ -23,8 +32,8 @@
        (call .nfs.getattr_fs_pattern.type (subj))
        (call .nfs.manage_fs_pattern.type (subj))
 
+       (call .user.home.manage_file_dirs (subj))
        (call .user.home.manage_file_files (subj))
-       (call .user.home.readwrite_file_dirs (subj))
 
        (block exec
 
