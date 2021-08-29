@@ -19,6 +19,9 @@
 	      (call .boot.file_type_transition
 		    (ARG1 fs dir "efi")))
 
+       (macro map_fs_files ((type ARG1))
+	      (allow ARG1 fs (file (map))))
+
        (blockinherit .noseclabelfs.template)
 
        (call .rbacsep.exempt.obj.type (fs))
