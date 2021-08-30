@@ -1,0 +1,23 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block hardware
+
+       (block data
+
+	      (filecon "/usr/share/hwdata" dir file_context)
+	      (filecon "/usr/share/hwdata/.*" any file_context)
+
+	      (filecon "/usr/share/misc/pci\.ids" file file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "hwdata"))
+		     (call .data.file_type_transition
+			   (ARG1 file file "pci.ids")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .hardware.data.data_file_type_transition_file (typeattr)))
