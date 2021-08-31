@@ -1,0 +1,24 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block perl5
+
+       (block data
+
+	      (filecon "/usr/share/perl" dir file_context)
+	      (filecon "/usr/share/perl/.*" any file_context)
+
+	      (filecon "/usr/share/perl5" dir file_context)
+	      (filecon "/usr/share/perl5/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "perl"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "perl5")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .perl5.data.data_file_type_transition_file (typeattr)))
