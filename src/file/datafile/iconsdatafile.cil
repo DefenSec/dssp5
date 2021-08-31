@@ -1,0 +1,22 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block icons
+
+       (block data
+
+	      (filecon "/usr/share/icons" dir file_context)
+	      (filecon "/usr/share/icons/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "icons")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .icons.data.data_file_type_transition_file (typeattr)))
