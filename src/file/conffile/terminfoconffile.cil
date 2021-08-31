@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .terminfo.conf.conf_file_type_transition_file (typeattr)))
+
+(in terminfo
+
+    (block conf
+
+	   (filecon "/etc/terminfo" dir file_context)
+	   (filecon "/etc/terminfo/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "terminfo")))
+
+	   (blockinherit .file.conf.template)))
