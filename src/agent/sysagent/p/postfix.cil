@@ -16,9 +16,13 @@
 
        (call conf.setattr_file_dirs (subj))
 
+       (call log.manage_file_files (subj))
+       (call log.log_file_type_transition_file (subj "*"))
+
        (call master.readwrite_subj_unix_stream_sockets (subj))
        (call master.signal_subj_processes (subj))
        (call master.subj_type_transition (subj))
+       (call master.unix_dgram_send_public (subj))
 
        (call pid.spool.read_file_files (subj))
 
@@ -39,6 +43,8 @@
        (call .file.spool.postfix.getattr_all_files (subj))
        (call .file.spool.postfix.list_all_dirs (subj))
        (call .file.spool.postfix.setattr_all_dirs (subj))
+
+       (call .log.deletename_file_dirs (subj))
 
        (call .man.data.getattr_file_files (subj))
        (call .man.data.search_file_dirs (subj))
@@ -257,6 +263,10 @@
 
 	      (call incoming.spool.delete_file_files (subj))
 	      (call incoming.spool.deletename_file_dirs (subj))
+
+	      (call log.append_file_files (subj))
+	      (call log.create_file_files (subj))
+	      (call log.log_file_type_transition_file (subj "postfix.log"))
 
 	      (call maildrop.spool.manage_file_files (subj))
 	      (call maildrop.spool.readwrite_file_dirs (subj))
@@ -575,9 +585,9 @@
 	      (filecon "/var/log/postfix\.log" file file_context)
 	      (filecon "/var/log/postfix\.log\..*" file file_context)
 
-	      (macro log_file_type_transition_file ((type ARG1))
+	      (macro log_file_type_transition_file ((type ARG1)(name ARG2))
 		     (call .log.file_type_transition
-			   (ARG1 file file "postfix.log")))
+			   (ARG1 file file ARG2)))
 
 	      (blockinherit .file.log.template))
 
@@ -613,6 +623,11 @@
 	      (macro readwrite_subj_tcp_sockets ((type ARG1))
 		     (allow ARG1 subj readwrite_tcp_socket))
 
+	      (macro unix_dgram_send_public ((type ARG1))
+		     (call sendto_subj_unix_dgram_sockets (ARG1))
+		     (call public.spool.search_file_dirs (ARG1))
+		     (call public.spool.write_file_sock_files (ARG1)))
+
 	      (macro unix_stream_connect_private ((type ARG1))
 		     (call connectto_subj_unix_stream_sockets (ARG1))
 		     (call private.spool.search_file_dirs (ARG1))
@@ -629,6 +644,7 @@
 		     (capability (dac_read_search kill net_bind_service setgid
 						  setuid)))
 	      (allow subj self create_tcp_stream_socket)
+	      (allow subj self (unix_dgram_socket (sendto)))
 	      (allow subj self (unix_stream_socket (accept connectto listen)))
 
 	      (call service.exec.mapexecute_all_files (subj))
@@ -748,6 +764,7 @@
 	      (call maildrop.spool.read_file_files (subj))
 
 	      (call master.agent (subj exec.file))
+	      (call master.unix_dgram_send_public (subj))
 	      (call master.unix_stream_connect_public (subj))
 
 	      (call .rbacsep.constrained.type (subj))
@@ -790,7 +807,15 @@
 
 	      (blockinherit .agent.template)
 
+	      (allow subj self (tcp_socket (create)))
+
+	      (call log.append_file_files (subj))
+
 	      (call master.agent (subj exec.file))
+	      (call master.readwrite_subj_unix_dgram_sockets (subj))
+	      (call master.unix_dgram_send_public (subj))
+
+	      (call .log.search_file_pattern.type (subj))
 
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
@@ -882,6 +907,7 @@
 	      (call incoming.spool.readwrite_file_dirs (subj))
 
 	      (call master.agent (subj exec.file))
+	      (call master.unix_dgram_send_public (subj))
 	      (call master.unix_stream_connect_private (subj))
 
 	      (call .rbacsep.constrained.type (subj))
@@ -1351,7 +1377,7 @@
 	  (typeattr))
     (call .postfix.incoming.spool.postfix_spool_file_type_transition_file
 	  (typeattr))
-    (call .postfix.log.log_file_type_transition_file (typeattr))
+    (call .postfix.log.log_file_type_transition_file (typeattr "postfix.log"))
     (call .postfix.maildrop.spool.postfix_spool_file_type_transition_file
 	  (typeattr))
     (call .postfix.pid.spool.postfix_spool_file_type_transition_file (typeattr))
