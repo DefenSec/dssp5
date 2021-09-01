@@ -570,6 +570,17 @@
 		     (blockinherit .file.macro_template_files)
 		     (blockinherit .file.spool.postfix.base_template)))
 
+       (block log
+
+	      (filecon "/var/log/postfix\.log" file file_context)
+	      (filecon "/var/log/postfix\.log\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "postfix.log")))
+
+	      (blockinherit .file.log.template))
+
        (block maildrop
 
 	      (block spool
@@ -774,6 +785,19 @@
 	      (block exec
 
 		     (filecon "/usr/bin/postfix/pipe" file file_context)))
+
+       (block postlogd
+
+	      (blockinherit .agent.template)
+
+	      (call master.agent (subj exec.file))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/postfix/postlogd" file file_context)))
 
        (block postscreen
 
@@ -1327,6 +1351,7 @@
 	  (typeattr))
     (call .postfix.incoming.spool.postfix_spool_file_type_transition_file
 	  (typeattr))
+    (call .postfix.log.log_file_type_transition_file (typeattr))
     (call .postfix.maildrop.spool.postfix_spool_file_type_transition_file
 	  (typeattr))
     (call .postfix.pid.spool.postfix_spool_file_type_transition_file (typeattr))
