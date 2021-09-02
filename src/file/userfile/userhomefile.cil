@@ -48,6 +48,10 @@
 		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.user.home.base_template))))
 
+(in sys.agent
+
+    (call .user.home.dontaudit_search_file_dirs (typeattr)))
+
 (in user
 
     (call home.manage_file_pattern.type (subj))
