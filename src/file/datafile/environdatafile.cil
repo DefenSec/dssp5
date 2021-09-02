@@ -12,10 +12,7 @@
 		     (call .lib.file_type_transition
 			   (ARG1 file dir "environment.d")))
 
-	      (blockinherit .file.data.base_template)
-	      (blockinherit .file.macro_template_dirs)
-	      (blockinherit .file.macro_template_files)
-	      (blockinherit .file.macro_template_lnk_files)))
+	      (blockinherit .file.data.template)))
 
 (in file.unconfined
 
