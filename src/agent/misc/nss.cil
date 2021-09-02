@@ -69,7 +69,20 @@
 
 	      (call read_file_files (typeattr))
 
+	      (call nscd.type (typeattr))
+
 	      (call .conf.search_file_pattern.type (typeattr)))
+
+       (block nscd
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self create_unix_stream_socket)
+
+	      (call .run.search_file_pattern.type (typeattr)))
 
        (block passwdgroup
 
