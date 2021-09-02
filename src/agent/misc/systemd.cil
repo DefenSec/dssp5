@@ -1,7 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(class service (disable enable reload start status stop))
+(class service (reload start status stop))
 (classorder (unordered service))
 
 (block systemd
@@ -1597,12 +1597,6 @@
 		  (macro control_all_services ((type ARG1))
 			 (allow ARG1 typeattr (service (all))))
 
-		  (macro disable_all_services ((type ARG1))
-			 (allow ARG1 typeattr (service (disable))))
-
-		  (macro enable_all_services ((type ARG1))
-			 (allow ARG1 typeattr (service (enable))))
-
 		  (macro reload_all_services ((type ARG1))
 			 (allow ARG1 typeattr (service (reload))))
 
@@ -1629,12 +1623,6 @@
 
 		  (macro control_file_services ((type ARG1))
 			 (allow ARG1 file (service (all))))
-
-		  (macro disable_file_services ((type ARG1))
-			 (allow ARG1 file (service (disable))))
-
-		  (macro enable_file_services ((type ARG1))
-			 (allow ARG1 file (service (enable))))
 
 		  (macro reload_file_services ((type ARG1))
 			 (allow ARG1 file (service (reload))))
@@ -1919,7 +1907,7 @@
 		       (eq t1 exempt.subj.typeattr))
 		   (and (eq r2 .sys.role) (eq t2 .sys.subj))))
 
-    (constrain (service (disable enable reload start status stop))
+    (constrain (service (reload start status stop))
 	       (or (or (or (or (eq r1 r2)
 			       (and (eq r1 exempt.roleattr)
 				    (neq t1 constrained.typeattr)))

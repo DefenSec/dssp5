@@ -51,8 +51,7 @@
 
 	      (call .systemd.systemctl.exec.execute_file_files (typeattr))
 
-	      (call .systemd.unit.manage_file_dirs (typeattr))
-	      (call .systemd.unit.manage_file_lnk_files (typeattr)))
+	      (call .systemd.unit.manage_file_dirs (typeattr)))
 
        (block template
 
