@@ -1,0 +1,33 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .motd.conf.conf_file_type_transition_file (typeattr)))
+
+(in motd
+
+    (block conf
+
+	   (filecon "/etc/issue" file file_context)
+	   (filecon "/etc/issue\..*" file file_context)
+	   (filecon "/etc/issue\.d" dir file_context)
+	   (filecon "/etc/issue\.d/.*" any file_context)
+	   (filecon "/etc/motd" file file_context)
+	   (filecon "/etc/motd\..*" file file_context)
+	   (filecon "/etc/motd\.d" dir file_context)
+	   (filecon "/etc/motd\.d/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "motd.d"))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "issue.d"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "issue"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "issue.net"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "motd")))
+
+	   (blockinherit .file.conf.template)))
