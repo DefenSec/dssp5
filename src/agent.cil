@@ -1,0 +1,66 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block agent
+
+       (macro type ((type ARG1))
+	      (typeattributeset typeattr ARG1))
+
+       (typeattribute typeattr)
+
+       (call .subj.common.type (typeattr))
+
+       (call .subj.useinteractivefd.type (typeattr))
+
+       (block exec
+
+	      (macro dontaudit_auditaccess_all_files ((type ARG1))
+		     (dontaudit ARG1 typeattr (file (audit_access))))
+
+	      (macro entrypoint_all_files ((type ARG1))
+		     (allow ARG1 typeattr (file (entrypoint))))
+
+	      (macro map_all_files ((type ARG1))
+		     (allow ARG1 typeattr (file (map))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (blockinherit .file.all_macro_template_files)
+
+	      (typeattribute typeattr))
+
+       (block template
+
+	      (blockabstract template)
+
+	      (macro role ((role ARG1))
+		     (roleattributeset roleattr ARG1))
+
+	      (macro subj_type_transition ((type ARG1))
+		     (allow ARG1 subj (process (transition)))
+
+		     (allow subj ARG1 (process (sigchld)))
+		     (allow subj ARG1 (fd (use)))
+		     (allow subj ARG1 readwriteinherited_fifo_file)
+
+		     (call exec.mapexecute_file_files (ARG1))
+		     (call exec.read_file_files (ARG1))
+		     (call exec.subj_type_transition (ARG1 subj)))
+
+	      (blockinherit .subj.common.template)
+
+	      (roleattribute roleattr)
+	      (roletype roleattr subj)
+
+	      (call .agent.type (subj))
+
+	      (block exec
+
+		     (blockinherit .file.exec.template)
+
+		     (call entrypoint_file_files (subj))
+		     (call mapexecute_file_files (subj))
+		     (call read_file_files (subj))
+
+		     (call .agent.exec.type (file)))))
