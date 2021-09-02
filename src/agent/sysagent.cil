@@ -19,13 +19,8 @@
 
 	   (call .agent.type (typeattr))
 
-	   (call .sys.user.readwriteinherited_subj_fifo_files (typeattr))
-	   (call .sys.user.use_subj_fds (typeattr))
-
 	   ;; emergency shell
 	   (call .tty.readwriteinherited_serialtermdev_chr_files (typeattr))
-
-	   (call .user.home.dontaudit_search_file_dirs (typeattr))
 
 	   (block exec
 

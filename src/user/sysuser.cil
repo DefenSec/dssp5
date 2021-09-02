@@ -37,3 +37,8 @@
 	   (call .unconfined.type (subj))
 
 	   (call .user.type (subj))))
+
+(in sys.agent
+
+    (call .sys.user.readwriteinherited_subj_fifo_files (typeattr))
+    (call .sys.user.use_subj_fds (typeattr)))
