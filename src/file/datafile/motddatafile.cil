@@ -1,0 +1,30 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block motd
+
+       (block data
+
+	      (filecon "/usr/lib/issue" file file_context)
+	      (filecon "/usr/lib/issue\.net" file file_context)
+	      (filecon "/usr/lib/motd" file file_context)
+	      (filecon "/usr/lib/motd\.d" dir file_context)
+	      (filecon "/usr/lib/motd\.d/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "motd.d"))
+		     (call .lib.file_type_transition
+			   (ARG1 file file "issue"))
+		     (call .lib.file_type_transition
+			   (ARG1 file file "issue.net"))
+		     (call .lib.file_type_transition
+			   (ARG1 file file "motd")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .motd.data.lib_file_type_transition_file (typeattr)))
