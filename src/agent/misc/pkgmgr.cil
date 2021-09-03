@@ -1,0 +1,145 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pkgmgr
+
+       (block cache
+
+	      (filecon "/var/cache/apt" dir file_context)
+	      (filecon "/var/cache/apt/.*" any file_context)
+
+	      (filecon "/var/cache/debconf" dir file_context)
+	      (filecon "/var/cache/debconf/.*" any file_context)
+
+	      (macro cache_file_type_transition_file ((type ARG1))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "apt"))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "debconf")))
+
+	      (blockinherit .file.cache.template))
+
+       (block conf
+
+	      (filecon "/etc/apt" dir file_context)
+	      (filecon "/etc/apt/.*" any file_context)
+	      (filecon "/etc/debconf\.conf" file file_context)
+	      (filecon "/etc/debconf\.conf\..*" file file_context)
+	      (filecon "/etc/dpkg" dir file_context)
+	      (filecon "/etc/dpkg/.*" any file_context)
+	      (filecon "/etc/ucf\.conf" file file_context)
+	      (filecon "/etc/ucf\.conf\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "apt"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dpkg"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "debconf.conf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "ucf.conf")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/apt" dir file_context)
+	      (filecon "/usr/lib/apt/.*" any file_context)
+
+	      (filecon "/usr/lib/dpkg" dir file_context)
+	      (filecon "/usr/lib/dpkg/.*" any file_context)
+
+	      (filecon "/usr/share/apt-listchanges" dir file_context)
+	      (filecon "/usr/share/apt-listchanges/.*" any file_context)
+
+	      (filecon "/usr/share/debconf" dir file_context)
+	      (filecon "/usr/share/debconf/.*" any file_context)
+
+	      (filecon "/usr/share/debootstrap" dir file_context)
+	      (filecon "/usr/share/debootstrap/.*" any file_context)
+
+	      (filecon "/usr/share/keyrings" dir file_context)
+	      (filecon "/usr/share/keyrings/.*" any file_context)
+
+	      (filecon "/usr/share/dpkg" dir file_context)
+	      (filecon "/usr/share/dpkg/.*" any file_context)
+
+	      (filecon "/usr/share/pkgconfig" dir file_context)
+	      (filecon "/usr/share/pkgconfig/.*" any file_context)
+
+	      (filecon "/usr/share/ucf" dir file_context)
+	      (filecon "/usr/share/ucf/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "apt-listchanges"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "debconf"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "debootstrap"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "keyrings"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dpkg"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "pkgconfig"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "ucf")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "apt"))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "dpkg")))
+
+	      (blockinherit .file.data.template))
+
+       (block log
+
+	      (filecon "/var/log/apt" dir file_context)
+	      (filecon "/var/log/apt/.*" any file_context)
+	      (filecon "/var/log/dpkg\.log" file file_context)
+	      (filecon "/var/log/dpkg\.log\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file dir "apt"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "dpkg.log")))
+
+	      (blockinherit .file.log.template))
+
+       (block state
+
+	      (filecon "/var/lib/apt" dir file_context)
+	      (filecon "/var/lib/apt/.*" any file_context)
+	      (filecon "/var/lib/dpkg" dir file_context)
+	      (filecon "/var/lib/dpkg/.*" any file_context)
+	      (filecon "/var/lib/ucf" dir file_context)
+	      (filecon "/var/lib/ucf/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "apt"))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "dpkg"))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "ucf")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.state.base_template)))
+
+(in file.unconfined
+
+    (call .pkgmgr.cache.cache_file_type_transition_file (typeattr))
+    (call .pkgmgr.conf.conf_file_type_transition_file (typeattr))
+    (call .pkgmgr.data.data_file_type_transition_file (typeattr))
+    (call .pkgmgr.data.lib_file_type_transition_file (typeattr))
+    (call .pkgmgr.log.log_file_type_transition_file (typeattr))
+    (call .pkgmgr.state.state_file_type_transition_file (typeattr)))
