@@ -64,7 +64,6 @@
 
 (block ldso
 
-       (filecon "/usr/lib/([^/]+/)?ld-[^/]*\.so(\.[^/]*)*" file file_context)
        (filecon "/usr/lib/ld-[^/]*\.so(\.[^/]*)*" file file_context)
 
        (blockinherit .file.lib.template)
