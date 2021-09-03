@@ -19,6 +19,19 @@
 
     (allow typeattr subj (system (reboot reload start status stop))))
 
+(in cmdline
+
+    (block read_procfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_procfile_files (typeattr))
+
+	   (call .proc.search_fs_pattern.type (typeattr))))
+
 (in conf
 
     (filecon "/etc/hosts\.(allow|deny)" file file_context)
@@ -144,6 +157,32 @@
 	   (call read_sysfile_lnk_files (typeattr))
 	   (call search_sysfile_pattern.type (typeattr))))
 
+(in devpts
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .dev.search_file_pattern.type (typeattr))))
+
+(in efivar
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .firmware.search_sysfile_pattern.type (typeattr))))
+
 (in exec
 
     (block search_file_pattern
@@ -168,6 +207,39 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in firmware
+
+    (block read_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
 
 (in fs
 
@@ -547,6 +619,94 @@
 	   (call search_procfile_dirs (typeattr))
 
 	   (call .proc.search_fs_pattern.type (typeattr))))
+
+(in systemd.conf
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
+(in systemd.run
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .run.search_file_pattern.type (typeattr))))
+
+(in terminfo
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call data.read_file_pattern.type (typeattr))))
+
+(in terminfo.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
+
+(in terminfo.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
+;; TODO: move to agent/useragent/e/emacs.cil
+;; (in terminfo.data.read_file_pattern
+
+;;     (call .emacs.data.search_file_dirs (typeattr)))
+
+(in terminfo.read_file_pattern
+
+    (call conf.read_file_pattern.type (typeattr)))
+
+;; TODO: move to agent/useragent/e/emacs.cil
+;;    (call .emacs.data.search_file_dirs (typeattr)))
 
 (in var
 

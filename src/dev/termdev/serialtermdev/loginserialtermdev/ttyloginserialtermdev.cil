@@ -5,4 +5,13 @@
 
     (filecon "/dev/tty.+" char serialtermdev_context)
 
+    (macro getattr_serialtermdev_chr_files ((type ARG1))
+	   (allow ARG1 serialtermdev (chr_file (getattr))))
+
+    (macro open_serialtermdev_chr_files ((type ARG1))
+	   (allow ARG1 serialtermdev (chr_file (open))))
+
+    (macro setattr_serialtermdev_chr_files ((type ARG1))
+	   (allow ARG1 serialtermdev (chr_file (setattr))))
+
     (blockinherit .loginserialtermdev.template))

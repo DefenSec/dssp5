@@ -144,6 +144,19 @@
 	      (blockinherit .file.macro_template_lnk_files)
 	      (blockinherit .file.state.base_template))
 
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/apt-daily\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/apt-daily\.timer.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/apt-daily-upgrade\.service.*"
+		       file file_context)
+	      (filecon "/usr/lib/systemd/system/apt-daily-upgrade\.timer.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template))
+
        (block updatealternatives
 
 	      (blockinherit .sys.agent.template)

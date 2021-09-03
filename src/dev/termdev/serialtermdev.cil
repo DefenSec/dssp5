@@ -43,7 +43,8 @@
 
 	      (macro appendinherited_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev appendinherited_chr_file)
-		     (allowx ARG1 serialtermdev (ioctl chr_file (not (0x5412)))))
+		     (allowx ARG1 serialtermdev
+			     (ioctl chr_file (not (0x5412)))))
 
 	      (macro create_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev create_chr_file))
@@ -68,7 +69,8 @@
 
 	      (macro readwriteinherited_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev readwriteinherited_chr_file)
-		     (allowx ARG1 serialtermdev (ioctl chr_file (not (0x5412)))))
+		     (allowx ARG1 serialtermdev
+			     (ioctl chr_file (not (0x5412)))))
 
 	      (macro relabel_serialtermdev_chr_files ((type ARG1))
 		     (allow ARG1 serialtermdev relabel_chr_file))
