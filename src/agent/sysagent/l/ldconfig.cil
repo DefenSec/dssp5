@@ -31,6 +31,8 @@
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
+       (call .var.search_file_pattern.type (subj))
+
        (block cache
 
 	      (filecon "/var/cache/ldconfig" dir file_context)
