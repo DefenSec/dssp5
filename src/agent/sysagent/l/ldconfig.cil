@@ -75,7 +75,7 @@
 	      (filecon "/etc/ld\.so\.conf\..*" file file_context)
 
 	      (filecon "/etc/ld\.so\.conf\.d" dir file_context)
-	      (filecon "/etc/ls\.so\.conf\.d/.*" any file_context)
+	      (filecon "/etc/ld\.so\.conf\.d/.*" any file_context)
 
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
