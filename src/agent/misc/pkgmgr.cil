@@ -59,11 +59,14 @@
 	      (filecon "/usr/share/debootstrap" dir file_context)
 	      (filecon "/usr/share/debootstrap/.*" any file_context)
 
+	      (filecon "/usr/share/dpkg" dir file_context)
+	      (filecon "/usr/share/dpkg/.*" any file_context)
+
 	      (filecon "/usr/share/keyrings" dir file_context)
 	      (filecon "/usr/share/keyrings/.*" any file_context)
 
-	      (filecon "/usr/share/dpkg" dir file_context)
-	      (filecon "/usr/share/dpkg/.*" any file_context)
+	      (filecon "/usr/share/lintian" dir file_context)
+	      (filecon "/usr/share/lintian/.*" any file_context)
 
 	      (filecon "/usr/share/pkgconfig" dir file_context)
 	      (filecon "/usr/share/pkgconfig/.*" any file_context)
@@ -79,9 +82,11 @@
 		     (call .data.file_type_transition
 			   (ARG1 file dir "debootstrap"))
 		     (call .data.file_type_transition
+			   (ARG1 file dir "dpkg"))
+		     (call .data.file_type_transition
 			   (ARG1 file dir "keyrings"))
 		     (call .data.file_type_transition
-			   (ARG1 file dir "dpkg"))
+			   (ARG1 file dir "lintian"))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "pkgconfig"))
 		     (call .data.file_type_transition
@@ -97,6 +102,8 @@
 
        (block log
 
+	      (filecon "/var/log/alternatives\.log" file file_context)
+	      (filecon "/var/log/alternatives\.log\..*" file file_context)
 	      (filecon "/var/log/apt" dir file_context)
 	      (filecon "/var/log/apt/.*" any file_context)
 	      (filecon "/var/log/dpkg\.log" file file_context)
@@ -105,6 +112,8 @@
 	      (macro log_file_type_transition_file ((type ARG1))
 		     (call .log.file_type_transition
 			   (ARG1 file dir "apt"))
+		     (call .log.file_type_transition
+			   (ARG1 file file "alternatives.log"))
 		     (call .log.file_type_transition
 			   (ARG1 file file "dpkg.log")))
 
@@ -133,7 +142,16 @@
 	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.macro_template_lnk_files)
-	      (blockinherit .file.state.base_template)))
+	      (blockinherit .file.state.base_template))
+
+       (block updatealternatives
+
+	      (blockinherit .sys.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/update-alternatives" file
+			      file_context))))
 
 (in file.unconfined
 
