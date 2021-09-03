@@ -11,6 +11,9 @@
 
        (filecon "/tmp" symlink file_context)
 
+       (macro map_file_files ((type ARG1))
+	      (allow ARG1 file (file (map))))
+
        (macro root_file_type_transition_file ((type ARG1))
 	      (call .root.file_type_transition
 		    (ARG1 file dir "opt"))

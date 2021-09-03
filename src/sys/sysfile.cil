@@ -8,6 +8,9 @@
 
        (typeattribute typeattr)
 
+       (macro dontaudit_listinherited_all_dirs ((type ARG1))
+	      (dontaudit ARG1 typeattr listinherited_dir))
+
        (blockinherit .file.all_macro_template_dirs)
        (blockinherit .file.all_macro_template_files)
        (blockinherit .file.all_macro_template_lnk_files)

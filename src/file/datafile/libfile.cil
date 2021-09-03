@@ -43,6 +43,9 @@
 
     (block lib
 
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
+
 	   (macro map_all_files ((type ARG1))
 		  (allow ARG1 typeattr (file (map))))
 
