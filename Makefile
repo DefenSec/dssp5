@@ -42,6 +42,10 @@ config_install:
 	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
 	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
 	/bin/echo -e """/bin /usr/bin\
+\n/etc/systemd/system /usr/lib/systemd/system\
+\n/etc/systemd/system.attached /usr/lib/systemd/system\
+\n/etc/systemd/system.control /usr/lib/systemd/system\
+\n/etc/systemd/user /usr/lib/systemd/user\
 \n/lib /usr/lib\
 \n/lib32 /usr/lib\
 \n/lib64 /usr/lib\
@@ -59,8 +63,11 @@ config_install:
 \n/usr/local/src /usr/src\
 \n/usr/sbin /usr/bin\
 \n/usr/tmp /tmp\
-\n/var/mail /var/spool/mail\
+\n/var/cache/private /var/cache\
+\n/var/lib/private /var/lib\
 \n/var/lock /run/lock\
+\n/var/log/private /var/log\
+\n/var/mail /var/spool/mail\
 \n/var/run /run\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
 ifeq ($(MCS),false)
