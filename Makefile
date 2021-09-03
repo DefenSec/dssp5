@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 # SPDX-License-Identifier: Unlicense
 
-.PHONY: all clean policy check config_install modular_install monolithic_install
+.PHONY: all clean policy check config_install modular_install
 
 all: clean policy check
 
@@ -40,7 +40,7 @@ config_install:
 \n</selinux>\
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
 	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
-	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
 	/bin/echo -e """/bin /usr/bin\
 \n/etc/systemd/system /usr/lib/systemd/system\
 \n/etc/systemd/system.attached /usr/lib/systemd/system\
@@ -74,16 +74,18 @@ ifeq ($(MCS),false)
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev\
 \ndisk sys.id:sys.role:removable.stordev\
 \nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
-	echo "sys.role:sys.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo "sys.role:sys.subj sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
+	echo "sys.role:sys.subj sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 else
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
 \ndisk sys.id:sys.role:removable.stordev:s0\
 \nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj:s0 sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
-	echo "sys.role:sys.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
+	echo "sys.role:sys.subj:s0 sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
+	echo "sys.role:sys.subj:s0 sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 endif
 
 modular_install: config_install
@@ -107,13 +109,3 @@ endif
 ifeq ($(MCS),false)
 	sed -i 's/(mls false)/(mls true)/' src/misc/conf.cil
 endif
-
-monolithic_install: config_install monolithic_install.$(POLVERS)
-monolithic_install.%:
-ifeq ($(MCS),false)
-	echo "__default__:sys.id" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
-else
-	echo "__default__:sys.id:s0-s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/seusers
-endif
-	install -m 644 file_contexts $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/
-	install -m 600 policy.$* $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/policy/

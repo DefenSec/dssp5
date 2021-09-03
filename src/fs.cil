@@ -107,6 +107,9 @@
 	      (macro associate_all_fs ((type ARG1))
 		     (allow ARG1 typeattr (filesystem (associate))))
 
+	      (macro dontaudit_getattr_all_fs ((type ARG1))
+		     (dontaudit ARG1 typeattr (filesystem (getattr))))
+
 	      (macro getattr_all_fs ((type ARG1))
 		     (allow ARG1 typeattr (filesystem (getattr))))
 

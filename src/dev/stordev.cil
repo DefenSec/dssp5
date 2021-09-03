@@ -8,6 +8,9 @@
 
        (typeattribute typeattr)
 
+       (macro getattr_all_blk_files ((type ARG1))
+	      (allow ARG1 typeattr (blk_file (getattr))))
+
        (blockinherit .file.all_macro_template_blk_files)
        (blockinherit .file.all_macro_template_chr_files)
 
