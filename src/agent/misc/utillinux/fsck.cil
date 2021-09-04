@@ -1,6 +1,9 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+;; for e2fsck
+(typepermissive fsck.subj)
+
 (block fsck
 
        (blockinherit .sys.agent.template)
