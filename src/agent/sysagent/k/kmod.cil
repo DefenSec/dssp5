@@ -102,7 +102,10 @@
 
        (call .sysctl.subj_type_transition (subj))
 
-       (call .systemd.tmpfiles.run.search_file_dirs (subj))
+       (call .systemd.tmpfiles.run.addname_file_dirs (subj))
+       (call .systemd.tmpfiles.run.create_file_dirs (subj))
+       (call .systemd.tmpfiles.run.create_file_files (subj))
+       (call .systemd.tmpfiles.run.run_file_type_transition_file (subj))
        (call .systemd.tmpfiles.run.write_file_files (subj))
 
        (call .trace.search_fs_dirs (subj))
