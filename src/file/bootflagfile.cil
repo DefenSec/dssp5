@@ -5,6 +5,9 @@
 
     (block bootflag
 
+	   (macro dontaudit_getattr_all_files ((type ARG1))
+		  (dontaudit ARG1 typeattr (file (getattr))))
+
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
 

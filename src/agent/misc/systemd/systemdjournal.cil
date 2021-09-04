@@ -96,9 +96,6 @@
     (call .subj.ps_all_states (subj))
     (call .subj.signull_all_processes (subj))
 
-;;    questionable
-;;    (call .sys.readwrite_subj_netlink_audit_sockets (subj))
-;;    (call .sys.readwrite_subj_unix_dgram_sockets (subj))
     (call .sys.syslogread_system (subj))
 
     (call .tmp.getattr_fs_pattern.type (subj))
@@ -164,9 +161,6 @@
 
 	   (call .console.dontaudit_writeinherited_serialtermdev_chr_files
 		 (typeattr)))
-
-;; questionable
-;;	   (call .sys.sendto_subj_unix_dgram_sockets (typeattr)))
 
     (block unit
 
