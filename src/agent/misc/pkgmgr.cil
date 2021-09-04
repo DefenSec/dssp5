@@ -147,7 +147,10 @@
 	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.macro_template_lnk_files)
-	      (blockinherit .file.state.base_template))
+	      (blockinherit .file.state.base_template)
+
+	      ;; /var/lib/dpkg/info/.* entrypoint to dpkg_script_t
+	      (call .subj.entry.type (file)))
 
        (block unit
 
