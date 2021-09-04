@@ -43,12 +43,24 @@
 
        (call .nss.services.type (subj))
 
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
        (call .run.deletename_file_dirs (subj))
 
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
 
        (call .systemd.journal.relay_msgs.type (subj))
+
+       (optional dhclient_invalidassociationsboolfile
+		 (call .invalidassociations.type (subj)))
+
+       (optional dhclient_invalidpacketsboolfile
+		 (call .invalidpackets.type (subj)))
+
+       (optional dhclient_invalidpeersboolfile
+		 (call .invalidpeers.type (subj)))
 
        (block conf
 
@@ -92,6 +104,9 @@
 	      (call .exec.execute_file_files (subj))
 
 	      (call .fstab.read_file_files (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
 
 	      (call .resolv.conf.manage_file_files (subj))
 	      (call .resolv.conf.conf_file_type_transition_file (subj "*"))
