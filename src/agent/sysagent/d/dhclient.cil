@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (call script.subj_type_transition (subj))
+
        (block conf
 
 	      (filecon "/etc/dhcp" dir file_context)
@@ -23,6 +25,8 @@
        (block script
 
 	      (blockinherit .sys.agent.template)
+
+	      (call .iproute.subj_type_transition (subj))
 
 	      (block exec
 

@@ -1,0 +1,30 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block iputils
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (net_raw)))
+       (allow subj self (process (getcap setcap)))
+       (allow subj self create_icmp_socket)
+       (allow subj self create_packet_socket)
+       (allow subj self create_unix_dgram_socket)
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .net.nodebind_netnode_icmp_sockets (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (optional ping_hybridagent
+		 (blockinherit .hybrid.agent.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/ping" file file_context)))
