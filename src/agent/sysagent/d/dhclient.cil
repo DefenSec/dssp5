@@ -83,6 +83,7 @@
        (block run
 
 	      (filecon "/run/dhclient\..*\.pid" file file_context)
+	      (filecon "/run/dhclient6\..*\.pid" file file_context)
 
 	      (macro run_file_type_transition_file ((type ARG1)(name ARG2))
 		     (call .run.file_type_transition
