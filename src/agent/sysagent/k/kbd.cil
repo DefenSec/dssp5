@@ -31,6 +31,8 @@
 
        (call .shell.exec.execute_file_files (subj))
 
+       (call .src.search_file_dirs (subj))
+
        (call .swap.dontaudit_getattr_file_files (subj))
 
        (call .sys.dontaudit_getattr_fs_dirs (subj))
