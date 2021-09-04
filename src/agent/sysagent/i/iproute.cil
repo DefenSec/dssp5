@@ -1,0 +1,162 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block iproute
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (net_admin sys_admin sys_module)))
+       (allow subj self create_netlink_route_socket)
+       (allow subj self create_netlink_tcpdiag_socket)
+       (allow subj self create_udp_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self create_netlink_xfrm_socket)
+       (allow subj self (netlink_route_socket (nlmsg_read nlmsg_write)))
+       (allow subj self (netlink_tcpdiag_socket (nlmsg_read)))
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+       (dontaudit subj self (capability (sys_ptrace)))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .cpu.read_sysfile_files (subj))
+       (call .cpu.search_sysfile_pattern.type (subj))
+
+       (call .devices.search_sysfile_pattern.type (subj))
+
+       (call .net.list_procfile_dirs (subj))
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .netns.run.manage_file_dirs (subj))
+       (call .netns.run.manage_file_files (subj))
+       (call .netns.run.mounton_file_dirs (subj))
+       (call .netns.run.mounton_file_files (subj))
+       (call .netns.run.run_file_type_transition_file (subj))
+       (call .netns.run.watch_file_dirs (subj))
+
+       (call .ns.read_fs_pattern.type (subj))
+       (call .ns.unmount_fs (subj))
+
+       (call .nss.protocols.type (subj))
+       (call .nss.services.type (subj))
+
+       (call .proc.list_fs_dirs (subj))
+
+       (call .root.mounton_file_dirs (subj))
+
+       (call .run.deletename_file_dirs (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .subj.dontaudit_getattr_all_sockets (subj))
+       (call .subj.dontaudit_ps_all_states (subj))
+
+       (call .subj.common.getattr_all_sockets (subj))
+       (call .subj.common.ps_all_states (subj))
+
+       (call .sys.getattr_subj_sockets (subj))
+       (call .sys.modulerequest_system (subj))
+       (call .sys.ps_subj_states (subj))
+
+       (call .sys.mount_fs (subj))
+       (call .sys.mounton_fs_dirs (subj))
+       (call .sys.unmount_fs (subj))
+
+       (call .sysctl.search_procfile_pattern.type (subj))
+
+       (call .sysctlfile.net.read_all_files (subj))
+       (call .sysctlfile.net.search_all_dirs (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .uptime.read_procfile_files (subj))
+
+       (optional iproute_sysuser
+		 (call .sys.user.getattr_subj_sockets (subj))
+		 (call .sys.user.ps_subj_states (subj)))
+
+       (block conf
+
+	      (filecon "/etc/iproute2" dir file_context)
+	      (filecon "/etc/iproute2/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "iproute2")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/arpd" file file_context)
+	      (filecon "/usr/bin/bridge" file file_context)
+	      (filecon "/usr/bin/dcb" file file_context)
+	      (filecon "/usr/bin/devlink" file file_context)
+	      (filecon "/usr/bin/genl" file file_context)
+	      (filecon "/usr/bin/ifcfg" file file_context)
+	      (filecon "/usr/bin/ifstat" file file_context)
+	      (filecon "/usr/bin/ip" file file_context)
+	      (filecon "/usr/bin/lnstat" file file_context)
+	      (filecon "/usr/bin/nstat" file file_context)
+	      (filecon "/usr/bin/rdma" file file_context)
+	      (filecon "/usr/bin/routef" file file_context)
+	      (filecon "/usr/bin/routel" file file_context)
+	      (filecon "/usr/bin/rtacct" file file_context)
+	      (filecon "/usr/bin/rtmon" file file_context)
+	      (filecon "/usr/bin/rtpr" file file_context)
+	      (filecon "/usr/bin/ss" file file_context)
+	      (filecon "/usr/bin/tipc" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/arpd" dir file_context)
+	      (filecon "/var/lib/arpd/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "arpd")))
+
+	      (blockinherit .file.state.template))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.tmp.base_template)))
+
+(block netns
+
+       (block run
+
+	      (filecon "/run/netns" dir file_context)
+	      (filecon "/run/netns/.*" any ())
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "netns")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.run.base_template)))
+
+(in file.unconfined
+
+    (call .iproute.conf.conf_file_type_transition_file (typeattr))
+    (call .iproute.state.state_file_type_transition_file (typeattr))
+
+    (call .netns.run.run_file_type_transition_file (typeattr)))

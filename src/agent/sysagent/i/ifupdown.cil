@@ -5,11 +5,21 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self (process (setpgid)))
+       (allow subj self create_netlink_route_socket)
+       (allow subj self (netlink_route_socket (nlmsg_read)))
+
        (call .network.conf.list_file_dirs (subj))
        (call .network.conf.read_file_files (subj))
 
+       (call .network.run.manage_file_dirs (subj))
+       (call .network.run.manage_file_files (subj))
+       (call .network.run.run_file_type_transition_file (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
 
        (block data
 
