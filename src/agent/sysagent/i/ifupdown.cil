@@ -9,6 +9,10 @@
        (allow subj self create_netlink_route_socket)
        (allow subj self (netlink_route_socket (nlmsg_read)))
 
+       (call .exec.execute_file_files (subj))
+
+       (call .iproute.subj_type_transition (subj))
+
        (call .network.conf.list_file_dirs (subj))
        (call .network.conf.read_file_files (subj))
 
@@ -20,6 +24,9 @@
        (call .rbacsep.usefdsource.type (subj))
 
        (call .shell.exec.execute_file_files (subj))
+
+       (optional ifupdown_dhclient
+		 (call .dhclient.subj_type_transition (subj)))
 
        (block data
 
