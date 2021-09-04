@@ -20,6 +20,8 @@
 
        (call .systemd.journal.relay_msgs.type (subj))
 
+       (call .systemd.unit.run.search_file_dirs (subj))
+
        (optional logger_hybridagent
 		 (blockinherit .hybrid.agent.template))
 

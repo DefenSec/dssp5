@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block font
+
+       (block data
+
+	      (filecon "/usr/share/consolefonts" dir file_context)
+	      (filecon "/usr/share/consolefonts/.*" any file_context)
+	      (filecon "/usr/share/fontconfig" dir file_context)
+	      (filecon "/usr/share/fontconfig/.*" any file_context)
+	      (filecon "/usr/share/fonts" dir file_context)
+	      (filecon "/usr/share/fonts/.*" any file_context)
+	      (filecon "/usr/share/ghostscript/fonts" dir file_context)
+	      (filecon "/usr/share/ghostscript/fonts/.*" any file_context)
+	      (filecon "/usr/share/X11/fonts" dir file_context)
+	      (filecon "/usr/share/X11/fonts/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "consolefonts"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "fontconfig"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "fonts")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .font.data.data_file_type_transition_file (typeattr)))
