@@ -1,0 +1,53 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block devicemapper
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (sys_admin)))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_procfile_files (subj))
+
+       (call .dmcontrol.readwrite_nodedev_chr_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .sys.ipcinfo_system (subj))
+       (call .sys.readwrite_subj_semaphores (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (block cryptsetup
+
+	      (block run
+
+		     (filecon "/run/cryptsetup" dir file_context)
+		     (filecon "/run/cryptsetup/.*" any file_context)
+
+		     (macro run_file_type_transition_file ((type ARG1))
+			    (call .run.file_type_transition
+				  (ARG1 file dir "cryptsetup")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.run.base_template)))
+
+       (block exec
+
+	      (filecon "/usr/bin/blkdeactivate" file file_context)
+	      (filecon "/usr/bin/dmsetup" file file_context)
+	      (filecon "/usr/bin/dmstats" file file_context)))
+
+(in file.unconfined
+
+    (call .devicemapper.cryptsetup.run.run_file_type_transition_file
+	  (typeattr)))

@@ -5,4 +5,7 @@
 
        (filecon "/dev/console" char serialtermdev_context)
 
+       (macro dontaudit_writeinherited_serialtermdev_chr_files ((type ARG1))
+	      (dontaudit ARG1 serialtermdev writeinherited_file))
+
        (blockinherit .serialtermdev.template))

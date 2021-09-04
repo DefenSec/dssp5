@@ -1,23 +1,77 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(typealias dpkg_script_t)
-(typealiasactual dpkg_script_t sys.subj)
-
 (tunable xserver_object_manager false)
 
-;; systemd
-(in dev.unconfined
+(in block
 
-    (call .kmsg.mounton_nodedev_chr_files (typeattr)))
+    (block search_sysfile_pattern
 
-(in nodedev.unconfined
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
 
-    (call .kmsg.mounton_nodedev_chr_files (typeattr)))
+	   (typeattribute typeattr)
 
-(in sys.unconfined
+	   (call search_sysfile_dirs (typeattr))
 
-    (allow typeattr subj (system (reboot reload start status stop))))
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
+
+(in boot
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .root.search_file_pattern.type (typeattr))))
+
+(in bus
+
+    (block list_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
 
 (in caplastcap
 
@@ -31,6 +85,64 @@
 	   (call read_sysctlfile_files (typeattr))
 
 	   (call .kernel.search_sysctlfile_pattern.type (typeattr))))
+
+(in cgroup
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr)))
+
+	   (call search_fs_pattern.type (typeattr)))
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .fs.search_sysfile_pattern.type (typeattr))))
+
+(in class
+
+    (block list_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
 
 (in cmdline
 
@@ -70,6 +182,42 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in cpu
+
+    (block read_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+	   (call read_sysfile_files (typeattr))
+	   (call read_sysfile_lnk_files (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
 
 (in crypto
 
@@ -116,6 +264,30 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in debug
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .kernel.search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysctlfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysctlfile_dirs (typeattr))
+
+	   (call .sysctl.search_procfile_pattern.type (typeattr))))
 
 (in dev
 
@@ -561,6 +733,42 @@
 
     (call .conf.search_file_pattern.type (typeattr)))
 
+(in memory
+
+    (block read_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+	   (call read_sysfile_files (typeattr))
+	   (call read_sysfile_lnk_files (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
+
 (in mime
 
     (block read_file_pattern
@@ -596,6 +804,53 @@
 	   (call read_file_files (typeattr))
 
 	   (call .data.search_file_pattern.type (typeattr))))
+
+(in module
+
+    (block list_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
+
+(in modules
+
+    (block read_procfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_procfile_files (typeattr))
+
+	   (call .proc.search_fs_pattern.type (typeattr))))
 
 (in net
 
@@ -641,6 +896,42 @@
 	   (call read_procfile_lnk_files (typeattr))
 	   (call search_procfile_pattern.type (typeattr))))
 
+(in node
+
+    (block read_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_sysfile_dirs (typeattr))
+	   (call read_sysfile_files (typeattr))
+	   (call read_sysfile_lnk_files (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .devices.search_sysfile_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
+
 (in ns
 
     (block read_fs_pattern
@@ -652,6 +943,19 @@
 
 	   (call read_fs_files (typeattr))
 	   (call search_fs_dirs (typeattr))))
+
+(in osrelease
+
+    (block read_sysctlfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysctlfile_files (typeattr))
+
+	   (call .kernel.search_sysctlfile_pattern.type (typeattr))))
 
 (in overcommitmemory
 
@@ -849,6 +1153,61 @@
 
 	   (call .conf.search_file_pattern.type (typeattr))))
 
+(in selinux.default
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.read_file_pattern.type (typeattr))
+
+	   (call default.read_file_files (typeattr))
+	   (call default.search_file_pattern.type (typeattr))
+
+	   (call linked.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call conf.search_file_pattern.type (typeattr))))
+
+(in selinux.file
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.read_file_pattern.type (typeattr))
+
+	   (call file.map_file_files (typeattr))
+	   (call file.read_file_files (typeattr))
+	   (call file.search_file_pattern.type (typeattr))
+
+	   (call linked.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call default.search_file_pattern.type (typeattr))))
+
 (in spool
 
     (block search_file_pattern
@@ -957,6 +1316,20 @@
 
 	   (call .run.search_file_pattern.type (typeattr))))
 
+(in systemd.udev.run
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .run.search_file_pattern.type (typeattr))))
+
 (in terminfo
 
     (block read_file_pattern
@@ -1008,6 +1381,64 @@
 
 ;; TODO: move to agent/useragent/e/emacs.cil
 ;;    (call .emacs.data.search_file_dirs (typeattr)))
+
+(in trace
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .kernel.search_sysfile_pattern.type (typeattr))))
+
+(in tmp
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr))))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .data.traverse_file_pattern.type (typeattr))
+
+	   (call .var.search_file_pattern.type (typeattr)))
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .dev.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
 
 (in var
 

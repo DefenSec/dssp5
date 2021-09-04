@@ -20,9 +20,6 @@
        (blockinherit .file.macro_template_blk_files)
        (blockinherit .file.macro_template_chr_files))
 
-       ;; TODO: move to src/agent/misc/utillinux/mount.cil
-       ;; (call .mount.mountpoint.type (file)))
-
 (in file
 
     (block home
