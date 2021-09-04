@@ -1,0 +1,47 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block dhclient
+
+       (blockinherit .sys.agent.template)
+
+       (block conf
+
+	      (filecon "/etc/dhcp" dir file_context)
+	      (filecon "/etc/dhcp/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dhcp")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/dhclient" file file_context))
+
+       (block script
+
+	      (blockinherit .sys.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/dhclient-script" file file_context)))
+
+       (block state
+
+	      (filecon "/var/lib/dhcp" dir file_context)
+	      (filecon "/var/lib/dhcp/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "dhcp")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template)))
+
+(in file.unconfined
+
+    (call .dhclient.conf.conf_file_type_transition_file (typeattr))
+    (call .dhclient.state.state_file_type_transition_file (typeattr)))

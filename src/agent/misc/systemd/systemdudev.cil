@@ -214,7 +214,7 @@
 
 	   (optional systemdudev_ifupdown
 		     (call .ifupdown.subj_type_transition (subj))
-		     (call .ifupdown.unit.control_file_files (subj)))
+		     (call .ifupdown.unit.control_file_services (subj)))
 
 	   (optional systemdudev_kbd
 		     (call .kbd.subj_type_transition (subj)))
