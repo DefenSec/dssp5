@@ -1,0 +1,46 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block ifupdown
+
+       (blockinherit .sys.agent.template)
+
+       (call .network.conf.list_file_dirs (subj))
+       (call .network.conf.read_file_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block data
+
+	      (filecon "/usr/lib/ifupdown" dir file_context)
+	      (filecon "/usr/lib/ifupdown/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "ifupdown")))
+
+	      (blockinherit .file.data.template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/ifup" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/ifup@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/ifupdown-pre\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/ifupdown-wait-online\.service.*"
+		       file file_context)
+	      (filecon "/usr/lib/systemd/system/networking\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .ifupdown.data.lib_file_type_transition_file (typeattr)))

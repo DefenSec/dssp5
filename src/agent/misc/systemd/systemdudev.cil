@@ -54,6 +54,7 @@
 
 	   (call systemd.logparsenv.type (subj))
 	   (call systemd.notify.type (subj))
+	   (call systemd.private.type (subj))
 
 	   (call systemd.journal.relay_msgs.type (subj))
 
@@ -115,6 +116,8 @@
 
 	   (call .efivar.search_fs_pattern.type (subj))
 
+	   (call .exec.execute_file_files (subj))
+
 	   (call .file.mod.load_all_files (subj))
 	   (call .file.mod.map_all_files (subj))
 	   (call .file.mod.read_all_files (subj))
@@ -141,6 +144,8 @@
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .logger.subj_type_transition (subj))
 
 	   (call .mem.readwrite.type (subj))
 
@@ -206,6 +211,10 @@
 
 	   (optional systemdudev_devicemapper
 		     (call .devicemapper.subj_type_transition (subj)))
+
+	   (optional systemdudev_ifupdown
+		     (call .ifupdown.subj_type_transition (subj))
+		     (call .ifupdown.unit.control_file_files (subj)))
 
 	   (optional systemdudev_kbd
 		     (call .kbd.subj_type_transition (subj)))
@@ -289,11 +298,10 @@
 
 		  (blockinherit .file.unit.template))))
 
-;; TODO: move this to src/agent/sysagent/i/iw.cil
-;;(in iw
-;;
-;;    (call .systemd.udev.use_subj_fds (subj))
-;;    (call .systemd.udev.writeinherited_subj_fifo_files (subj)))
+(in iw
+
+    (call .systemd.udev.use_subj_fds (subj))
+    (call .systemd.udev.writeinherited_subj_fifo_files (subj)))
 
 (in logger
 
