@@ -30,6 +30,8 @@
 
        (call .shell.exec.execute_file_files (subj))
 
+       (call .sysctl.subj_type_transition (subj))
+
        (optional ifupdown_dhclient
 		 (call .dhclient.subj_type_transition (subj)))
 
