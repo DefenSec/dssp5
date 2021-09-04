@@ -15,6 +15,7 @@
 				      setgid setuid sys_admin sys_ptrace)))
     (allow subj self (cap_userns (kill sys_ptrace)))
     (allow subj self (capability2 (syslog)))
+    (allow subj self create_netlink_audit_socket)
     (allow subj self create_unix_dgram_socket)
     (allow subj self create_unix_stream_stream_socket)
     (allow subj self (netlink_audit_socket (nlmsg_write)))
@@ -71,6 +72,8 @@
 
     (call .kmsg.read_nodedev_chr_files (subj))
 
+    (call .locale.data.read_file_pattern.type (subj))
+
     (call .logindefs.read_file_files (subj))
 
     (call .machineid.read_file_files (subj))
@@ -93,8 +96,9 @@
     (call .subj.ps_all_states (subj))
     (call .subj.signull_all_processes (subj))
 
-    (call .sys.readwrite_subj_netlink_audit_sockets (subj))
-    (call .sys.readwrite_subj_unix_dgram_sockets (subj))
+;;    questionable
+;;    (call .sys.readwrite_subj_netlink_audit_sockets (subj))
+;;    (call .sys.readwrite_subj_unix_dgram_sockets (subj))
     (call .sys.syslogread_system (subj))
 
     (call .tmp.getattr_fs_pattern.type (subj))
@@ -159,9 +163,10 @@
 	   (call systemd.run.search_file_pattern.type (typeattr))
 
 	   (call .console.dontaudit_writeinherited_serialtermdev_chr_files
-		 (typeattr))
+		 (typeattr)))
 
-	   (call .sys.sendto_subj_unix_dgram_sockets (typeattr)))
+;; questionable
+;;	   (call .sys.sendto_subj_unix_dgram_sockets (typeattr)))
 
     (block unit
 
