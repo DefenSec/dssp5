@@ -254,10 +254,10 @@
 
 	      (blockinherit .file.exec.template)
 
-	      (call .sys.agent.exec.type (file)))
+	      (call .sys.agent.exec.type (file))
 
-	      ;; TODO: move to src/agent/hybridagent.cil
-	      ;; (call .hybrid.agent.exec.type (file)))
+	      (optional systemd_exec_hybridagent
+			(call .hybrid.agent.exec.type (file))))
 
        (block forked
 

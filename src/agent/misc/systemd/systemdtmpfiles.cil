@@ -138,9 +138,10 @@
 
 		  (filecon "/usr/bin/systemd-tmpfiles" file file_context)
 
-		  (call .sys.agent.exec.type (exec.file)))
-;; TODO: move this to src/agent/hybridagent.cil
-;;		  (call .hybrid.agent.exec.type (exec.file)))
+		  (call .sys.agent.exec.type (exec.file))
+
+		  (optional systemdtmpfiles_exec_hybridagent
+			    (call .hybrid.agent.exec.type (exec.file))))
 
 	   (block run
 

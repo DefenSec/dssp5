@@ -44,6 +44,9 @@
 
        (call .unknown.dontaudit_getattr_file (subj))
 
+       (optional kbd_misc
+		 (call .font.data.read_file_pattern.type (subj)))
+
        (optional kbd_quotacheck
 		 (call .quotacheck.getattr_file_files (subj)))
 
