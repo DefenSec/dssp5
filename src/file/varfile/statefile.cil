@@ -10,7 +10,10 @@
 	      (call .var.file_type_transition
 		    (ARG1 file dir "lib")))
 
-       (blockinherit .file.state.template))
+       (blockinherit .file.state.template)
+
+       (optional statefile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

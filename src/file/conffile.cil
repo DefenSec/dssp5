@@ -17,7 +17,10 @@
 	      (call .root.file_type_transition
 		    (ARG1 file dir "etc")))
 
-       (blockinherit .file.conf.template))
+       (blockinherit .file.conf.template)
+
+       (optional conffile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

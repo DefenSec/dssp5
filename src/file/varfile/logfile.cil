@@ -12,7 +12,10 @@
 
        (blockinherit .file.log.template)
 
-       (call .tmp.associate_fs (file)))
+       (call .tmp.associate_fs (file))
+
+       (optional logfile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

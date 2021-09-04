@@ -14,7 +14,10 @@
 	      (call .var.file_type_transition
 		    (ARG1 file dir "run")))
 
-       (blockinherit .file.run.template))
+       (blockinherit .file.run.template)
+
+       (optional runfile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

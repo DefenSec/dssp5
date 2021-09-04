@@ -171,14 +171,6 @@
 
     (call .mount.run.run_file_type_transition_file (typeattr)))
 
-(in home
-
-    (call .mount.mountpoint.type (file)))
-
-(in root
-
-    (call .mount.mountpoint.type (file)))
-
 ;; TODO: move this to src/user/unprivuser.cil and make optional
 ;;(in user
 ;;

@@ -10,7 +10,10 @@
 	      (call .var.file_type_transition
 		    (ARG1 file dir "cache")))
 
-       (blockinherit .file.cache.template))
+       (blockinherit .file.cache.template)
+
+       (optional cachefile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 
