@@ -42,7 +42,10 @@
 
     (allow fs self (filesystem (associate)))
 
-    (call .devtmp.associate_fs (fs)))
+    (call .devtmp.associate_fs (fs))
+
+    (optional tmpfile_mount
+	      (call .mount.mountpoint.type (file))))
 
 (in file
 

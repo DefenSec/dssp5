@@ -20,7 +20,10 @@
 	      (call .root.file_type_transition
 		    (ARG1 file dir "var")))
 
-       (blockinherit .file.var.template))
+       (blockinherit .file.var.template)
+
+       (optional varfile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

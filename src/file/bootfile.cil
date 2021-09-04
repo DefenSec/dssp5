@@ -10,7 +10,10 @@
 	      (call .root.file_type_transition
 		    (ARG1 file dir "boot")))
 
-       (blockinherit .file.boot.template))
+       (blockinherit .file.boot.template)
+
+       (optional bootfile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

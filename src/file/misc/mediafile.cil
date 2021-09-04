@@ -28,7 +28,10 @@
 
        (call .tmp.associate_fs (file))
 
-       (call .xattr.associate_fs (file)))
+       (call .xattr.associate_fs (file))
+
+       (optional mediafile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file.unconfined
 

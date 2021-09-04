@@ -22,4 +22,7 @@
        (blockinherit .file.macro_template_dirs)
        (blockinherit .file.macro_template_lnk_files)
 
-       (call .xattr.associate_fs (file)))
+       (call .xattr.associate_fs (file))
+
+       (optional rootfile_mount
+		 (call .mount.mountpoint.type (file))))

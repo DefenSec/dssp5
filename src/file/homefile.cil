@@ -18,7 +18,10 @@
        (blockinherit .file.home.template)
        (blockinherit .file.macro_template_all_files)
        (blockinherit .file.macro_template_blk_files)
-       (blockinherit .file.macro_template_chr_files))
+       (blockinherit .file.macro_template_chr_files)
+
+       (optional homefile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 

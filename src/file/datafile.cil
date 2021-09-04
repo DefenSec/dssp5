@@ -20,7 +20,10 @@
 	      (call .root.file_type_transition
 		    (ARG1 file dir "usr")))
 
-       (blockinherit .file.data.template))
+       (blockinherit .file.data.template)
+
+       (optional datafile_mount
+		 (call .mount.mountpoint.type (file))))
 
 (in file
 
