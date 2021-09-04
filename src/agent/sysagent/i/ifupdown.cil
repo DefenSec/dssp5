@@ -9,9 +9,14 @@
        (allow subj self create_netlink_route_socket)
        (allow subj self (netlink_route_socket (nlmsg_read)))
 
+       (call data.search_file_dirs (subj))
+       (call data.execute_file_files (subj))
+
        (call .exec.execute_file_files (subj))
 
        (call .iproute.subj_type_transition (subj))
+
+       (call .kmod.subj_type_transition (subj))
 
        (call .network.conf.list_file_dirs (subj))
        (call .network.conf.read_file_files (subj))

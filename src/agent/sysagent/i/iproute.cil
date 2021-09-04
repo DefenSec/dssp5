@@ -80,6 +80,10 @@
 
        (call .uptime.read_procfile_files (subj))
 
+       (optional iproute_dhclient
+		 (call .dhclient.readwriteinherited_fifo_files (subj))
+		 (call .dhclient.use_fds (subj)))
+
        (optional iproute_sysuser
 		 (call .sys.user.getattr_subj_sockets (subj))
 		 (call .sys.user.ps_subj_states (subj)))

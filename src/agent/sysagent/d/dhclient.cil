@@ -5,12 +5,58 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self (capability (net_bind_service net_raw)))
+       (allow subj self create_netlink_route_socket)
+       (allow subj self create_packet_socket)
+       (allow subj self create_udp_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_route_socket (nlmsg_read)))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.map_file_files (subj))
+       (call conf.read_file_files (subj))
+       (call conf.read_file_lnk_files (subj))
+
+       (call run.manage_file_files (subj))
+       (call run.run_file_type_transition_file (subj "*"))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.map_file_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
        (call script.subj_type_transition (subj))
+
+       (call .cert.read_file_files (subj))
+       (call .cert.search_file_dirs (subj))
+
+       (call .dhcp.namebind_port_udp_sockets (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .net.egress_netifs (subj))
+       (call .net.nodebind_netnode_udp_sockets (subj))
+       (call .net.sendto_nodes (subj))
+
+       (call .nss.services.type (subj))
+
+       (call .run.deletename_file_dirs (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
 
        (block conf
 
 	      (filecon "/etc/dhcp" dir file_context)
 	      (filecon "/etc/dhcp/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
 
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
@@ -22,11 +68,46 @@
 
 	      (filecon "/usr/bin/dhclient" file file_context))
 
+       (block run
+
+	      (filecon "/run/dhclient\..*\.pid" file file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .run.file_type_transition
+			   (ARG1 file file ARG2)))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.run.base_template))
+
        (block script
 
 	      (blockinherit .sys.agent.template)
 
+	      (call conf.list_file_dirs (subj))
+	      (call conf.read_file_files (subj))
+	      (call conf.read_file_lnk_files (subj))
+
+	      (call .conf.deletename_file_dirs (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .fstab.read_file_files (subj))
+
+	      (call .resolv.conf.manage_file_files (subj))
+	      (call .resolv.conf.conf_file_type_transition_file (subj "*"))
+
 	      (call .iproute.subj_type_transition (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.mapexecute_file_files (subj))
+	      (call .shell.exec.read_file_files (subj))
+
+	      (call .systemd.run.search_file_dirs (subj))
+
+	      (call .systemd.unit.run.search_file_dirs (subj))
 
 	      (block exec
 
@@ -36,6 +117,9 @@
 
 	      (filecon "/var/lib/dhcp" dir file_context)
 	      (filecon "/var/lib/dhcp/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
 
 	      (macro state_file_type_transition_file ((type ARG1))
 		     (call .state.file_type_transition
