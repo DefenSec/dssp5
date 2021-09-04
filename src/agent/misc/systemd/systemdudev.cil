@@ -31,8 +31,6 @@
 	   (allow subj self (key (write)))
 	   (allow subj self (lockdown (confidentiality)))
 	   (allow subj self (netlink_route_socket (nlmsg_read nlmsg_write)))
-;; questionable because it uses finit on debian
-;;	   (allow subj self (system (module_load)))
 	   (allow subj self (unix_stream_socket (accept connectto)))
 
 	   (call conf.manage_file_dirs (subj))
@@ -209,6 +207,9 @@
 	   (optional systemdudev_devicemapper
 		     (call .devicemapper.subj_type_transition (subj)))
 
+	   (optional systemdudev_kbd
+		     (call .kbd.subj_type_transition (subj)))
+
 	   (block conf
 
 		  (filecon "/etc/udev" dir file_context)
@@ -294,8 +295,7 @@
 ;;    (call .systemd.udev.use_subj_fds (subj))
 ;;    (call .systemd.udev.writeinherited_subj_fifo_files (subj)))
 
-;; TODO: move this to src/agent/misc/utillinux/logger.cil
-;;(in logger
-;;
-;;    (call .systemd.udev.use_subj_fds (subj))
-;;    (call .systemd.udev.writeinherited_subj_fifo_files (subj)))
+(in logger
+
+    (call .systemd.udev.use_subj_fds (subj))
+    (call .systemd.udev.writeinherited_subj_fifo_files (subj)))

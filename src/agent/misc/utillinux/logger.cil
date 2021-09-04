@@ -1,0 +1,28 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block logger
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self create_unix_dgram_socket)
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (optional logger_hybridagent
+		 (blockinherit .hybrid.agent.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/logger" file file_context)))

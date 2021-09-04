@@ -7,6 +7,9 @@
        (fsuse trans "shm" fs_context)
        (fsuse trans "tmpfs" fs_context)
 
+       (macro dontaudit_getattr_fs_dirs ((type ARG1))
+	      (dontaudit ARG1 fs (dir (getattr))))
+
        (blockinherit .fs.macro_template_all_files)
        (blockinherit .fs.macro_template_blk_files)
        (blockinherit .fs.macro_template_chr_files)
