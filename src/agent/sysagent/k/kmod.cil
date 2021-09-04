@@ -49,7 +49,6 @@
        (allow subj self (capability (sys_admin sys_module)))
        (allow subj self (key (write)))
        (allow subj self (lockdown (confidentiality)))
-       (allow subj self (system (module_load)))
 
        (call manage_file_files (subj))
        (call map_file_files (subj))
@@ -75,6 +74,7 @@
 
        (call .debug.search_fs_pattern.type (subj))
 
+       (call .file.mod.load_all_files (subj))
        (call .file.mod.map_all_files (subj))
        (call .file.mod.read_all_files (subj))
 
