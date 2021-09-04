@@ -5,6 +5,38 @@
 
 (block sys
 
+       (macro dontaudit_setsched_subj_processes ((type ARG1))
+	      (dontaudit ARG1 subj (process (setsched))))
+
+       (macro dontaudit_signal_subj_processes ((type ARG1))
+	      (dontaudit ARG1 subj (process (signal))))
+
+       (macro exec_subj_type_transition ((type ARG1))
+	      (allow ARG1 subj (process (transition)))
+
+	      (allow subj ARG1 (process (sigchld)))
+	      (allow subj ARG1 (fd (use)))
+	      (allow subj ARG1 readwriteinherited_fifo_file)
+
+	      (call .exec.mapexecute_file_files (ARG1))
+	      (call .exec.read_file_files (ARG1))
+	      (call .exec.subj_type_transition (ARG1 subj)))
+
+       (macro role_access ((role ARG1)(user ARG2))
+	      (call roleallow.role (ARG1))
+	      (call userrole.user (ARG2)))
+
+       (macro shell_exec_subj_type_transition ((type ARG1))
+	      (allow ARG1 subj (process (transition)))
+
+	      (allow subj ARG1 (process (sigchld)))
+	      (allow subj ARG1 (fd (use)))
+	      (allow subj ARG1 readwriteinherited_fifo_file)
+
+	      (call .shell.exec.mapexecute_file_files (ARG1))
+	      (call .shell.exec.read_file_files (ARG1))
+	      (call .shell.exec.subj_type_transition (ARG1 subj)))
+
        (role role)
        (roletype role subj)
 
@@ -18,4 +50,27 @@
 
        (call .obj.role (role))
 
-       (call .unconfined.type (subj)))
+       (call .unconfined.type (subj))
+
+       (block roleallow
+
+	      (macro role ((role ARG1))
+		     (roleattributeset roleattr ARG1))
+
+	      (roleattribute roleattr)
+
+	      (roleallow roleattr role))
+
+       (block userrole
+
+	      (macro user ((user ARG1))
+		     (userattributeset userattr ARG1))
+
+	      (userattribute userattr)
+
+	      (userrole userattr role)))
+
+;; TODO: move this to src/user/wheel.cil
+;;(in wheel
+;;
+;;    (call .sys.role_access (role id)))
