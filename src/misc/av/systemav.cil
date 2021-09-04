@@ -44,7 +44,8 @@
 
 	   (allow typeattr self (system (module_load)))
 	   (allow typeattr subj
-		  (system (ipc_info module_request syslog_console syslog_mod
+		  (system (ipc_info module_request reboot reload start status
+				    stop syslog_console syslog_mod
 				    syslog_read)))
 
 	   (call moduleload.type (typeattr))))

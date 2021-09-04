@@ -1,6 +1,11 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(typepermissive pkgmgr.updatealternatives.subj)
+
+(typealias dpkg_script_t)
+(typealiasactual dpkg_script_t sys.subj)
+
 (block pkgmgr
 
        (block cache

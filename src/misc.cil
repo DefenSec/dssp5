@@ -1,23 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(typealias dpkg_script_t)
-(typealiasactual dpkg_script_t sys.subj)
-
 (tunable xserver_object_manager false)
-
-;; systemd
-(in dev.unconfined
-
-    (call .kmsg.mounton_nodedev_chr_files (typeattr)))
-
-(in nodedev.unconfined
-
-    (call .kmsg.mounton_nodedev_chr_files (typeattr)))
-
-(in sys.unconfined
-
-    (allow typeattr subj (system (reboot reload start status stop))))
 
 (in caplastcap
 
