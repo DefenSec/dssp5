@@ -47,9 +47,7 @@
 		     (call .data.file_type_transition
 			   (ARG1 file dir "xkb")))
 
-	      (blockinherit .file.data.base_template)
-	      (blockinherit .file.macro_template_dirs)
-	      (blockinherit .file.macro_template_files))
+	      (blockinherit .file.data.template))
 
        (block exec
 

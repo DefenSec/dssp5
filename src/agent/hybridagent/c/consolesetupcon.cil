@@ -15,6 +15,8 @@
 	   (call data.list_file_dirs (subj))
 	   (call data.read_file_files (subj))
 
+	   (call exec.execute_file_files (subj))
+
 	   (call home.read_file_files (subj))
 
 	   (call run.manage_file_dirs (subj))
@@ -32,14 +34,23 @@
 
 	   (call .file.exec.getattr_all_files (subj))
 
+	   (call .kbd.data.read_file_files (subj))
+	   (call .kbd.data.read_file_lnk_files (subj))
+	   (call .kbd.data.search_file_dirs (subj))
 	   (call .kbd.subj_type_transition (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
+	   (call .perl5.data.search_file_dirs (subj))
+
 	   (call .proc.list_fs_dirs (subj))
 
+	   (call .random.read_nodedev_chr_files (subj))
+
 	   (call .rbacsep.constrained.type (subj))
+
+	   (call .root.list_file_dirs (subj))
 
 	   (call .shell.exec.execute_file_files (subj))
 
