@@ -64,7 +64,7 @@
        (call .subj.common.ps_all_states (subj))
 
        (call .sys.getattr_subj_sockets (subj))
-       (call .sys.modulerequest_system (subj))
+       (call .sys.modulerequest_subj_system (subj))
        (call .sys.ps_subj_states (subj))
 
        (call .sys.mount_fs (subj))

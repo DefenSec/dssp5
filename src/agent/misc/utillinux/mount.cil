@@ -72,7 +72,7 @@
        (call .stordev.readwrite_all_chr_files (subj))
 
        (call .sys.dontaudit_setsched_subj_processes (subj))
-       (call .sys.modulerequest_system (subj))
+       (call .sys.modulerequest_subj_system (subj))
 
        ;; /var/run
        (call .var.read_file_lnk_files (subj))

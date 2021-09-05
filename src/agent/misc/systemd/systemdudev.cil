@@ -191,7 +191,7 @@
 	   (call .stordev.watch_all_chr_files (subj))
 
 	   (call .sys.moduleload.type (subj))
-	   (call .sys.modulerequest_system (subj))
+	   (call .sys.modulerequest_subj_system (subj))
 	   (call .sys.search_subj_keyrings (subj))
 
 	   (call .sys.getattr_fs (subj))

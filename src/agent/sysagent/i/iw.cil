@@ -16,7 +16,7 @@
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
-       (call .sys.modulerequest_system (subj))
+       (call .sys.modulerequest_subj_system (subj))
 
        (call .sys.search_fs_pattern.type (subj))
 
