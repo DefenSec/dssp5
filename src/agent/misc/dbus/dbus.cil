@@ -202,10 +202,7 @@
 	      (filecon "/usr/bin/dbus-broker" file file_context)
 	      (filecon "/usr/bin/dbus-broker-launch" file file_context)
 
-	      (call .sys.agent.exec.type (file))
-
-	      (optional dbus_exec_hybridagent
-			(call .hybrid.agent.exec.type (file))))
+	      (call .hybrid.agent.exec.type (file)))
 
        (block macro_template
 

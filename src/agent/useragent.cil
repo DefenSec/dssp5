@@ -1,0 +1,83 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+;; TODO: move this to src/user/unprivuser.cil
+;;    (call agent.getrlimit_all_processes (subj))
+;;    (call agent.getsched_all_processes (subj))
+;;    (call agent.ps_all_states (subj))
+;;    (call agent.ptrace_all_processes (subj))
+;;    (call agent.setrlimit_all_processes (subj))
+;;    (call agent.setsched_all_processes (subj))
+;;    (call agent.sigkill_all_processes (subj))
+;;    (call agent.signal_all_processes (subj))
+;;    (call agent.signull_all_processes (subj))
+;;    (call agent.sigstop_all_processes (subj))
+
+    (block agent
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .subj.all_macro_template)
+
+	   (typeattribute typeattr)
+
+;; TODO: move this to src/user/unprivuser.cil
+;;	   (call termdev.readwriteinherited_all_chr_files (typeattr))
+
+	   (call .agent.type (typeattr))
+
+	   (call .auto.getattr_fs_dirs (typeattr))
+
+;; TODO: move this to src/user/unprivuser.cil
+;;	   (call .exec.home.list_file_dirs (typeattr))
+;;	   (call .exec.home.traverse_file_pattern.type (typeattr))
+
+;;	   (call .lib.home.mapexecute_file_files (typeattr))
+;;	   (call .lib.home.read_file_files (typeattr))
+;;	   (call .lib.home.traverse_file_pattern.type (typeattr))
+
+	   (call .rbacsep.usefdsource.type (typeattr))
+
+	   (block client
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr))
+
+	   (block exec
+
+		  (macro auditexecuteaccess_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (getattr execute))))
+
+		  (macro entrypoint_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (entrypoint))))
+
+		  (macro getattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (getattr))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_files)
+
+		  (typeattribute typeattr)
+
+		  (call .agent.exec.type (typeattr)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .agent.template)
+
+		  (call subj_type_transition (.user.agent.client.typeattr))
+
+		  (call .user.agent.exec.type (exec.file))
+		  (call .user.agent.type (subj)))))

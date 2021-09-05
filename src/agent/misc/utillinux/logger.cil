@@ -3,7 +3,7 @@
 
 (block logger
 
-       (blockinherit .sys.agent.template)
+       (blockinherit .hybrid.agent.template)
 
        (allow subj self create_unix_dgram_socket)
 
@@ -21,9 +21,6 @@
        (call .systemd.journal.relay_msgs.type (subj))
 
        (call .systemd.unit.run.search_file_dirs (subj))
-
-       (optional logger_hybridagent
-		 (blockinherit .hybrid.agent.template))
 
        (block exec
 

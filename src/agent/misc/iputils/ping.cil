@@ -3,7 +3,7 @@
 
 (block ping
 
-       (blockinherit .sys.agent.template)
+       (blockinherit .hybrid.agent.template)
 
        (allow subj self (capability (net_raw)))
        (allow subj self (process (getcap setcap)))
@@ -24,9 +24,6 @@
        (call .rbacsep.constrained.type (subj))
 
        (call .selinux.linked.type (subj))
-
-       (optional ping_hybridagent
-		 (blockinherit .hybrid.agent.template))
 
        (block exec
 

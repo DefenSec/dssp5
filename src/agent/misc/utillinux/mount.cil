@@ -18,7 +18,7 @@
        (macro dontaudit_link_subj_keyrings ((type ARG1))
 	      (dontaudit ARG1 subj (key (link))))
 
-       (blockinherit .sys.agent.template)
+       (blockinherit .hybrid.agent.template)
 
        (allow subj self (capability (fowner setgid setuid sys_admin sys_rawio)))
 
@@ -76,9 +76,6 @@
 
        ;; /var/run
        (call .var.read_file_lnk_files (subj))
-
-       (optional mount_hybridagent
-		 (blockinherit .hybrid.agent.template))
 
        (optional mount_fusesshfs
 		 (call .fusesshfs.subj_type_transition (subj)))

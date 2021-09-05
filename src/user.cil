@@ -14,7 +14,7 @@
 
     (blockinherit all_macro_template)
 
-;; TODO: move to src/agent/useragent.cil
+;; TODO: move to src/user/unprivuser.cil
 ;;    ;; access to user agents is governed per-unpriv-role with rbac
 ;;    (call agent.client.type (subj))
 
