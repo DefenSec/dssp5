@@ -129,6 +129,8 @@
 	   (call .firmware.read_sysfile_files (subj))
 	   (call .firmware.search_sysfile_pattern.type (subj))
 
+	   (call .hwclock.subj_type_transition (subj))
+
 	   (call .ibac.objchangesys.type (subj))
 
 	   (call .kmod.conf.list_file_dirs (subj))
