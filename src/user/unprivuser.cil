@@ -86,6 +86,17 @@
 
     (call .tty.serialtermdev_type_change (subj serialtermdev))
 
+    (optional unprivuser_consolesetupcon
+	      (call .consolesetup.setupcon.home.manage_file_files (subj))
+	      (call .consolesetup.setupcon.home.relabel_file_files (subj))
+	      (call .consolesetup.setupcon.home.user_home_file_type_transition_file
+		    (subj))
+
+	      (call .consolesetup.setupcon.role (role))
+
+	      (call .consolesetup.setupcon.tmp.manage_file_files (subj))
+	      (call .consolesetup.setupcon.tmp.relabel_file_files (subj)))
+
     (optional unprivuser_mount
 	      (call .mount.role (role)))
 

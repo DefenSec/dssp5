@@ -1558,12 +1558,6 @@
 		     (blockinherit .file.macro_template_files)
 		     (blockinherit .file.run.systemd.base_template))))
 
-;; TODO: move to agent/misc/dbus.cil
-;;(in dbus
-
-;;    ;; for systemd-run --pipe and machinectl
-;;    (call .file.except.readwriteinherited_all_files (subj)))
-
 (in dev
 
     ;; PrivateDevices
