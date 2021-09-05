@@ -7,7 +7,55 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self (capability (sys_tty_config)))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .file.exec.getattr_all_files (subj))
+
+	   (call .font.data.read_file_pattern.type (subj))
+
+	   (call .kbd.exec.execute_file_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
 	   (call .rbacsep.constrained.type (subj))
+
+	   (call .shell.exec.execute_file_files (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .subj.common.dontaudit_read_all_states (subj))
+	   (call .subj.common.read_all_states (subj))
+
+	   (call .sys.open_ptytermdev_chr_files (subj))
+
+	   (call .sys.open_serialtermdev_chr_files (subj))
+
+	   (call .sys.read_subj_states (subj))
+
+	   (call .sys.user.read_subj_states (subj))
+
+	   (call .sysctl.conf.read_file_files (subj))
+	   (call .sysctl.exec.execute_file_files (subj))
+
+	   (call .tty.open_serialtermdev_chr_files (subj))
+
+	   (optional consolesetupcon_systemdnspawn
+		     (call .systemd.nspawn.contained.subj,read_all_states
+			   (subj)))
+
+	   (optional consolesetupcon_userptytermdev
+		     (call .user.open_ptytermdev_chr_files (subj)))
+
+	   (optional consolesetupcon_userserialtermdev
+		     (call .user.open_serialtermdev_chr_files (subj)))
 
 	   (block exec
 
