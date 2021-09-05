@@ -16,6 +16,8 @@
 
        (call .exec.execute_file_files (subj))
 
+       (call .kbd.subj_type_transition (subj))
+
        (call .locale.conf.read_file_files (subj))
 
        (call .rbacsep.constrained.type (subj))
@@ -25,6 +27,8 @@
 
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
+
+       (call .tty.open_serialtermdev_chr_files (subj))
 
        (block conf
 
