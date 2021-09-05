@@ -69,8 +69,3 @@
 	      (userattribute userattr)
 
 	      (userrole userattr role)))
-
-;; TODO: move this to src/user/wheel.cil
-;;(in wheel
-;;
-;;    (call .sys.role_access (role id)))
