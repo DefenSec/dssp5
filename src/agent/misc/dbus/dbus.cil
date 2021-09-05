@@ -1,0 +1,368 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(class dbus (acquire_svc send_msg))
+(classorder (unordered dbus))
+
+(block dbus
+
+       (blockinherit macro_template)
+
+       (blockinherit .agent.template)
+
+       (allow subj self (capability (audit_write setgid setuid)))
+       (allow subj self (process (getcap setcap)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call common.type (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .sys.agent.type (subj))
+       (call .sys.sendmsg_subj_dbus.type (subj))
+       (call .sys.status_system (subj))
+
+       (call .systemd.notify.type (subj))
+
+       (call .systemd.sessions.run.writeinherited_file_fifo_files (subj))
+
+       (call .systemd.unit.start_file_services (subj))
+       (call .systemd.unit.status_file_services (subj))
+       (call .systemd.unit.stop_file_services (subj))
+
+       (call .systemd.inhibit.run.writeinherited_file_fifo_files (subj))
+
+       (block activated
+
+	      (block unit
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow subj typeattr (service (start status stop)))))
+
+       (block all_macro_template
+
+	      (blockabstract all_macro_template)
+
+	      (block acquiresvc_all_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr common.typeattr (dbus (acquire_svc))))
+
+	      (block sendmsg_all_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr common.typeattr (dbus (send_msg)))))
+
+       (block client
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (blockinherit all_macro_template)
+
+	      (typeattribute typeattr)
+
+	      (call connectto_subj_unix_stream_sockets (typeattr))
+
+	      (call sendmsg_subj_dbus.type (typeattr))
+
+	      (call run.search_file_dirs (typeattr))
+	      (call run.write_file_sock_files (typeattr))
+
+	      (call .run.search_file_pattern.type (typeattr))
+
+	      (block all_macro_template
+
+		     (blockabstract all_macro_template)
+
+		     (block sendmsg_all_dbus
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr)
+
+			    (allow typeattr client.typeattr (dbus (send_msg)))))
+
+	      (block macro_template
+
+		     (blockabstract macro_template)
+
+		     (block sendmsg_subj_dbus
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr)
+
+			    (allow typeattr subj (dbus (send_msg)))))
+
+	      (block template
+
+		     (blockabstract template)
+
+		     (blockinherit .dbus.client.macro_template)
+
+		     (call .dbus.client.type (subj))))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (blockinherit all_macro_template)
+
+	      (allow typeattr self (process (getattr)))
+	      (allow typeattr self create_unix_dgram_socket)
+	      (allow typeattr self (dbus (send_msg)))
+	      (allow typeattr self (unix_stream_socket (accept connectto)))
+
+	      (call .computeav_selinux_security (typeattr))
+
+	      (call conf.list_file_dirs (typeattr))
+	      (call conf.read_file_files (typeattr))
+	      (call conf.watch_file_dirs (typeattr))
+
+	      (call data.list_file_dirs (typeattr))
+	      (call data.read_file_files (typeattr))
+	      (call data.read_file_lnk_files (typeattr))
+	      (call data.watch_file_dirs (typeattr))
+
+	      (call exec.execute_file_files (typeattr))
+
+	      (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .module.search_sysfile_pattern.type (typeattr))
+
+	      (call .nss.passwdgroup.type (typeattr))
+
+	      (call .proc.getattr_fs_pattern.type (typeattr))
+
+	      (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .selinux.default.read_file_pattern.type (typeattr))
+	      (call .selinux.map_fs_files (typeattr))
+	      (call .selinux.readwrite_fs_pattern.type (typeattr))
+
+	      (call .systemd.journal.relay_msgs.type (typeattr)))
+
+       (block conf
+
+	      (filecon "/etc/dbus-1" dir file_context)
+	      (filecon "/etc/dbus-1/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dbus-1")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/dbus-1" dir file_context)
+	      (filecon "/usr/share/dbus-1/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dbus-1")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/dbus-broker" file file_context)
+	      (filecon "/usr/bin/dbus-broker-launch" file file_context)
+
+	      (call .sys.agent.exec.type (file))
+
+	      (optional dbus_exec_hybridagent
+			(call .hybrid.agent.exec.type (file))))
+
+       (block macro_template
+
+	      (blockabstract macro_template)
+
+	      (block acquiresvc_subj_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr subj (dbus (acquire_svc))))
+
+	      (block sendmsg_subj_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr subj (dbus (send_msg)))))
+
+       (block nameclient
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (blockinherit client.all_macro_template)
+
+	      (typeattribute typeattr)
+
+	      (call acquiresvc_subj_dbus.type (typeattr))
+
+	      (call client.type (typeattr))
+
+	      (block template
+
+		     (blockabstract template)
+
+		     (blockinherit .dbus.client.template)
+
+		     (call .dbus.nameclient.type (subj))))
+
+       (block run
+
+	      (filecon "/run/dbus" dir file_context)
+	      (filecon "/run/dbus/.*" any file_context)
+
+	      (macro dontaudit_search_file_dirs ((type ARG1))
+		     (dontaudit ARG1 file (dir (search))))
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "dbus")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (macro watch_file_sock_files ((type ARG1))
+		     (allow ARG1 file (sock_file (watch))))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.run.base_template)
+
+	      (call .rbacsep.exempt.obj.type (file)))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.tmpfs.base_template))
+
+       (block unconfined
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (dbus (acquire_svc)))
+	      (allow typeattr typeattr (dbus (send_msg)))
+
+	      (call acquiresvc_subj_dbus.type (typeattr))
+	      (call sendmsg_subj_dbus.type (typeattr))
+
+	      (call client.sendmsg_all_dbus.type (typeattr))
+
+	      (block sendmsg_all_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr unconfined.typeattr (dbus (send_msg)))))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/dbus-broker\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/dbus\.socket.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .dbus.conf.conf_file_type_transition_file (typeattr))
+    (call .dbus.data.data_file_type_transition_file (typeattr))
+    (call .dbus.run.run_file_type_transition_file (typeattr)))
+
+(in invalid.unconfined
+
+    (allow typeattr .invalid (dbus (all))))
+
+(in rbacsep
+
+    (constrain (dbus (send_msg))
+	       (or (or (or (or (eq r1 r2)
+			       (and (eq r1 exempt.roleattr)
+				    (neq t1 constrained.typeattr)))
+			   (eq t1 exempt.subj.typeattr))
+		       (and (eq r1 .sys.role) (eq t1 .dbus.subj)))
+		   (eq r2 .sys.role))))
+
+(in sys
+
+    (call .dbus.subj_type_transition (subj))
+
+    (block sendmsg_subj_dbus
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr subj (dbus (send_msg)))))
+
+(in sys.user
+
+    (block sendmsg_subj_dbus
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr subj (dbus (send_msg)))))
+
+(in unconfined
+
+    (call .dbus.unconfined.type (typeattr)))
