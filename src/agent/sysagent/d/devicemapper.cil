@@ -22,6 +22,7 @@
        (call .selinux.linked.type (subj))
 
        (call .sys.ipcinfo_subj_system (subj))
+       (call .sys.modulerequest_subj_system (subj))
        (call .sys.readwrite_subj_semaphores (subj))
 
        (call .systemd.udev.run.read_file_pattern.type (subj))
