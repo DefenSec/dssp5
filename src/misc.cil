@@ -133,6 +133,27 @@
 
 	   (call .fs.search_sysfile_pattern.type (typeattr))))
 
+(in ci
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr))))
+
+    (block manage_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_fs_dirs (typeattr))
+	   (call manage_fs_files (typeattr))))
+
 (in class
 
     (block list_sysfile_pattern
@@ -446,6 +467,27 @@
 
 	   (call .dev.search_file_pattern.type (typeattr))))
 
+(in dos
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr))))
+
+    (block manage_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_fs_dirs (typeattr))
+	   (call manage_fs_files (typeattr))))
+
 (in efivar
 
     (block search_fs_pattern
@@ -615,6 +657,52 @@
 
 	   (call read_sysfile_lnk_files (typeattr))
 	   (call search_sysfile_pattern.type (typeattr))))
+
+(in fuse
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr))))
+
+    (block manage_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_fs_dirs (typeattr))
+	   (call manage_fs_files (typeattr))
+	   (call manage_fs_lnk_files (typeattr))
+
+	   (call .fuse.search_sysfile_pattern.type (typeattr)))
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .fuse.search_sysfile_pattern.type (typeattr)))
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .fs.search_sysfile_pattern.type (typeattr))))
 
 (in home
 
@@ -940,6 +1028,19 @@
 
 	   (call .proc.search_fs_pattern.type (typeattr))))
 
+(in mqueue
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .dev.search_file_pattern.type (typeattr))))
+
 (in net
 
     (block search_procfile_pattern
@@ -983,6 +1084,30 @@
 
 	   (call read_procfile_lnk_files (typeattr))
 	   (call search_procfile_pattern.type (typeattr))))
+
+(in nfs
+
+    (block getattr_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr fs (filesystem (getattr))))
+
+    (block manage_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_fs_dirs (typeattr))
+	   (call manage_fs_fifo_files (typeattr))
+	   (call manage_fs_files (typeattr))
+	   (call manage_fs_lnk_files (typeattr))
+	   (call manage_fs_sock_files (typeattr))))
 
 (in node
 
@@ -1527,6 +1652,329 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in user.home
+
+    (block addname_file_dir_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call addname_file_dirs (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_fifo_files (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call manage_file_sock_files (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_fifo_files (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+	   (call read_file_sock_files (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_dirs (typeattr))
+	   (call relabel_file_fifo_files (typeattr))
+	   (call relabel_file_files (typeattr))
+	   (call relabel_file_lnk_files (typeattr))
+	   (call relabel_file_sock_files (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .home.traverse_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
+(in user.mail
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_files (typeattr))
+
+	   (call .mail.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+
+	   (call .mail.search_file_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_files (typeattr))
+
+	   (call .mail.search_file_pattern.type (typeattr))))
+
+(in user.mqueuefs
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_files (typeattr))
+
+	   (call .mqueue.search_fs_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+
+	   (call .mqueue.search_fs_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_files (typeattr))
+
+	   (call .mqueue.search_fs_pattern.type (typeattr))))
+
+(in user.run
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_fifo_files (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call manage_file_sock_files (typeattr))
+
+	   (call .runuser.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_fifo_files (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+	   (call read_file_sock_files (typeattr))
+
+	   (call .runuser.search_file_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_dirs (typeattr))
+	   (call relabel_file_fifo_files (typeattr))
+	   (call relabel_file_files (typeattr))
+	   (call relabel_file_lnk_files (typeattr))
+	   (call relabel_file_sock_files (typeattr))
+
+	   (call .runuser.search_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .runuser.search_file_pattern.type (typeattr))))
+
+(in user.tmp
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_fifo_files (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call manage_file_sock_files (typeattr))
+
+	   (call .tmp.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_fifo_files (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+	   (call read_file_sock_files (typeattr))
+
+	   (call .tmp.search_file_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_dirs (typeattr))
+	   (call relabel_file_fifo_files (typeattr))
+	   (call relabel_file_files (typeattr))
+	   (call relabel_file_lnk_files (typeattr))
+	   (call relabel_file_sock_files (typeattr))
+
+	   (call .tmp.search_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .tmp.search_file_pattern.type (typeattr))))
+
+(in user.tmpfs
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_fifo_files (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call manage_file_sock_files (typeattr))
+
+	   (call .tmp.search_fs_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_fifo_files (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+	   (call read_file_sock_files (typeattr))
+
+	   (call .tmp.search_fs_pattern.type (typeattr)))
+
+    (block relabel_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call relabel_file_dirs (typeattr))
+	   (call relabel_file_fifo_files (typeattr))
+	   (call relabel_file_files (typeattr))
+	   (call relabel_file_lnk_files (typeattr))
+	   (call relabel_file_sock_files (typeattr))
+
+	   (call .tmp.search_fs_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .dev.search_file_pattern.type (typeattr))))
 
 (in var
 

@@ -3,44 +3,12 @@
 
 (in user
 
-;; TODO: move to src/user/unprivuser.cil
-;;    (macro dontaudit_open_subj_fifo_files ((type ARG1))
-;;	   (dontaudit ARG1 subj (fifo_file (open))))
-
     (macro type ((type ARG1))
 	   (typeattributeset typeattr ARG1))
 
     (typeattribute typeattr)
 
     (blockinherit all_macro_template)
-
-;; TODO: move to src/user/unprivuser.cil
-;;    ;; access to user agents is governed per-unpriv-role with rbac
-;;    (call agent.client.type (subj))
-
-;; TODO: move to src/user/unprivuser.cil
-;;    (call .ci.getattr_fs_pattern.type (subj))
-;;    (call .ci.manage_fs_pattern.type (subj))
-;;    (call .ci.map_fs_files (subj))
-;;
-;;    (call .dos.getattr_fs_pattern.type (subj))
-;;    (call .dos.manage_fs_pattern.type (subj))
-;;    (call .dos.map_fs_files (subj))
-;;
-;;    (call .fuse.getattr_fs_pattern.type (subj))
-;;    (call .fuse.manage_fs_pattern.type (subj))
-;;    (call .fuse.map_fs_files (subj))
-;;
-;;    (call .nfs.getattr_fs_pattern.type (subj))
-;;    (call .nfs.manage_fs_pattern.type (subj))
-;;    (call .nfs.map_fs_files (subj))
-;;
-;;    (call .checkcontext_selinux_security (subj))
-;;
-;;    (call .selinux.default.read_file_pattern.type (subj))
-;;    (call .selinux.file.read_file_pattern.type (subj))
-;;
-;;    (call .sys.termdev.readwriteinherited_all_chr_files (subj))
 
     (block all_macro_template
 
@@ -75,9 +43,6 @@
 		  (process (getattr getrlimit getsched ptrace setfscreate
 				    setpgid setrlimit setsched)))
 	   (dontaudit typeattr self (constrainsocketsubject (create)))
-
-;; TODO: move to src/dev/termdev/usertermdev.cil
-;;	   (call termdev.readwrite_all_chr_files (typeattr))
 
 	   (call user.type (typeattr))
 
@@ -190,9 +155,6 @@
 	   (call .tty.search_procfile_dirs (typeattr))
 
 	   (call .uptime.read_procfile_files (typeattr))
-
-;; TODO: move this to src/file/userfile/userhomefile.cil
-;;	   (call .user.home.search_file_pattern.type (typeattr))
 
 	   (call .utmp.run.read_file_files (typeattr))
 

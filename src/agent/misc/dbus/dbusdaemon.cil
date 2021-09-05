@@ -5,16 +5,18 @@
 
     (call client.read_all_states (subj))
 
-    (call .kernel.search_sysfile_pattern.type (subj))
-
-    (call .security.search_fs_dirs (subj))
-
     (call .sys.read_subj_states (subj))
 
     (call .sys.user.read_subj_states (subj))
 
     (call .systemd.users.run.read_file_files (subj))
     (call .systemd.users.run.search_file_dirs (subj)))
+
+(in dbus.common
+
+    (call .kernel.search_sysfile_pattern.type (typeattr))
+
+    (call .security.search_fs_dirs (typeattr)))
 
 (in dbus.exec
 

@@ -169,11 +169,6 @@
 
     (call .mount.run.run_file_type_transition_file (typeattr)))
 
-;; TODO: move this to src/user/unprivuser.cil and make optional
-;;(in user
-;;
-;;    (call .mount.role (role)))
-
 ;; TODO: move this to src/user/wheel.cil and make optional
 ;;(in wheel
 ;;
