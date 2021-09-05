@@ -168,8 +168,3 @@
 (in file.unconfined
 
     (call .mount.run.run_file_type_transition_file (typeattr)))
-
-;; TODO: move this to src/user/wheel.cil and make optional
-;;(in wheel
-;;
-;;    (call .mount.role (role)))

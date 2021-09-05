@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(userprefix wheel.id wheel.role)
+
+(block wheel
+
+       (blockinherit .user.unpriv.template)
+
+       (call .sys.role_access (role id))
+
+       (optional wheeluser_consolesetupcon
+		 (call .consolesetup.setupcon.role (role)))
+
+       (optional wheeluser_mount
+		 (call .mount.role (role)))
+
+       (optional wheeluser_ping
+		 (call .ping.role (role))))

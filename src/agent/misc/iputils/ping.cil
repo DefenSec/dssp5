@@ -28,8 +28,3 @@
        (block exec
 
 	      (filecon "/usr/bin/ping" file file_context)))
-
-;; TODO: move to src/user/wheel.cil
-;;(in wheel
-;;
-;;    (call .ping.role (role)))

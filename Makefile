@@ -42,7 +42,8 @@ config_install:
 	/bin/echo -e """sys.serialtermdev\
 \nuser.serialtermdev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
 	/bin/echo -e """sys.role:sys.user.subj\
-\nuser.role:user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+\nuser.role:user.subj\
+\nwheel.role:user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
 	/bin/echo -e """sys.serialtermdev\
 \nuser.serialtermdev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/securetty_types
 	/bin/echo -e """/bin /usr/bin\
@@ -78,20 +79,22 @@ ifeq ($(MCS),false)
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev\
 \ndisk sys.id:sys.role:removable.stordev\
 \nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj sys.role:sys.user.subj user.role:user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.subj sys.role:sys.user.subj user.role:user.subj wheel.role:user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 	echo "sys.role:sys.subj sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 	echo "sys.role:sys.subj user.role:user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
+	echo "sys.role:sys.subj wheel.role:user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 else
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
 \ndisk sys.id:sys.role:removable.stordev:s0\
 \nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
-	echo "sys.role:sys.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+	echo "sys.role:sys.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0 wheel.role:user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 	echo "sys.role:sys.subj:s0 sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 	echo "sys.role:sys.subj:s0 user.role:user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
+	echo "sys.role:sys.subj:s0 wheel.role:user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 endif
 
 modular_install: config_install
