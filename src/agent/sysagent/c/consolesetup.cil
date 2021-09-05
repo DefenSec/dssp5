@@ -29,6 +29,8 @@
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
 
+       (call .tty.open_serialtermdev_chr_files (subj))
+
        (block conf
 
 	      (filecon "/etc/console-setup" dir file_context)
@@ -84,8 +86,8 @@
 
 (in kbd
 
-    (call .consolesetup.conf.read_file_files (subj))
-    (call .consolesetup.conf.search_file_dirs (subj)))
+    (call .consolesetup.conf.list_file_dirs (subj))
+    (call .consolesetup.conf.read_file_files (subj)))
 
 (in systemd.udev
 
