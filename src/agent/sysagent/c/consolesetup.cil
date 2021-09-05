@@ -26,10 +26,10 @@
 
        (call .selinux.linked.type (subj))
 
+       (call .serialtermdev.open_all_chr_files (subj))
+
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
-
-       (call .tty.open_serialtermdev_chr_files (subj))
 
        (block conf
 
