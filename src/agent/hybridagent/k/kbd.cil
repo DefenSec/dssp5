@@ -24,8 +24,20 @@
 
        (call .src.search_file_dirs (subj))
 
+       (call .sys.open_ptytermdev_chr_files (subj))
+
+       (call .sys.open_serialtermdev_chr_files (subj))
+
        (call .systemd.udev.use_subj_fds (subj))
        (call .systemd.udev.writeinherited_subj_fifo_files (subj))
+
+       (call .tty.open_serialtermdev_chr_files (subj))
+
+       (optional kbd_userptytermdev
+		 (call .user.open_ptytermdev_chr_files (subj)))
+
+       (optional kbd_userserialtermdev
+		 (call .user.open_serialtermdev_chr_files (subj)))
 
        (block data
 

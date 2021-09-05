@@ -18,7 +18,8 @@
 
        (call .kbd.subj_type_transition (subj))
 
-       (call .locale.conf.read_file_files (subj))
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
@@ -99,6 +100,14 @@
 
     (call .consolesetup.conf.conf_file_type_transition_file (typeattr))
     (call .consolesetup.run.run_file_type_transition_file (typeattr)))
+
+(in kbd
+
+    (call .consolesetup.conf.list_file_dirs (subj))
+    (call .consolesetup.conf.read_file_files (subj))
+
+    (call .consolesetup.data.list_file_dirs (subj))
+    (call .consolesetup.data.read_file_files (subj)))
 
 (in systemd.udev
 
