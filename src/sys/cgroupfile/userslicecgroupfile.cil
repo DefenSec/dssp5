@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in user
+
+    (block slice
+
+	   (genfscon "cgroup2" "/user.slice" cgroupfile_context)
+
+	   (blockinherit .cgroupfile.macro_template_dirs)
+	   (blockinherit .cgroupfile.template)))
