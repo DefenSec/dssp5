@@ -52,10 +52,6 @@
 
 	   (call .sys.home.dontaudit_list_file_dirs (subj))
 
-	   (call .sys.open_ptytermdev_chr_files (subj))
-
-	   (call .sys.open_serialtermdev_chr_files (subj))
-
 	   (call .sys.read_subj_states (subj))
 
 	   (call .sys.user.read_subj_states (subj))
@@ -65,17 +61,9 @@
 
 	   (call .tmp.deletename_file_dirs (subj))
 
-	   (call .tty.open_serialtermdev_chr_files (subj))
-
 	   (optional consolesetupcon_systemdnspawn
 		     (call .systemd.nspawn.contained.subj,read_all_states
 			   (subj)))
-
-	   (optional consolesetupcon_userptytermdev
-		     (call .user.open_ptytermdev_chr_files (subj)))
-
-	   (optional consolesetupcon_userserialtermdev
-		     (call .user.open_serialtermdev_chr_files (subj)))
 
 	   (block exec
 
