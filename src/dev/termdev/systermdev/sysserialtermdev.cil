@@ -3,15 +3,9 @@
 
 (in dev.unconfined
 
-;;    TODO: move to dev/termdev/usertermdev/userserialtermdev.cil
-;;    (call .sys.user_serialtermdev_type_change (typeattr))
-
     (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))
 
 (in serialtermdev.unconfined
-
-;;    TODO: move to dev/termdev/usertermdev/userserialtermdev.cil
-;;    (call .sys.user_serialtermdev_type_change (typeattr))
 
     (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))
 
@@ -24,18 +18,10 @@
     (macro setattr_serialtermdev_chr_files ((type ARG1))
 	   (allow ARG1 serialtermdev (chr_file (setattr))))
 
-;;    TODO: move to dev/termdev/usertermdev/userserialtermdev.cil
-;;    (macro user_serialtermdev_type_change ((type ARG1))
-;;	   (call .user.serialtermdev_type_change
-;;		 (ARG1 serialtermdev)))
-
     (blockinherit .serialtermdev.template)
 
     (call termdev.type (serialtermdev)))
 
 (in termdev.unconfined
-
-;;    TODO: move to dev/termdev/usertermdev/userserialtermdev.cil
-;;    (call .sys.user_serialtermdev_type_change (typeattr))
 
     (call .sys.loginserialtermdev_all_type_change_serialtermdev (typeattr)))

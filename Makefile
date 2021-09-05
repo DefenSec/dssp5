@@ -39,8 +39,11 @@ config_install:
 \n<selinux>\
 \n</selinux>\
 \n</busconfig>""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/dbus_contexts
-	echo "sys.serialtermdev" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
+	/bin/echo -e """sys.serialtermdev\
+\nuser.serialtermdev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/customizable_types
 	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_type
+	/bin/echo -e """sys.serialtermdev\
+\nuser.serialtermdev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/securetty_types
 	/bin/echo -e """/bin /usr/bin\
 \n/etc/systemd/system /usr/lib/systemd/system\
 \n/etc/systemd/system.attached /usr/lib/systemd/system\

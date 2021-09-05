@@ -76,9 +76,6 @@
 				    setpgid setrlimit setsched)))
 	   (dontaudit typeattr self (constrainsocketsubject (create)))
 
-;; TODO: move to src/dev/termdev/usertermdev.cil
-;;	   (call termdev.readwrite_all_chr_files (typeattr))
-
 	   (call user.type (typeattr))
 
 	   (call .agent.exec.dontaudit_auditaccess_all_files (typeattr))
