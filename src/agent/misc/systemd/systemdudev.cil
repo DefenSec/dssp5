@@ -1,9 +1,6 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-;; for console-setup (and kbd)
-(typepermissive systemd.udev.subj)
-
 (in file.unconfined
 
     (call .systemd.udev.conf.conf_file_type_transition_file (typeattr))
