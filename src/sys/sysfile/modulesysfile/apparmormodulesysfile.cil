@@ -1,0 +1,9 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block apparmor
+
+       (genfscon "sysfs" "/module/apparmor" sysfile_context)
+
+       (blockinherit .sysfile.macro_template_dirs)
+       (blockinherit .sysfile.module.template))
