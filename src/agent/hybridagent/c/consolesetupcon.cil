@@ -8,6 +8,7 @@
 	   (blockinherit .hybrid.agent.template)
 
 	   (allow subj self (capability (sys_tty_config)))
+	   (dontaudit subj self (capability (sys_ptrace)))
 
 	   (call conf.list_file_dirs (subj))
 	   (call conf.read_file_files (subj))
@@ -37,6 +38,8 @@
 
 	   (call .subj.common.dontaudit_read_all_states (subj))
 	   (call .subj.common.read_all_states (subj))
+
+	   (call .sys.home.dontaudit_list_file_dirs (subj))
 
 	   (call .sys.open_ptytermdev_chr_files (subj))
 

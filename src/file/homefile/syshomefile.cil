@@ -8,6 +8,9 @@
 	   (filecon "/root" dir file_context)
 	   (filecon "/root/.*" any file_context)
 
+	   (macro dontaudit_list_file_dirs ((type ARG1))
+		  (dontaudit ARG1 file list_dir))
+
 	   (macro root_file_type_transition_file ((type ARG1))
 		  (call .root.fs_type_transition
 			(ARG1 file dir "root")))
