@@ -71,6 +71,9 @@
 
 	   (call systemd.unit.run.search_file_dirs (subj))
 
+	   (call .apparmor.readwrite_sysfile_files (subj))
+	   (call .apparmor.search_sysfile_dirs (subj))
+
 	   (call .block.traverse_sysfile_pattern.type (subj))
 
 	   (call .bus.list_sysfile_pattern.type (subj))

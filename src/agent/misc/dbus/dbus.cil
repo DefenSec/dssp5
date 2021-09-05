@@ -317,6 +317,8 @@
 
 	      (filecon "/usr/lib/systemd/system/dbus-broker\.service.*" file
 		       file_context)
+	      (filecon "/usr/lib/systemd/system/dbus\.service.*" file
+		       file_context)
 	      (filecon "/usr/lib/systemd/system/dbus\.socket.*" file
 		       file_context)
 
