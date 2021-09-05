@@ -101,7 +101,10 @@
 
 			    (typeattribute typeattr)
 
-			    (allow typeattr client.typeattr (dbus (send_msg)))))
+			    (allow typeattr client.typeattr (dbus (send_msg))))
+
+		     (macro read_all_states ((type ARG1))
+			    (allow ARG1 typeattr (state (read)))))
 
 	      (block macro_template
 
