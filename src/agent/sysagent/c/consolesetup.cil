@@ -12,14 +12,11 @@
        (call run.manage_file_files (subj))
        (call run.run_file_type_transition_file (subj))
 
-       (call setupcon.exec.execute_file_files (subj))
+       (call setupcon.subj_type_transition (subj))
 
        (call .exec.execute_file_files (subj))
 
-       (call .kbd.subj_type_transition (subj))
-
-       (call .locale.data.map_file_files (subj))
-       (call .locale.read_file_pattern.type (subj))
+       (call .locale.conf.read_file_files (subj))
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
@@ -28,8 +25,6 @@
 
        (call .shell.exec.mapexecute_file_files (subj))
        (call .shell.exec.read_file_files (subj))
-
-       (call .tty.open_serialtermdev_chr_files (subj))
 
        (block conf
 
@@ -49,6 +44,23 @@
 			   (ARG1 file file "keyboard")))
 
 	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/consolefonts" dir file_context)
+	      (filecon "/usr/share/consolefonts/.*" any file_context)
+	      (filecon "/usr/share/consoletrans" dir file_context)
+	      (filecon "/usr/share/consoletrans/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "consolefonts"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "consoletrans")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
 
        (block exec
 
@@ -83,11 +95,6 @@
 
     (call .consolesetup.conf.conf_file_type_transition_file (typeattr))
     (call .consolesetup.run.run_file_type_transition_file (typeattr)))
-
-(in kbd
-
-    (call .consolesetup.conf.list_file_dirs (subj))
-    (call .consolesetup.conf.read_file_files (subj)))
 
 (in systemd.udev
 

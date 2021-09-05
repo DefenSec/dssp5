@@ -7,11 +7,23 @@
 
 	   (blockinherit .hybrid.agent.template)
 
-	   (allow subj self (capability (sys_tty_config)))
 	   (dontaudit subj self (capability (sys_ptrace)))
 
-	   (call conf.list_file_dirs (subj))
-	   (call conf.read_file_files (subj))
+	   (call conf.conf_file_type_transition_file (subj))
+	   (call conf.manage_file_dirs (subj))
+	   (call conf.manage_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call home.read_file_files (subj))
+
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_files (subj))
+	   (call run.run_file_type_transition_file (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
 
 	   (call .dev.list_file_pattern.type (subj))
 
@@ -21,9 +33,7 @@
 
 	   (call .file.exec.getattr_all_files (subj))
 
-	   (call .font.data.read_file_pattern.type (subj))
-
-	   (call .kbd.exec.execute_file_files (subj))
+	   (call .kbd.subj_type_transition (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
@@ -31,6 +41,7 @@
 	   (call .proc.list_fs_dirs (subj))
 
 	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
 
 	   (call .shell.exec.execute_file_files (subj))
 
@@ -50,7 +61,9 @@
 	   (call .sys.user.read_subj_states (subj))
 
 	   (call .sysctl.conf.read_file_files (subj))
-	   (call .sysctl.exec.execute_file_files (subj))
+	   (call .sysctl.subj_type_transition (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
 
 	   (call .tty.open_serialtermdev_chr_files (subj))
 
@@ -71,7 +84,9 @@
 	   (block home
 
 		  (filecon "HOME_DIR/\.console-setup" file file_context)
+		  (filecon "HOME_DIR/\.console-setup\..*" file file_context)
 		  (filecon "HOME_DIR/\.keyboard" file file_context)
+		  (filecon "HOME_DIR/\.keyboard\..*" file file_context)
 
 		  (macro user_home_file_type_transition_file ((type ARG1))
 			 (call .user.home.file_type_transition

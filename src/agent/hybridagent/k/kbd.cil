@@ -3,7 +3,7 @@
 
 (block kbd
 
-       (blockinherit .sys.agent.template)
+       (blockinherit .hybrid.agent.template)
 
        (allow subj self (capability (sys_tty_config)))
 
@@ -12,56 +12,27 @@
 
        (call .exec.execute_file_files (subj))
 
-       (call .file.bootflag.dontaudit_getattr_all_files (subj))
-
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
-
-       (call .lostfound.dontaudit_getattr_file_dirs (subj))
-
-       (call .mount.mountpoint.dontaudit_getattr_all_dirs (subj))
 
        (call .nss.passwdgroup.type (subj))
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
-       (call .root.list_file_dirs (subj))
-
        (call .shell.exec.execute_file_files (subj))
 
        (call .src.search_file_dirs (subj))
 
-       (call .swap.dontaudit_getattr_file_files (subj))
-
-       (call .sys.dontaudit_getattr_fs_dirs (subj))
-
        (call .systemd.udev.use_subj_fds (subj))
        (call .systemd.udev.writeinherited_subj_fifo_files (subj))
 
-       (call .tmp.dontaudit_getattr_fs_dirs (subj))
-
-       (call .tty.open_serialtermdev_chr_files (subj))
-
-       (call .unknown.dontaudit_getattr_file (subj))
-
-       (optional kbd_misc
-		 (call .font.data.read_file_pattern.type (subj)))
-
-       (optional kbd_quotacheck
-		 (call .quotacheck.getattr_file_files (subj)))
-
        (block data
-
-	      (filecon "/usr/share/consoletrans" dir file_context)
-	      (filecon "/usr/share/consoletrans/.*" any file_context)
 
 	      (filecon "/usr/share/X11/xkb" dir file_context)
 	      (filecon "/usr/share/X11/xkb/.*" any file_context)
 
 	      (macro data_file_type_transition_file ((type ARG1))
-		     (call .data.file_type_transition
-			   (ARG1 file dir "consoletrans"))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "xkb")))
 
