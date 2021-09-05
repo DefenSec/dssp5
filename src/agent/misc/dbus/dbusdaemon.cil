@@ -1,6 +1,21 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in dbus
+
+    (call client.read_all_states (subj))
+
+    (call .kernel.search_sysfile_pattern.type (subj))
+
+    (call .security.search_fs_dirs (subj))
+
+    (call .sys.read_subj_states (subj))
+
+    (call .sys.user.read_subj_states (subj))
+
+    (call .systemd.users.run.read_file_files (subj))
+    (call .systemd.users.run.search_file_dirs (subj)))
+
 (in dbus.exec
 
     (filecon "/usr/bin/dbus-daemon" file file_context))
