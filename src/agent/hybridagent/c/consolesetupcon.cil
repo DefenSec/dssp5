@@ -5,7 +5,9 @@
 
     (block setupcon
 
-	   (blockinherit .user.agent.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
 
 	   (block exec
 
