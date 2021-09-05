@@ -4,7 +4,3 @@
 (in dbus.exec
 
     (filecon "/usr/bin/dbus-daemon" file file_context))
-
-(in dbus.unit
-
-    (filecon "/usr/lib/systemd/system/dbus\.service.*" file file_context))
