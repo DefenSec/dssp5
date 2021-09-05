@@ -16,6 +16,8 @@
 
     (call .kernel.search_sysfile_pattern.type (typeattr))
 
+    (call .locale.data.read_file_pattern.type (typeattr))
+
     (call .security.search_fs_dirs (typeattr)))
 
 (in dbus.exec
