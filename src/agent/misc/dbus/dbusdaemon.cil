@@ -1,0 +1,10 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus.exec
+
+    (filecon "/usr/bin/dbus-daemon" file file_context))
+
+(in dbus.unit
+
+    (filecon "/usr/lib/systemd/system/dbus\.service.*" file file_context))
