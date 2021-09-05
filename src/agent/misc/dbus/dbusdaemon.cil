@@ -20,6 +20,16 @@
 
     (call .security.search_fs_dirs (typeattr)))
 
+(in dbus.conf
+
+    (filecon "/etc/default/dbus" file file_context)
+    (filecon "/etc/default/dbus\..*" file file_context))
+
+(in dbus.conf.conf_file_type_transition_file
+
+    (call .conf.file_type_transition
+	  (ARG1 file file "dbus")))
+
 (in dbus.exec
 
     (filecon "/usr/bin/dbus-daemon" file file_context))
