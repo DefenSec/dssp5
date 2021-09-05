@@ -14,6 +14,8 @@
 
 	   (call .dev.list_file_pattern.type (subj))
 
+	   (call .devpts.search_fs_pattern.type (subj))
+
 	   (call .exec.execute_file_files (subj))
 
 	   (call .file.exec.getattr_all_files (subj))
@@ -24,6 +26,8 @@
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .proc.list_fs_dirs (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 
