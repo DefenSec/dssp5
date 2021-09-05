@@ -1,0 +1,8 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block ngroupsmax
+
+       (genfscon "proc" "/sys/kernel/ngroups_max" sysctlfile_context)
+
+       (blockinherit .sysctlfile.kernel.template))

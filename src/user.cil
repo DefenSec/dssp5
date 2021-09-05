@@ -109,6 +109,8 @@
 
 	   (call .net.traverse_procfile_pattern.type (typeattr))
 
+	   (call .ngroupsmax.read_sysctlfile_files (typeattr))
+
 	   (call .node.read_sysfile_files (typeattr))
 	   (call .node.search_sysfile_dirs (typeattr))
 
