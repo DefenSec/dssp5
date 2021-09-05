@@ -25,6 +25,9 @@
        (call tmpfs.map_file_files (subj))
        (call tmpfs.tmp_fs_type_transition_file (subj))
 
+       ;; for systemd-run --pipe and machinectl
+       (call .file.except.readwriteinherited_all_files (subj))
+
        (call .sys.agent.type (subj))
        (call .sys.sendmsg_subj_dbus.type (subj))
        (call .sys.status_system (subj))
