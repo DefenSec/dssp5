@@ -134,6 +134,7 @@
 	      (blockinherit all_macro_template)
 
 	      (allow typeattr self (process (getattr)))
+	      (allow typeattr self create_netlink_selinux_socket)
 	      (allow typeattr self create_unix_dgram_socket)
 	      (allow typeattr self (dbus (send_msg)))
 	      (allow typeattr self (unix_stream_socket (accept connectto)))
@@ -151,6 +152,9 @@
 
 	      (call exec.execute_file_files (typeattr))
 
+	      (call .apparmor.read_sysfile_files (typeattr))
+	      (call .apparmor.search_sysfile_dirs (typeattr))
+
 	      (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
 
 	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
@@ -160,6 +164,8 @@
 	      (call .nss.passwdgroup.type (typeattr))
 
 	      (call .proc.getattr_fs_pattern.type (typeattr))
+
+	      (call .random.read_nodedev_chr_files (typeattr))
 
 	      (call .random.read_sysctlfile_pattern.type (typeattr))
 
