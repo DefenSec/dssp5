@@ -29,12 +29,7 @@
 
 	      (filecon "/usr/bin/ping" file file_context)))
 
-;; TODO: move to src/user/unprivuser.cil
-;;(in user
-;;
-;;    (call .iputils.role (role)))
-
 ;; TODO: move to src/user/wheel.cil
 ;;(in wheel
 ;;
-;;    (call .iputils.role (role)))
+;;    (call .ping.role (role)))

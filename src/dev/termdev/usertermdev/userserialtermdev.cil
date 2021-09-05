@@ -36,6 +36,3 @@
     (blockinherit .serialtermdev.template)
 
     (call termdev.type (serialtermdev)))
-
-;; TODO: move this to src/user/unprivuser.cil
-;;    (call .tty.serialtermdev_type_change (subj serialtermdev)))

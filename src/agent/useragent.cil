@@ -3,19 +3,18 @@
 
 (in user
 
-;; TODO: move this to src/user/unprivuser.cil
-;;    (call agent.getrlimit_all_processes (subj))
-;;    (call agent.getsched_all_processes (subj))
-;;    (call agent.ps_all_states (subj))
-;;    (call agent.ptrace_all_processes (subj))
-;;    (call agent.setrlimit_all_processes (subj))
-;;    (call agent.setsched_all_processes (subj))
-;;    (call agent.sigkill_all_processes (subj))
-;;    (call agent.signal_all_processes (subj))
-;;    (call agent.signull_all_processes (subj))
-;;    (call agent.sigstop_all_processes (subj))
-
     (block agent
+
+;; TODO: move this to src/file/userfile/userhomefile/userhomedatafile/exechomefile.cil
+;;    (optional useragent_exechomefile
+;;	      (call .exec.home.list_file_dirs (typeattr))
+;;	      (call .exec.home.traverse_file_pattern.type (typeattr)))
+
+;; TODO: move this to src/file/userfile/userhomefile/userhomedatafile/libhomefile.cil
+;;    (optional useragent_libhomefile
+;;	      (call .lib.home.mapexecute_file_files (typeattr))
+;;	      (call .lib.home.read_file_files (typeattr))
+;;	      (call .lib.home.traverse_file_pattern.type (typeattr)))
 
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
@@ -24,20 +23,9 @@
 
 	   (typeattribute typeattr)
 
-;; TODO: move this to src/user/unprivuser.cil
-;;	   (call termdev.readwriteinherited_all_chr_files (typeattr))
-
 	   (call .agent.type (typeattr))
 
 	   (call .auto.getattr_fs_dirs (typeattr))
-
-;; TODO: move this to src/user/unprivuser.cil
-;;	   (call .exec.home.list_file_dirs (typeattr))
-;;	   (call .exec.home.traverse_file_pattern.type (typeattr))
-
-;;	   (call .lib.home.mapexecute_file_files (typeattr))
-;;	   (call .lib.home.read_file_files (typeattr))
-;;	   (call .lib.home.traverse_file_pattern.type (typeattr))
 
 	   (call .rbacsep.usefdsource.type (typeattr))
 
