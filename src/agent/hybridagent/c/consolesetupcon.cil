@@ -47,6 +47,8 @@
 
 	   (call .selinux.linked.type (subj))
 
+	   (call .serialtermdev.open_all_chr_files (subj))
+
 	   (call .subj.common.dontaudit_read_all_states (subj))
 	   (call .subj.common.read_all_states (subj))
 
