@@ -18,9 +18,6 @@
        (call .nss.passwdgroup.type (subj))
 
        (call .rbacsep.constrained.type (subj))
-       (call .rbacsep.usefdsource.type (subj))
-
-       (call .serialtermdev.open_all_chr_files (subj))
 
        (call .shell.exec.execute_file_files (subj))
 
@@ -28,11 +25,18 @@
 
        (call .sys.open_ptytermdev_chr_files (subj))
 
+       (call .sys.open_serialtermdev_chr_files (subj))
+
        (call .systemd.udev.use_subj_fds (subj))
        (call .systemd.udev.writeinherited_subj_fifo_files (subj))
 
+       (call .tty.open_serialtermdev_chr_files (subj))
+
        (optional kbd_userptytermdev
 		 (call .user.open_ptytermdev_chr_files (subj)))
+
+       (optional kbd_userserialtermdev
+		 (call .user.open_serialtermdev_chr_files (subj)))
 
        (block data
 

@@ -9,9 +9,8 @@
 
 	   (dontaudit subj self (capability (sys_ptrace)))
 
-	   (call conf.conf_file_type_transition_file (subj))
-	   (call conf.manage_file_dirs (subj))
 	   (call conf.manage_file_files (subj))
+	   (call conf.readwrite_file_dirs (subj))
 
 	   (call data.list_file_dirs (subj))
 	   (call data.read_file_files (subj))
@@ -41,18 +40,17 @@
 	   (call .proc.list_fs_dirs (subj))
 
 	   (call .rbacsep.constrained.type (subj))
-	   (call .rbacsep.readstatesource.type (subj))
 
 	   (call .shell.exec.execute_file_files (subj))
 
 	   (call .selinux.linked.type (subj))
 
-	   (call .serialtermdev.open_all_chr_files (subj))
-
 	   (call .subj.common.dontaudit_read_all_states (subj))
 	   (call .subj.common.read_all_states (subj))
 
 	   (call .sys.home.dontaudit_list_file_dirs (subj))
+
+	   (call .sys.open_serialtermdev_chr_files (subj))
 
 	   (call .sys.read_subj_states (subj))
 
@@ -63,9 +61,14 @@
 
 	   (call .tmp.deletename_file_dirs (subj))
 
+	   (call .tty.open_serialtermdev_chr_files (subj))
+
 	   (optional consolesetupcon_systemdnspawn
 		     (call .systemd.nspawn.contained.subj,read_all_states
 			   (subj)))
+
+	   (optional consolesetupcon_userserialtermdev
+		     (call .user.open_serialtermdev_chr_files (subj)))
 
 	   (block exec
 
