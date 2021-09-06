@@ -56,6 +56,7 @@ config_install:
 \n/lib64 /usr/lib\
 \n/libx32 /usr/lib\
 \n/sbin /usr/bin\
+\n/usr/lib/klibc/bin /usr/bin\
 \n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
