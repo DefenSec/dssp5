@@ -1,0 +1,39 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .lib.home.user_home_data_file_type_transition_file (typeattr)))
+
+(in lib
+
+    (block home
+
+	   (filecon "HOME_DIR/\.local/lib" dir file_context)
+	   (filecon "HOME_DIR/\.local/lib/.*" any file_context)
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro user_home_data_file_type_transition_file ((type ARG1))
+		  (call .user.home.data.file_type_transition
+			(ARG1 file dir "lib")))
+
+	   (blockinherit .file.user.home.data.template)))
+
+(in user
+
+    (call .lib.home.manage_file_dirs (subj))
+    (call .lib.home.manage_file_files (subj))
+    (call .lib.home.manage_file_lnk_files (subj))
+    (call .lib.home.mapexecute_file_files (subj))
+    (call .lib.home.relabel_file_dirs (subj))
+    (call .lib.home.relabel_file_files (subj))
+    (call .lib.home.relabel_file_lnk_files (subj))
+    (call .lib.home.user_home_data_file_type_transition_file (subj)))
+
+(in user.agent
+
+    (call .lib.home.mapexecute_file_files (typeattr))
+    (call .lib.home.read_file_files (typeattr))
+    (call .lib.home.traverse_file_pattern.type (typeattr)))
