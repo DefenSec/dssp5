@@ -101,7 +101,7 @@
 	      (filecon "/usr/bin/e2scrub" file file_context)
 	      (filecon "/usr/bin/e2scrub_all" file file_context)
 	      (filecon "/usr/bin/e2scrub_all_cron" file file_context)
-	      (filecon "/usr/bin/e2scrub_all_fail" file file_context)
+	      (filecon "/usr/bin/e2scrub_fail" file file_context)
 	      (filecon "/usr/bin/e2undo" file file_context)
 	      (filecon "/usr/bin/e4crypt" file file_context)
 	      (filecon "/usr/bin/e4defrag" file file_context)
