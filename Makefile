@@ -69,7 +69,6 @@ config_install:
 \n/usr/local/share /usr/share\
 \n/usr/local/src /usr/src\
 \n/usr/sbin /usr/bin\
-\n/usr/tmp /tmp\
 \n/var/cache/private /var/cache\
 \n/var/lib/private /var/lib\
 \n/var/lock /run/lock\
