@@ -54,6 +54,7 @@
 
 	   (call .computecreate_selinux_security (typeattr))
 
+	   ;; try to narrow this down
 	   (call .conf.list_file_dirs (typeattr))
 	   (call .conf.map_file_files (typeattr))
 	   (call .conf.read_file_files (typeattr))
@@ -63,6 +64,7 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
 
+	   ;; try to narrow this down
 	   (call .data.list_file_dirs (typeattr))
 	   (call .data.map_file_files (typeattr))
 	   (call .data.read_file_files (typeattr))
@@ -140,6 +142,9 @@
 
 	   (call .shell.exec.entrypoint_file_files (typeattr))
 	   (call .shell.exec.execute_file_files (typeattr))
+
+	   (call .shellrc.list_file_dirs (typeattr))
+	   (call .shellrc.read_file_files (typeattr))
 
 	   (call .stat.read_procfile_files (typeattr))
 
