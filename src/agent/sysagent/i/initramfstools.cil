@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       ;; dpkg
+       (allow subj self (capability (setgid)))
        (allow subj self (process (getsched)))
 
        (call conf.list_file_dirs (subj))
@@ -21,13 +23,22 @@
        (call tmp.tmp_file_type_transition_file (subj dir "*"))
        (call tmp.tmp_file_type_transition_file (subj file "*"))
 
+       (call .blktools.subj_type_transition (subj))
+
        (call .boot.manage_file_files (subj))
        (call .boot.readwrite_file_dirs (subj))
 
+       (call .conf.list_file_dirs (subj))
+
+       (call .exec.execute_file_files (subj))
+       (call .exec.list_file_dirs (subj))
+
        (call .file.mod.read_all_files (subj))
 
+       (call .firmware.data.list_file_dirs (subj))
        (call .firmware.data.read_file_files (subj))
-       (call .firmware.data.search_file_dirs (subj))
+
+       (call .fstab.read_file_files (subj))
 
        (call .kmod.conf.list_file_dirs (subj))
        (call .kmod.conf.read_file_files (subj))
@@ -38,6 +49,8 @@
 
        (call .ldconfig.subj_type_transition (subj))
 
+       (call .ldso.conf.list_file_dirs (subj))
+       (call .ldso.conf.read_file_files (subj))
        (call .ldso.execute_file_files (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
@@ -47,8 +60,11 @@
 
        (call .modules.read_procfile_pattern.type (subj))
 
+       (call .perl5.data.list_file_dirs (subj))
        (call .perl5.data.read_file_files (subj))
-       (call .perl5.data.search_file_dirs (subj))
+
+       (call .pkgmgr.conf.list_file_dirs (subj))
+       (call .pkgmgr.conf.read_file_files (subj))
 
        (call .random.read_nodedev_chr_files (subj))
 
@@ -64,7 +80,19 @@
 
        (call .sys.read_subj_states (subj))
 
-       (call .systemd.udev.subj_type_transition (subj))
+       (call .systemd.conf.search_file_pattern.type (subj))
+
+       (call .systemd.network.conf.list_file_dirs (subj))
+       (call .systemd.network.conf.read_file_files (subj))
+       (call .systemd.network.data.list_file_dirs (subj))
+       (call .systemd.network.data.read_file_files (subj))
+
+       (call .systemd.udev.conf.list_file_dirs (subj))
+       (call .systemd.udev.conf.read_file_files (subj))
+       (call .systemd.udev.data.list_file_dirs (subj))
+       (call .systemd.udev.data.read_file_files (subj))
+       (call .systemd.udev.helper.exec.mapexecute_file_files (subj))
+       (call .systemd.udev.helper.exec.read_file_files (subj))
 
        (call .tmp.deletename_file_dirs (subj))
 
