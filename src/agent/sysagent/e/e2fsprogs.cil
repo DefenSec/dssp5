@@ -1,0 +1,166 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block e2fsprogs
+
+       (blockinherit .sys.agent.template)
+
+       (call conf.read_file_files (subj))
+
+       (call .acpi.search_procfile_dirs (subj))
+
+       (call .blktools.run.manage_file_dirs (subj))
+       (call .blktools.run.manage_file_files (subj))
+       (call .blktools.run.run_file_type_transition_file (subj))
+
+       (call .block.traverse_sysfile_pattern.type (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .ext4.read_sysfile_files (subj))
+       (call .ext4.search_sysfile_dirs (subj))
+
+       (call .fs.search_sysfile_dirs (subj))
+
+       (call .fsck.run.manage_file_dirs (subj))
+       (call .fsck.run.manage_file_files (subj))
+       (call .fsck.run.run_file_type_transition_file (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .lostfound.boot_file_type_transition_file (subj))
+       (call .lostfound.cache_file_type_transition_file (subj))
+       (call .lostfound.conf_file_type_transition_file (subj))
+       (call .lostfound.create_file_dirs (subj))
+       (call .lostfound.data_file_type_transition_file (subj))
+       (call .lostfound.home_file_type_transition_file (subj))
+       (call .lostfound.log_file_type_transition_file (subj))
+       (call .lostfound.root_file_type_transition_file (subj))
+       (call .lostfound.spool_file_type_transition_file (subj))
+       (call .lostfound.state_file_type_transition_file (subj))
+       (call .lostfound.tmp_file_type_transition_file (subj))
+       (call .lostfound.var_file_type_transition_file (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .mount.image.readwrite_all_files (subj))
+       (call .mount.image.search_all_dirs (subj))
+       (call .mount.mountpoint.dontaudit_getattr_all_dirs (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .stordev.readwrite.type (subj))
+       (call .stordev.readwrite_all_blk_files (subj))
+       (call .stordev.readwrite_all_chr_files (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .systemd.fsck.writeinherited_subj_fifo_files (subj))
+       (call .systemd.fsck.use_subj_fds (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+       (call .zram.read_sysfile_files (subj))
+
+       (block conf
+
+	      (filecon "/etc/e2scrub\.conf" file file_context)
+	      (filecon "/etc/e2scrub\.conf\..*" file file_context)
+	      (filecon "/etc/mke2fs\.conf" file file_context)
+	      (filecon "/etc/mke2fs\.conf\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "e2scrub.conf"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "mke2fs.conf")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/badblocks" file file_context)
+	      (filecon "/usr/bin/chattr" file file_context)
+	      (filecon "/usr/bin/debugfs" file file_context)
+	      (filecon "/usr/bin/dumpe2fs" file file_context)
+	      (filecon "/usr/bin/e2freefrag" file file_context)
+	      (filecon "/usr/bin/e2fsck" file file_context)
+	      (filecon "/usr/bin/e2image" file file_context)
+	      (filecon "/usr/bin/e2label" file file_context)
+	      (filecon "/usr/bin/e2mmpstatus" file file_context)
+	      (filecon "/usr/bin/e2scrub" file file_context)
+	      (filecon "/usr/bin/e2scrub_all" file file_context)
+	      (filecon "/usr/bin/e2scrub_all_cron" file file_context)
+	      (filecon "/usr/bin/e2scrub_all_fail" file file_context)
+	      (filecon "/usr/bin/e2undo" file file_context)
+	      (filecon "/usr/bin/e4crypt" file file_context)
+	      (filecon "/usr/bin/e4defrag" file file_context)
+	      (filecon "/usr/bin/filefrag" file file_context)
+	      (filecon "/usr/bin/fuse2fs" file file_context)
+	      (filecon "/usr/bin/logsave" file file_context)
+	      (filecon "/usr/bin/lsattr" file file_context)
+	      (filecon "/usr/bin/mke2fs" file file_context)
+	      (filecon "/usr/bin/mklost\+found" file file_context)
+	      (filecon "/usr/bin/resize2fs" file file_context)
+	      (filecon "/usr/bin/tune2fs" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/e2scrub@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/e2scrub_all\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/e2scrub_all\.timer.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/e2scrub_fail@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/e2scrub_reap\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .e2fsprogs.conf.conf_file_type_transition_file (typeattr)))
+
+(in fsck
+
+    (call .e2fsprogs.subj_type_transition (subj)))
+
+;;(in systemd.dissect
+
+;;    (call .e2fsprogs.subj_type_transition (subj)))
+
+;;(in systemd.firstboot
+
+;;    (call .e2fsprogs.subj_type_transition (subj)))
+
+(in systemd.fsck
+
+    (call .e2fsprogs.subj_type_transition (subj)))
+
+;;(in systemd.journalctl
+
+;;    (call .e2fsprogs.subj_type_transition (subj)))
+
+;;(in systemd.machineidsetup
+
+;;    (call .e2fsprogs.subj_type_transition (subj)))
+
+;;(in systemd.sysusers
+
+;;    (call .e2fsprogs.subj_type_transition (subj)))
+
+(in systemd.tmpfiles
+
+    (call .e2fsprogs.subj_type_transition (subj)))
