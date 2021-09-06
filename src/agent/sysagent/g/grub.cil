@@ -28,6 +28,8 @@
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
+       (call .osprober.subj_type_transition (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 

@@ -1,0 +1,148 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block osprober
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (dac_read_search sys_admin)))
+       (allow subj self (process (setfscreate)))
+
+       (call data.read_file_files (subj))
+       (call data.search_file_dirs (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.mounton_file_dirs (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .blktools.subj_type_transition (subj))
+
+       (call .block.list_sysfile_dirs (subj))
+       (call .block.traverse_sysfile_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devices.list_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_files (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.list_fs_dirs (subj))
+
+       (call .exec.execute_file_files (subj))
+       (call .exec.list_file_dirs (subj))
+
+       (call .firmware.search_sysfile_pattern.type (subj))
+
+       (call .kmod.subj_type_transition (subj))
+
+       (call .logger.subj_type_transition (subj))
+
+       (call .mdstat.read_procfile_files (subj))
+
+       (call .mount.exec.execute_file_files (subj))
+
+       (call .mount.mountpoint.search_all_dirs (subj))
+
+       (call .mount.run.manage_file_dirs (subj))
+       (call .mount.run.manage_file_files (subj))
+       (call .mount.run.run_file_type_transition_file (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .stordev.getattr_all_blk_files (subj))
+       (call .stordev.getattr_all_chr_files (subj))
+
+       (call .swaps.read_procfile_files (subj))
+
+       (call .sys.home.list_file_dirs (subj))
+
+       (call .systemd.udev.subj_type_transition (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.getattr_fs_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .var.read_file_lnk_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+       (call .xattr.mount_fs (subj))
+       (call .xattr.unmount_fs (subj))
+
+       (call .zram.list_sysfile_dirs (subj))
+
+       (optional osprober_systemdnspawn
+		 (call .systemd.nspawn.container.obj.read_all_files (subj))
+		 (call .systemd.nspawn.container.obj.read_all_lnk_files (subj))
+		 (call .systemd.nspawn.container.obj.search_all_dirs (subj)))
+
+       (block data
+
+	      (filecon "/usr/lib/linux-boot-probes" dir file_context)
+	      (filecon "/usr/lib/linux-boot-probes/.*" any file_context)
+
+	      (filecon "/usr/lib/os-prober" dir file_context)
+	      (filecon "/usr/lib/os-prober/.*" any file_context)
+
+	      (filecon "/usr/share/os-prober" dir file_context)
+	      (filecon "/usr/share/os-prober/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "os-prober")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "linux-boot-probes"))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "os-prober")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/linux-boot-prober" file file_context)
+	      (filecon "/usr/bin/os-prober" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/os-prober" dir file_context)
+	      (filecon "/var/lib/os-prober/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "os-prober")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file dir "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .osprober.data.data_file_type_transition_file (typeattr))
+    (call .osprober.data.lib_file_type_transition_file (typeattr))
+    (call .osprober.state.state_file_type_transition_file (typeattr)))
