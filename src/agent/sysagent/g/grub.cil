@@ -1,0 +1,93 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block grub
+
+       (blockinherit .sys.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/default/grub" file file_context)
+	      (filecon "/etc/default/grub\..*" file file_context)
+	      (filecon "/etc/default/grub\.d" dir file_context)
+	      (filecon "/etc/default/grub\.d/.*" any file_context)
+	      (filecon "/etc/grub\.d" dir file_context)
+	      (filecon "/etc/grub\.d/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "grub.d"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "grub")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/lib/grub" dir file_context)
+	      (filecon "/usr/lib/grub/.*" any file_context)
+
+	      (filecon "/usr/share/grub" dir file_context)
+	      (filecon "/usr/share/grub/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/grub-editenv" file file_context)
+	      (filecon "/usr/bin/grub-file" file file_context)
+	      (filecon "/usr/bin/grub-fstest" file file_context)
+	      (filecon "/usr/bin/grub-glue-efi" file file_context)
+	      (filecon "/usr/bin/grub-install" file file_context)
+	      (filecon "/usr/bin/grub-kbdcomp" file file_context)
+	      (filecon "/usr/bin/grub-macbless" file file_context)
+	      (filecon "/usr/bin/grub-menulst2cfg" file file_context)
+	      (filecon "/usr/bin/grub-mkconfig" file file_context)
+	      (filecon "/usr/bin/grub-mkdevicemap" file file_context)
+	      (filecon "/usr/bin/grub-mkfont" file file_context)
+	      (filecon "/usr/bin/grub-mkimage" file file_context)
+	      (filecon "/usr/bin/grub-mklayout" file file_context)
+	      (filecon "/usr/bin/grub-mknetdir" file file_context)
+	      (filecon "/usr/bin/grub-mkpasswd-pbkdf2" file file_context)
+	      (filecon "/usr/bin/grub-mkrelpath" file file_context)
+	      (filecon "/usr/bin/grub-mkrescue" file file_context)
+	      (filecon "/usr/bin/grub-mkstandalone" file file_context)
+	      (filecon "/usr/bin/grub-mount" file file_context)
+	      (filecon "/usr/bin/grub-probe" file file_context)
+	      (filecon "/usr/bin/grub-reboot" file file_context)
+	      (filecon "/usr/bin/grub-render-label" file file_context)
+	      (filecon "/usr/bin/grub-script-check" file file_context)
+	      (filecon "/usr/bin/grub-set-default" file file_context)
+	      (filecon "/usr/bin/grub-syslinux2cfg" file file_context)
+	      (filecon "/usr/bin/update-grub" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/grub" dir file_context)
+	      (filecon "/var/lib/grub/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template)))
+
+(in file.unconfined
+
+    (call .grub.conf.conf_file_type_transition_file (typeattr))
+    (call .grub.data.data_file_type_transition_file (typeattr))
+    (call .grub.data.lib_file_type_transition_file (typeattr))
+    (call .grub.state.state_file_type_transition_file (typeattr)))

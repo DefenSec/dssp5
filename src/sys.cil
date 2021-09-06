@@ -22,6 +22,9 @@
 	      (call .exec.read_file_files (ARG1))
 	      (call .exec.subj_type_transition (ARG1 subj)))
 
+       (macro open_subj_fifo_files ((type ARG1))
+	      (allow ARG1 subj (fifo_file (open))))
+
        (macro role_access ((role ARG1)(user ARG2))
 	      (call roleallow.role (ARG1))
 	      (call userrole.user (ARG2)))
