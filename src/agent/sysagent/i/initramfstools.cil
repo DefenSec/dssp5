@@ -5,8 +5,55 @@
 
        (blockinherit .sys.agent.template)
 
+       (call data.execute_file_files (subj))
+       (call data.list_file_dirs (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.manage_file_lnk_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj "*"))
+
+       (call .boot.manage_file_files (subj))
+       (call .boot.readwrite_file_dirs (subj))
+
+       (call .file.mod.read_all_files (subj))
+
+       (call .firmware.data.read_file_files (subj))
+
+       (call .fsck.subj_type_transition (subj))
+
+       (call .kmod.conf.list_file_dirs (subj))
+       (call .kmod.read_file_files (subj))
+       (call .kmod.subj_type_transition (subj))
+
+       (call .ldconfig.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .mod.list_file_dirs (subj))
+
+       (call .modules.read_procfile_pattern.type (subj))
+
+       (call .perl5.data.read_file_files (subj))
+       (call .perl5.data.search_file_dirs (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
+
+       (call .root.list_fs_dirs (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .uptime.read_procfile_files (subj))
 
        (block conf
 
@@ -18,6 +65,17 @@
 			   (ARG1 file dir "initramfs-tools")))
 
 	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/initramfs-tools" dir file_context)
+	      (filecon "/usr/share/initramfs-tools/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "initramfs-tools")))
+
+	      (blockinherit .file.data.template))
 
        (block exec
 
@@ -39,4 +97,5 @@
 
 (in file.unconfined
 
-    (call .initramfstools.conf.conf_file_type_transition_file (typeattr)))
+    (call .initramfstools.conf.conf_file_type_transition_file (typeattr))
+    (call .initramfstools.data.data_file_type_transition_file (typeattr)))
