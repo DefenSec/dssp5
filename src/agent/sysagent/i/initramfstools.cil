@@ -5,6 +5,11 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self (process (getsched)))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
        (call data.execute_file_files (subj))
        (call data.list_file_dirs (subj))
 
@@ -13,7 +18,8 @@
        (call tmp.manage_file_dirs (subj))
        (call tmp.manage_file_files (subj))
        (call tmp.manage_file_lnk_files (subj))
-       (call tmp.tmp_file_type_transition_file (subj "*"))
+       (call tmp.tmp_file_type_transition_file (subj dir "*"))
+       (call tmp.tmp_file_type_transition_file (subj file "*"))
 
        (call .boot.manage_file_files (subj))
        (call .boot.readwrite_file_dirs (subj))
@@ -21,14 +27,18 @@
        (call .file.mod.read_all_files (subj))
 
        (call .firmware.data.read_file_files (subj))
-
-       (call .fsck.subj_type_transition (subj))
+       (call .firmware.data.search_file_dirs (subj))
 
        (call .kmod.conf.list_file_dirs (subj))
+       (call .kmod.conf.read_file_files (subj))
+       (call .kmod.data.list_file_dirs (subj))
+       (call .kmod.data.read_file_files (subj))
        (call .kmod.read_file_files (subj))
        (call .kmod.subj_type_transition (subj))
 
        (call .ldconfig.subj_type_transition (subj))
+
+       (call .ldso.execute_file_files (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
@@ -45,15 +55,27 @@
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
-       (call .root.list_fs_dirs (subj))
+       (call .root.list_file_dirs (subj))
 
+       (call .selinux.file.read_file_pattern.type (subj))
        (call .selinux.linked.type (subj))
 
        (call .shell.exec.execute_file_files (subj))
 
+       (call .sys.read_subj_states (subj))
+
+       (call .systemd.udev.subj_type_transition (subj))
+
        (call .tmp.deletename_file_dirs (subj))
 
        (call .uptime.read_procfile_files (subj))
+
+       (call .var.search_file_pattern.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional initramfstools_devicemapper
+		 (call .devicemapper.subj_type_transition (subj)))
 
        (block conf
 
@@ -86,9 +108,13 @@
 
        (block tmp
 
-	      (macro tmp_file_type_transition_file ((type ARG1)(name ARG2))
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
 		     (call .tmp.file_type_transition
-			   (ARG1 file dir ARG2)))
+			   (ARG1 file ARG2 ARG3)))
 
 	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_files)
@@ -99,3 +125,21 @@
 
     (call .initramfstools.conf.conf_file_type_transition_file (typeattr))
     (call .initramfstools.data.data_file_type_transition_file (typeattr)))
+
+(in kmod
+
+    (call .initramfstools.tmp.manage_file_files (subj))
+    (call .initramfstools.tmp.manage_file_lnk_files (subj))
+    (call .initramfstools.tmp.map_file_files (subj))
+    (call .initramfstools.tmp.readwrite_file_dirs (subj))
+
+    (call .tmp.search_file_pattern.type (subj)))
+
+(in ldconfig
+
+    (call .initramfstools.tmp.manage_file_files (subj))
+    (call .initramfstools.tmp.manage_file_lnk_files (subj))
+    (call .initramfstools.tmp.map_file_files (subj))
+    (call .initramfstools.tmp.readwrite_file_dirs (subj))
+
+    (call .tmp.search_file_pattern.type (subj)))
