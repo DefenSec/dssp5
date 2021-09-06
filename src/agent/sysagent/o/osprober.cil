@@ -8,7 +8,7 @@
        (allow subj self (capability (dac_read_search sys_admin)))
        (allow subj self (process (setfscreate)))
 
-       (call data.read_file_files (subj))
+       (call data.execute_file_files (subj))
        (call data.search_file_dirs (subj))
 
        (call exec.execute_file_files (subj))
@@ -93,8 +93,8 @@
 	      (filecon "/usr/lib/linux-boot-probes" dir file_context)
 	      (filecon "/usr/lib/linux-boot-probes/.*" any file_context)
 
-	      (filecon "/usr/lib/os-prober" dir file_context)
-	      (filecon "/usr/lib/os-prober/.*" any file_context)
+	      (filecon "/usr/lib/os-probes" dir file_context)
+	      (filecon "/usr/lib/os-probes/.*" any file_context)
 
 	      (filecon "/usr/share/os-prober" dir file_context)
 	      (filecon "/usr/share/os-prober/.*" any file_context)
@@ -107,7 +107,7 @@
 		     (call .lib.file_type_transition
 			   (ARG1 file dir "linux-boot-probes"))
 		     (call .lib.file_type_transition
-			   (ARG1 file dir "os-prober")))
+			   (ARG1 file dir "os-probes")))
 
 	      (blockinherit .file.data.base_template)
 	      (blockinherit .file.macro_template_dirs)

@@ -252,6 +252,9 @@
 
 	      (filecon "/usr/lib/systemd/systemd" file file_context)
 
+	      (macro auditexecuteaccess_file_files ((type ARG1))
+		     (allow ARG1 file (file (execute getattr))))
+
 	      (blockinherit .file.exec.template)
 
 	      (call .hybrid.agent.exec.type (file)))

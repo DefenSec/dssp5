@@ -22,6 +22,11 @@
 
        (call .systemd.unit.run.search_file_dirs (subj))
 
+       ;; grub runs os-prober which runs logger
+       (optional logger_grub
+		 (call .grub.use_subj_fds (subj))
+		 (call .grub.writeinherited_subj_fifo_files (subj)))
+
        (block exec
 
 	      (filecon "/usr/bin/logger" file file_context)))
