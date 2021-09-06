@@ -93,6 +93,9 @@
 	      (filecon "/usr/lib/linux-boot-probes" dir file_context)
 	      (filecon "/usr/lib/linux-boot-probes/.*" any file_context)
 
+	      (filecon "/usr/lib/os-prober" dir file_context)
+	      (filecon "/usr/lib/os-prober/.*" any file_context)
+
 	      (filecon "/usr/lib/os-probes" dir file_context)
 	      (filecon "/usr/lib/os-probes/.*" any file_context)
 
@@ -106,6 +109,8 @@
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
 			   (ARG1 file dir "linux-boot-probes"))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "os-prober"))
 		     (call .lib.file_type_transition
 			   (ARG1 file dir "os-probes")))
 
