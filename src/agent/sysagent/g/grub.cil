@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self (capability (sys_admin)))
+
        (call boot.manage_file_dirs (subj))
        (call boot.manage_file_files (subj))
        (call boot.boot_file_type_transition_file (subj))
