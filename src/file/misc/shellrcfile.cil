@@ -20,10 +20,9 @@
 	      (call .conf.file_type_transition
 		    (ARG1 file file "profile")))
 
-       (blockinherit .file.base_template)
+       (blockinherit .file.conf.base_template)
        (blockinherit .file.macro_template_dirs)
-
-       (call .xattr.associate_fs (file)))
+       (blockinherit .file.macro_template_files))
 
 (in file.unconfined
 
