@@ -17,9 +17,13 @@
 
        (call .class.traverse_sysfile_pattern.type (subj))
 
+       (call .dev.list_file_dirs (subj))
+
        (call .dev.traverse_sysfile_pattern.type (subj))
 
        (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
 
        (call .ext4.read_sysfile_files (subj))
        (call .ext4.search_sysfile_dirs (subj))
@@ -58,6 +62,9 @@
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
 
        (call .stordev.readwrite.type (subj))
        (call .stordev.readwrite_all_blk_files (subj))

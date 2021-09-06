@@ -79,7 +79,7 @@
 			   (subj)))
 
 	   (optional consolesetupcon_usertermdev
-		     (call .user.open_all_chr_files (subj)))
+		     (call .user.termdev.open_all_chr_files (subj)))
 
 	   (block exec
 

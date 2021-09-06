@@ -5,8 +5,46 @@
 
        (blockinherit .sys.agent.template)
 
+       (call boot.manage_file_dirs (subj))
+       (call boot.manage_file_files (subj))
+       (call boot.boot_file_type_transition_file (subj))
+
+       (call conf.execute_file_files (subj))
+       (call conf.list_file_dirs (subj))
+
+       (call data.list_file_dirs (subj))
+       (call data.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call .boot.read_file_files (subj))
+
+       (call .devices.read_procfile_files (subj))
+
+       (call .dmcontrol.readwrite_nodedev_chr_files (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
+
+       (call .root.list_file_dirs (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .stordev.read.type (subj))
+       (call .stordev.read_all_blk_files (subj))
+       (call .stordev.read_all_chr_files (subj))
+
+       (call .sys.modulerequest_subj_system (subj))
+
+       (call .systemd.udev.subj_type_transition (subj))
 
        (block boot
 
