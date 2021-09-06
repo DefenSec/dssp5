@@ -273,13 +273,17 @@
 
 	      (block run
 
+		     (filecon "/run/systemd/fsck\.progress" socket file_context)
 		     (filecon "/run/systemd/show-status" file file_context)
 
 		     (macro systemd_run_file_type_transition_file ((type ARG1))
 			    (call .systemd.run.file_type_transition
+				  (ARG1 file sock_file "show.progress"))
+			    (call .systemd.run.file_type_transition
 				  (ARG1 file file "show-status")))
 
 		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.macro_template_sock_files)
 		     (blockinherit .file.run.systemd.base_template)))
 
        (block home
