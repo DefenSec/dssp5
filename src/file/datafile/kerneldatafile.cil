@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .kernel.data.lib_file_type_transition_file (typeattr)))
+
+(in kernel
+
+    (block data
+
+	   (filecon "/usr/lib/kernel" dir file_context)
+	   (filecon "/usr/lib/kernel/.*" any file_context)
+
+	   (macro lib_file_type_transition_file ((type ARG1))
+		  (call .lib.file_type_transition
+			(ARG1 file dir "kernel")))
+
+	   (blockinherit .file.data.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)))

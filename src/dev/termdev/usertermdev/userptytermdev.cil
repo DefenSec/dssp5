@@ -24,9 +24,6 @@
 	   (call .devpts.fs_type_transition
 		 (ARG1 ptytermdev chr_file "*")))
 
-    (macro open_ptytermdev_chr_files ((type ARG1))
-	   (allow ARG1 ptytermdev (chr_file (open))))
-
     (macro setattr_ptytermdev_chr_files ((type ARG1))
 	   (allow ARG1 ptytermdev (chr_file (setattr))))
 

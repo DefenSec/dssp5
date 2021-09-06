@@ -24,9 +24,6 @@
     (macro dontaudit_readwrite_serialtermdev_chr_files ((type ARG1))
 	   (dontaudit ARG1 serialtermdev readwrite_chr_file))
 
-    (macro open_serialtermdev_chr_files ((type ARG1))
-	   (allow ARG1 serialtermdev (chr_file (open))))
-
     (macro serialtermdev_type_change ((type ARG1)(type ARG2))
 	   (typechange ARG1 serialtermdev chr_file ARG2))
 

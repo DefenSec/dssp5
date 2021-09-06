@@ -1,0 +1,42 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block initramfstools
+
+       (blockinherit .sys.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/initramfs-tools" dir file_context)
+	      (filecon "/etc/initramfs-tools/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "initramfs-tools")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/lsinitramfs" file file_context)
+	      (filecon "/usr/bin/unmkinitramfs" file file_context)
+	      (filecon "/usr/bin/update-initramfs" file file_context)
+	      (filecon "/usr/bin/mkinitramfs" file file_context))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .tmp.file_type_transition
+			   (ARG1 file dir ARG2)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .initramfstools.conf.conf_file_type_transition_file (typeattr)))
