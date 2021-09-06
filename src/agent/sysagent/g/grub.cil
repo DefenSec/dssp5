@@ -8,6 +8,17 @@
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
+       (block boot
+
+	      (filecon "/boot/grub" dir file_context)
+	      (filecon "/boot/grub/.*" any file_context)
+
+	      (macro boot_file_type_transition_file ((type ARG1))
+		     (call .boot.file_type_transition
+			   (ARG1 file dir "grub")))
+
+	      (blockinherit .file.boot.template))
+
        (block conf
 
 	      (filecon "/etc/default/grub" file file_context)
@@ -87,6 +98,7 @@
 
 (in file.unconfined
 
+    (call .grub.boot.boot_file_type_transition_file (typeattr))
     (call .grub.conf.conf_file_type_transition_file (typeattr))
     (call .grub.data.data_file_type_transition_file (typeattr))
     (call .grub.data.lib_file_type_transition_file (typeattr))
