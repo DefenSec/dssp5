@@ -9,7 +9,7 @@
        (allow subj self (process (setfscreate)))
 
        (call data.execute_file_files (subj))
-       (call data.search_file_dirs (subj))
+       (call data.list_file_dirs (subj))
 
        (call exec.execute_file_files (subj))
 
