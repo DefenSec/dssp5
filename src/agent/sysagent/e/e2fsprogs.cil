@@ -72,6 +72,7 @@
 
        (call .swaps.read_procfile_files (subj))
 
+       (call .systemd.fsck.readwrite_subj_unix_stream_sockets (subj))
        (call .systemd.fsck.writeinherited_subj_fifo_files (subj))
        (call .systemd.fsck.use_subj_fds (subj))
 
