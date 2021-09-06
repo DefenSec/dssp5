@@ -1,0 +1,30 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .mime.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in mime.home
+
+    (block conf
+
+	   (filecon "HOME_DIR/\.config/mimeapps\.list" file file_context)
+	   (filecon "HOME_DIR/\.config/mimeapps\.list\.*" file file_context)
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro user_home_conf_file_type_transition_file ((type ARG1))
+		  (call .user.home.conf.file_type_transition
+			(ARG1 file file "mimeapps.list")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.user.home.conf.base_template)))
+
+(in user
+
+    (call .mime.home.conf.manage_file_files (subj))
+    (call .mime.home.conf.map_file_files (subj))
+    (call .mime.home.conf.relabel_file_files (subj))
+    (call .mime.home.conf.user_home_conf_file_type_transition_file (subj)))

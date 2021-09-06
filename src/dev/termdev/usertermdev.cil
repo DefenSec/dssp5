@@ -11,6 +11,10 @@
 	   (call .sys.user_ptytermdev_type_change (ARG1))
 	   (call .sys.user_serialtermdev_type_change (ARG1))))
 
+(in systemd.pager
+
+    (call .user.termdev.open_all_chr_files (typeattr)))
+
 (in termdev.unconfined
 
     (call .sys.termdev.user_all_type_change (typeattr)))

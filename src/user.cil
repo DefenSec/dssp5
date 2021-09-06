@@ -252,18 +252,6 @@
 		  (call .exec.read_file_files (ARG1))
 		  (call .exec.subj_type_transition (ARG1 subj)))
 
-;; TODO: move this to src/file/userfile/userhomefile/userhomedatafile/exechomefile.cil
-;;	   (macro exec_home_subj_type_transition ((type ARG1))
-;;		  (allow ARG1 subj (process (transition)))
-;;
-;;		  (allow subj ARG1 (process (sigchld)))
-;;		  (allow subj ARG1 (fd (use)))
-;;		  (allow subj ARG1 readwriteinherited_fifo_file)
-;;
-;;		  (call .exec.home.mapexecute_file_files (ARG1))
-;;		  (call .exec.home.read_file_files (ARG1))
-;;		  (call .exec.home.subj_type_transition (ARG1 subj)))
-
 	   (macro shell_exec_subj_type_transition ((type ARG1))
 		  (allow ARG1 subj (process (transition)))
 

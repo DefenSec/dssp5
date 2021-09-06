@@ -501,6 +501,96 @@
 
 	   (call .firmware.search_sysfile_pattern.type (typeattr))))
 
+(in environ
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call data.read_file_pattern.type (typeattr))))
+
+(in environ.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
+
+(in environ.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
+(in environ.home
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_conf_file_type_transition_file (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .user.home.conf.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.conf.search_file_pattern.type (typeattr))))
+
+(in environ.read_file_pattern
+
+    (call conf.read_file_pattern.type (typeattr))
+
+    (call home.read_file_pattern.type (typeattr))
+
+    (call run.read_file_pattern.type (typeattr)))
+
+(in environ.run
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .run.search_file_pattern.type (typeattr))))
+
 (in exec
 
     (block search_file_pattern
@@ -515,6 +605,56 @@
 	   (call .data.search_file_pattern.type (typeattr))
 
 	   (call .root.traverse_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
+(in exec.home
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call home.manage_file_dirs (typeattr))
+	   (call home.manage_file_files (typeattr))
+	   (call home.manage_file_lnk_files (typeattr))
+	   (call user_home_data_file_type_transition_file (typeattr))
+
+	   (call .user.home.data.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call home.list_file_dirs (typeattr))
+	   (call home.read_file_files (typeattr))
+	   (call home.read_file_lnk_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
 
     (block traverse_file_pattern
 
@@ -623,6 +763,114 @@
 	   (call read_file_files (typeattr))
 
 	   (call .data.search_file_pattern.type (typeattr))))
+
+(in font.home.cache
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .user.home.cache.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_cache_file_type_transition_file (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .user.home.cache.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.cache.search_file_pattern.type (typeattr))))
+
+(in font.home.conf
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call user_home_conf_file_type_transition_file (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .user.home.conf.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .user.home.conf.search_file_pattern.type (typeattr))))
+
+(in font.home.data
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_data_file_type_transition_file (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .user.home.data.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr))))
 
 (in fs
 
@@ -811,6 +1059,56 @@
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
 
+(in lib.home
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call home.manage_file_dirs (typeattr))
+	   (call home.manage_file_files (typeattr))
+	   (call home.manage_file_lnk_files (typeattr))
+	   (call user_home_data_file_type_transition_file (typeattr))
+
+	   (call .user.home.data.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call home.list_file_dirs (typeattr))
+	   (call home.read_file_files (typeattr))
+	   (call home.read_file_lnk_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
 (in locale
 
     (block read_file_pattern
@@ -932,6 +1230,29 @@
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
 
+(in media.home
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
 (in memory
 
     (block read_sysfile_pattern
@@ -1003,6 +1324,68 @@
 	   (call read_file_files (typeattr))
 
 	   (call .data.search_file_pattern.type (typeattr))))
+
+(in mime.home.conf
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_files (typeattr))
+	   (call user_home_conf_file_type_transition_file (typeattr))
+
+	   (call .user.home.conf.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.conf.search_file_pattern.type (typeattr))))
+
+(in mime.home.data
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_data_file_type_transition_file (typeattr))
+
+	   (call .user.home.data.create_file_dir_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr))))
+
+(in mime.read_file_pattern
+
+    (call conf.read_file_files (typeattr))
+
+    (call home.conf.read_file_pattern.type (typeattr))
+
+    (call home.data.read_file_pattern.type (typeattr))
+
+    (call .conf.search_file_pattern.type (typeattr)))
 
 (in module
 
@@ -1754,6 +2137,160 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in user.home.cache
+
+    (block create_file_dir_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call create_file_dirs (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.traverse_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr))))
+
+(in user.home.conf
+
+    (block create_file_dir_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call create_file_dirs (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.traverse_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr))))
+
+(in user.home.data
+
+    (block create_file_dir_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call create_file_dirs (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call manage_file_lnk_files (typeattr))
+	   (call user_home_file_type_transition_file (typeattr))
+
+	   (call .home.traverse_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr)))
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.home.traverse_file_pattern.type (typeattr))))
 
 (in user.mail
 

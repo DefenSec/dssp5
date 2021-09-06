@@ -906,9 +906,6 @@
 
 	      (call .terminfo.read_file_pattern.type (typeattr)))
 
-	      ;; TODD: move to dev/termdev/usertermdev.cil
-	      ;; (call .user.termdev.open_all_chr_files (typeattr)))
-
        (block portable
 
 	      (block data
