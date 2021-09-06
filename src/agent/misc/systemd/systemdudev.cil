@@ -127,7 +127,6 @@
 	   (call .firmware.data.search_file_dirs (subj))
 
 	   (call .firmware.read_sysfile_files (subj))
-	   (call .firmware.search_sysfile_pattern.type (subj))
 
 	   (call .hwclock.subj_type_transition (subj))
 

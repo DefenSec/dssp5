@@ -19,11 +19,22 @@
 
        (call .boot.read_file_files (subj))
 
+       ;; /usr/share/distro-info and /usr/share/pyshared/lsb_release.py
+       (call .data.read_file_files (subj))
+       (call .data.search_file_dirs (subj))
+
        (call .devices.read_procfile_files (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.search_sysfile_pattern.type (subj))
 
        (call .dmcontrol.readwrite_nodedev_chr_files (subj))
 
+       (call .efivar.read_fs_files (subj))
+       (call .efivar.search_fs_pattern.type (subj))
+
        (call .exec.execute_file_files (subj))
+       (call .exec.list_file_dirs (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
@@ -45,6 +56,8 @@
        (call .stordev.read_all_chr_files (subj))
 
        (call .sys.modulerequest_subj_system (subj))
+
+       (call .systemd.exec.auditexecuteaccess_file_files (subj))
 
        (call .systemd.udev.subj_type_transition (subj))
 
