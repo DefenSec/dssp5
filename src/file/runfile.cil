@@ -14,6 +14,9 @@
 	      (call .var.file_type_transition
 		    (ARG1 file dir "run")))
 
+       (macro watch_file_dirs ((type ARG1))
+	      (allow ARG1 file (dir (watch))))
+
        (blockinherit .file.run.template)
 
        (optional runfile_mount

@@ -1,0 +1,15 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block dns
+
+       (portcon "dccp" 53 port_context)
+       (portcon "dccp" 853 port_context)
+       (portcon "sctp" 53 port_context)
+       (portcon "sctp" 853 port_context)
+       (portcon "tcp" 53 port_context)
+       (portcon "tcp" 853 port_context)
+       (portcon "udp" 53 port_context)
+       (portcon "udp" 853 port_context)
+
+       (blockinherit .net.port.reserved.template))

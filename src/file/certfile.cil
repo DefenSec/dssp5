@@ -27,6 +27,9 @@
 	      (call .data.file_type_transition
 		    (ARG1 file dir "ca-certificates")))
 
+       (macro map_file_files ((type ARG1))
+	      (allow ARG1 file (file (map))))
+
        (blockinherit .file.cert.template))
 
 (in file

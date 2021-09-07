@@ -14,6 +14,9 @@
 	      (allow ARG1 typeattr readwriteinherited_chr_file)
 	      (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
 
+       (macro setattr_all_chr_files ((type ARG1))
+	      (allow ARG1 typeattr (chr_file (setattr))))
+
        (macro type ((type ARG1))
 	      (typeattributeset typeattr ARG1))
 

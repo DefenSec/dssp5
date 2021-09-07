@@ -1,0 +1,196 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.resolve.dnssec.conf.conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.resolve.dnssec.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.resolve.dnssec.run.run_file_type_transition_file (typeattr)))
+
+(in nss.dns
+
+    (call .systemd.resolve.run.read_file_files (typeattr))
+    (call .systemd.resolve.run.search_file_pattern.type (typeattr))
+
+    (call .systemd.run.search_file_pattern.type (typeattr)))
+
+(in nss.hosts
+
+    (call .systemd.resolve.connectto_subj_unix_stream_sockets (typeattr))
+    (call .systemd.resolve.run.search_file_pattern.type (typeattr))
+    (call .systemd.resolve.run.write_file_sock_files (typeattr))
+
+    (call .systemd.run.search_file_pattern.type (typeattr)))
+
+(in systemd.resolve
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (net_bind_service net_raw setpcap)))
+    (allow subj self (process (getcap setcap setfscreate)))
+    (allow subj self create_netlink_route_socket)
+    (allow subj self create_tcp_stream_socket)
+    (allow subj self create_udp_socket)
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self (netlink_route_socket (nlmsg_read)))
+    (allow subj self (unix_stream_socket (accept listen)))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call dnssec.conf.list_file_dirs (subj))
+    (call dnssec.conf.read_file_files (subj))
+
+    (call dnssec.data.list_file_dirs (subj))
+    (call dnssec.data.read_file_files (subj))
+
+    (call dnssec.run.list_file_dirs (subj))
+    (call dnssec.run.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
+    (call systemd.logparsenv.type (subj))
+    (call systemd.notify.type (subj))
+
+    (call systemd.netif.run.list_file_dirs (subj))
+    (call systemd.netif.run.read_file_files (subj))
+    (call systemd.netif.run.watch_file_dirs (subj))
+
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cert.map_file_files (subj))
+    (call .cert.read_file_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dbus.run.listinherited_file_dirs (subj))
+    (call .dbus.run.readinherited_file_sock_files (subj))
+    (call .dbus.run.watch_file_dirs (subj))
+    (call .dbus.run.watch_file_sock_files (subj))
+
+    (call .dns.nameconnect_port_tcp_sockets (subj))
+    (call .dns.namebind_port_tcp_sockets (subj))
+    (call .dns.namebind_port_udp_sockets (subj))
+
+    (call .hostname.read_sysctlfile_files (subj))
+
+    (call .hosts.read_file_files (subj))
+
+    (call .ipv6.read_sysctlfile_files (subj))
+    (call .ipv6.search_sysctlfile_dirs (subj))
+
+    (call .llmnr.namebind_port_tcp_sockets (subj))
+    (call .llmnr.namebind_port_udp_sockets (subj))
+
+    (call .locale.data.map_file_pattern.type (subj))
+    (call .locale.read_file_pattern.type (subj))
+
+    (call .mdns.namebind_port_udp_sockets (subj))
+
+    (call .net.read_procfile_pattern.type (subj))
+
+    (call .net.egress_netifs (subj))
+    (call .net.nodebind_netnode_tcp_sockets (subj))
+    (call .net.nodebind_netnode_udp_sockets (subj))
+    (call .net.sendto_nodes (subj))
+
+    (call .net.search_sysctlfile_pattern.type (subj))
+
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .resolv.conf.read_file_files (subj))
+
+    (call .root.list_file_dirs (subj))
+    (call .root.watch_file_dirs (subj))
+
+    (call .run.list_file_dirs (subj))
+    (call .run.watch_file_dirs (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (optional systemdresolve_invalidassociationsboolfile
+	      (call .invalidassociations.type (subj)))
+
+    (optional systemdresolve_invalidpacketsboolfile
+	      (call .invalidpackets.type (subj)))
+
+    (optional systemdresolve_invalidpeersboolfile
+	      (call .invalidpeers.type (subj)))
+
+    (optional systemdresolve_p11kit
+	      (call .p11kit.conf.read_file_pattern.type (subj))
+	      (call .p11kit.data.map_file_files (subj))
+	      (call .p11kit.data.read_file_pattern.type (subj)))
+
+    (block dnssec
+
+	   (block conf
+
+		  (filecon "/etc/dnssec-trust-anchors\.d" dir file_context)
+		  (filecon "/etc/dnssec-trust-anchors\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "dnssec-trust-anchors.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/dnssec-trust-anchors\.d" dir file_context)
+		  (filecon "/usr/lib/dnssec-trust-anchors\.d/.*" any
+			   file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "dnssec-trust-anchors.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block run
+
+		  (filecon "/run/dnssec-trust-anchors\.d" dir file_context)
+		  (filecon "/run/dnssec-trust-anchors\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "dnssec-trust-anchors.d")))
+
+		  (blockinherit .file.run.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-resolved" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-resolved\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))
