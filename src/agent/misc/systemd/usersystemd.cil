@@ -424,6 +424,10 @@
 
 	   (call .user.shell_exec_subj_type_transition (subj))
 
+	   (call .user.slice.manage_cgroupfile_dirs (subj))
+	   (call .user.slice.manage_cgroupfile_files (subj))
+	   (call .user.slice.watch_cgroupfile_files (subj))
+
 	   (call .user.unit.start_file_services (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
