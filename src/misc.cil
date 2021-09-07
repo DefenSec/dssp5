@@ -1188,6 +1188,29 @@
 
     (call .conf.traverse_file_pattern.type (typeattr)))
 
+(in log
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .var.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
 (in mail
 
     (block search_file_pattern
@@ -1469,6 +1492,21 @@
 	   (call read_procfile_files (typeattr))
 
 	   (call .proc.search_fs_pattern.type (typeattr))))
+
+(in motd.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
 
 (in mqueue
 
@@ -1864,6 +1902,29 @@
 	   (call default.search_file_pattern.type (typeattr))))
 
 (in spool
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .var.search_file_pattern.type (typeattr)))
+
+    (block traverse_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_lnk_files (typeattr))
+	   (call search_file_pattern.type (typeattr))))
+
+(in state
 
     (block search_file_pattern
 

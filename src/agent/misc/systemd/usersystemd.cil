@@ -213,6 +213,7 @@
 				   setsockcreate)))
 	   (allow subj self (bpf (prog_load prog_run)))
 	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self create_netlink_selinux_socket)
 	   (allow subj self create_udp_socket)
 	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self (unix_stream_socket (accept listen)))
@@ -423,6 +424,10 @@
 	   (call .user.run.deletename_file_dirs (subj))
 
 	   (call .user.shell_exec_subj_type_transition (subj))
+
+	   (call .user.slice.manage_cgroupfile_dirs (subj))
+	   (call .user.slice.manage_cgroupfile_files (subj))
+	   (call .user.slice.watch_cgroupfile_files (subj))
 
 	   (call .user.unit.start_file_services (subj))
 
