@@ -33,3 +33,10 @@
 (in dbus.exec
 
     (filecon "/usr/bin/dbus-daemon" file file_context))
+
+;; system dbus-daemon specific method returns
+
+(optional systemdlogin_systemduserrundir
+
+	  (call systemd.userrundir.sendmsg_subj_dbus.type
+		(systemd.login.subj)))
