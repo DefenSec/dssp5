@@ -46,8 +46,8 @@
        (call .sys.termdev.setattr_all_chr_files (subj))
 
        (call .systemd.journal.relay_msgs.type (subj))
-;; TODO
-;;       (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.login.sendmsg_subj_dbus.type (subj))
 
        (call .systemd.logparsenv.type (subj))
 
