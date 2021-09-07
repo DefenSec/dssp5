@@ -13,6 +13,8 @@
 	      (filecon "/etc/issue\..*" file file_context)
 	      (filecon "/etc/issue\.d" dir file_context)
 	      (filecon "/etc/issue\.d/.*" any file_context)
+	      (filecon "/etc/motd" file file_context)
+	      (filecon "/etc/motd\..*" file file_context)
 	      (filecon "/etc/update-motd\.d" dir file_context)
 	      (filecon "/etc/update-motd\.d/.*" any file_context)
 
@@ -24,6 +26,8 @@
 		     (call .conf.file_type_transition
 			   (ARG1 file file "issue"))
 		     (call .conf.file_type_transition
-			   (ARG1 file file "issue.net")))
+			   (ARG1 file file "issue.net"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "motd")))
 
 	      (blockinherit .file.conf.template)))
