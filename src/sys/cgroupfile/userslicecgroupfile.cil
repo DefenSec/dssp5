@@ -11,4 +11,6 @@
 		  (allow ARG1 cgroupfile (file (watch))))
 
 	   (blockinherit .cgroupfile.macro_template_dirs)
-	   (blockinherit .cgroupfile.template)))
+	   (blockinherit .cgroupfile.template)
+
+	   (call .rbacsep.exempt.obj.type (cgroupfile))))

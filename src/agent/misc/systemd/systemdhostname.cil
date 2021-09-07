@@ -21,6 +21,7 @@
 	   (call conf.conf_file_type_transition_file (subj))
 
 	   (call systemd.logparsenv.type (subj))
+	   (call systemd.notify.type (subj))
 
 	   (call systemd.defaulthostname.run.delete_file_files (subj))
 	   (call systemd.defaulthostname.run.read_file_files (subj))
