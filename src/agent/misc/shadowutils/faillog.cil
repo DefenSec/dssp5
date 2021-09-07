@@ -1,0 +1,29 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block faillog
+
+       (blockinherit .sys.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/faillog" file file_context))
+
+       (block log
+
+	      (filecon "/var/log/faillog" file file_context)
+	      (filecon "/var/log/faillog\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "faillog")))
+
+	      (blockinherit .file.log.base_template)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .faillog.log.log_file_type_transition_file (typeattr)))
