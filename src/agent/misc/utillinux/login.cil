@@ -116,8 +116,8 @@
 	      (call .sys.user.signal_subj_processes (subj))
 	      (call .sys.user.signull_subj_processes (subj))
 	      (call .sys.user.transition_subj_processes (subj))
-;;TODO
-;;	      (call .systemd.suloginshell.getpgid_subj_processes (subj))
+
+	      (call .systemd.suloginshell.getpgid_subj_processes (subj))
 
 	      (call .tty.readwrite_serialtermdev_chr_files (subj))
 
