@@ -3,7 +3,9 @@
 
 (in file.unconfined
 
-    (call .motd.run.run_file_type_transition_file (typeattr "motd.dynamic")))
+    (call .motd.run.run_file_type_transition_file (typeattr "motd.dynamic"))
+    (call .motd.run.run_file_type_transition_file
+	  (typeattr "motd.dynamic.new")))
 
 (in motd
 

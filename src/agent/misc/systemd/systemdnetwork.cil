@@ -1,0 +1,165 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.network
+
+    (macro relabelfrom_subj_tun_sockets ((type ARG1))
+	   (allow ARG1 subj (tun_socket (relabelfrom))))
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (net_admin net_bind_service net_broadcast net_raw)))
+    (allow subj self (process (setfscreate)))
+    (allow subj self create_netlink_generic_socket)
+    (allow subj self create_netlink_kobject_uevent_socket)
+    (allow subj self create_netlink_netfilter_socket)
+    (allow subj self create_netlink_route_socket)
+    (allow subj self create_packet_socket)
+    (allow subj self create_rawip_socket)
+    (allow subj self create_tun_socket)
+    (allow subj self create_udp_socket)
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self (netlink_route_socket (nlmsg_read nlmsg_write)))
+    (allow subj self (tun_socket (relabelfrom relabelto)))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+    (call conf.read_file_lnk_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call netif.run.manage_file_dirs (subj))
+    (call netif.run.manage_file_files (subj))
+    (call netif.run.systemd_run_file_type_transition_file (subj))
+    (call netif.run.watch_file_dirs (subj))
+
+    (call run.list_file_dirs (subj))
+    (call run.read_file_files (subj))
+
+    (call systemd.logparsenv.type (subj))
+    (call systemd.notify.type (subj))
+
+    (call systemd.hostname.sendmsg_subj_dbus.type (subj))
+
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call systemd.resolve.run.read_file_files (subj))
+    (call systemd.resolve.run.search_file_pattern.type (subj))
+
+    (call systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .bus.search_sysfile_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .class.traverse_sysfile_pattern.type (subj))
+
+    (call .cpuinfo.read_procfile_files (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dbus.run.listinherited_file_dirs (subj))
+    (call .dbus.run.readinherited_file_sock_files (subj))
+    (call .dbus.run.watch_file_dirs (subj))
+    (call .dbus.run.watch_file_sock_files (subj))
+
+    (call .debug.search_fs_pattern.type (subj))
+
+    (call .devices.read_sysfile_files (subj))
+    (call .devices.traverse_sysfile_pattern.type (subj))
+
+    (call .dhcp.namebind_port_udp_sockets (subj))
+
+    (call .firmware.data.read_file_files (subj))
+    (call .firmware.data.search_file_dirs (subj))
+
+    (call .firmware.search_sysfile_pattern.type (subj))
+
+    (call .hypervisor.search_sysfile_pattern.type (subj))
+
+    (call .ipv4.readwrite_sysctlfile_files (subj))
+    (call .ipv4.search_sysctlfile_dirs (subj))
+
+    (call .ipv6.readwrite_sysctlfile_files (subj))
+    (call .ipv6.search_sysctlfile_dirs (subj))
+
+    (call .locale.data.map_file_pattern.type (subj))
+    (call .locale.read_file_pattern.type (subj))
+
+    (call .machineid.read_file_files (subj))
+
+    (call .net.read_procfile_pattern.type (subj))
+
+    (call .net.search_sysctlfile_pattern.type (subj))
+
+    (call .net.egress_netifs (subj))
+    (call .net.nodebind_netnode_udp_sockets (subj))
+    (call .net.sendto_nodes (subj))
+
+    (call .ns.read_fs_pattern.type (subj))
+
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .resolv.conf.read_file_files (subj))
+
+    (call .root.list_file_dirs (subj))
+    (call .root.watch_file_dirs (subj))
+
+    (call .run.list_file_dirs (subj))
+    (call .run.watch_file_dirs (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .sys.getattr_fs (subj))
+    (call .sys.modulerequest_subj_system (subj))
+
+    (call .trace.search_fs_pattern.type (subj))
+
+    (call .tuntap.readwrite_nodedev_chr_files (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (optional systemdnetwork_invalidassociationsboolfile
+	      (call .invalidassociations.type (subj)))
+
+    (optional systemdnetwork_invalidpacketsboolfile
+	      (call .invalidpackets.type (subj)))
+
+    (optional systemdnetwork_invalidpeersboolfile
+	      (call .invalidpeers.type (subj)))
+
+    (optional systemdnetwork_polkit
+	      (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-networkd" file file_context)
+	   (filecon "/usr/lib/systemd/systemd-networkd-wait-online" file
+		    file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-networkd\.service.*" file
+		    file_context)
+	   (filecon "/usr/lib/systemd/system/systemd-networkd\.socket.*" file
+		    file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-networkd-wait-online\.service.*"
+	    file file_context)
+
+	   (blockinherit .file.unit.template)))

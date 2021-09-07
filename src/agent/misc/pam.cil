@@ -134,12 +134,18 @@
 	      ;; motd-dynamic /etc/update-motd.d
 	      (call .motd.conf.execute_file_files (typeattr))
 	      (call .motd.conf.list_file_dirs (typeattr))
+	      (call .motd.run.manage_file_files (typeattr))
+	      (call .motd.run.run_file_type_transition_file
+		    (typeattr "motd.dynamic.new"))
 
 	      (call .nologin.read_file_files (typeattr))
 
 	      (call .rbac.change.type (typeattr))
 
 	      (call .rbacsep.usefdtarget.type (typeattr))
+
+	      ;; motd-dynamic
+	      (call .run.deletename_file_dirs (typeattr))
 
 	      (call .selinux.default.read_file_pattern.type (typeattr))
 

@@ -1,0 +1,246 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .dri.readwriteinherited_nodedev_chr_files (subj))
+    (call .event.readwriteinherited_nodedev_chr_files (subj)))
+
+(in systemd.login
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self
+	   (capability (chown dac_override dac_read_search fowner
+			      linux_immutable net_raw sys_admin
+			      sys_tty_config)))
+    (allow subj self (process (setfscreate)))
+    (allow subj self (lockdown (integrity)))
+    (allow subj self create_netlink_kobject_uevent_socket)
+    (allow subj self create_unix_dgram_socket)
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call linger.state.manage_file_files (subj))
+    (call linger.state.readwrite_file_dirs (subj))
+
+    (call run.list_file_dirs (subj))
+    (call run.read_file_files (subj))
+
+    (call seats.run.manage_file_files (subj))
+    (call seats.run.readwrite_file_dirs (subj))
+
+    (call sessions.run.manage_file_fifo_files (subj))
+    (call sessions.run.manage_file_files (subj))
+    (call sessions.run.readwrite_file_dirs (subj))
+
+    (call systemd.logparsenv.type (subj))
+    (call systemd.notify.type (subj))
+
+    (call systemd.inhibit.run.manage_file_files (subj))
+    (call systemd.inhibit.run.manage_file_fifo_files (subj))
+    (call systemd.inhibit.run.readwrite_file_dirs (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+;; TODO
+;;    (call systemd.loginctl.read_subj_states (subj))
+
+    (call systemd.network.sendmsg_subj_dbus.type (subj))
+
+    (call systemd.resolve.sendmsg_subj_dbus.type (subj))
+
+    (call systemd.shutdown.run.manage_file_dirs (subj))
+    (call systemd.shutdown.run.manage_file_files (subj))
+
+    (call systemd.sleep.conf.read_file_files (subj))
+
+    (call systemd.state.search_file_pattern.type (subj))
+
+    (call systemd.udev.conf.read_file_pattern.type (subj))
+    (call systemd.udev.run.read_file_pattern.type (subj))
+
+    (call systemd.unit.run.start_file_services (subj))
+    (call systemd.unit.run.status_file_services (subj))
+    (call systemd.unit.run.stop_file_services (subj))
+
+    (call systemd.unit.start_file_services (subj))
+    (call systemd.unit.status_file_services (subj))
+
+    (call systemd.userrundir.unit.status_file_services (subj))
+
+    (call users.run.manage_file_files (subj))
+    (call users.run.readwrite_file_dirs (subj))
+
+    (call .bus.list_sysfile_dirs (subj))
+    (call .bus.read_sysfile_lnk_files (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+    (call .cgroup.list_fs_dirs (subj))
+    (call .cgroup.read_fs_files (subj))
+
+    (call .class.getattr_sysfile_files (subj))
+    (call .class.list_sysfile_dirs (subj))
+    (call .class.read_sysfile_lnk_files (subj))
+
+    (call .cpu.readwrite_sysfile_files (subj))
+    (call .cpu.traverse_sysfile_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dev.traverse_sysfile_pattern.type (subj))
+
+    (call .devices.readwrite_sysfile_files (subj))
+    (call .devices.traverse_sysfile_pattern.type (subj))
+
+    (call .devpts.search_fs_pattern.type (subj))
+
+    (call .dos.getattr_fs_pattern.type (subj))
+
+    (call .dri.readwrite_nodedev_pattern.type (subj))
+    (call .dri.setattr_nodedev_chr_files (subj))
+
+    (call .event.readwrite_nodedev_chr_files (subj))
+    (call .event.setattr_nodedev_chr_files (subj))
+
+    (call .fb.getattr_nodedev_chr_files (subj))
+    (call .fb.setattr_nodedev_chr_files (subj))
+
+    (call .file.user.mqueuefs.delete_all_files (subj))
+    (call .file.user.tmpfs.delete_all_dirs (subj))
+    (call .file.user.tmpfs.delete_all_fifo_files (subj))
+    (call .file.user.tmpfs.delete_all_files (subj))
+    (call .file.user.tmpfs.delete_all_lnk_files (subj))
+    (call .file.user.tmpfs.delete_all_sock_files (subj))
+
+    (call .getty.unit.start_file_services (subj))
+
+    (call .input.getattr_nodedev_chr_files (subj))
+    (call .input.setattr_nodedev_chr_files (subj))
+
+    (call .kvm.getattr_nodedev_chr_files (subj))
+    (call .kvm.setattr_nodedev_chr_files (subj))
+
+    (call .locale.data.map_file_pattern.type (subj))
+    (call .locale.read_file_pattern.type (subj))
+
+    (call .logindefs.read_file_files (subj))
+
+    (call .memory.readwrite_sysfile_files (subj))
+    (call .memory.traverse_sysfile_pattern.type (subj))
+
+    (call .module.read_sysfile_files (subj))
+    (call .module.search_sysfile_dirs (subj))
+
+    (call .mount.mountpoint.search_all_dirs (subj))
+
+    (call .mqueue.deletename_fs_dirs (subj))
+
+    (call .node.readwrite_sysfile_files (subj))
+    (call .node.traverse_sysfile_pattern.type (subj))
+
+    (call .nologin.manage_file_files (subj))
+    (call .nologin.run_file_type_transition_file (subj "*"))
+
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .power.readwrite_sysfile_files (subj))
+    (call .power.search_sysfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.usefdtarget.type (subj))
+
+    (call .rfkill.getattr_nodedev_chr_files (subj))
+    (call .rfkill.setattr_nodedev_chr_files (subj))
+
+    (call .run.deletename_file_dirs (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .serialtermdev.setattr_all_chr_files (subj))
+
+    (call .snd.getattr_nodedev_chr_files (subj))
+    (call .snd.setattr_nodedev_chr_files (subj))
+
+    (call .stordev.getattr_all_chr_files (subj))
+    (call .stordev.read.type (subj))
+    (call .stordev.read_all_blk_files (subj))
+    (call .stordev.setattr_all_blk_files (subj))
+    (call .stordev.setattr_all_chr_files (subj))
+
+    (call .subj.common.read_all_states (subj))
+    (call .subj.interactivefd.type (subj))
+
+    (call .sys.sendmsg_subj_dbus.type (subj))
+    (call .sys.start_system (subj))
+    (call .sys.status_system (subj))
+    (call .sys.stop_system (subj))
+
+    (call .sys.user.read_subj_states (subj))
+    (call .sys.user.sendmsg_subj_dbus.type (subj))
+
+    (call .sysvipc.read_procfile_files (subj))
+    (call .sysvipc.search_procfile_dirs (subj))
+
+    (call .termdev.readwrite_all_chr_files (subj))
+
+    (call .tmp.deletename_fs_dirs (subj))
+    (call .tmp.getattr_fs_pattern.type (subj))
+
+    (call .usb.getattr_nodedev_chr_files (subj))
+    (call .usb.setattr_nodedev_chr_files (subj))
+
+    (call .user.unit.start_file_services (subj))
+    (call .user.unit.status_file_services (subj))
+    (call .user.unit.stop_file_services (subj))
+
+    (call .utmp.run.read_file_files (subj))
+    (call .utmp.run.watch_file_files (subj))
+
+    (call .v4l.getattr_nodedev_chr_files (subj))
+    (call .v4l.setattr_nodedev_chr_files (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (call .zram.list_sysfile_dirs (subj))
+    (call .zram.read_sysfile_lnk_files (subj))
+    (call .zram.readwrite_sysfile_files (subj))
+
+    (optional systemdlogin_polkit
+	      (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-logind" file file_context))
+
+    (block inhibit
+
+	   (macro read_all_states ((type ARG1))
+		  (allow ARG1 typeattr (state (read))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call .systemd.inhibit.run.writeinherited_file_fifo_files
+		 (typeattr)))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-logind\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))
