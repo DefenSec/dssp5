@@ -1589,6 +1589,19 @@
 	   (call manage_fs_lnk_files (typeattr))
 	   (call manage_fs_sock_files (typeattr))))
 
+(in ngroupsmax
+
+    (block read_sysctlfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysctlfile_files (typeattr))
+
+	   (call .kernel.search_sysctlfile_pattern.type (typeattr))))
+
 (in node
 
     (block read_sysfile_pattern

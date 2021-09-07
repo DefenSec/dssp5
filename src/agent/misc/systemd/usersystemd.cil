@@ -83,11 +83,10 @@
 		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.user.run.systemd.base_template))))
 
-;; TODO
-;;(in pam.linked
-;;
-;;    (call .user.systemd.link_subj_keyrings (typeattr))
-;;    (call .user.systemd.search_subj_keyrings (typeattr)))
+(in pam.linked
+
+    (call .user.systemd.link_subj_keyrings (typeattr))
+    (call .user.systemd.search_subj_keyrings (typeattr)))
 
 (in systemd.journal
 

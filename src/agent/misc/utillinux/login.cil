@@ -26,6 +26,8 @@
 
        (call .osrelease.read_sysctlfile_pattern.type (subj))
 
+       (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
+
        (call .nss.passwdgroup.type (subj))
 
        (call .pam.login.type (subj))

@@ -117,9 +117,6 @@
 
 	      (call linked.type (typeattr))
 
-	      (call run.manage_file_files (typeattr))
-	      (call run.readwrite_file_dirs (typeattr))
-
 	      (call .checkcontext_selinux_security (typeattr))
 
 	      (call .computerelabel_selinux_security (typeattr))
@@ -127,11 +124,16 @@
 
 	      (call .devpts.search_fs_pattern.type (typeattr))
 
+	      ;; motd-dynamic: run-parts
+	      (call .exec.execute_file_files (typeattr))
+
 	      (call .ibac.change.type (typeattr))
 
 	      (call .mail.search_file_pattern.type (typeattr))
 
-	      (call .motd.conf.read_file_pattern.type (typeattr))
+	      ;; motd-dynamic /etc/update-motd.d
+	      (call .motd.conf.execute_file_files (typeattr))
+	      (call .motd.conf.list_file_dirs (typeattr))
 
 	      (call .nologin.read_file_files (typeattr))
 
@@ -140,6 +142,9 @@
 	      (call .rbacsep.usefdtarget.type (typeattr))
 
 	      (call .selinux.default.read_file_pattern.type (typeattr))
+
+	      ;; motd-dynamic
+	      (call .shell.exec.execute_file_files (typeattr))
 
 	      (call .subj.interactivefd.type (typeattr))
 
