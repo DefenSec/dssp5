@@ -9,6 +9,8 @@
 
        (call .sys.role_access (role id))
 
+       (call .systemd.askpassword.client.role (role))
+
        (optional wheeluser_consolesetupcon
 		 (call .consolesetup.setupcon.role (role)))
 
