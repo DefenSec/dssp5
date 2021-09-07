@@ -1,0 +1,128 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block login
+
+       (blockinherit .dbus.client.template)
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (audit_write dac_override dac_read_search
+				       sys_tty_config)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .kernel.read_sysctlfile_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pam.login.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .sys.termdev.readwrite_all_chr_files (subj))
+       (call .sys.termdev.relabel_all_chr_files (subj))
+       (call .sys.termdev.setattr_all_chr_files (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+;; TODO
+;;       (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
+
+       (call .tty.readwrite_serialtermdev_chr_files (subj))
+       (call .tty.relabel_serialtermdev_chr_files (subj))
+       (call .tty.setattr_serialtermdev_chr_files (subj))
+
+       (call .user.run.search_file_pattern.type (subj))
+
+       (call .user.termdev.readwrite_all_chr_files (subj))
+       (call .user.termdev.relabel_all_chr_files (subj))
+       (call .user.termdev.setattr_all_chr_files (subj))
+
+       (call .user.unpriv.create_all_keyrings (subj))
+       (call .user.unpriv.rlimitinh_all_processes (subj))
+       (call .user.unpriv.signal_all_processes (subj))
+       (call .user.unpriv.signull_all_processes (subj))
+       (call .user.unpriv.transition_all_processes (subj))
+       (call .user.unpriv.write_all_keyrings (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/login" file file_context))
+
+       (block sulogin
+
+	      (blockinherit .sys.agent.template)
+
+	      (allow subj self (capability (dac_read_search sys_tty_config)))
+	      (allow subj self (process (getpgid setexec setsched)))
+	      (dontaudit subj self (capability (sys_admin)))
+
+	      (call .checkcontext_selinux_security (subj))
+
+	      (call .computeuser_selinux_security (subj))
+
+	      (call .console.readwrite_serialtermdev_chr_files (subj))
+
+	      (call .consoles.read_procfile_files (subj))
+
+	      (call .dev.list_file_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .selinux.default.read_file_pattern.type (subj))
+	      (call .selinux.readwrite_fs_pattern.type (subj))
+
+	      (call .serialtermdev.getattr_all_chr_files (subj))
+
+	      (call .shadow.read.type (subj))
+	      (call .shadow.read_file_files (subj))
+
+	      (call .shell.exec.mapexecute_file_files (subj))
+	      (call .shell.exec.read_file_files (subj))
+
+	      (call .subj.interactivefd.type (subj))
+
+	      (call .sys.user.signal_subj_processes (subj))
+	      (call .sys.user.signull_subj_processes (subj))
+	      (call .sys.user.transition_subj_processes (subj))
+;;TODO
+;;	      (call .systemd.suloginshell.getpgid_subj_processes (subj))
+
+	      (call .tty.readwrite_serialtermdev_chr_files (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/sulogin" file file_context))))
+
+(in getty
+
+       (call .login.subj_type_transition (subj)))

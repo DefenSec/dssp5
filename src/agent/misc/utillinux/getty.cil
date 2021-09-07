@@ -1,0 +1,89 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block getty
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (chown dac_override dac_read_search fsetid sys_admin
+				 sys_tty_config)))
+       (allow subj self create_unix_dgram_socket)
+
+       (call run.manage_file_files (subj))
+       (call run.watch_file_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .log.search_file_pattern.type (subj))
+
+       (call .motd.conf.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+       (call .rbacsep.usefdtarget.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .subj.interactivefd.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
+
+       (call .tty.readwrite_serialtermdev_chr_files (subj))
+       (call .tty.setattr_serialtermdev_chr_files (subj))
+
+       (call .utmp.log.write_file_files (subj))
+       (call .utmp.run.readwrite_file_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/agetty" file file_context))
+
+       (block run
+
+	      (filecon "/run/agetty\.reload" file file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file file "agetty.reload")))
+
+	      (macro watch_file_files ((type ARG1))
+		     (allow ARG1 file (file (watch))))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.run.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/console-getty\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/container-getty@.*\.service.*"
+		       file file_context)
+	      (filecon "/usr/lib/systemd/system/getty@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/serial-getty@.*\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/getty-static\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .getty.run.run_file_type_transition_file (typeattr)))
