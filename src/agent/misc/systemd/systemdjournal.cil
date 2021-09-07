@@ -100,10 +100,6 @@
 
     (call .tmp.getattr_fs_pattern.type (subj))
 
-;; TODO: move this to src/agent/misc/systemd/usersystemd.cil
-;;    (call .user.systemd.run.read_file_lnk_files (subj))
-;;    (call .user.systemd.run.search_file_pattern.type (subj))
-
     (call .xattr.getattr_fs_pattern.type (subj))
 
     (block exec

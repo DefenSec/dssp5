@@ -1,0 +1,840 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.systemd.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .user.systemd.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call
+     .user.systemd.inaccessible.run.user_systemd_run_file_type_transition_file
+     (typeattr))
+    (call .user.systemd.notify.run.user_systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .user.systemd.private.run.user_systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .user.systemd.run.user_run_file_type_transition_file (typeattr))
+    (call .user.systemd.unit.lib_file_type_transition_file (typeattr))
+    (call .user.systemd.unit.run.user_systemd_run_file_type_transition_file
+	  (typeattr))
+    (call .user.systemd.unit.systemd_conf_file_type_transition_file (typeattr)))
+
+(in file.user
+
+    (block unit
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.unit.all_macro_template_services)
+
+	   (typeattribute typeattr)
+
+	   (call .file.unit.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.unit.base_template)
+
+		  (call .file.user.unit.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.unit.macro_template_services)
+		  (blockinherit .file.user.unit.base_template))))
+
+(in file.user.run
+
+    (block systemd
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_blk_files)
+	   (blockinherit .file.all_macro_template_chr_files)
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.user.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.run.base_template)
+
+		  (call .file.user.run.systemd.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.run.systemd.base_template))))
+
+;; TODO
+;;(in pam.linked
+;;
+;;    (call .user.systemd.link_subj_keyrings (typeattr))
+;;    (call .user.systemd.search_subj_keyrings (typeattr)))
+
+(in systemd.journal
+
+    (call .user.systemd.run.read_file_lnk_files (subj))
+    (call .user.systemd.run.search_file_pattern.type (subj)))
+
+(in systemd.unconfined
+
+    (call .user.systemd.home.conf.control_file_services (typeattr))
+    (call .user.systemd.unit.run.control_file_services (typeattr)))
+
+(in user
+
+    (call systemd.forked.type (subj))
+    (call systemd.role (role))
+
+    (call systemd.home.conf.manage_file_dirs (subj))
+    (call systemd.home.conf.manage_file_files (subj))
+    (call systemd.home.conf.manage_file_lnk_files (subj))
+    (call systemd.home.conf.map_file_files (subj))
+    (call systemd.home.conf.relabel_file_dirs (subj))
+    (call systemd.home.conf.relabel_file_files (subj))
+    (call systemd.home.conf.relabel_file_lnk_files (subj))
+    (call systemd.home.conf.user_home_conf_file_type_transition_file (subj))
+
+    (call systemd.inaccessible.run.dontaudit_getattr_file (subj))
+
+    (call systemd.notify.run.manage_file_sock_files (subj))
+    (call systemd.notify.run.relabel_file_sock_files (subj))
+    (call systemd.notify.run.user_systemd_run_file_type_transition_file (subj))
+
+    (call systemd.private.run.manage_file_sock_files (subj))
+    (call systemd.private.run.relabel_file_sock_files (subj))
+    (call systemd.private.run.user_systemd_run_file_type_transition_file (subj))
+
+    (call systemd.run.manage_file_dirs (subj))
+    (call systemd.run.manage_file_files (subj))
+    (call systemd.run.manage_file_lnk_files (subj))
+    (call systemd.run.map_file_files (subj))
+    (call systemd.run.relabel_file_dirs (subj))
+    (call systemd.run.relabel_file_files (subj))
+    (call systemd.run.relabel_file_lnk_files (subj))
+    (call systemd.run.user_run_file_type_transition_file (subj))
+
+    (call systemd.tmpfs.manage_file_files (subj))
+    (call systemd.tmpfs.relabel_file_files (subj))
+
+    (call systemd.unit.run.manage_file_dirs (subj))
+    (call systemd.unit.run.manage_file_files (subj))
+    (call systemd.unit.run.manage_file_lnk_files (subj))
+    (call systemd.unit.run.map_file_files (subj))
+    (call systemd.unit.run.relabel_file_dirs (subj))
+    (call systemd.unit.run.relabel_file_files (subj))
+    (call systemd.unit.run.relabel_file_lnk_files (subj))
+    (call systemd.unit.run.user_systemd_run_file_type_transition_file (subj))
+
+    (call systemd.unit.control_file_services (subj))
+    (call systemd.unit.lib_file_type_transition_file (subj))
+    (call systemd.unit.read_file_files (subj))
+    (call systemd.unit.systemd_conf_file_type_transition_file (subj))
+
+    (block systemd
+
+	   (macro agent ((type ARG1)(type ARG2))
+		  (typetransition subj ARG2 process ARG1)
+		  (call service.exec.type (ARG2))
+		  (call service.type (ARG1)))
+
+	   (macro connectto_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_stream_socket (connectto))))
+
+	   (macro getpgid_subj_processes ((type ARG1))
+		  (allow ARG1 subj (process (getpgid))))
+
+	   (macro link_subj_keyrings ((type ARG1))
+		  (allow ARG1 subj (key (link))))
+
+	   (macro read_subj_states ((type ARG1))
+		  (allow ARG1 subj (state (read))))
+
+	   (macro readwrite_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_unix_stream_socket))
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro search_subj_keyrings ((type ARG1))
+		  (allow ARG1 subj (key (search))))
+
+	   (macro sendto_subj_unix_dgram_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_dgram_socket (sendto))))
+
+	   (macro sigchld_subj_processes ((type ARG1))
+		  (allow ARG1 subj (process (sigchld))))
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .systemd.exec.mapexecute_file_files (ARG1))
+		  (call .systemd.exec.read_file_files (ARG1))
+		  (call .systemd.exec.subj_type_transition (ARG1 subj)))
+
+	   (macro use_subj_fds ((type ARG1))
+		  (allow ARG1 subj (fd (use))))
+
+	   (macro writeinherited_subj_fifo_files ((type ARG1))
+		  (allow ARG1 subj writeinherited_fifo_file))
+
+	   (blockinherit .dbus.macro_template)
+	   (blockinherit .subj.common.base_template)
+	   (blockinherit .systemd.macro_template_system)
+
+	   (roleattribute roleattr)
+	   (roletype roleattr subj)
+
+	   (allow subj self (cap_userns (sys_admin sys_ptrace)))
+	   (allow subj self
+		  (process (getcap getsched setcap setexec setfscreate setsched
+				   setsockcreate)))
+	   (allow subj self (bpf (prog_load prog_run)))
+	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self create_udp_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (unix_stream_socket (accept listen)))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call exec.execute_file_files (subj))
+
+	   (call forked.read_all_states (subj))
+	   (call forked.sigkill_all_processes (subj))
+	   (call forked.signal_all_processes (subj))
+	   (call forked.signull_all_processes (subj))
+
+	   (call helper.exec.execute_file_files (subj))
+
+	   (call home.conf.manage_file_dirs (subj))
+	   (call home.conf.manage_file_lnk_files (subj))
+	   (call home.conf.manage_file_files (subj))
+	   (call home.conf.user_home_conf_file_type_transition_file (subj))
+
+	   (call inaccessible.run.create_file (subj))
+	   (call inaccessible.run.relabel_file (subj))
+	   (call inaccessible.run.setattr_file (subj))
+	   (call inaccessible.run.user_systemd_run_file_type_transition_file
+		 (subj))
+
+	   (call notify.run.manage_file_sock_files (subj))
+	   (call notify.run.user_systemd_run_file_type_transition_file (subj))
+
+	   (call private.run.manage_file_sock_files (subj))
+	   (call private.run.user_systemd_run_file_type_transition_file (subj))
+
+	   (call service.rlimitinh_all_processes (subj))
+	   (call service.transition_all_processes (subj))
+
+	   (call service.condition.getattr_all_fifo_files (subj))
+	   (call service.condition.getattr_all_files (subj))
+	   (call service.condition.getattr_all_sock_files (subj))
+	   (call service.condition.read_all_lnk_files (subj))
+	   (call service.condition.search_all_dirs (subj))
+
+	   (call service.exec.mapexecute_all_files (subj))
+	   (call service.exec.read_all_files (subj))
+
+	   (call service.nnptransition.nnptransition_all_processes (subj))
+
+	   (call service.noatsecure.noatsecure_all_processes (subj))
+
+	   (call service.workingdir.read_all_lnk_files (subj))
+	   (call service.workingdir.search_all_dirs (subj))
+
+	   (call socketactivated.manage_all_dirs (subj))
+	   (call socketactivated.manage_all_sock_files (subj))
+
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_files (subj))
+	   (call run.manage_file_lnk_files (subj))
+	   (call run.user_run_file_type_transition_file (subj))
+
+	   (call run.pipe.client.type (subj))
+	   (call run.sendmsg_subj_dbus.type (subj))
+
+	   (call tmpfs.manage_file_files (subj))
+	   (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	   (call unit.list_file_dirs (subj))
+	   (call unit.read_file_lnk_files (subj))
+	   (call unit.run.manage_file_dirs (subj))
+	   (call unit.run.manage_file_files (subj))
+	   (call unit.run.user_systemd_run_file_type_transition_file (subj))
+
+	   (call .bpf.search_fs_pattern.type (subj))
+
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .computeav_selinux_security (subj))
+
+	   (call .computecreate_selinux_security (subj))
+
+	   (call .conf.watch_file_lnk_files (subj))
+
+	   (call .cpuinfo.read_procfile_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .data.list_file_dirs (subj))
+
+	   (call .dbus.client.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.traverse_sysfile_pattern.type (subj))
+
+	   (call .devpts.search_fs_pattern.type (subj))
+
+	   (call .environ.read_file_pattern.type (subj))
+
+	   (call .file.user.unit.read_all_files (subj))
+
+	   (call .firmware.search_sysfile_pattern.type (subj))
+
+	   (call .fs.read_sysctlfile_files (subj))
+	   (call .fs.search_sysctlfile_pattern.type (subj))
+
+	   (call .hwclock.conf.read_file_files (subj))
+
+	   (call .hypervisor.search_sysfile_pattern.type (subj))
+
+	   (call .kernel.read_sysctlfile_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .logindefs.read_file_files (subj))
+
+	   (call .media.home.list_file_dirs (subj))
+
+	   (call .module.read_sysfile_files (subj))
+	   (call .module.search_sysfile_pattern.type (subj))
+
+	   (call .mount.run.read_file_files (subj))
+	   (call .mount.run.list_file_dirs (subj))
+	   (call .mount.run.watch_file_dirs (subj))
+	   (call .mount.run.watch_file_files (subj))
+	   (call .mount.run.watchreads_file_files (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .overflowuid.read_sysctlfile_files (subj))
+
+	   (call .pidmax.read_sysctlfile_files (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.exemptsource.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.map_fs_files (subj))
+	   (call .selinux.readwrite_fs_pattern.type (subj))
+
+	   (call .serialtermdev.getattr_all_chr_files (subj))
+
+	   (call .shell.exec.entrypoint_file_files (subj))
+
+	   (call .snd.getattr_nodedev_chr_files (subj))
+
+	   (call .stordev.getattr_all_blk_files (subj))
+	   (call .stordev.getattr_all_chr_files (subj))
+
+	   (call .subj.common.dontaudit_read_all_states (subj))
+
+	   (call .swaps.read_procfile_files (subj))
+
+	   (call .sys.getattr_fs (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.signal_subj_processes (subj))
+
+	   (call .sys.user.dontaudit_read_subj_states (subj))
+
+	   (call .systemd.forked.type (subj))
+	   (call .systemd.logparsenv.type (subj))
+	   (call .systemd.notify.type (subj))
+
+	   (call .systemd.exec.entrypoint_file_files (subj))
+	   (call .systemd.exec.execute_file_files (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+;;TODO
+;;	   (call .systemd.systemctl.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .threadsmax.read_sysctlfile_files (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .user.agent.type (subj))
+
+	   (call .user.dbus.nameclient.type (subj))
+
+	   (call .user.exec_home_subj_type_transition (subj))
+	   (call .user.exec_subj_type_transition (subj))
+
+	   (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+	   (call .user.open_ptytermdev_chr_files (subj))
+	   (call .user.setattr_ptytermdev_chr_files (subj))
+	   (call .user.watch_ptytermdev_chr_files (subj))
+	   (call .user.watchreads_ptytermdev_chr_files (subj))
+
+	   (call .user.run.deletename_file_dirs (subj))
+
+	   (call .user.shell_exec_subj_type_transition (subj))
+
+	   (call .user.unit.start_file_services (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (call .xdg.conf.list_file_dirs (subj))
+	   (call .xdg.conf.read_file_files (subj))
+	   (call .xdg.conf.read_file_lnk_files (subj))
+
+	   (call .zram.read_sysfile_files (subj))
+	   (call .zram.read_sysfile_lnk_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
+
+	   (block conf
+
+		  (filecon "/etc/systemd/user\.conf" file file_context)
+		  (filecon "/etc/systemd/user\.conf\..*" file file_context)
+		  (filecon "/etc/systemd/user\.conf\.d" dir file_context)
+		  (filecon "/etc/systemd/user\.conf\.d/.*" any file_context)
+
+		  (macro systemd_conf_file_type_transition_file ((type ARG1))
+			 (call .systemd.conf.file_type_transition
+			       (ARG1 file dir "user.conf.d"))
+			 (call .systemd.conf.file_type_transition
+			       (ARG1 file file "user.conf")))
+
+		  (blockinherit .file.conf.systemd.template))
+
+	   (block forked
+
+		  (macro read_all_states ((type ARG1))
+			 (allow ARG1 typeattr (state (read))))
+
+		  (macro sigkill_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (sigkill))))
+
+		  (macro signal_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (signal))))
+
+		  (macro signull_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (signull))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call readwrite_subj_unix_stream_sockets (typeattr))
+		  (call use_subj_fds (typeattr)))
+
+	   (block helper
+
+		  (block exec
+
+			 (filecon
+			  "/usr/lib/systemd/systemd-xdg-autostart-condition"
+			  file file_context)
+			 (filecon
+			  "/usr/lib/systemd/user-environment-generators/.*" file
+			  file_context)
+			 (filecon "/usr/lib/systemd/user-generators/.*" file
+				  file_context)
+
+			 (blockinherit .file.exec.template)))
+
+	   (block home
+
+		  (block conf
+
+			 (filecon "HOME_DIR/\.config/systemd" dir file_context)
+			 (filecon "HOME_DIR/\.config/systemd/.*" any
+				  file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "systemd")))
+
+			 (blockinherit .file.unit.macro_template_services)
+			 (blockinherit .file.user.home.conf.template)))
+
+	   (block inaccessible
+
+		  (block run
+
+			 (filecon "/run/user/%{USERID}/systemd/inaccessible" dir
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/inaccessible/.*"
+				  any file_context)
+
+			 (macro addname_file_dirs ((type ARG1))
+				(allow ARG1 file addname_dir))
+
+			 (macro create_file ((type ARG1))
+				(allow ARG1 file (files (create))))
+
+			 (macro delete_file ((type ARG1))
+				(allow ARG1 file (files (delete))))
+
+			 (macro dontaudit_getattr_file ((type ARG1))
+				(dontaudit ARG1 file (blk_file (getattr)))
+				(dontaudit ARG1 file (chr_file (getattr)))
+				(dontaudit ARG1 file (dir (getattr)))
+				(dontaudit ARG1 file (fifo_file (getattr)))
+				(dontaudit ARG1 file (file (getattr)))
+				(dontaudit ARG1 file (lnk_file (getattr)))
+				(dontaudit ARG1 file (sock_file (getattr))))
+
+			 (macro file_type_transition
+				((type ARG1)(type ARG2)(class ARG3)(name ARG4))
+				(typetransition ARG1 file ARG3 ARG4 ARG2)
+				(call addname_file_dirs (ARG1)))
+
+			 (macro relabel_file ((type ARG1))
+				(allow ARG1 file (files (relabel))))
+
+			 (macro setattr_file ((type ARG1))
+				(allow ARG1 file (blk_file (setattr)))
+				(allow ARG1 file (chr_file (setattr)))
+				(allow ARG1 file (dir (setattr)))
+				(allow ARG1 file (fifo_file (setattr)))
+				(allow ARG1 file (file (setattr)))
+				(allow ARG1 file (lnk_file (setattr)))
+				(allow ARG1 file (sock_file (setattr))))
+
+			 (macro user_systemd_run_file_type_transition_file
+				((type ARG1))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "inaccessible")))
+
+			 (blockinherit .file.user.run.systemd.base_template)))
+
+	   (block notify
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (allow typeattr self create_unix_dgram_socket)
+
+		  (call run.write_file_sock_files (typeattr))
+
+		  (call systemd.run.search_file_pattern.type (typeattr))
+		  (call systemd.sendto_subj_unix_dgram_sockets (typeattr))
+
+		  (block run
+
+			 (filecon "/run/user/%{USERID}/systemd/notify" socket
+				  file_context)
+
+			 (macro user_systemd_run_file_type_transition_file
+				((type ARG1))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file sock_file "notify")))
+
+			 (blockinherit .file.user.run.systemd.template)))
+
+	   (block private
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call run.write_file_sock_files (typeattr))
+
+		  (call systemd.connectto_subj_unix_stream_sockets (typeattr))
+		  (call systemd.run.search_file_pattern.type (typeattr))
+
+		  (block run
+
+			 (filecon "/run/user/%{USERID}/systemd/private" socket
+				  file_context)
+
+			 (macro user_systemd_run_file_type_transition_file
+				((type ARG1))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file sock_file "private")))
+
+			 (blockinherit .file.user.run.systemd.template)))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/systemd" dir file_context)
+		  (filecon "/run/user/%{USERID}/systemd/.*" any file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_run_file_type_transition_file ((type ARG1))
+			 (call .user.run.file_type_transition
+			       (ARG1 file dir "systemd")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.user.run.systemd.base_template))
+
+	   (block service
+
+		  (macro rlimitinh_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (rlimitinh))))
+
+		  (macro transition_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (transition))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call systemd.read_subj_states (typeattr))
+		  (call systemd.sigchld_subj_processes (typeattr))
+
+		  (block condition
+
+			 (macro getattr_all_files ((type ARG1))
+				(allow ARG1 typeattr (file (getattr))))
+
+			 (macro getattr_all_fifo_files ((type ARG1))
+				(allow ARG1 typeattr (file (getattr))))
+
+			 (macro getattr_all_sock_files ((type ARG1))
+				(allow ARG1 typeattr (sock_file (getattr))))
+
+			 (macro read_all_lnk_files ((type ARG1))
+				(allow ARG1 typeattr read_lnk_file))
+
+			 (macro search_all_dirs ((type ARG1))
+				(allow ARG1 typeattr search_dir))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr))
+
+		  (block exec
+
+			 (macro mapexecute_all_files ((type ARG1))
+				(allow ARG1 typeattr mapexecute_file))
+
+			 (macro read_all_files ((type ARG1))
+				(allow ARG1 typeattr read_file))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr))
+
+		  (block nnptransition
+
+			 (macro nnptransition_all_processes ((type ARG1))
+				(allow ARG1 typeattr
+				       (process2 (nnp_transition))))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr))
+
+		  (block noatsecure
+
+			 (macro noatsecure_all_processes ((type ARG1))
+				(allow ARG1 typeattr (process (noatsecure))))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr))
+
+		  (block workingdir
+
+			 (macro read_all_lnk_files ((type ARG1))
+				(allow ARG1 typeattr read_lnk_file))
+
+			 (macro search_all_dirs ((type ARG1))
+				(allow ARG1 typeattr search_dir))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)))
+
+	   (block socketactivated
+
+		  (macro manage_all_dirs ((type ARG1))
+			 (allow ARG1 typeattr manage_dir))
+
+		  (macro manage_all_sock_files ((type ARG1))
+			 (allow ARG1 typeattr manage_sock_file))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (block tcp
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (allow subj typeattr create_tcp_socket)
+			 (allow subj typeattr (tcp_socket (listen))))
+
+		  (block unixstream
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (allow subj typeattr create_unix_stream_socket)
+			 (allow subj typeattr (unix_stream_socket (listen)))))
+
+	   (block standardinputtext
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call tmpfs.readwriteinherited_file_files (typeattr)))
+
+	   (block tmpfs
+
+		  (macro tmp_fs_type_transition_file ((type ARG1))
+			 (call .tmp.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmpfs.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user" dir file_context)
+		  (filecon "/usr/lib/systemd/user/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "user")))
+
+		  (macro systemd_conf_file_type_transition_file ((type ARG1))
+			 (call .systemd.conf.file_type_transition
+			       (ARG1 file dir "user")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.user.unit.template)
+
+		  (block run
+
+			 (filecon "/run/user/%{USERID}/systemd/generator" dir
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/generator/.*"
+				  any file_context)
+			 (filecon "/run/user/%{USERID}/systemd/generator\.early"
+				  dir file_context)
+			 (filecon
+			  "/run/user/%{USERID}/systemd/generator\.early/.*" any
+			  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/generator\.late"
+				  dir file_context)
+			 (filecon
+			  "/run/user/%{USERID}/systemd/generator\.late/.*" any
+			  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/transient" dir
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/transient/.*" any
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/user" dir
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/user/.*" any
+				  file_context)
+			 (filecon "/run/user/%{USERID}/systemd/user\.control"
+				  dir file_context)
+			 (filecon "/run/user/%{USERID}/systemd/user\.control/.*"
+				  any file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_systemd_run_file_type_transition_file
+				((type ARG1))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "generator"))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "generator.early"))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "generator.late"))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "transient"))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "user"))
+				(call .user.systemd.run.file_type_transition
+				      (ARG1 file dir "user.control")))
+
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_lnk_files)
+			 (blockinherit .file.macro_template_files)
+			 (blockinherit .file.unit.macro_template_services)
+			 (blockinherit .file.user.run.systemd.base_template)))))
+
+(in user.agent
+
+    (call .user.systemd.forked.type (typeattr)))
+
+(in wheel
+
+    (call .user.systemd.role (role)))

@@ -97,6 +97,11 @@
 	      (call .consolesetup.setupcon.tmp.manage_file_files (subj))
 	      (call .consolesetup.setupcon.tmp.relabel_file_files (subj)))
 
+    (optional unprivuser_initrcfile
+	      ;; bash completion
+	      (call .initrc.auditexecuteaccess_file_files (subj))
+	      (call .initrc.search_file_dirs (subj)))
+
     (optional unprivuser_kbd
 	      (call .kbd.role (role)))
 

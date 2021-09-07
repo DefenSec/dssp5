@@ -39,6 +39,19 @@
 
 	   (call .root.search_file_pattern.type (typeattr))))
 
+(in bpf
+
+    (block search_fs_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_fs_dirs (typeattr))
+
+	   (call .fs.search_sysfile_pattern.type (typeattr))))
+
 (in bus
 
     (block list_sysfile_pattern
@@ -974,6 +987,29 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in hypervisor
+
+    (block search_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_sysfile_dirs (typeattr))
+
+	   (call .sys.search_fs_pattern.type (typeattr)))
+
+    (block traverse_sysfile_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_sysfile_lnk_files (typeattr))
+	   (call search_sysfile_pattern.type (typeattr))))
 
 (in kernel
 
@@ -2419,6 +2455,19 @@
 	   (call search_file_dirs (typeattr))
 
 	   (call .runuser.search_file_pattern.type (typeattr))))
+
+(in user.systemd.run
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .user.run.search_file_pattern.type (typeattr))))
 
 (in user.tmp
 

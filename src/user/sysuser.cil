@@ -24,7 +24,7 @@
 
 	   (macro unix_dgram_send ((type ARG1))
 		  (call sendto_subj_unix_dgram_sockets (ARG1))
-		  (call .sys.tmp.write_file_sock_files (ARG1)))
+		  (call sys.tmp.write_file_sock_files (ARG1)))
 
 	   (roleattribute roleattr)
 	   (roletype roleattr subj)
@@ -32,23 +32,23 @@
 	   (blockinherit .subj.base_template)
 	   (blockinherit .user.macro_template)
 
+	   (call sys.hugetlbfs.hugetlb_fs_type_transition_file (subj "*"))
+
+	   (call sys.mqueuefs.mqueue_fs_type_transition_file (subj "*"))
+
+	   (call sys.tmp.tmp_file_type_transition_file (subj dir "*"))
+	   (call sys.tmp.tmp_file_type_transition_file (subj fifo_file "*"))
+	   (call sys.tmp.tmp_file_type_transition_file (subj file "*"))
+	   (call sys.tmp.tmp_file_type_transition_file (subj lnk_file "*"))
+	   (call sys.tmp.tmp_file_type_transition_file (subj sock_file "*"))
+
+	   (call sys.tmpfs.tmp_fs_type_transition_file (subj dir "*"))
+	   (call sys.tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
+	   (call sys.tmpfs.tmp_fs_type_transition_file (subj file "*"))
+	   (call sys.tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
+	   (call sys.tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
+
 	   (call .rbac.subjchangetarget.type (subj))
-
-	   (call .sys.hugetlbfs.hugetlb_fs_type_transition_file (subj "*"))
-
-	   (call .sys.mqueuefs.mqueue_fs_type_transition_file (subj "*"))
-
-	   (call .sys.tmp.tmp_file_type_transition_file (subj dir "*"))
-	   (call .sys.tmp.tmp_file_type_transition_file (subj fifo_file "*"))
-	   (call .sys.tmp.tmp_file_type_transition_file (subj file "*"))
-	   (call .sys.tmp.tmp_file_type_transition_file (subj lnk_file "*"))
-	   (call .sys.tmp.tmp_file_type_transition_file (subj sock_file "*"))
-
-	   (call .sys.tmpfs.tmp_fs_type_transition_file (subj dir "*"))
-	   (call .sys.tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
-	   (call .sys.tmpfs.tmp_fs_type_transition_file (subj file "*"))
-	   (call .sys.tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
-	   (call .sys.tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
 
 	   (call .unconfined.type (subj))
 
@@ -56,5 +56,5 @@
 
 (in sys.agent
 
-    (call .sys.user.readwriteinherited_subj_fifo_files (typeattr))
-    (call .sys.user.use_subj_fds (typeattr)))
+    (call sys.user.readwriteinherited_subj_fifo_files (typeattr))
+    (call sys.user.use_subj_fds (typeattr)))
