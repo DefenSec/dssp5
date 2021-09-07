@@ -149,6 +149,8 @@
 
 	   (call .subj.useinteractivefd.type (typeattr))
 
+	   (call .unixchkpwd.role (roleattr))
+
 	   (block role_template
 
 		  (blockabstract role_template)
