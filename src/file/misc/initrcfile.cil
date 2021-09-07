@@ -1,0 +1,27 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block initrc
+
+       (filecon "/etc/init\.d" dir file_context)
+       (filecon "/etc/init\.d/.*" any file_context)
+
+       (filecon "/etc/rc\.local" file file_context)
+       (filecon "/etc/rc\.local\..*" file file_context)
+
+       (macro conf_file_type_transition_file ((type ARG1))
+	      (call .conf.file_type_transition
+		    (ARG1 file dir "init.d"))
+	      (call .conf.file_type_transition
+		    (ARG1 file file "rc.local")))
+
+       (macro auditexecuteaccess_file_files ((type ARG1))
+	      (allow ARG1 file (file (getattr execute))))
+
+       (blockinherit .file.conf.base_template)
+       (blockinherit .file.macro_template_dirs)
+       (blockinherit .file.macro_template_files))
+
+(in file.unconfined
+
+    (call .initrc.conf_file_type_transition_file (typeattr)))
