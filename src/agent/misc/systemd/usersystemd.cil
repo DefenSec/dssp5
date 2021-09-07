@@ -292,6 +292,7 @@
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
 	   (call .cgroup.getattr_fs_pattern.type (subj))
+	   (call .cgroup.read_fs_files (subj))
 
 	   (call .class.traverse_sysfile_pattern.type (subj))
 
@@ -401,6 +402,8 @@
 ;;	   (call .systemd.systemctl.sendmsg_subj_dbus.type (subj))
 
 	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .systemd.unit.run.search_file_dirs (subj))
 
 	   (call .threadsmax.read_sysctlfile_files (subj))
 
