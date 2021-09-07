@@ -94,8 +94,8 @@
 	   (call .subj.interactivefd.type (typeattr))
 
 	   (call .sys.read_subj_states (typeattr))
-;; TODO
-;;	   (call .systemd.askpassword.client.type (typeattr))
+
+	   (call .systemd.askpassword.client.type (typeattr))
 
 	   (optional systemdrun_common_opensshclient
 		     (call .openssh.client.subj_type_transition (typeattr)))

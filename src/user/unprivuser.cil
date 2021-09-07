@@ -81,6 +81,11 @@
 
     (call .sys.termdev.readwriteinherited_all_chr_files (subj))
 
+    (call .systemd.askpassword.client.role (role))
+
+    (call .systemd.systemctl.noatsecure_subj_processes (subj))
+    (call .systemd.systemctl.role (role))
+
     (call .tmp.deletename_file_dirs (subj))
     (call .tmp.deletename_fs_dirs (subj))
 
