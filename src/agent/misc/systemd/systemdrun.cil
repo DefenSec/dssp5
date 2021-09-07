@@ -1,0 +1,178 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .systemd.run.pipe.client.type (subj)))
+
+(in systemd.run
+
+    (macro agent ((type ARG1)(type ARG2))
+	   (typetransition subj ARG2 process ARG1)
+	   (call service.exec.type (ARG2))
+	   (call service.type (ARG1)))
+
+    (macro subj_type_transition ((type ARG1))
+	   (allow ARG1 subj (process (noatsecure transition)))
+
+	   (allow subj ARG1 (process (sigchld)))
+	   (allow subj ARG1 (fd (use)))
+	   (allow subj ARG1 readwriteinherited_fifo_file)
+
+	   (call exec.mapexecute_file_files (ARG1))
+	   (call exec.read_file_files (ARG1))
+	   (call exec.subj_type_transition (ARG1 subj)))
+
+    (blockinherit .agent.template)
+    (blockinherit .dbus.client.template)
+
+    (allow subj self (capability (dac_override dac_read_search)))
+
+    (call common.type (subj))
+
+    (call pipe.file.readwriteinherited_all_files (subj))
+
+    (call service.transition_all_processes (subj))
+
+    (call service.exec.mapexecute_all_files (subj))
+    (call service.exec.read_all_files (subj))
+
+    (call service.noatsecure.noatsecure_all_processes (subj))
+
+    (call systemd.notify.type (subj))
+    (call systemd.private.type (subj))
+    (call systemd.unit.run.start_file_services (subj))
+    (call systemd.unit.run.status_file_services (subj))
+
+    (call systemd.machines.run.list_file_dirs (subj))
+    (call systemd.machines.run.read_file_files (subj))
+
+    (call .ns.read_fs_pattern.type (subj))
+
+    (call .sys.agent.type (subj))
+
+    (call .sys.sendmsg_subj_dbus.type (subj))
+    (call .sys.start_system (subj))
+    (call .sys.status_system (subj))
+
+    (call .sys.agent.exec.auditexecuteaccess_all_files (subj))
+
+    (call .sys.exec_subj_type_transition (subj))
+
+    (call .sys.devpts_fs_type_transition_ptytermdev (subj))
+
+    (call .sys.home.search_file_dirs (subj))
+
+    (call .sys.shell_exec_subj_type_transition (subj))
+
+    (call .sys.termdev.open_all_chr_files (subj))
+
+    (block common
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin sys_resource)))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .cgroup.getattr_fs_pattern.type (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .file.exec.dontaudit_auditaccess_all_files (typeattr))
+
+	   (call .proc.getattr_fs_pattern.type (typeattr))
+
+	   (call .ptmx.readwrite_nodedev_chr_files (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+
+	   (call .subj.interactivefd.type (typeattr))
+
+	   (call .sys.read_subj_states (typeattr))
+;; TODO
+;;	   (call .systemd.askpassword.client.type (typeattr))
+
+	   (optional systemdrun_common_opensshclient
+		     (call .openssh.client.subj_type_transition (typeattr)))
+
+	   (optional systemdrun_common_polkit
+		     (call .polkit.ttyagent.subj_type_transition (typeattr))))
+
+    (block exec
+
+	   (filecon "/usr/bin/systemd-run" file file_context)
+
+	   (call .hybrid.agent.exec.type (file)))
+
+    (block pipe
+
+	   (macro readwriteinherited_all_fifo_files ((type ARG1))
+		  (allow ARG1 typeattr readwriteinherited_fifo_file))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (macro use_all_fds ((type ARG1))
+		  (allow ARG1 typeattr (fd (use))))
+
+	   (typeattribute typeattr)
+
+	   (block client
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call file.readwriteinherited_all_files (typeattr))
+
+		  (call pipe.readwriteinherited_all_fifo_files (typeattr))
+		  (call pipe.use_all_fds (typeattr)))
+
+	   (block file
+
+		  (macro readwriteinherited_all_files ((type ARG1))
+			 (allow ARG1 typeattr readwriteinherited_file))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)))
+
+    (block service
+
+	   (macro transition_all_processes ((type ARG1))
+		  (allow ARG1 typeattr (process (transition))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (block exec
+
+		  (macro mapexecute_all_files ((type ARG1))
+			 (allow ARG1 typeattr mapexecute_file))
+
+		  (macro read_all_files ((type ARG1))
+			 (allow ARG1 typeattr read_file))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr))
+
+	   (block noatsecure
+
+		  (macro noatsecure_all_processes ((type ARG1))
+			 (allow ARG1 subj (process (noatsecure))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr))))
