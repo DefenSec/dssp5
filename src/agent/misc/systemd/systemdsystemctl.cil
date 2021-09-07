@@ -113,6 +113,9 @@
 
 	   (call .user.run.search_file_pattern.type (subj))
 
+	   (call .user.slice.list_cgroupfile_dirs (subj))
+	   (call .user.slice.read_cgroupfile_files (subj))
+
 	   (call .user.systemd.agent (subj exec.file))
 	   (call .user.systemd.control_system (subj))
 	   (call .user.systemd.sendmsg_subj_dbus.type (subj))

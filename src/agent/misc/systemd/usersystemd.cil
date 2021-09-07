@@ -285,6 +285,8 @@
 	   (call unit.run.manage_file_files (subj))
 	   (call unit.run.user_systemd_run_file_type_transition_file (subj))
 
+	   (call .apparmor.search_sysfile_dirs (subj))
+
 	   (call .bpf.search_fs_pattern.type (subj))
 
 	   (call .bus.search_sysfile_pattern.type (subj))
@@ -397,9 +399,10 @@
 	   (call .systemd.exec.entrypoint_file_files (subj))
 	   (call .systemd.exec.execute_file_files (subj))
 
+	   (call .systemd.journal.connectto_subj_unix_stream_sockets (subj))
 	   (call .systemd.journal.relay_msgs.type (subj))
-;;TODO
-;;	   (call .systemd.systemctl.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.systemctl.sendmsg_subj_dbus.type (subj))
 
 	   (call .systemd.udev.run.read_file_pattern.type (subj))
 
