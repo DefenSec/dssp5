@@ -213,6 +213,7 @@
 				   setsockcreate)))
 	   (allow subj self (bpf (prog_load prog_run)))
 	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self create_netlink_selinux_socket)
 	   (allow subj self create_udp_socket)
 	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self (unix_stream_socket (accept listen)))
