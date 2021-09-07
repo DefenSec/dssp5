@@ -5,6 +5,9 @@
 
        (filecon "/dev/snd/.+" char nodedev_context)
 
+       (macro getattr_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (getattr))))
+
        (blockinherit .nodedev.template)
 
        (call .rbacsep.exempt.obj.type (nodedev)))

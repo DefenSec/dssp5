@@ -1,0 +1,221 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.dbus.home.data.user_home_data_file_type_transition_file
+	  (typeattr))
+    (call .user.dbus.run.user_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call dbus.role (role))
+
+    (call dbus.home.data.manage_file_files (subj))
+    (call dbus.home.data.map_file_files (subj))
+    (call dbus.home.data.relabel_file_files (subj))
+    (call dbus.home.data.user_home_data_file_type_transition_file (subj))
+
+    (call dbus.run.manage_file_dirs (subj))
+    (call dbus.run.manage_file_files (subj))
+    (call dbus.run.manage_file_sock_files (subj))
+    (call dbus.run.map_file_files (subj))
+    (call dbus.run.relabel_file_dirs (subj))
+    (call dbus.run.relabel_file_files (subj))
+    (call dbus.run.relabel_file_sock_files (subj))
+    (call dbus.run.user_run_file_type_transition_file (subj))
+
+    (call dbus.tmpfs.manage_file_files (subj))
+    (call dbus.tmpfs.map_file_files (subj))
+    (call dbus.tmpfs.relabel_file_files (subj))
+
+    (block dbus
+
+	   (macro connectto_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_stream_socket (connectto))))
+
+	   (macro noatsecure_subj_processes ((type ARG1))
+		  (allow ARG1 subj (process (noatsecure))))
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro signal_subj_processes ((type ARG1))
+		  (allow ARG1 subj (process (signal))))
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (noatsecure transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .dbus.exec.mapexecute_file_files (ARG1))
+		  (call .dbus.exec.read_file_files (ARG1))
+		  (call .dbus.exec.subj_type_transition (ARG1 subj)))
+
+	   (blockinherit .dbus.macro_template)
+	   (blockinherit .subj.common.base_template)
+
+	   (roleattribute roleattr)
+	   (roletype roleattr subj)
+
+	   (call home.data.list_file_dirs (subj))
+	   (call home.data.read_file_files (subj))
+
+	   (call run.write_file_sock_files (subj))
+
+	   (call tmpfs.manage_file_files (subj))
+	   (call tmpfs.map_file_files (subj))
+	   (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	   (call .dbus.common.type (subj))
+	   (call .dbus.exec.entrypoint_file_files (subj))
+
+	   (call .user.agent.type (subj))
+
+	   (call .user.home.data.search_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj .dbus.exec.file))
+	   (call .user.systemd.notify.type (subj))
+	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
+	   (call .user.systemd.service.noatsecure.type (subj))
+	   (call .user.systemd.socketactivated.unixstream.type (subj))
+	   (call .user.systemd.status_system (subj))
+
+	   (block activated
+
+		  (block unit
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (allow subj typeattr (service (start status stop)))))
+
+	   (block client
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .dbus.client.all_macro_template)
+
+		  (typeattribute typeattr)
+
+		  (call connectto_subj_unix_stream_sockets (typeattr))
+
+		  (call sendmsg_subj_dbus.type (typeattr))
+
+		  (call run.write_file_sock_files (typeattr))
+
+		  (call .user.run.search_file_pattern.type (typeattr))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (blockinherit .dbus.client.macro_template)
+
+			 (call .user.dbus.client.type (subj))))
+
+	   (block nameclient
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .dbus.client.all_macro_template)
+
+		  (typeattribute typeattr)
+
+		  (call acquiresvc_subj_dbus.type (typeattr))
+
+		  (call client.type (typeattr))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (blockinherit .user.dbus.client.template)
+
+			 (call .user.dbus.nameclient.type (subj))))
+
+	   (block home
+
+		  (block data
+
+			 (filecon "HOME_DIR/\.local/share/dbus-1" dir
+				  file_context)
+			 (filecon "HOME_DIR/\.local/share/dbus-1/.*" any
+				  file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_data_file_type_transition_file
+				((type ARG1))
+				(call .user.home.data.file_type_transition
+				      (ARG1 file dir "dbus-1")))
+
+			 (macro watch_file_dirs ((type ARG1))
+				(allow ARG1 file (dir (watch))))
+
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_files)
+			 (blockinherit .file.user.home.data.base_template)))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/bus" socket file_context)
+		  (filecon "/run/user/%{USERID}/dbus-1" dir file_context)
+		  (filecon "/run/user/%{USERID}/dbus-1/.*" any file_context)
+
+		  (macro getattr_file_sock_files ((type ARG1))
+			 (allow ARG1 file (sock_file (getattr))))
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_run_file_type_transition_file ((type ARG1))
+			 (call .user.run.file_type_transition
+			       (ARG1 file dir "dbus-1"))
+			 (call .user.run.file_type_transition
+			       (ARG1 file sock_file "bus")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.run.base_template)
+
+		  (call .user.systemd.socketactivated.type (file)))
+
+	   (block tmpfs
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_fs_type_transition_file ((type ARG1))
+			 (call .tmp.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmpfs.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/dbus-broker\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/user/dbus\.socket.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in dbus.unconfined
+
+    (call .user.dbus.acquiresvc_subj_dbus.type (typeattr))
+    (call .user.dbus.client.sendmsg_all_dbus.type (typeattr))
+    (call .user.dbus.sendmsg_subj_dbus.type (typeattr)))
+
+(in wheel
+
+    (call .user.dbus.role (role)))
