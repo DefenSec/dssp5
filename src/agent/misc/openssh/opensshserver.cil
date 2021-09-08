@@ -66,8 +66,6 @@
 
 	   (call .file.exec.getattr_all_files (subj))
 
-	   (call .kernel.read_sysctlfile_files (subj))
-
 	   (call .libgssapi.list_file_dirs (subj))
 	   (call .libgssapi.read_file_files (subj))
 
