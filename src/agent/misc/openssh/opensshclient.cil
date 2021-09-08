@@ -51,9 +51,8 @@
 
 	   (call .user.run.search_file_pattern.type (subj))
 
-;;TODO
-;;	   (optional opensshclient_add_gnupg
-;;		     (call .gnupg.agent.unix_stream_connect (subj)))
+	   (optional opensshclient_add_gnupg
+		     (call .gnupg.agent.unix_stream_connect (subj)))
 
 	   (optional opensshclient_add_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
@@ -251,9 +250,8 @@
 
 	   (call .user.shell_exec_subj_type_transition (subj))
 
-;;TODO
-;;	   (optional opensshclient_client_gnupg
-;;		     (call .gnupg.agent.unix_stream_connect (subj)))
+	   (optional opensshclient_client_gnupg
+		     (call .gnupg.agent.unix_stream_connect (subj)))
 
 	   (optional opensshclient_client_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
