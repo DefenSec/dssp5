@@ -30,8 +30,8 @@
 	   (allow subj self create_netlink_audit_socket)
 	   (allow subj self create_tcp_stream_socket)
 	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (key (setattr write)))
 	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
-	   (dontaudit subj self (key (write)))
 
 	   (call readwrite_ptytermdev_chr_files (subj))
 	   (call relabelfrom_ptytermdev_chr_files (subj))
@@ -42,7 +42,6 @@
 
 	   (call exec.execute_file_files (subj))
 
-	   ;; openssh-client is effectively not optional
 	   (call home.read_file_files (subj))
 	   (call home.search_file_dirs (subj))
 
@@ -92,7 +91,7 @@
 
 	   (call .random.read_sysctlfile_pattern.type (subj))
 
-;;	   (call .rbacsep.exempttarget.type (subj))
+	   (call .rbacsep.exempttarget.type (subj))
 
 	   (call .run.deletename_file_dirs (subj))
 
@@ -223,11 +222,13 @@
     (call server.key.manage_file_files (subj))
     (call server.key.openssh_conf_file_type_transition_file (subj "*")))
 
-(in user
+(in user.agent
 
-    (call .openssh.server.ptytermdev_type_change (subj ptytermdev)))
+    (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
+    (call .openssh.server.use_subj_fds (typeattr)))
 
-;;(in user.agent
-;;
-;;    (call .user.openssh.readwriteinherited_subj_fifo_files (typeattr))
-;;    (call .user.openssh.use_subj_fds (typeattr)))
+(in user.unpriv
+
+    (call .openssh.server.ptytermdev_type_change (typeattr ptytermdev))
+    (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
+    (call .openssh.server.use_subj_fds (typeattr)))
