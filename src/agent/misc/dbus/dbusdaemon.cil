@@ -7,10 +7,7 @@
 
     (call .sys.read_subj_states (subj))
 
-    (call .sys.user.read_subj_states (subj))
-
-    (call .systemd.users.run.read_file_files (subj))
-    (call .systemd.users.run.search_file_dirs (subj)))
+    (call .sys.user.read_subj_states (subj)))
 
 (in dbus.common
 
@@ -18,7 +15,10 @@
 
     (call .locale.data.read_file_pattern.type (typeattr))
 
-    (call .security.search_fs_dirs (typeattr)))
+    (call .security.search_fs_dirs (typeattr))
+
+    (call .systemd.users.run.read_file_files (typeattr))
+    (call .systemd.users.run.search_file_dirs (typeattr)))
 
 (in dbus.conf
 

@@ -1,4 +1,34 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in user
+
+    (call dbus.run.manage_file_dirs (subj))
+    (call dbus.run.manage_file_files (subj))
+    (call dbus.run.map_file_files (subj))
+    (call dbus.run.relabel_file_dirs (subj))
+    (call dbus.run.relabel_file_files (subj)))
+
+(in user.dbus
+
+    (allow subj self (process (getcap)))
+
+    (call client.read_all_states (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.user_run_file_type_transition_file (subj)))
+
+(in user.dbus.run
+
+    (filecon "/run/user/%{USERID}/dbus-1" dir file_context)
+    (filecon "/run/user/%{USERID}/dbus-1/.*" any file_context)
+
+    (blockinherit .file.macro_template_dirs)
+    (blockinherit .file.macro_template_files))
+
+(in user.dbus.run.user_run_file_type_transition_file
+    (call .user.run.file_type_transition
+	  (ARG1 file dir "dbus-1")))
+
 ;; user dbus-daemon specific method returns
