@@ -66,6 +66,8 @@
 
 	   (call systemd.sysctl.subj_type_transition (subj))
 
+	   (call systemd.systemctl.exec.execute_file_files (subj))
+
 	   (call systemd.unit.run.search_file_dirs (subj))
 
 	   (call .apparmor.readwrite_sysfile_files (subj))
