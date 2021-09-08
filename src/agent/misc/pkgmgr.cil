@@ -169,6 +169,29 @@
 
 	      (blockinherit .sys.agent.template)
 
+	      (call log.manage_file_files (subj))
+	      (call log.log_file_type_transition_file (subj))
+
+	      (call state.manage_file_files (subj))
+	      (call state.readwrite_file_dirs (subj))
+
+	      (call .conf.manage_file_lnk_files (subj))
+	      (call .conf.readwrite_file_dirs (subj))
+
+	      (call .exec.manage_file_lnk_files (subj))
+	      (call .exec.readwrite_file_dirs (subj))
+
+	      (call .file.exec.getattr_all_files (subj))
+
+	      (call .file.data.getattr_all_files (subj))
+	      (call .file.data.manage_all_lnk_files (subj))
+	      (call .file.data.readwrite_all_dirs (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .var.search_file_pattern.type (subj))
+
 	      (block exec
 
 		     (filecon "/usr/bin/update-alternatives" file
