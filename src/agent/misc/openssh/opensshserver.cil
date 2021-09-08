@@ -1,0 +1,223 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .openssh.server.conf.conf_file_type_transition_file (typeattr))
+    (call .openssh.server.conf.openssh_conf_file_type_transition_file
+	  (typeattr))
+    (call .openssh.server.data.data_file_type_transition_file (typeattr))
+    (call .openssh.server.run.run_file_type_transition_file (typeattr)))
+
+(in openssh
+
+    (block server
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
+
+	   (macro setattr_ptytermdev_chr_files ((type ARG1))
+		  (allow ARG1 ptytermdev (chr_file (setattr))))
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .loginptytermdev.template)
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (audit_write net_bind_service setpcap)))
+	   (allow subj self (process (getcap setcap setcurrent)))
+	   (allow subj self create_netlink_audit_socket)
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+	   (dontaudit subj self (key (write)))
+
+	   (call readwrite_ptytermdev_chr_files (subj))
+	   (call relabelfrom_ptytermdev_chr_files (subj))
+	   (call setattr_ptytermdev_chr_files (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call exec.execute_file_files (subj))
+
+	   (call key.read_file_files (subj))
+
+	   (call openssh.conf.read_file_files (subj))
+	   (call openssh.conf.search_file_dirs (subj))
+
+	   (call run.manage_file_dirs (subj))
+	   (call run.manage_file_files (subj))
+	   (call run.run_file_type_transition_file (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .devpts.fs_type_transition (subj ptytermdev chr_file "*"))
+	   (call .devpts.getattr_fs (subj))
+
+	   (call .file.exec.getattr_all_files (subj))
+
+	   (call .kernel.read_sysctlfile_files (subj))
+
+	   (call .libgssapi.read_file_files (subj))
+	   (call .libgssapi.search_file_dirs (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .pam.login.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+;;	   (call .rbacsep.exempttarget.type (subj))
+
+	   (call .run.deletename_file_dirs (subj))
+
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .shell.exec.getattr_file_files (subj))
+
+	   (call .ssh.namebind_port_tcp_sockets (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .sys.home.read_file_files (subj))
+	   (call .sys.home.search_file_pattern.type (subj))
+
+	   (call .sys.readwrite_ptytermdev_chr_files (subj))
+	   (call .sys.relabelto_ptytermdev_chr_files (subj))
+	   (call .sys.setattr_ptytermdev_chr_files (subj))
+
+	   (call .sys.user.dyntransition_subj_processes (subj))
+
+	   (call .systemd.notify.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call .user.readwrite_ptytermdev_chr_files (subj))
+	   (call .user.relabelto_ptytermdev_chr_files (subj))
+	   (call .user.setattr_ptytermdev_chr_files (subj))
+
+	   (call .user.unpriv.create_all_keyrings (subj))
+	   (call .user.unpriv.dyntransition_all_processes (subj))
+	   (call .user.unpriv.rlimitinh_all_processes (subj))
+	   (call .user.unpriv.signal_all_processes (subj))
+	   (call .user.unpriv.signull_all_processes (subj))
+	   (call .user.unpriv.transition_all_processes (subj))
+	   (call .user.unpriv.write_all_keyrings (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+	   (optional opensshserver_server_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (optional opensshserver_server_opensshclient
+		     (call home.read_file_files (subj))
+		     (call home.search_file_dirs (subj)))
+
+	   (block conf
+
+		  (filecon "/etc/default/ssh" file file_context)
+		  (filecon "/etc/default/ssh\..*" file file_context)
+		  (filecon "/etc/ssh/sshd_config" file file_context)
+		  (filecon "/etc/ssh/sshd_config\..*" file file_context)
+		  (filecon "/etc/ssh/sshd_config\.d" dir file_context)
+		  (filecon "/etc/ssh/sshd_config\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file file "ssh")))
+
+		  (macro openssh_conf_file_type_transition_file ((type ARG1))
+			 (call .openssh.conf.file_type_transition
+			       (ARG1 file dir "sshd_config.d"))
+			 (call .openssh.conf.file_type_transition
+			       (ARG1 file file "sshd_config")))
+
+		  (blockinherit .file.conf.openssh.template))
+
+	   (block data
+
+		  (filecon "/usr/share/openssh" dir file_context)
+		  (filecon "/usr/share/openssh/.*" any file_context)
+
+		  (macro data_file_type_transition_file ((type ARG1))
+			 (call .data.file_type_transition
+			       (ARG1 file dir "openssh")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sshd" file file_context))
+
+	   (block key
+
+		  (filecon "/etc/ssh/ssh_host.*" file file_context)
+
+		  (macro openssh_conf_file_type_transition_file
+			 ((type ARG1)(name ARG2))
+			 (call .openssh.conf.file_type_transition
+			       (ARG1 file file ARG2)))
+
+		  (blockinherit .file.conf.openssh.base_template)
+		  (blockinherit .file.macro_template_files))
+
+	   (block run
+
+		  (filecon "/run/sshd" dir file_context)
+		  (filecon "/run/sshd/.*" any file_context)
+		  (filecon "/run/sshd\.pid" file file_context)
+		  (filecon "/run/sshd\.pid\..*" file file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "sshd"))
+			 (call .run.file_type_transition
+			       (ARG1 file file "sshd.pid")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/ssh\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/ssh\.socket.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/ssh@.*\.service.*" file
+			   file_context)
+
+		  (blockinherit .file.unit.template))))
+
+(in openssh.keygen
+
+    (call server.key.manage_file_files (subj))
+    (call server.key.openssh_conf_file_type_transition_file (subj "*")))
+
+;;(in user.agent
+;;
+;;    (call .user.openssh.readwriteinherited_subj_fifo_files (typeattr))
+;;    (call .user.openssh.use_subj_fds (typeattr)))

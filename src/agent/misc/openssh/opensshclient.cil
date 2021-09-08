@@ -1,0 +1,397 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .openssh.agent.run.user_run_file_type_transition_file (typeattr))
+    (call .openssh.client.conf.openssh_conf_file_type_transition_file
+	  (typeattr))
+    (call .openssh.home.user_home_file_type_transition_file (typeattr)))
+
+(in openssh
+
+    (block add
+
+	   (blockinherit .user.agent.template)
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call agent.unix_stream_connect (subj))
+
+	   (call client.subj_type_transition (subj))
+
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+;;TODO
+;;	   (optional opensshclient_add_gnupg
+;;		     (call .gnupg.agent.unix_stream_connect (subj)))
+
+	   (optional opensshclient_add_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/ssh-add" file file_context)
+		  (filecon "/usr/bin/ssh-copy-id" file file_context)
+		  (filecon "/usr/bin/ssh-keyscan" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.tmp.base_template)))
+
+    (block agent
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call run.write_file_sock_files (ARG1))
+		  (call tmp.search_file_dirs (ARG1))
+		  (call tmp.write_file_sock_files (ARG1)))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self (process (setrlimit)))
+	   (allow subj self create_unix_stream_stream_socket)
+
+	   (call run.manage_file_sock_files (subj))
+	   (call run.user_run_file_type_transition_file (subj))
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.manage_file_sock_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .user.shell_exec_subj_type_transition (subj))
+
+	   (call .user.run.deletename_file_dirs (subj))
+
+	   (call .user.systemd.agent (subj exec.file))
+
+	   (optional opensshclient_agent_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/ssh-agent" file file_context))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/openssh_agent" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/openssh_agent\..*" socket
+			   file_context)
+
+		  (macro user_run_file_type_transition_file ((type ARG1))
+			 (call .user.run.file_type_transition
+			       (ARG1 file sock_file "openssh_agent")))
+
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.run.base_template))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file dir "*")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.tmp.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/ssh-agent\.service.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template)))
+
+    (block client
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (signal transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwrite_unix_stream_socket)
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call exec.mapexecute_file_files (ARG1))
+		  (call exec.read_file_files (ARG1))
+		  (call exec.subj_type_transition (ARG1 subj)))
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call tmp.write_file_sock_files (ARG1)))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self (key (link read search view write)))
+	   (allow subj self create_tcp_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (unix_stream_socket (accept connectto listen)))
+
+	   (call agent.unix_stream_connect (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call exec.execute_file_files (subj))
+
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call openssh.conf.search_file_dirs (subj))
+
+	   (call tmp.manage_file_sock_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .checkcontext_selinux_security (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .libgssapi.search_file_dirs (subj))
+	   (call .libgssapi.read_file_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .media.search_file_pattern.type (subj))
+
+	   (call .media.home.traverse_file_pattern.type (subj))
+
+	   (call .mount.dontaudit_link_subj_keyrings (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+	   (call .net.port.unreserved.namebind_all_tcp_sockets (subj))
+	   (call .net.port.unreserved.nameconnect_all_tcp_sockets (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+	   (call .nss.services.type (subj))
+
+	   (call .ssh.nameconnect_port_tcp_sockets (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.readwrite_fs_pattern.type (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .user.home.manage_file_dirs (subj))
+	   (call .user.home.manage_file_files (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+	   (call .user.shell_exec_subj_type_transition (subj))
+
+;;TODO
+;;	   (optional opensshclient_client_gnupg
+;;		     (call .gnupg.agent.unix_stream_connect (subj)))
+
+	   (optional opensshclient_client_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (block conf
+
+		  (filecon "/etc/ssh/ssh_config" file file_context)
+		  (filecon "/etc/ssh/ssh_config\..*" file file_context)
+		  (filecon "/etc/ssh/ssh_config\.d" dir file_context)
+		  (filecon "/etc/ssh/ssh_config\.d/.*" any file_context)
+
+		  (macro openssh_conf_file_type_transition_file ((type ARG1))
+			 (call .openssh.conf.file_type_transition
+			       (ARG1 file dir "ssh_config.d"))
+			 (call .openssh.conf.file_type_transition
+			       (ARG1 file file "ssh_config")))
+
+		  (blockinherit .file.conf.openssh.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/scp" file file_context)
+		  (filecon "/usr/bin/sftp" file file_context)
+		  (filecon "/usr/bin/ssh" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file sock_file "*")))
+
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.tmp.base_template)))
+
+    (block home
+
+	   (filecon "HOME_DIR/\.ssh" dir file_context)
+	   (filecon "HOME_DIR/\.ssh/.*" any file_context)
+
+	   (macro dontaudit_search_file_dirs ((type ARG1))
+		  (dontaudit ARG1 file search_dir))
+
+	   (macro getattr_file_files ((type ARG1))
+		  (allow ARG1 file (file (getattr))))
+
+	   (macro user_home_file_type_transition_file ((type ARG1))
+		  (call .user.home.file_type_transition
+			(ARG1 file dir ".ssh")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_sock_files)
+	   (blockinherit .file.user.home.base_template))
+
+    (block helper
+
+	   (block exec
+
+		  (filecon "/usr/bin/ssh-pkcs11-helper" file
+			   file_context)
+		  (filecon "/usr/bin/ssh-sk-helper" file
+			   file_context)
+
+		  (blockinherit .file.exec.template)))
+
+    (block keygen
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (process (setfscreate)))
+
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.search_file_pattern.type (subj))
+
+	   (call .checkcontext_selinux_security (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.readwrite_fs_pattern.type (subj))
+
+	   (optional opensshclient_keygen_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/ssh-keygen" file file_context)))
+
+    (block keysign
+
+	   (blockinherit .user.agent.template)
+
+	   (block exec
+
+		  (filecon "/usr/bin/ssh-keysign" file
+			   file_context))))
+
+(in user
+
+    (call .openssh.add.role (role))
+    (call .openssh.add.tmp.manage_file_files (subj))
+    (call .openssh.add.tmp.relabel_file_files (subj))
+
+    (call .openssh.agent.role (role))
+    (call .openssh.agent.run.manage_file_sock_files (subj))
+    (call .openssh.agent.run.relabel_file_sock_files (subj))
+    (call .openssh.agent.run.user_run_file_type_transition_file (subj))
+    (call .openssh.agent.tmp.manage_file_dirs (subj))
+    (call .openssh.agent.tmp.manage_file_sock_files (subj))
+    (call .openssh.agent.tmp.relabel_file_dirs (subj))
+    (call .openssh.agent.tmp.relabel_file_sock_files (subj))
+
+    (call .openssh.client.role (role))
+    (call .openssh.client.tmp.manage_file_sock_files (subj))
+    (call .openssh.client.tmp.relabel_file_sock_files (subj))
+
+    (call .openssh.keygen.role (role))
+    (call .openssh.keysign.role (role)))
+
+(in wheel
+
+    (call .openssh.add.role (role))
+    (call .openssh.agent.role (role))
+    (call .openssh.client.role (role))
+    (call .openssh.keygen.role (role))
+    (call .openssh.keysign.role (role)))
