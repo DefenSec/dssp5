@@ -105,7 +105,7 @@
     (optional unprivuser_initrcfile
 	      ;; bash completion
 	      (call .initrc.auditexecuteaccess_file_files (subj))
-	      (call .initrc.search_file_dirs (subj)))
+	      (call .initrc.list_file_dirs (subj)))
 
     (optional unprivuser_kbd
 	      (call .kbd.role (role)))
