@@ -1,0 +1,143 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in gnupg
+
+    (block scdaemon
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call gnupg.run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self create_unix_stream_stream_socket)
+
+	   (call conf.read_file_files (subj))
+
+	   (call agent.signal_subj_processes (subj))
+	   (call agent.signull_subj_processes (subj))
+
+	   (call home.gnupg_home_file_type_transition_file (subj))
+	   (call home.manage_file_files (subj))
+
+	   (call run.gnupg_run_file_type_transition_file (subj))
+	   (call run.manage_file_sock_files (subj))
+
+	   (call gnupg.conf.list_file_dirs (subj))
+	   (call gnupg.home.manage_file_dirs (subj))
+	   (call gnupg.home.user_home_file_type_transition_file (subj))
+	   (call gnupg.run.manage_file_dirs (subj))
+	   (call gnupg.run.user_run_file_type_transition_file (subj))
+
+	   (call .bus.list_sysfile_dirs (subj))
+	   (call .bus.read_sysfile_lnk_files (subj))
+
+	   (call .class.list_sysfile_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .debug.search_fs_pattern.type (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.traverse_sysfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.getattr_fs (subj))
+
+	   (call .systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .trace.search_fs_pattern.type (subj))
+
+	   (call .usb.readwrite_nodedev_chr_files (subj))
+
+	   (block conf
+
+		  (filecon "/etc/gnupg/scdaemon\.conf" file file_context)
+		  (filecon "/etc/gnupg/scdaemon\.conf\..*" file file_context)
+
+		  (macro gnupg_conf_file_type_transition_file ((type ARG1))
+			 (call .gnupg.conf.file_type_transition
+			       (ARG1 file file "scdaemon.conf")))
+
+		  (blockinherit .file.conf.gnupg.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/scdaemon" file file_context))
+
+	   (block home
+
+		  (filecon "HOME_DIR/\.gnupg/reader.*\.status" file
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/reader.*\.status\..*" file
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/scdaemon\.conf" file file_context)
+		  (filecon "HOME_DIR/\.gnupg/scdaemon\.conf\..*" file
+			   file_context)
+
+		  (macro gnupg_home_file_type_transition_file ((type ARG1))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_0.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_-0.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_1.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_-1.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_2.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "reader_-2.status"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "scdaemon.conf")))
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (blockinherit .file.home.gnupg.base_template)
+		  (blockinherit .file.macro_template_files))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/gnupg/S\.scdaemon" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.scdaemon\..*" socket
+			   file_context)
+
+		  (macro gnupg_run_file_type_transition_file ((type ARG1))
+			 (call gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.scdaemon")))
+
+		  (blockinherit .file.user.run.gnupg.template))))
+
+(in file.unconfined
+
+    (call .gnupg.scdaemon.conf.gnupg_conf_file_type_transition_file (typeattr))
+    (call .gnupg.scdaemon.home.gnupg_home_file_type_transition_file (typeattr))
+    (call .gnupg.scdaemon.run.gnupg_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .gnupg.scdaemon.home.gnupg_home_file_type_transition_file (subj))
+    (call .gnupg.scdaemon.home.manage_file_files (subj))
+    (call .gnupg.scdaemon.home.map_file_files (subj))
+    (call .gnupg.scdaemon.home.relabel_file_files (subj))
+    (call .gnupg.scdaemon.role (role))
+    (call .gnupg.scdaemon.run.gnupg_run_file_type_transition_file (subj))
+    (call .gnupg.scdaemon.run.manage_file_sock_files (subj))
+    (call .gnupg.scdaemon.run.relabel_file_sock_files (subj)))
+
+(in wheel
+
+    (call .gnupg.scdaemon.role (role)))

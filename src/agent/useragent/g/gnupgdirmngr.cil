@@ -1,0 +1,190 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in gnupg
+
+    (block dirmngr
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call gnupg.run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self (unix_stream_socket (accept listen)))
+
+	   (call conf.read_file_files (subj))
+
+	   (call data.read_file_files (subj))
+	   (call data.search_file_dirs (subj))
+
+	   (call home.gnupg_home_file_type_transition_file (subj))
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+
+	   (call run.gnupg_run_file_type_transition_file (subj))
+	   (call run.manage_file_sock_files (subj))
+
+	   (call gnupg.conf.list_file_dirs (subj))
+	   (call gnupg.home.manage_file_dirs (subj))
+	   (call gnupg.home.user_home_file_type_transition_file (subj))
+	   (call gnupg.home.watch_file_dirs (subj))
+	   (call gnupg.run.manage_file_dirs (subj))
+	   (call gnupg.run.user_run_file_type_transition_file (subj))
+	   (call gnupg.run.watch_file_dirs (subj))
+
+	   (call ldap.exec.execute_file_files (subj))
+
+	   (call .cert.map_file_files (subj))
+	   (call .cert.read_file_pattern.type (subj))
+
+	   (call .cert.home.list_file_dirs (subj))
+	   (call .cert.home.read_file_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .hkp.nameconnect_port_tcp_sockets (subj))
+
+	   (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+	   (call .ldap.ldaps.nameconnect_port_tcp_sockets (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .net.port.unreserved.namebind_all_udp_sockets (subj))
+
+	   (call .nss.hosts.type (subj))
+
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .tor.socks.nameconnect_port_tcp_sockets (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj dirmngr.exec.file))
+	   (call .user.systemd.socketactivated.unixstream.type (subj))
+
+	   (optional gnupgdirmngr_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (block client
+
+		  (blockinherit .user.agent.template)
+
+		  (call unix_stream_connect (subj))
+
+		  (call .crypto.read_sysctlfile_pattern.type (subj))
+
+		  (call .locale.data.map_file_pattern.type (subj))
+		  (call .locale.read_file_pattern.type (subj))
+
+		  (call .user.run.search_file_pattern.type (subj))
+
+		  (block exec
+
+			 (filecon "/usr/bin/dirmngr-client" file file_context)))
+
+	   (block conf
+
+		  (filecon "/etc/gnupg/dirmngr\.conf" file file_context)
+		  (filecon "/etc/gnupg/dirmngr\.conf\..*" file file_context)
+
+		  (macro gnupg_conf_file_type_transition_file ((type ARG1))
+			 (call .gnupg.conf.file_type_transition
+			       (ARG1 file file "dirmngr.conf")))
+
+		  (blockinherit .file.conf.gnupg.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/dirmngr" file file_context))
+
+	   (block home
+
+		  (filecon "HOME_DIR/\.gnupg/crls\.d" dir file_context)
+		  (filecon "HOME_DIR/\.gnupg/crls\.d/.*" any file_context)
+		  (filecon "HOME_DIR/\.gnupg/dirmngr-cache\.d" dir file_context)
+		  (filecon "HOME_DIR/\.gnupg/dirmngr-cache\.d/.*" any
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/dirmngr\.conf" file file_context)
+		  (filecon "HOME_DIR/\.gnupg/dirmngr\.conf\..*" file
+			   file_context)
+
+		  (macro gnupg_home_file_type_transition_file ((type ARG1))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file dir "crls.d"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file dir "dirmngr-cache.d"))
+			 (call gnupg.home.file_type_transition
+			       (ARG1 file file "dirmngr.conf")))
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (blockinherit .file.home.gnupg.template))
+
+	   (block ldap
+
+		  (block exec
+
+			 (filecon "/usr/bin/dirmngr_ldap" file file_context)
+
+			 (blockinherit .file.exec.template)))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr\..*" socket
+			   file_context)
+
+		  (macro gnupg_run_file_type_transition_file ((type ARG1))
+			 (call .gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.dirmngr")))
+
+		  (blockinherit .file.user.run.gnupg.template)
+
+		  (call .user.systemd.socketactivated.type (file)))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/dirmngr\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/user/dirmngr\.socket.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in file.unconfined
+
+    (call .gnupg.dirmngr.conf.gnupg_conf_file_type_transition_file (typeattr))
+    (call .gnupg.dirmngr.home.gnupg_home_file_type_transition_file (typeattr))
+    (call .gnupg.dirmngr.run.gnupg_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .gnupg.dirmngr.client.role (role))
+    (call .gnupg.dirmngr.home.gnupg_home_file_type_transition_file (subj))
+    (call .gnupg.dirmngr.home.manage_file_dirs (subj))
+    (call .gnupg.dirmngr.home.manage_file_files (subj))
+    (call .gnupg.dirmngr.home.map_file_files (subj))
+    (call .gnupg.dirmngr.home.relabel_file_dirs (subj))
+    (call .gnupg.dirmngr.home.relabel_file_files (subj))
+    (call .gnupg.dirmngr.role (role))
+    (call .gnupg.dirmngr.run.gnupg_run_file_type_transition_file (subj))
+    (call .gnupg.dirmngr.run.manage_file_sock_files (subj))
+    (call .gnupg.dirmngr.run.relabel_file_sock_files (subj)))
+
+(in wheel
+
+    (call .gnupg.dirmngr.client.role (role))
+    (call .gnupg.dirmngr.role (role)))

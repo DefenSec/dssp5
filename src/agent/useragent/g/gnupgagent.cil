@@ -1,0 +1,190 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in gnupg
+
+    (block agent
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call gnupg.run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_unix_stream_stream_socket)
+	   (allow subj self (unix_stream_socket (connectto)))
+
+	   (call conf.read_file_files (subj))
+
+	   (call home.gnupg_home_file_type_transition_file (subj))
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+
+	   (call run.gnupg_run_file_type_transition_file (subj))
+	   (call run.manage_file_sock_files (subj))
+
+	   (call gnupg.conf.list_file_dirs (subj))
+
+	   (call gnupg.data.list_file_dirs (subj))
+	   (call gnupg.data.read_file_files (subj))
+
+	   (call gnupg.home.manage_file_dirs (subj))
+	   (call gnupg.home.user_home_file_type_transition_file (subj))
+	   (call gnupg.home.watch_file_dirs (subj))
+
+	   (call gnupg.run.manage_file_dirs (subj))
+	   (call gnupg.run.user_run_file_type_transition_file (subj))
+	   (call gnupg.run.watch_file_dirs (subj))
+
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.list_file_pattern.type (subj))
+
+	   (call .devpts.search_fs_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .runuser.search_file_pattern.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .tmp.search_file_pattern.type (subj))
+
+	   (call .user.systemd.agent (subj agent.exec.file))
+	   (call .user.systemd.socketactivated.unixstream.type (subj))
+
+	   (call .user.termdev.open_all_chr_files (subj))
+
+	   (optional gnupgagent_gnupgscdaemon
+		     (call scdaemon.subj_type_transition (subj))
+		     (call scdaemon.unix_stream_connect (subj)))
+
+	   (optional gnupgagent_pinentry
+		     (call .pinentry.subj_type_transition (subj)))
+
+	   (block conf
+
+		  (filecon "/etc/gnupg/gpg-agent\.conf" file file_context)
+		  (filecon "/etc/gnupg/gpg-agent\.conf\..*" file file_context)
+
+		  (macro gnupg_conf_file_type_transition_file ((type ARG1))
+			 (call gnupg.conf.file_type_transition
+			       (ARG1 file file "gpg-agent.conf")))
+
+		  (blockinherit .file.conf.gnupg.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/gpg-agent" file file_context))
+
+	   (block home
+
+		  (filecon "HOME_DIR/\.gnupg/gpg-agent\.conf" file
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/gpg-agent\.conf\..*" file
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/gpg-agent\.log" file file_context)
+		  (filecon "HOME_DIR/\.gnupg/gpg-agent\.log\..*" file
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/sshcontrol" file file_context)
+		  (filecon "HOME_DIR/\.gnupg/sshcontrol\..*" file file_context)
+		  (filecon "HOME_DIR/\.gnupg/private-keys-v1\.d" dir
+			   file_context)
+		  (filecon "HOME_DIR/\.gnupg/private-keys-v1\.d/.*" any
+			   file_context)
+
+		  (macro gnupg_home_file_type_transition_file ((type ARG1))
+			 (call .gnupg.home.file_type_transition
+			       (ARG1 file dir "private-keys-v1.d"))
+			 (call .gnupg.home.file_type_transition
+			       (ARG1 file file "gpg-agent.conf"))
+			 (call .gnupg.home.file_type_transition
+			       (ARG1 file file "gpg-agent.log"))
+			 (call .gnupg.home.file_type_transition
+			       (ARG1 file file "sshcontrol")))
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (blockinherit .file.home.gnupg.template))
+
+	   (block run
+
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\..*" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\.browser"
+			   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/S\.gpg-agent\.browser\..*" socket
+		   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\.extra"
+			   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/S\.gpg-agent\.extra\..*" socket
+		   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\.ssh"
+			   socket file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\.ssh\..*"
+			   socket file_context)
+
+		  (macro gnupg_run_file_type_transition_file ((type ARG1))
+			 (call .gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.gpg-agent"))
+			 (call .gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.gpg-agent.browser"))
+			 (call .gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.gpg-agent.extra"))
+			 (call .gnupg.run.file_type_transition
+			       (ARG1 file sock_file "S.gpg-agent.ssh")))
+
+		  (blockinherit .file.user.run.gnupg.template)
+
+		  (call .user.systemd.socketactivated.type (file)))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/user/gpg-agent\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/user/gpg-agent\.socket.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/user/gpg-agent-browser\.socket.*"
+		   file file_context)
+		  (filecon "/usr/lib/systemd/user/gpg-agent-extra\.socket.*"
+			   file file_context)
+		  (filecon "/usr/lib/systemd/user/gpg-agent-ssh\.socket.*" file
+			   file_context)
+
+		  (blockinherit .file.user.unit.template))))
+
+(in file.unconfined
+
+    (call .gnupg.agent.conf.gnupg_conf_file_type_transition_file (typeattr))
+    (call .gnupg.agent.home.gnupg_home_file_type_transition_file (typeattr))
+    (call .gnupg.agent.run.gnupg_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .gnupg.agent.home.gnupg_home_file_type_transition_file (subj))
+    (call .gnupg.agent.home.manage_file_dirs (subj))
+    (call .gnupg.agent.home.manage_file_files (subj))
+    (call .gnupg.agent.home.map_file_files (subj))
+    (call .gnupg.agent.home.relabel_file_dirs (subj))
+    (call .gnupg.agent.home.relabel_file_files (subj))
+    (call .gnupg.agent.role (role))
+    (call .gnupg.agent.run.gnupg_run_file_type_transition_file (subj))
+    (call .gnupg.agent.run.manage_file_sock_files (subj))
+    (call .gnupg.agent.run.relabel_file_sock_files (subj)))
+
+(in wheel
+
+    (call .gnupg.agent.role (role)))

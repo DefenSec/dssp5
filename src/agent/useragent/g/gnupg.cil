@@ -1,0 +1,295 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block gnupg
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (setrlimit)))
+       (allow subj self create_unix_stream_socket)
+
+       (call conf.list_file_dirs (subj))
+
+       (call data.read_file_files (subj))
+       (call data.search_file_dirs (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call helper.exec.execute_file_files (subj))
+
+       (call home.manage_file_dirs (subj))
+       (call home.manage_file_files (subj))
+       (call home.user_home_file_type_transition_file (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.user_run_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .file.conf.gnupg.read_all_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .inputrc.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.exemptsource.type (subj))
+       (call .rbacsep.readstatetarget.type (subj))
+
+       (call .runuser.search_file_pattern.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.home.manage_file_files (subj))
+
+       (call .user.systemd.agent (subj gnupg.exec.file))
+
+       (call .user.termdev.open_all_chr_files (subj))
+
+       (call .user.tmp.manage_file_files (subj))
+       (call .user.tmp.tmp_file_type_transition_file (subj file "*"))
+
+       (optional gnupg_gnupgagent
+		 (call agent.home.read_file_files (subj))
+		 (call agent.subj_type_transition (subj))
+		 (call agent.unix_stream_connect (subj)))
+
+       (optional gnupg_gnupgconnectagent
+		 (call connectagent.subj_type_transition (subj)))
+
+       (optional gnupg_gnupgdirmngr
+		 (call dirmngr.home.manage_file_files (subj))
+		 (call dirmngr.home.gnupg_home_file_type_transition_file (subj))
+		 (call dirmngr.subj_type_transition (subj))
+		 (call dirmngr.unix_stream_connect (subj)))
+
+       (optional gnupg_gnupgscdaemon
+		 (call scdaemon.subj_type_transition (subj)))
+
+       (optional gnupg_pinentry
+		 (call .pinentry.subj_type_transition (subj)))
+
+       (block conf
+
+	      (filecon "/etc/gnupg" dir file_context)
+	      (filecon "/etc/gnupg/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "gnupg")))
+
+	      (blockinherit .file.conf.gnupg.template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_lnk_files))
+
+       (block data
+
+	      (filecon "/usr/share/gnupg" dir file_context)
+	      (filecon "/usr/share/gnupg/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "gnupg")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/gpg" file file_context)
+	      (filecon "/usr/bin/gpgconf" file file_context)
+	      (filecon "/usr/bin/gpgsm" file file_context)
+	      (filecon "/usr/bin/gpgv" file file_context))
+
+       (block helper
+
+	      (block exec
+
+		     (filecon "/usr/bin/gpg-check-pattern" file file_context)
+		     (filecon "/usr/bin/gpg-preset-passphrase" file
+			      file_context)
+		     (filecon "/usr/bin/gpg-protect-tool" file file_context)
+
+		     (blockinherit .file.exec.template)))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.gnupg" dir file_context)
+	      (filecon "HOME_DIR/\.gnupg/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file dir ".gnupg")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.home.gnupg.template))
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/gnupg" dir file_context)
+	      (filecon "/run/user/%{USERID}/gnupg/.*" any file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file dir "gnupg")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.user.run.gnupg.template)
+
+	      (call .user.systemd.socketactivated.type (file)))
+
+       (block tmpfs
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)))
+
+(in file.conf
+
+    (block gnupg
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.gnupg.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.gnupg.base_template)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.home
+
+    (block gnupg
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.user.home.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.home.base_template)
+
+		  (call .file.home.gnupg.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.home.gnupg.base_template))))
+
+(in file.user.run
+
+    (block gnupg
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.user.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.run.base_template)
+
+		  (call .file.user.run.gnupg.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.user.run.gnupg.base_template))))
+
+(in file.unconfined
+
+    (call .gnupg.conf.conf_file_type_transition_file (typeattr))
+    (call .gnupg.home.user_home_file_type_transition_file (typeattr))
+    (call .gnupg.run.user_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .gnupg.home.manage_file_dirs (subj))
+    (call .gnupg.home.manage_file_files (subj))
+    (call .gnupg.home.map_file_files (subj))
+    (call .gnupg.home.relabel_file_dirs (subj))
+    (call .gnupg.home.relabel_file_files (subj))
+    (call .gnupg.home.user_home_file_type_transition_file (subj))
+    (call .gnupg.role (role))
+    (call .gnupg.run.manage_file_sock_files (subj))
+    (call .gnupg.run.relabel_file_sock_files (subj))
+    (call .gnupg.run.user_run_file_type_transition_file (subj)))
+
+(in wheel
+
+    (call .gnupg.role (role)))
