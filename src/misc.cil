@@ -2218,7 +2218,11 @@
 
 	   (typeattribute typeattr)
 
-	   (call data.read_file_pattern.type (typeattr))))
+	   (call conf.read_file_pattern.type (typeattr))
+
+	   (call data.read_file_pattern.type (typeattr))
+
+	   (call home.read_file_pattern.type (typeattr))))
 
 (in terminfo.conf
 
@@ -2250,16 +2254,20 @@
 	   (call .data.search_file_pattern.type (typeattr))))
 
 ;; TODO: move to agent/useragent/e/emacs.cil
-;; (in terminfo.data.read_file_pattern
-
-;;     (call .emacs.data.search_file_dirs (typeattr)))
-
-(in terminfo.read_file_pattern
-
-    (call conf.read_file_pattern.type (typeattr)))
-
-;; TODO: move to agent/useragent/e/emacs.cil
 ;;    (call .emacs.data.search_file_dirs (typeattr)))
+
+(in terminfo.home
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+
+	   (call .user.home.search_file_pattern.type (typeattr))))
 
 (in trace
 

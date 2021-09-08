@@ -57,6 +57,7 @@ config_install:
 \n/libx32 /usr/lib\
 \n/sbin /usr/bin\
 \n/usr/lib/klibc/bin /usr/bin\
+\n/usr/lib/openssh /usr/bin\
 \n/usr/lib/x86_64-linux-gnu/e2fsprogs /usr/bin\
 \n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
@@ -81,28 +82,36 @@ ifeq ($(MCS),false)
 \ndisk sys.id:sys.role:removable.stordev\
 \nfloppy sys.id:sys.role:removable.stordev""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	/bin/echo -e """sys.role:sys.subj sys.role:sys.user.subj user.role:user.systemd.subj wheel.role:user.systemd.subj\
-\nsys.role:login.subj sys.role:sys.user.subj user.role:user.subj wheel.role:user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+\nsys.role:login.subj sys.role:sys.user.subj user.role:user.subj wheel.role:user.subj\
+\nsys.role:openssh.server.subj sys.role:sys.user.subj user.role:user.subj wheel.role:user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.user.subj" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 	/bin/echo -e """sys.role:sys.subj sys.role:sys.user.subj\
-\nsys.role:login.subj sys.role:sys.user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
+\nsys.role:login.subj sys.role:sys.user.subj\
+\nsys.role:openssh.server.subj sys.role:sys.user.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 	/bin/echo -e """sys.role:login.subj user.role:user.subj\
+\nsys.role:openssh.server.subj user.role:user.subj\
 \nsys.role:sys.subj user.role:user.systemd.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
 	/bin/echo -e """sys.role:login.subj wheel.role:user.subj\
+\nsys.role:openssh.server.subj wheel.role:user.subj\
 \nsys.role:sys.subj wheel.role:user.systemd.subj""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 else
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev:s0\
 \ndisk sys.id:sys.role:removable.stordev:s0\
 \nfloppy sys.id:sys.role:removable.stordev:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/media
 	/bin/echo -e """sys.role:sys.subj:s0 sys.role:sys.user.subj:s0 user.role:user.systemd.subj:s0 wheel.role:user.systemd.subj:s0\
-\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0 wheel.role:user.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
+\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0 wheel.role:user.subj:s0\
+\nsys.role:openssh.server.subj:s0 sys.role:sys.user.subj:s0 user.role:user.subj:s0 wheel.role:user.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/default_contexts
 	echo "sys.role:sys.user.subj:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/failsafe_context
 	echo "sys.id:sys.role:removable.fs:s0" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/removable_context
 	/bin/echo -e """sys.role:sys.subj:s0 sys.role:sys.user.subj:s0\
-\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
+\nsys.role:login.subj:s0 sys.role:sys.user.subj:s0\
+\nsys.role:openssh.server.subj:s0 sys.role:sys.user.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/sys.id
 	/bin/echo -e """sys.role:login.subj:s0 user.role:user.subj:s0\
+\nsys.role:openssh.server.subj:s0 user.role:user.subj:s0\
 \nsys.role:sys.subj:s0 user.role:user.systemd.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/user.id
 	/bin/echo -e """sys.role:login.subj:s0 wheel.role:user.subj:s0\
+\nsys.role:openssh.server.subj:s0 wheel.role:user.subj:s0\
 \nsys.role:sys.subj:s0 wheel.role:user.systemd.subj:s0""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/users/wheel.id
 endif
 
