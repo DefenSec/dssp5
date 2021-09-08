@@ -225,10 +225,14 @@
 (in user.agent
 
     (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
-    (call .openssh.server.use_subj_fds (typeattr)))
+    (call .openssh.server.use_subj_fds (typeattr))
+
+    (call .rbacsep.exemptsource.type (typeattr)))
 
 (in user.unpriv
 
     (call .openssh.server.ptytermdev_type_change (typeattr ptytermdev))
     (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
-    (call .openssh.server.use_subj_fds (typeattr)))
+    (call .openssh.server.use_subj_fds (typeattr))
+
+    (call .rbacsep.exemptsource.type (typeattr)))
