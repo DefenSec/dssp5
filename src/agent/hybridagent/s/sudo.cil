@@ -116,10 +116,10 @@
 
     (call .kcore.getattr_procfile_files (subj))
 
-    (call .kernel.read_sysctlfile_files (subj))
-
     (call .locale.data.map_file_pattern.type (subj))
     (call .locale.read_file_pattern.type (subj))
+
+    (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
 
     (call .nss.hosts.type (subj))
     (call .nss.passwdgroup.type (subj))

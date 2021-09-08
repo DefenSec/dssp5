@@ -79,7 +79,7 @@
 
 		  (typeattribute typeattr)
 
-		  (allow typeattr self (process (setfscreate)))
+		  (allow typeattr self (process (setfscreate setrlimit)))
 		  (allow typeattr self create_unix_dgram_socket)
 
 		  (call systemd.logparsenv.type (typeattr))
