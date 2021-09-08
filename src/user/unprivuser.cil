@@ -128,9 +128,6 @@
 
     (block unpriv
 
-	   (macro dyntransition_all_processes ((type ARG1))
-		  (allow ARG1 typeattr (process (dyntransition))))
-
 	   (macro role ((role ARG1))
 		  (roleattributeset roleattr ARG1))
 
