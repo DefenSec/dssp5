@@ -23,7 +23,9 @@
 	   (blockinherit .loginptytermdev.template)
 	   (blockinherit .sys.agent.template)
 
-	   (allow subj self (capability (audit_write net_bind_service setpcap)))
+	   (allow subj self
+		  (capability (audit_write net_bind_service setpcap
+					   sys_chroot)))
 	   (allow subj self (process (getcap setcap)))
 	   (allow subj self create_netlink_audit_socket)
 	   (allow subj self create_tcp_stream_socket)
@@ -39,6 +41,10 @@
 	   (call conf.read_file_files (subj))
 
 	   (call exec.execute_file_files (subj))
+
+	   ;; openssh-client is effectively not optional
+	   (call home.read_file_files (subj))
+	   (call home.search_file_dirs (subj))
 
 	   (call key.read_file_files (subj))
 
@@ -63,8 +69,8 @@
 
 	   (call .kernel.read_sysctlfile_files (subj))
 
+	   (call .libgssapi.list_file_dirs (subj))
 	   (call .libgssapi.read_file_files (subj))
-	   (call .libgssapi.search_file_dirs (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
@@ -72,6 +78,8 @@
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
 
 	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
@@ -88,6 +96,8 @@
 
 	   (call .run.deletename_file_dirs (subj))
 
+	   (call .tcpwrappers.read_file_files (subj))
+
 	   (call .selinux.mapread_fs_pattern.type (subj))
 
 	   (call .shell.exec.getattr_file_files (subj))
@@ -99,6 +109,7 @@
 	   (call .sys.home.read_file_files (subj))
 	   (call .sys.home.search_file_pattern.type (subj))
 
+	   (call .sys.read_subj_states (subj))
 	   (call .sys.readwrite_ptytermdev_chr_files (subj))
 	   (call .sys.relabelto_ptytermdev_chr_files (subj))
 	   (call .sys.setattr_ptytermdev_chr_files (subj))
@@ -128,10 +139,6 @@
 		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
 		     (call .p11kit.data.read_file_pattern.type (subj)))
-
-	   (optional opensshserver_server_opensshclient
-		     (call home.read_file_files (subj))
-		     (call home.search_file_dirs (subj)))
 
 	   (block conf
 

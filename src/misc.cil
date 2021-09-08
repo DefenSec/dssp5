@@ -254,9 +254,6 @@
 
 (in conf
 
-    (filecon "/etc/hosts\.(allow|deny)" file file_context)
-    (filecon "/etc/hosts\.(allow|deny)\..*" file file_context)
-
     (block search_file_pattern
 
 	   (macro type ((type ARG1))

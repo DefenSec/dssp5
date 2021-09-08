@@ -36,6 +36,14 @@
 
 ;; system dbus-daemon specific method returns
 
+(optional systemdlogin_login
+
+	  (call login.sendmsg_subj_dbus.type (systemd.login.subj)))
+
+(optional systemdlogin_opensshserver
+
+	  (call openssh.server.sendmsg_subj_dbus.type (systemd.login.subj)))
+
 (optional systemdlogin_systemduserrundir
 
 	  (call systemd.userrundir.sendmsg_subj_dbus.type
