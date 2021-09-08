@@ -1,0 +1,20 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block http
+
+       (portcon "dccp" 80 port_context)
+       (portcon "sctp" 80 port_context)
+       (portcon "tcp" 80 port_context)
+       (portcon "udp" 80 port_context)
+
+       (blockinherit .net.port.reserved.template)
+
+       (block https
+
+	      (portcon "dccp" 443 port_context)
+	      (portcon "sctp" 443 port_context)
+	      (portcon "tcp" 443 port_context)
+	      (portcon "udp" 443 port_context)
+
+	      (blockinherit .net.port.reserved.template)))

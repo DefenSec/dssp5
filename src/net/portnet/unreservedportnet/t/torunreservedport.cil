@@ -1,0 +1,17 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block tor
+
+       (block socks
+
+	      (portcon "dccp" 9050 port_context)
+	      (portcon "dccp" 9150 port_context)
+	      (portcon "sctp" 9050 port_context)
+	      (portcon "sctp" 9150 port_context)
+	      (portcon "tcp" 9050 port_context)
+	      (portcon "tcp" 9150 port_context)
+	      (portcon "udp" 9050 port_context)
+	      (portcon "udp" 9150 port_context)
+
+	      (blockinherit .net.port.unreserved.template)))
