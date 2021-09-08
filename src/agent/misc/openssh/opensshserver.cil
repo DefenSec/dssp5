@@ -24,7 +24,7 @@
 	   (blockinherit .sys.agent.template)
 
 	   (allow subj self (capability (audit_write net_bind_service setpcap)))
-	   (allow subj self (process (getcap setcap setcurrent)))
+	   (allow subj self (process (getcap setcap)))
 	   (allow subj self create_netlink_audit_socket)
 	   (allow subj self create_tcp_stream_socket)
 	   (allow subj self create_unix_dgram_socket)
@@ -116,7 +116,6 @@
 	   (call .user.setattr_ptytermdev_chr_files (subj))
 
 	   (call .user.unpriv.create_all_keyrings (subj))
-	   (call .user.unpriv.dyntransition_all_processes (subj))
 	   (call .user.unpriv.rlimitinh_all_processes (subj))
 	   (call .user.unpriv.signal_all_processes (subj))
 	   (call .user.unpriv.signull_all_processes (subj))
