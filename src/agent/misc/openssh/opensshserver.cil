@@ -223,6 +223,10 @@
     (call server.key.manage_file_files (subj))
     (call server.key.openssh_conf_file_type_transition_file (subj "*")))
 
+(in user
+
+    (call .openssh.server.ptytermdev_type_change (subj ptytermdev)))
+
 ;;(in user.agent
 ;;
 ;;    (call .user.openssh.readwriteinherited_subj_fifo_files (typeattr))
