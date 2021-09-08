@@ -305,7 +305,6 @@
 
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_files)
-	   (blockinherit .file.macro_template_sock_files)
 	   (blockinherit .file.user.home.base_template))
 
     (block helper
@@ -369,7 +368,6 @@
     (call .openssh.add.role (role))
     (call .openssh.add.tmp.manage_file_files (subj))
     (call .openssh.add.tmp.relabel_file_files (subj))
-
     (call .openssh.agent.role (role))
     (call .openssh.agent.run.manage_file_sock_files (subj))
     (call .openssh.agent.run.relabel_file_sock_files (subj))
@@ -378,11 +376,14 @@
     (call .openssh.agent.tmp.manage_file_sock_files (subj))
     (call .openssh.agent.tmp.relabel_file_dirs (subj))
     (call .openssh.agent.tmp.relabel_file_sock_files (subj))
-
     (call .openssh.client.role (role))
     (call .openssh.client.tmp.manage_file_sock_files (subj))
     (call .openssh.client.tmp.relabel_file_sock_files (subj))
-
+    (call .openssh.home.manage_file_dirs (subj))
+    (call .openssh.home.manage_file_files (subj))
+    (call .openssh.home.relabel_file_dirs (subj))
+    (call .openssh.home.relabel_file_files (subj))
+    (call .openssh.home.user_home_file_type_transition_file (subj))
     (call .openssh.keygen.role (role))
     (call .openssh.keysign.role (role)))
 

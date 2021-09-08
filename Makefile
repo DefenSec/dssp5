@@ -57,7 +57,6 @@ config_install:
 \n/libx32 /usr/lib\
 \n/sbin /usr/bin\
 \n/usr/lib/gnupg /usr/bin\
-\n/usr/lib/gnupg2 /usr/bin\
 \n/usr/lib/klibc/bin /usr/bin\
 \n/usr/lib/openssh /usr/bin\
 \n/usr/lib/x86_64-linux-gnu/e2fsprogs /usr/bin\

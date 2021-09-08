@@ -482,7 +482,11 @@
 		  (typeattribute typeattr)
 
 		  (call readwrite_subj_unix_stream_sockets (typeattr))
-		  (call use_subj_fds (typeattr)))
+		  (call use_subj_fds (typeattr))
+
+		  (call .rbacsep.exemptsource.type (typeattr))
+
+		  (call .systemd.forked.type (typeattr)))
 
 	   (block helper
 

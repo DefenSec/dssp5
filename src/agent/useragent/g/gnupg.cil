@@ -71,6 +71,7 @@
        (call .user.home.manage_file_files (subj))
 
        (call .user.systemd.agent (subj gnupg.exec.file))
+       (call .user.systemd.writeinherited_subj_fifo_files (subj))
 
        (call .user.termdev.open_all_chr_files (subj))
 
