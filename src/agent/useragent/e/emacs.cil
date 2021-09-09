@@ -25,6 +25,9 @@
 
        (call client.readwrite_subj_unix_stream_sockets (subj))
 
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
        (call data.list_file_dirs (subj))
        (call data.map_file_files (subj))
        (call data.read_file_files (subj))
@@ -59,6 +62,8 @@
 
        (call .acpi.search_procfile_dirs (subj))
 
+       (call .cache.search_file_pattern.type (subj))
+
        (call .cert.map_file_files (subj))
        (call .cert.read_file_pattern.type (subj))
 
@@ -86,6 +91,12 @@
        (call .devices.search_sysfile_pattern.type (subj))
 
        (call .devpts.search_fs_pattern.type (subj))
+
+       (call .dictionaries.cache.read_file_files (subj))
+       (call .dictionaries.cache.search_file_dirs (subj))
+
+       (call .dictionaries.data.read_file_files (subj))
+       (call .dictionaries.data.search_file_dirs (subj))
 
        (call .dos.getattr_fs_pattern.type (subj))
        (call .dos.manage_fs_pattern.type (subj))
