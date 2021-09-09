@@ -31,6 +31,7 @@
        (call data.list_file_dirs (subj))
        (call data.map_file_files (subj))
        (call data.read_file_files (subj))
+       (call data.read_file_lnk_files (subj))
 
        (call exec.execute_file_files (subj))
 

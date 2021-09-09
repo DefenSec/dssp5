@@ -12,4 +12,6 @@
        (blockinherit .fs.macro_template_files)
        (blockinherit .seclabelfs.template)
 
-       (allow fs self (filesystem (associate))))
+       (allow fs self (filesystem (associate)))
+
+       (call .rbacsep.exempt.obj.type (fs)))
