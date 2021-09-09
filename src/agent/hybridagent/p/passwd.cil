@@ -3,7 +3,7 @@
 
 (in passwd
 
-    (blockinherit .user.agent.template)
+    (blockinherit .hybrid.agent.template)
 
     (allow subj self (capability (audit_write chown fsetid setuid)))
     (allow subj self (process (setfscreate setrlimit)))
