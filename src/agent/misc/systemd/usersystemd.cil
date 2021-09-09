@@ -397,6 +397,8 @@
 	   (call .systemd.logparsenv.type (subj))
 	   (call .systemd.notify.type (subj))
 
+	   (call .systemd.data.search_file_dirs (subj))
+
 	   (call .systemd.exec.entrypoint_file_files (subj))
 	   (call .systemd.exec.execute_file_files (subj))
 

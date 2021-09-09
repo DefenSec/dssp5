@@ -119,6 +119,9 @@
 
        (call .imap.imaps.nameconnect_port_tcp_sockets (subj))
 
+       (call .info.data.read_file_files (subj))
+       (call .info.data.search_file_dirs (subj))
+
        (call .irc.nameconnect_port_tcp_sockets (subj))
 
        (call .lib.home.manage_file_dirs (subj))
