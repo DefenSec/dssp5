@@ -1,0 +1,47 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block libnotify
+
+       (macro type ((type ARG1))
+	      (typeattributeset typeattr ARG1))
+
+       (typeattribute typeattr)
+
+       (block send
+
+	      (blockinherit .user.agent.template)
+	      (blockinherit .user.dbus.client.template)
+
+	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_unix_stream_socket)
+
+	      (call sendmsg_all_dbus.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .user.systemd.agent (subj exec.file))
+
+	      (block exec
+
+		     (filecon "/usr/bin/notify-send" file file_context)))
+
+       (block sendmsg_all_dbus
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr libnotify.typeattr (dbus (send_msg)))))
+
+(in user
+
+    (call .libnotify.send.role (role)))
+
+(in wheel
+
+    (call .libnotify.send.role (role)))

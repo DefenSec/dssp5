@@ -1773,6 +1773,35 @@
 
 	   (call .vm.search_sysctlfile_pattern.type (typeattr))))
 
+(in p11kit.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
+
+(in p11kit.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
 (in power
 
     (block search_sysfile_pattern
@@ -2286,10 +2315,9 @@
 	   (call list_file_dirs (typeattr))
 	   (call read_file_files (typeattr))
 
-	   (call .data.search_file_pattern.type (typeattr))))
+	   (call .data.search_file_pattern.type (typeattr))
 
-;; TODO: move to agent/useragent/e/emacs.cil
-;;    (call .emacs.data.search_file_dirs (typeattr)))
+	   (call .emacs.data.search_file_dirs (typeattr))))
 
 (in terminfo.home
 

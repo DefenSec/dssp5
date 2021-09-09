@@ -1,0 +1,20 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block imap
+
+       (portcon "dccp" 143 port_context)
+       (portcon "sctp" 143 port_context)
+       (portcon "tcp" 143 port_context)
+       (portcon "udp" 143 port_context)
+
+       (blockinherit .net.port.reserved.template)
+
+       (block imaps
+
+	      (portcon "dccp" 993 port_context)
+	      (portcon "sctp" 993 port_context)
+	      (portcon "tcp" 993 port_context)
+	      (portcon "udp" 993 port_context)
+
+	      (blockinherit .net.port.reserved.template)))

@@ -63,6 +63,12 @@
 
 	   (call .user.termdev.open_all_chr_files (subj))
 
+	   (optional gnupgagent_emacs
+		     (call .emacs.home.search_file_dirs (subj))
+		     (call .emacs.home.gnupg.manage_file_dirs (subj))
+		     (call .emacs.home.gnupg.manage_file_files (subj))
+		     (call .emacs.home.gnupg.watch_file_dirs (subj)))
+
 	   (optional gnupgagent_gnupgscdaemon
 		     (call scdaemon.subj_type_transition (subj))
 		     (call scdaemon.unix_stream_connect (subj)))

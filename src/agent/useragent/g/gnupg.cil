@@ -78,6 +78,13 @@
        (call .user.tmp.manage_file_files (subj))
        (call .user.tmp.tmp_file_type_transition_file (subj file "*"))
 
+       (optional gnupg_emacs
+		 (call .emacs.data.read_file_files (subj))
+		 (call .emacs.home.search_file_dirs (subj))
+		 (call .emacs.home.gnupg.manage_file_files (subj))
+		 (call .emacs.home.gnupg.readwrite_file_dirs (subj))
+		 (call .emacs.tmp.readwrite_file_files (subj)))
+
        (optional gnupg_gitclient
 		 (call .git.client.tmp.read_file_files (subj)))
 

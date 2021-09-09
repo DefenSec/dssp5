@@ -1,0 +1,136 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block curl
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_tcp_socket)
+
+       (call conf.read_file_files (subj))
+
+       (call home.manage_file_files (subj))
+       (call home.user_home_file_type_transition_file (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.mapexecute_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .cert.map_file_files (subj))
+       (call .cert.read_file_pattern.type (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+       (call .http.nameconnect_port_tcp_sockets (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+
+       (call .privoxy.nameconnect_port_tcp_sockets (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .tor.socks.nameconnect_port_tcp_sockets (subj))
+
+       (call .user.home.manage_file_dirs (subj))
+       (call .user.home.manage_file_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional curl_p11kit
+		 (call .p11kit.conf.read_file_pattern.type (subj))
+		 (call .p11kit.data.map_file_files (subj))
+		 (call .p11kit.data.read_file_pattern.type (subj)))
+
+       (block conf
+
+	      (filecon "/etc/wgetrc" file file_context)
+	      (filecon "/etc/wgetrc\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "wgetrc")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/curl" file file_context)
+	      (filecon "/usr/bin/wget" file file_context))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.curlrc" file file_context)
+	      (filecon "HOME_DIR/\.curlrc\..*" file file_context)
+
+	      (filecon "HOME_DIR/\.wget-hsts" file file_context)
+	      (filecon "HOME_DIR/\.wget-hsts\..*" file file_context)
+
+	      (filecon "HOME_DIR/\.wgetrc" file file_context)
+	      (filecon "HOME_DIR/\.wgetrc\..*" file file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".curlrc"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".wget-hsts"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".wgetrc")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.home.base_template))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .curl.conf.conf_file_type_transition_file (typeattr))
+    (call .curl.home.user_home_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .curl.home.manage_file_files (subj))
+    (call .curl.home.map_file_files (subj))
+    (call .curl.home.relabel_file_files (subj))
+    (call .curl.home.user_home_file_type_transition_file (subj))
+    (call .curl.role (role))
+    (call .curl.tmp.manage_file_files (subj))
+    (call .curl.tmp.map_file_files (subj))
+    (call .curl.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .curl.role (role)))
