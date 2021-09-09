@@ -42,11 +42,16 @@
 	      (filecon "/usr/share/dictionaries-common" dir file_context)
 	      (filecon "/usr/share/dictionaries-common/.*" any file_context)
 
+	      (filecon "/usr/share/ispell" dir file_context)
+	      (filecon "/usr/share/ispell/.*" any file_context)
+
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "dict"))
 		     (call .data.file_type_transition
-			   (ARG1 file dir "dictionaries-common")))
+			   (ARG1 file dir "dictionaries-common"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "ispell")))
 
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
