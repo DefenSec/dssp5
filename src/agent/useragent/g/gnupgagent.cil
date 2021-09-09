@@ -127,6 +127,27 @@
 
 	   (block run
 
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\..*"
+			   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.browser"
+		   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.browser\..*"
+		   socket file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.extra"
+			   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.extra\..*"
+		   socket file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.ssh"
+			   socket file_context)
+		  (filecon
+		   "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.ssh\..*"
+		   socket file_context)
+
 		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent" socket
 			   file_context)
 		  (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\..*" socket

@@ -142,6 +142,11 @@
 
 	   (block run
 
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.dirmngr" socket
+			   file_context)
+		  (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.dirmngr\..*"
+			   socket file_context)
+
 		  (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr" socket
 			   file_context)
 		  (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr\..*" socket
