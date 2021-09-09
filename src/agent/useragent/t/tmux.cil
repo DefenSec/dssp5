@@ -1,0 +1,129 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block tmux
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+
+       (call conf.read_file_files (subj))
+
+       (call home.conf.list_file_dirs (subj))
+       (call home.conf.read_file_files (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.manage_file_sock_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+       (call .subj.common.read_all_states (subj))
+       (call .subj.dontaudit_read_all_states (subj))
+
+       (call .subj.interactivefd.type (subj))
+
+       (call .user.signal_subj_processes (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+
+       (call .user.systemd.run.agent (subj exec.file))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .user.devpts_fs_type_transition_ptytermdev (subj))
+
+       (call .user.exec_home_subj_type_transition (subj))
+
+       (call .user.exec_subj_type_transition (subj))
+
+       (call .user.home.conf.search_file_pattern.type (subj))
+
+       (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.open_ptytermdev_chr_files (subj))
+
+       (call .utempter.subj_type_transition (subj))
+
+       (block conf
+
+	      (filecon "/etc/tmux\.conf" file file_context)
+	      (filecon "/etc/tmux\.conf\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "tmux.conf")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/tmux" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/tmux" dir file_context)
+		     (filecon "HOME_DIR/\.config/tmux/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "tmux")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block tmp
+
+	      (filecon "/tmp/tmux-%{USERID}" dir file_context)
+	      (filecon "/tmp/tmux-%{USERID}/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1)(class ARG2))
+		     (call .tmp.file_type_transition
+			   (ARG1 file ARG2 "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .tmux.conf.conf_file_type_transition_file (typeattr))
+    (call .tmux.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .tmux.home.conf.manage_file_dirs (subj))
+    (call .tmux.home.conf.manage_file_files (subj))
+    (call .tmux.home.conf.map_file_files (subj))
+    (call .tmux.home.conf.relabel_file_dirs (subj))
+    (call .tmux.home.conf.relabel_file_files (subj))
+    (call .tmux.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .tmux.readwrite_subj_unix_stream_sockets (subj))
+    (call .tmux.tmp.manage_file_dirs (subj))
+    (call .tmux.tmp.manage_file_files (subj))
+    (call .tmux.tmp.manage_file_sock_files (subj))
+    (call .tmux.tmp.map_file_files (subj))
+    (call .tmux.tmp.relabel_file_dirs (subj))
+    (call .tmux.tmp.relabel_file_files (subj))
+    (call .tmux.tmp.relabel_file_sock_files (subj))
+    (call .tmux.role (role)))
+
+(in wheel
+
+    (call .tmux.role (role)))

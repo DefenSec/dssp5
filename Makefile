@@ -60,6 +60,7 @@ config_install:
 \n/usr/lib/klibc/bin /usr/bin\
 \n/usr/lib/openssh /usr/bin\
 \n/usr/lib/x86_64-linux-gnu/e2fsprogs /usr/bin\
+\n/usr/lib/x86_64-linux-gnu/utempter /usr/bin\
 \n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
