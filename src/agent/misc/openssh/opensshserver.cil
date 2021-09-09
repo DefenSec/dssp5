@@ -157,7 +157,7 @@
 			   (subj))
 		     (call .gnupg.run.deletename_file_dirs (subj))
 
-		     (call .rbacsep.exempt.obj.type (subj)))
+		     (call .rbacsep.exempt.obj.type (.gnupg.agent.run.file)))
 
 	   (optional opensshserver_server_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
