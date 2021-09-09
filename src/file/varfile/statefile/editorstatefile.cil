@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in editor
+
+    (block state
+
+	   (filecon "/var/lib/vim" dir file_context)
+	   (filecon "/var/lib/vim/.*" any file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "vim")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.state.base_template)))
+
+(in file.unconfined
+
+    (call .editor.state.state_file_type_transition_file (typeattr)))

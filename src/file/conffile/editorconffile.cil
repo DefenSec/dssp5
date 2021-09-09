@@ -1,23 +1,23 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(block editor
+(in editor
 
-       (block conf
+    (block conf
 
-	      (filecon "/etc/nanorc" file file_context)
-	      (filecon "/etc/nanorc\..*" file file_context)
+	   (filecon "/etc/nanorc" file file_context)
+	   (filecon "/etc/nanorc\..*" file file_context)
 
-	      (filecon "/etc/vim" dir file_context)
-	      (filecon "/etc/vim/.*" any file_context)
+	   (filecon "/etc/vim" dir file_context)
+	   (filecon "/etc/vim/.*" any file_context)
 
-	      (macro conf_file_type_transition_file ((type ARG1))
-		     (call .conf.file_type_transition
-			   (ARG1 file dir "vim"))
-		     (call .conf.file_type_transition
-			   (ARG1 file file "nanorc")))
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "vim"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "nanorc")))
 
-	      (blockinherit .file.conf.template)))
+	   (blockinherit .file.conf.template)))
 
 (in file.unconfined
 

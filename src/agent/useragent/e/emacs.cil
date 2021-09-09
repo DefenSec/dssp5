@@ -333,6 +333,9 @@
 	      (filecon "/usr/lib/emacs" dir file_context)
 	      (filecon "/usr/lib/emacs/.*" any file_context)
 
+	      (filecon "/usr/lib/emacsen-common" dir file_context)
+	      (filecon "/usr/lib/emacsen-common/.*" any file_context)
+
 	      (filecon "/usr/share/emacs" dir file_context)
 	      (filecon "/usr/share/emacs/.*" any file_context)
 
@@ -347,7 +350,9 @@
 
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
-			   (ARG1 file dir "emacs")))
+			   (ARG1 file dir "emacs"))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "emacsen-common")))
 
 	      (macro map_file_files ((type ARG1))
 		     (allow ARG1 file (file (map))))
@@ -431,6 +436,19 @@
 	      (blockinherit .file.macro_template_sock_files)
 	      (blockinherit .file.user.run.base_template))
 
+       (block state
+
+	      (filecon "/var/lib/emacsen-common" dir file_context)
+	      (filecon "/var/lib/emacsen-common/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "emacsen-common")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
        (block tmp
 
 	      (filecon "/tmp/emacs%{USERID}" dir file_context)
@@ -468,6 +486,7 @@
     (call .emacs.home.user_home_file_type_transition_file (typeattr))
     (call .emacs.home.gnupg.emacs_home_file_type_transition_file (typeattr))
     (call .emacs.run.user_run_file_type_transition_file (typeattr))
+    (call .emacs.state.state_file_type_transition_file (typeattr))
 
     (call .terminfo.data.emacs_data_file_type_transition_file (typeattr)))
 

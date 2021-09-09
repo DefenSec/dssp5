@@ -1,0 +1,24 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block editor
+
+       (block data
+
+	      (filecon "/usr/share/nano" dir file_context)
+	      (filecon "/usr/share/nano/.*" any file_context)
+
+	      (filecon "/usr/share/vim" dir file_context)
+	      (filecon "/usr/share/vim/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "nano"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "vim")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .editor.data.data_file_type_transition_file (typeattr)))
