@@ -1,0 +1,314 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .git.data.data_file_type_transition_file (typeattr))
+    (call .git.home.user_home_file_type_transition_file (typeattr))
+    (call .git.home.cache.user_home_cache_file_type_transition_file (typeattr))
+    (call .git.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .git.home.conf.user_home_file_type_transition_file (typeattr)))
+
+(in file.home
+
+    (block git
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.home.base_template)
+
+		  (call .file.home.git.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.home.git.base_template))))
+
+(in git
+
+    (block client
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self (process (execmem getsched)))
+	   (allow subj self create_tcp_socket)
+	   (allow subj self (unix_stream_socket (accept connectto listen)))
+
+	   (call nameconnect_port_tcp_sockets (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call exec.execute_file_files (subj))
+
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+	   (call home.manage_file_lnk_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call home.cache.manage_file_dirs (subj))
+	   (call home.cache.manage_file_sock_files (subj))
+	   (call home.cache.user_home_cache_file_type_transition_file (subj))
+
+	   (call home.conf.manage_file_dirs (subj))
+	   (call home.conf.manage_file_files (subj))
+	   (call home.conf.map_file_files (subj))
+	   (call home.conf.user_home_conf_file_type_transition_file (subj))
+	   (call home.conf.user_home_file_type_transition_file (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_pattern.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .exec.list_file_dirs (subj))
+
+	   (call .file.user.home.search_all_dirs (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .media.search_file_pattern.type (subj))
+
+	   (call .media.home.traverse_file_pattern.type (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .user.exec_home_subj_type_transition (subj))
+	   (call .user.exec_subj_type_transition (subj))
+	   (call .user.nnptransition_subj_processes (subj))
+
+	   (call .user.home.cache.create_file_dir_pattern.type (subj))
+
+	   (call .user.home.manage_file_dirs (subj))
+	   (call .user.home.manage_file_files (subj))
+	   (call .user.home.manage_file_lnk_files (subj))
+	   (call .user.home.map_file_files (subj))
+
+	   (call .user.tmp.readwriteinherited_file_files (subj))
+
+	   (call .user.git_home_subj_type_transition (subj))
+
+	   (call .user.shell_exec_subj_type_transition (subj))
+
+	   (optional gitclient_emacs
+		     (call .emacs.tmp.readwriteinherited_file_files (subj)))
+
+	   (optional gitclient_gitcontent
+		     (call content.script.exec.getattr_file_files (subj)))
+
+	   (optional gitclient_gnupg
+		     (call .gnupg.subj_type_transition (subj)))
+
+	   (optional gitclient_opensshclient
+		     (call .openssh.client.subj_type_transition (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/git" file file_context)
+
+		  (filecon "/usr/lib/git-core/.*" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmp.base_template)))
+
+    (block data
+
+	   (filecon "/usr/share/git-core" dir file_context)
+	   (filecon "/usr/share/git-core/.*" any file_context)
+
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "git-core")))
+
+	   (blockinherit .file.data.base_template)
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files))
+
+    (block home
+
+	   (filecon "HOME_DIR/.*\.git" dir file_context)
+	   (filecon "HOME_DIR/.*\.git/.*" any file_context)
+
+	   (macro entrypoint_file_files ((type ARG1))
+		  (allow ARG1 file (file (entrypoint))))
+
+	   (macro getattr_file_dirs ((type ARG1))
+		  (allow ARG1 file (dir (getattr))))
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro subj_type_transition ((type ARG1)(type ARG2))
+		  (typetransition ARG1 file process "*" ARG2))
+
+	   (macro user_home_file_type_transition_file ((type ARG1))
+		  (call .user.home.file_type_transition
+			(ARG1 file dir ".git")))
+
+	   (blockinherit .file.home.git.template)
+
+	   (block cache
+
+		  (filecon "HOME_DIR/\.cache/git" dir file_context)
+		  (filecon "HOME_DIR/\.cache/git/.*" any file_context)
+
+		  (macro user_home_cache_file_type_transition_file ((type ARG1))
+			 (call .user.home.cache.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.home.git.base_template)
+
+		  (call .file.user.home.cache.type (file)))
+
+	   (block conf
+
+		  (filecon "HOME_DIR/\.config/git" dir file_context)
+		  (filecon "HOME_DIR/\.config/git/.*" any file_context)
+
+		  (filecon "HOME_DIR/\.git-credentials" file file_context)
+		  (filecon "HOME_DIR/\.git-credentials\..*" file file_context)
+
+		  (filecon "HOME_DIR/\.gitconfig" file file_context)
+		  (filecon "HOME_DIR/\.gitconfig\..*" file file_context)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro user_home_conf_file_type_transition_file ((type ARG1))
+			 (call .user.home.conf.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".git-credentials"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".git-credentials.lock"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".gitconfig"))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file ".gitconfig.lock")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.home.git.base_template)
+
+		  (call .file.user.home.conf.type (file)))))
+
+(in lib
+
+    (filecon "/usr/lib/git-core/git-sh-prompt" file file_context)
+    (filecon "/usr/lib/git-core/git-sh-setup" file file_context)
+    (filecon "/usr/lib/git-core/mergetools/.*" file file_context))
+
+(in shell.exec
+
+    (filecon "/usr/bin/git-shell" file file_context)
+
+    (filecon "/usr/lib/git-core/git-shell" file file_context))
+
+(in user
+
+    (macro git_home_subj_type_transition ((type ARG1))
+	   (allow ARG1 subj (process (transition)))
+
+	   (allow subj ARG1 (process (sigchld)))
+	   (allow subj ARG1 (fd (use)))
+	   (allow subj ARG1 readwriteinherited_fifo_file)
+
+	   (call .git.home.mapexecute_file_files (ARG1))
+	   (call .git.home.read_file_files (ARG1))
+	   (call .git.home.subj_type_transition (ARG1 subj)))
+
+    (call .git.client.readwrite_subj_tcp_sockets (subj))
+    (call .git.client.readwrite_subj_unix_stream_sockets (subj))
+    (call .git.client.role (role))
+    (call .git.client.tmp.manage_file_files (subj))
+    (call .git.client.tmp.relabel_file_files (subj))
+    (call .git.data.read_file_files (subj))
+    (call .git.data.search_file_dirs (subj))
+    (call .git.home.entrypoint_file_files (subj))
+    (call .git.home.manage_file_dirs (subj))
+    (call .git.home.manage_file_files (subj))
+    (call .git.home.manage_file_lnk_files (subj))
+    (call .git.home.map_file_files (subj))
+    (call .git.home.relabel_file_dirs (subj))
+    (call .git.home.relabel_file_files (subj))
+    (call .git.home.relabel_file_lnk_files (subj))
+    (call .git.home.user_home_file_type_transition_file (subj))
+    (call .git.home.cache.manage_file_dirs (subj))
+    (call .git.home.cache.manage_file_sock_files (subj))
+    (call .git.home.cache.relabel_file_dirs (subj))
+    (call .git.home.cache.relabel_file_sock_files (subj))
+    (call .git.home.cache.user_home_cache_file_type_transition_file (subj))
+    (call .git.home.conf.manage_file_dirs (subj))
+    (call .git.home.conf.manage_file_files (subj))
+    (call .git.home.conf.map_file_files (subj))
+    (call .git.home.conf.relabel_file_dirs (subj))
+    (call .git.home.conf.relabel_file_files (subj))
+    (call .git.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .git.home.conf.user_home_file_type_transition_file (subj)))
+
+(in wheel
+
+    (call .git.client.role (role)))

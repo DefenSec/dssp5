@@ -78,6 +78,9 @@
        (call .user.tmp.manage_file_files (subj))
        (call .user.tmp.tmp_file_type_transition_file (subj file "*"))
 
+       (optional gnupg_gitclient
+		 (call .git.client.tmp.read_file_files (subj)))
+
        (optional gnupg_gnupgagent
 		 (call agent.home.read_file_files (subj))
 		 (call agent.subj_type_transition (subj))

@@ -1,0 +1,64 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in git
+
+    (block daemon
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (process (getsched)))
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call namebind_port_tcp_sockets (subj))
+
+	   (call client.exec.execute_file_files (subj))
+
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (optional gitdaemon_gitcontent
+		     (call content.ro.list_file_dirs (subj))
+		     (call content.ro.map_file_files (subj))
+		     (call content.ro.read_file_files (subj))
+		     (call content.ro.read_file_lnk_files (subj))
+		     (call content.rw.list_file_dirs (subj))
+		     (call content.rw.map_file_files (subj))
+		     (call content.rw.read_file_files (subj))
+		     (call content.rw.read_file_lnk_files (subj)))
+
+	   (optional gitdaemon_usergitcontent
+		     (call .user.git.content.list_file_dirs (subj))
+		     (call .user.git.content.map_file_files (subj))
+		     (call .user.git.content.read_file_files (subj))
+		     (call .user.git.content.read_file_lnk_files (subj))
+
+		     (call .user.home.search_file_pattern.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/git-core/git-daemon" file file_context))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/git@.*\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/git\.socket.*" file
+			   file_context)
+
+		  (blockinherit .file.unit.template))))
