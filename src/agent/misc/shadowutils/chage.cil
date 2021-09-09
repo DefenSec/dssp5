@@ -10,13 +10,13 @@
 				       sys_chroot)))
        (allow subj self (process (setfscreate)))
        (allow subj self create_netlink_audit_socket)
+       (allow subj self create_netlink_selinux_socket)
        (allow subj self create_unix_dgram_socket)
        (allow subj self (netlink_audit_socket (nlmsg_relay)))
 
        (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
        (call .checkcontext_selinux_security (subj))
-
        (call .computeav_selinux_security (subj))
 
        (call .conf.deletename_file_dirs (subj))
