@@ -36,10 +36,15 @@
 	      (filecon "/usr/lib/ispell" dir file_context)
 	      (filecon "/usr/lib/ispell/.*" any file_context)
 
+	      (filecon "/usr/share/dict" dir file_context)
+	      (filecon "/usr/share/dict/.*" any file_context)
+
 	      (filecon "/usr/share/dictionaries-common" dir file_context)
 	      (filecon "/usr/share/dictionaries-common/.*" any file_context)
 
 	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dict"))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "dictionaries-common")))
 

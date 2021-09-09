@@ -93,11 +93,7 @@
 
        (call .devpts.search_fs_pattern.type (subj))
 
-       (call .dictionaries.cache.read_file_files (subj))
-       (call .dictionaries.cache.search_file_dirs (subj))
-
-       (call .dictionaries.data.read_file_files (subj))
-       (call .dictionaries.data.search_file_dirs (subj))
+       (call .dictionaries.read_file_pattern.type (subj))
 
        (call .dos.getattr_fs_pattern.type (subj))
        (call .dos.manage_fs_pattern.type (subj))

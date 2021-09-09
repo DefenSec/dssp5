@@ -515,6 +515,78 @@
 
 	   (call .dev.search_file_pattern.type (typeattr))))
 
+(in dictionaries
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call cache.read_file_pattern.type (typeattr))
+	   (call conf.read_file_pattern.type (typeattr))
+	   (call data.read_file_pattern.type (typeattr))
+	   (call state.read_file_pattern.type (typeattr))))
+
+(in dictionaries.cache
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .cache.search_file_pattern.type (typeattr))))
+
+(in dictionaries.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
+
+(in dictionaries.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
+(in dictionaries.state
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .state.search_file_pattern.type (typeattr))))
+
 (in dos
 
     (block getattr_fs_pattern
@@ -582,7 +654,10 @@
 
 	   (typeattribute typeattr)
 
-	   (call data.read_file_pattern.type (typeattr))))
+	   (call conf.read_file_pattern.type (typeattr))
+	   (call data.read_file_pattern.type (typeattr))
+	   (call home.read_file_pattern.type (typeattr))
+	   (call run.read_file_pattern.type (typeattr))))
 
 (in environ.conf
 
@@ -640,14 +715,6 @@
 	   (call read_file_files (typeattr))
 
 	   (call .user.home.conf.search_file_pattern.type (typeattr))))
-
-(in environ.read_file_pattern
-
-    (call conf.read_file_pattern.type (typeattr))
-
-    (call home.read_file_pattern.type (typeattr))
-
-    (call run.read_file_pattern.type (typeattr)))
 
 (in environ.run
 
