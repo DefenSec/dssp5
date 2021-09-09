@@ -103,12 +103,47 @@
 
 	      (blockinherit .sys.agent.template)
 
-	      (call state.manage_file_dirs (subj))
+	      (call cache.manage_file_files (subj))
+	      (call cache.readwrite_file_dirs (subj))
+
+	      (call conf.manage_file_lnk_files (subj))
+	      (call conf.readwrite_file_dirs (subj))
+
+	      (call data.read_file_files (subj))
+	      (call data.read_file_lnk_files (subj))
+	      (call data.search_file_dirs (subj))
+
+	      (call exec.execute_file_files (subj))
+
 	      (call state.manage_file_files (subj))
-	      (call state.state_file_type_transition_file (subj))
+	      (call state.readwrite_file_dirs (subj))
+
+	      (call tmp.manage_file_dirs (subj))
+	      (call tmp.manage_file_files (subj))
+	      (call tmp.tmp_file_type_transition_file (subj dir "*"))
+
+	      (call .cache.search_file_pattern.type (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .perl5.data.read_file_files (subj))
+	      (call .perl5.data.read_file_lnk_files (subj))
+	      (call .perl5.data.search_file_dirs (subj))
+
+	      (call .pkgmgr.state.manage_file_files (subj))
+	      (call .pkgmgr.state.readwrite_file_dirs (subj))
+
+	      (call .random.read_nodedev_chr_files (subj))
 
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .shell.exec.execute_file_files (subj))
+
+	      (call .tmp.deletename_file_dirs (subj))
 
 	      (block exec
 
@@ -131,7 +166,18 @@
 		     (filecon "/usr/bin/update-dictcommon-aspell" file
 			      file_context)
 		     (filecon "/usr/bin/update-dictcommon-hunspell" file
-			      file_context))))
+			      file_context))
+
+	      (block tmp
+
+		     (macro tmp_file_type_transition_file
+			    ((type ARG1)(class ARG2)(name ARG3))
+			    (call .tmp.file_type_transition
+				  (ARG1 file ARG2 ARG3)))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.tmp.base_template))))
 
 (in file.unconfined
 
