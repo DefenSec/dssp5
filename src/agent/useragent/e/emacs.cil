@@ -565,7 +565,9 @@
     (call .emacs.tmp.relabel_file_dirs (subj))
     (call .emacs.tmp.relabel_file_files (subj))
     (call .emacs.tmp.relabel_file_lnk_files (subj))
-    (call .emacs.tmp.relabel_file_sock_files (subj)))
+    (call .emacs.tmp.relabel_file_sock_files (subj))
+
+    (call .info.data.readinherited_file_files (subj)))
 
 (in wheel
 
