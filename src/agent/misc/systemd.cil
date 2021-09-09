@@ -200,6 +200,19 @@
 		     (blockinherit .file.macro_template_dirs)
 		     (blockinherit .file.run.base_template)))
 
+       (block data
+
+	      (filecon "/usr/share/systemd" dir file_context)
+	      (filecon "/usr/share/systemd/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "systemd")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.data.base_template))
+
        (block defaulthostname
 
 	      (block run
@@ -1762,6 +1775,7 @@
     (call .systemd.coredump.state.systemd_state_file_type_transition_file
 	  (typeattr))
     (call .systemd.credentials.run.run_file_type_transition_file (typeattr))
+    (call .systemd.data.data_file_type_transition_file (typeattr))
     (call .systemd.defaulthostname.run.systemd_run_file_type_transition_file
 	  (typeattr))
     (call .systemd.dynamicuid.run.systemd_run_file_type_transition_file

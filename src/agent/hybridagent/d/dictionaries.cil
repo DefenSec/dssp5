@@ -33,12 +33,19 @@
 
        (block data
 
+	      (filecon "/usr/lib/ispell" dir file_context)
+	      (filecon "/usr/lib/ispell/.*" any file_context)
+
 	      (filecon "/usr/share/dictionaries-common" dir file_context)
 	      (filecon "/usr/share/dictionaries-common/.*" any file_context)
 
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "dictionaries-common")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "ispell")))
 
 	      (blockinherit .file.data.template))
 
@@ -64,12 +71,17 @@
 	      (filecon "/var/lib/aspell" dir file_context)
 	      (filecon "/var/lib/aspell/.*" any file_context)
 
+	      (filecon "/var/lib/dictionaries-common" dir file_context)
+	      (filecon "/var/lib/dictionaries-common/.*" any file_context)
+
 	      (filecon "/var/lib/ispell" dir file_context)
 	      (filecon "/var/lib/ispell/.*" any file_context)
 
 	      (macro state_file_type_transition_file ((type ARG1))
 		     (call .state.file_type_transition
 			   (ARG1 file dir "aspell"))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "dictionaries-common"))
 		     (call .state.file_type_transition
 			   (ARG1 file dir "ispell")))
 
@@ -116,6 +128,7 @@
     (call .dictionaries.cache.cache_file_type_transition_file (typeattr))
     (call .dictionaries.conf.conf_file_type_transition_file (typeattr))
     (call .dictionaries.data.data_file_type_transition_file (typeattr))
+    (call .dictionaries.data.lib_file_type_transition_file (typeattr))
     (call .dictionaries.home.user_home_file_type_transition_file (typeattr))
     (call .dictionaries.state.state_file_type_transition_file (typeattr)))
 

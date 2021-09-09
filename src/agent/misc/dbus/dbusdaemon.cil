@@ -7,7 +7,20 @@
 
     (call .sys.read_subj_states (subj))
 
-    (call .sys.user.read_subj_states (subj)))
+    (call .sys.user.read_subj_states (subj))
+
+    (block state
+
+	   (filecon "/var/lib/dbus" dir file_context)
+	   (filecon "/var/lib/dbus/.*" any file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "dbus")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.state.base_template)))
 
 (in dbus.common
 
@@ -33,6 +46,10 @@
 (in dbus.exec
 
     (filecon "/usr/bin/dbus-daemon" file file_context))
+
+(in file.unconfined
+
+    (call .dbus.state.state_file_type_transition_file (typeattr)))
 
 ;; system dbus-daemon specific method returns
 
