@@ -95,6 +95,9 @@
        (optional gnupg_gnupgscdaemon
 		 (call scdaemon.subj_type_transition (subj)))
 
+       (optional gnupg_opensshserver
+		 (call .openssh.server.unix_stream_connect (subj)))
+
        (optional gnupg_pinentry
 		 (call .pinentry.subj_type_transition (subj)))
 

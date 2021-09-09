@@ -67,6 +67,9 @@
 		     (call scdaemon.subj_type_transition (subj))
 		     (call scdaemon.unix_stream_connect (subj)))
 
+	   (optional gnupgagent_opensshserver
+		     (call .openssh.server.unix_stream_connect (subj)))
+
 	   (optional gnupgagent_pinentry
 		     (call .pinentry.subj_type_transition (subj)))
 

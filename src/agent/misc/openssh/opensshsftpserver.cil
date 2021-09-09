@@ -33,6 +33,8 @@
 
 	   (call .nss.passwdgroup.type (subj))
 
+	   (call .rbacsep.exemptsource.type (subj))
+
 	   (call .selinux.linked.type (subj))
 
 	   (call .user.home.manage_file_dirs (subj))
@@ -50,7 +52,14 @@
 
 	   (block exec
 
+		  (macro getattr_file_files ((type ARG1))
+			 (allow ARG1 file (file (getattr))))
+
 		  (filecon "/usr/bin/sftp-server" file file_context))))
+
+(in openssh.server
+
+    (call openssh.sftpserver.exec.getattr_file_files (subj)))
 
 (in user
 
