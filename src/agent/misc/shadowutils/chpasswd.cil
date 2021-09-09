@@ -17,25 +17,15 @@
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
-       (call .logindefs.read_file_files (subj))
-
        (call .nss.passwdgroup.type (subj))
 
-       (call .pam.conf.read_file_files (subj))
-       (call .pam.conf.search_file_dirs (subj))
+       (call .pam.linked.type (subj))
 
        (call .proc.getattr_fs_pattern.type (subj))
 
        (call .rbacsep.constrained.type (subj))
-       (call .rbacsep.usefdsource.type (subj))
-
-       (call .selinux.linked.type (subj))
-
-       (call .shadow.dontaudit_read_file_files (subj))
 
        (call .systemd.journal.relay_msgs.type (subj))
-
-       (call .unixchkpwd.subj_type_transition (subj))
 
        (call .unixupdate.subj_type_transition (subj))
 
