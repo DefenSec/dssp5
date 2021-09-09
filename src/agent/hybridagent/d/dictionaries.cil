@@ -1,0 +1,131 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block dictionaries
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block cache
+
+	      (filecon "/var/cache/dictionaries-common" dir file_context)
+	      (filecon "/var/cache/dictionaries-common/.*" any file_context)
+
+	      (macro cache_file_type_transition_file ((type ARG1))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "dictionaries-common")))
+
+	      (blockinherit .file.cache.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block conf
+
+	      (filecon "/etc/dictionaries-common" dir file_context)
+	      (filecon "/etc/dictionaries-common/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dictionaries-common")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/dictionaries-common" dir file_context)
+	      (filecon "/usr/share/dictionaries-common/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dictionaries-common")))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/ispell-wrapper" file file_context)
+	      (filecon "/usr/bin/select-default-iwrap" file file_context))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.ispell-default" file file_context)
+	      (filecon "HOME_DIR/\.ispell-default\..*" file file_context)
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".ispell-default")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.home.base_template))
+
+       (block state
+
+	      (filecon "/var/lib/aspell" dir file_context)
+	      (filecon "/var/lib/aspell/.*" any file_context)
+
+	      (filecon "/var/lib/ispell" dir file_context)
+	      (filecon "/var/lib/ispell/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "aspell"))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "ispell")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block updatedefault
+
+	      (blockinherit .sys.agent.template)
+
+	      (call state.manage_file_dirs (subj))
+	      (call state.manage_file_files (subj))
+	      (call state.state_file_type_transition_file (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/aspell-autobuildhash" file file_context)
+		     (filecon "/usr/bin/ispell-autobuildhash" file file_context)
+		     (filecon "/usr/bin/update-default-aspell" file
+			      file_context)
+		     (filecon "/usr/bin/remove-default-ispell" file
+			      file_context)
+		     (filecon "/usr/bin/remove-default-wordlist" file
+			      file_context)
+		     (filecon "/usr/bin/select-default-ispell" file
+			      file_context)
+		     (filecon "/usr/bin/select-default-wordlist" file
+			      file_context)
+		     (filecon "/usr/bin/update-default-ispell" file
+			      file_context)
+		     (filecon "/usr/bin/update-default-wordlist" file
+			      file_context)
+		     (filecon "/usr/bin/update-dictcommon-aspell" file
+			      file_context)
+		     (filecon "/usr/bin/update-dictcommon-hunspell" file
+			      file_context))))
+
+(in file.unconfined
+
+    (call .dictionaries.cache.cache_file_type_transition_file (typeattr))
+    (call .dictionaries.conf.conf_file_type_transition_file (typeattr))
+    (call .dictionaries.data.data_file_type_transition_file (typeattr))
+    (call .dictionaries.home.user_home_file_type_transition_file (typeattr))
+    (call .dictionaries.state.state_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .dictionaries.home.manage_file_files (subj))
+    (call .dictionaries.home.relabel_file_files (subj))
+    (call .dictionaries.home.user_home_file_type_transition_file (subj))
+    (call .dictionaries.role (role)))
+
+(in wheel
+
+    (call .dictionaries.role (role)))

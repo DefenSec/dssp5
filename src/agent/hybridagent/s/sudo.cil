@@ -150,6 +150,8 @@
 
     (call .sys.search_subj_keyrings (subj))
 
+    (call .sys.home.getattr_file_dirs (subj))
+
     (call .sys.termdev.readwrite_all_chr_files (subj))
     (call .sys.termdev.relabel_all_chr_files (subj))
     (call .sys.termdev.setattr_all_chr_files (subj))
