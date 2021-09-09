@@ -5,52 +5,39 @@
 
        (blockinherit .sys.agent.template)
 
-       (allow subj self
-	      (capability (audit_write dac_override dac_read_search
-				       sys_chroot)))
-       (allow subj self (process (setfscreate)))
+       (allow subj self (capability (audit_write setuid)))
        (allow subj self create_netlink_audit_socket)
-       (allow subj self create_netlink_selinux_socket)
+       (allow subj self create_unix_dgram_socket)
        (allow subj self (netlink_audit_socket (nlmsg_relay)))
 
        (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
-       (call .checkcontext_selinux_security (subj))
-       (call .computeav_selinux_security (subj))
-
-       (call .conf.deletename_file_dirs (subj))
-
        (call .devpts.search_fs_pattern.type (subj))
-
-       (call .file.auth.write.type (subj))
-
-       (call .ibac.objchangesys.type (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
        (call .logindefs.read_file_files (subj))
 
-       (call .passwd.manage_file_files (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pam.conf.read_file_files (subj))
+       (call .pam.conf.search_file_dirs (subj))
 
        (call .proc.getattr_fs_pattern.type (subj))
-
-       (call .pwdlock.conf_file_type_transition_file (subj "*"))
-       (call .pwdlock.manage_file_files (subj))
-
-       (call .rbac.objchangesys.type (subj))
 
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
-       (call .run.search_file_pattern.type (subj))
+       (call .selinux.linked.type (subj))
 
-       (call .selinux.file.read_file_pattern.type (subj))
-       (call .selinux.map_fs_files (subj))
-       (call .selinux.readwrite_fs_pattern.type (subj))
+       (call .shadow.dontaudit_read_file_files (subj))
 
-       (call .shadow.manage_file_files (subj))
-       (call .shadow.read.type (subj))
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .unixchkpwd.subj_type_transition (subj))
+
+       (call .unixupdate.subj_type_transition (subj))
 
        (block exec
 

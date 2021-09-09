@@ -5,9 +5,11 @@
 
     (blockinherit .hybrid.agent.template)
 
-    (allow subj self (capability (setuid)))
+    (allow subj self (capability (audit_write setuid)))
     (allow subj self (process (setrlimit)))
+    (allow subj self create_netlink_audit_socket)
     (allow subj self create_unix_dgram_socket)
+    (allow subj self (netlink_audit_socket (nlmsg_relay)))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
