@@ -182,8 +182,11 @@
 
     (call .user.systemd.getpgid_subj_processes (subj))
 
-    (optional sudo_gnupg
+    (optional sudo_gnupgagent
 	      (call .gnupg.agent.unix_stream_connect (subj)))
+
+    (optional sudo_opensshserver
+	      (call .openssh.server.unix_stream_connect (subj)))
 
     (block cert
 

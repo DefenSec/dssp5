@@ -38,6 +38,9 @@
 	   (optional gnupgconnectagent_gpgdirmngr
 		     (call dirmngr.unix_stream_connect (subj)))
 
+	   (optional gnupgconnectagent_opensshserver
+		     (call .openssh.server.unix_stream_connect (subj)))
+
 	   (block exec
 
 		  (filecon "/usr/bin/gpg-connect-agent" file file_context))

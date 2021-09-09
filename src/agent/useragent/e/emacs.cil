@@ -1,0 +1,525 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block emacs
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.search_file_dirs (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (macro unix_stream_connect_tmp ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call tmp.search_file_dirs (ARG1))
+	      (call tmp.write_file_sock_files (ARG1)))
+
+       (blockinherit .dbus.client.macro_template)
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (setpgid)))
+       (allow subj self create_tcp_stream_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+
+       (call client.exec.execute_file_files (subj))
+
+       (call client.readwrite_subj_unix_stream_sockets (subj))
+
+       (call data.list_file_dirs (subj))
+       (call data.map_file_files (subj))
+       (call data.read_file_files (subj))
+
+       (call exec.execute_file_files (subj))
+
+       (call helper.execute_file_files (subj))
+
+       (call home.manage_file_dirs (subj))
+       (call home.manage_file_files (subj))
+       (call home.manage_file_lnk_files (subj))
+       (call home.relabel_file_dirs (subj))
+       (call home.relabel_file_files (subj))
+       (call home.relabel_file_lnk_files (subj))
+       (call home.user_home_file_type_transition_file (subj))
+
+       (call home.gnupg.manage_file_dirs (subj))
+       (call home.gnupg.emacs_home_file_type_transition_file (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.user_run_file_type_transition_file (subj))
+
+       (call tmp.manage_file_dirs (subj))
+       (call tmp.manage_file_files (subj))
+       (call tmp.manage_file_lnk_files (subj))
+       (call tmp.manage_file_sock_files (subj))
+       (call tmp.mapexecute_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir "*"))
+       (call tmp.tmp_file_type_transition_file (subj file "*"))
+       (call tmp.tmp_file_type_transition_file (subj lnk_file "*"))
+
+       (call .acpi.search_procfile_dirs (subj))
+
+       (call .cert.map_file_files (subj))
+       (call .cert.read_file_pattern.type (subj))
+
+       (call .cert.home.manage_file_dirs (subj))
+       (call .cert.home.manage_file_files (subj))
+       (call .cert.home.user_home_data_file_type_transition_file (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .class.list_sysfile_pattern.type (subj))
+       (call .class.read_sysfile_lnk_files (subj))
+
+       (call .conf.list_file_dirs (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .curl.exec.execute_file_files (subj))
+
+       (call .dbus.client.type (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.search_sysfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .exec.list_file_dirs (subj))
+
+       (call .exec.home.manage_file_dirs (subj))
+       (call .exec.home.manage_file_files (subj))
+       (call .exec.home.manage_file_lnk_files (subj))
+       (call .exec.home.user_home_data_file_type_transition_file (subj))
+
+       (call .file.exec.auditexecuteaccess_all_files (subj))
+       (call .file.user.home.dontaudit_relabel_all_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .http.nameconnect_port_tcp_sockets (subj))
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .ident.unreserved.namebind_port_tcp_sockets (subj))
+
+       (call .imap.imaps.nameconnect_port_tcp_sockets (subj))
+
+       (call .irc.nameconnect_port_tcp_sockets (subj))
+
+       (call .lib.home.manage_file_dirs (subj))
+       (call .lib.home.manage_file_files (subj))
+       (call .lib.home.manage_file_lnk_files (subj))
+       (call .lib.home.user_home_data_file_type_transition_file (subj))
+
+       (call .loadavg.read_procfile_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.data.read_file_pattern.type (subj))
+
+       (call .mail.search_file_pattern.type (subj))
+
+       (call .mail.home.manage_file_dirs (subj))
+       (call .mail.home.manage_file_files (subj))
+       (call .mail.home.user_home_file_type_transition_file (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.list_file_dirs (subj))
+       (call .media.home.read_file_lnk_files (subj))
+
+       (call .meminfo.read_procfile_files (subj))
+
+       (call .mpd.nameconnect_port_tcp_sockets (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+       (call .net.port.ephemeral.namebind_all_tcp_sockets (subj))
+       (call .net.port.ephemeral.nameconnect_all_tcp_sockets (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nntp.nameconnect_port_tcp_sockets (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+       (call .nss.services.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .privoxy.nameconnect_port_tcp_sockets (subj))
+
+       (call .proc.list_fs_dirs (subj))
+
+       (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+       (call .rbacsep.readstatesource.type (subj))
+
+       (call .root.list_file_dirs (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .runuser.search_file_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+       (call .selinux.mapread_fs_pattern.type (subj))
+
+       (call .serialtermdev.getattr_all_chr_files (subj))
+
+       (call .sieve.nameconnect_port_tcp_sockets (subj))
+
+       (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
+
+       (call .subj.common.dontaudit_read_all_states (subj))
+       (call .subj.common.read_all_states (subj))
+       (call .subj.interactivefd.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .tty.read_procfile_files (subj))
+
+       (call .uptime.read_procfile_files (subj))
+
+       (call .user.agent.sigkill_all_processes (subj))
+       (call .user.agent.signal_all_processes (subj))
+
+       (call .user.dbus.client.type (subj))
+
+       (call .user.devpts_fs_type_transition_ptytermdev (subj))
+
+       (call .user.exec_home_subj_type_transition (subj))
+       (call .user.exec_subj_type_transition (subj))
+
+       (call .user.home.manage_file_dirs (subj))
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.manage_file_lnk_files (subj))
+       (call .user.home.watch_file_dirs (subj))
+
+       (call .user.home.conf.search_file_pattern.type (subj))
+
+       (call .user.home.data.create_file_dir_pattern.type (subj))
+
+       (call .user.mail.read_file_files (subj))
+
+       (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.sigkill_subj_processes (subj))
+       (call .user.signal_subj_processes (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+       (call .user.systemd.notify.type (subj))
+
+       (call .user.termdev.readwrite_all_chr_files (subj))
+
+       (call .utmp.run.read_file_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional emacs_firefox
+		 (call .firefox.exec.dontaudit_auditaccess_file_files (subj)))
+
+       (optional emacs_gh
+		 (call .gh.tmp.readwrite_file_files (subj)))
+
+       (optional emacs_gitclient
+		 (call .git.client.subj_type_transition (subj))
+		 (call .git.home.manage_file_files (subj))
+		 (call .git.home.manage_file_lnk_files (subj))
+		 (call .git.home.readwrite_file_dirs (subj)))
+
+       (optional emacs_gnupg
+		 (call .gnupg.subj_type_transition (subj)))
+
+       (optional emacs_libnotify
+		 (call .libnotify.sendmsg_all_dbus.type (subj)))
+
+       (optional emacs_opensshclient
+		 (call .openssh.client.subj_type_transition (subj))
+		 (call .openssh.home.getattr_file_files (subj))
+		 (call .openssh.home.search_file_dirs (subj)))
+
+       (optional emacs_openssl
+		 (call .openssl.exec.execute_file_files (subj))
+		 (call .openssl.home.manage_file_files (subj))
+		 (call .openssl.home.user_home_file_type_transition_file
+		       (subj)))
+
+       (optional emacs_p11kit
+		 (call .p11kit.conf.read_file_pattern.type (subj))
+		 (call .p11kit.data.map_file_files (subj))
+		 (call .p11kit.data.read_file_pattern.type (subj)))
+
+       (optional emacs_postfix
+		 (call .postfix.sendmail.mailer.type (subj)))
+
+       (optional emacs_sudo
+		 (call .sudo.tmp.readwrite_file_files (subj)))
+
+       (optional emacs_translateshell
+		 (call .translateshell.subj_type_transition (subj)))
+
+       (optional emacs_usermpd
+		 (call .user.mpd.home.conf.read_file_files (subj))
+		 (call .user.mpd.home.conf.search_file_dirs (subj))
+		 (call .user.mpd.unix_stream_connect (subj)))
+
+       (block client
+
+	      (blockinherit .user.agent.template)
+
+	      (call emacs.signal_subj_processes (subj))
+	      (call emacs.subj_type_transition (subj))
+	      (call emacs.unix_stream_connect (subj))
+	      (call emacs.unix_stream_connect_tmp (subj))
+
+	      (call emacs.home.search_file_dirs (subj))
+
+	      (call .dev.list_file_pattern.type (subj))
+
+	      (call .devpts.search_fs_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .user.run.search_file_pattern.type (subj))
+
+	      (call .user.systemd.agent (subj exec.file))
+
+	      (call .user.termdev.readwrite_all_chr_files (subj))
+
+	      (call .tmp.search_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/emacsclient.*" file file_context)))
+
+       (block data
+
+	      (filecon "/usr/lib/emacs" dir file_context)
+	      (filecon "/usr/lib/emacs/.*" any file_context)
+
+	      (filecon "/usr/share/emacs" dir file_context)
+	      (filecon "/usr/share/emacs/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "emacs")))
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "emacs")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/emacs-.*" file file_context))
+
+       (block helper
+
+	      (filecon "/usr/bin/ctags\.emacs" file file_context)
+	      (filecon "/usr/bin/ebrowser\.emacs" file file_context)
+	      (filecon "/usr/bin/etags\.emacs" file file_context)
+
+	      (blockinherit .file.exec.template))
+
+       (block home
+
+	      (filecon "HOME_DIR/\.emacs\.d" dir file_context)
+	      (filecon "HOME_DIR/\.emacs\.d/.*" any file_context)
+
+	      (filecon "HOME_DIR/\.gnus" file file_context)
+	      (filecon "HOME_DIR/\.gnus\..*" file file_context)
+
+	      (filecon "HOME_DIR/\.newsrc" file file_context)
+	      (filecon "HOME_DIR/\.newsrc\..*" file file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro user_home_file_type_transition_file ((type ARG1))
+		     (call .user.home.file_type_transition
+			   (ARG1 file dir ".emacs.d"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".gnus"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".gnus.el"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".gnus.elc"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".newsrc"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".newsrc.el"))
+		     (call .user.home.file_type_transition
+			   (ARG1 file file ".newsrc.eld")))
+
+	      (blockinherit .file.home.emacs.template)
+
+	      (block gnupg
+
+		     (filecon "HOME_DIR/\.emacs\.d/elpa/gnupg" dir file_context)
+		     (filecon "HOME_DIR/\.emacs\.d/elpa/gnupg/.*" any
+			      file_context)
+
+		     (macro emacs_home_file_type_transition_file ((type ARG1))
+			    (call .emacs.home.file_type_transition
+				  (ARG1 file dir "gnupg")))
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.home.emacs.base_template)))
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/emacs" dir file_context)
+	      (filecon "/run/user/%{USERID}/emacs/.*" any file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file dir "emacs")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.run.base_template))
+
+       (block tmp
+
+	      (filecon "/tmp/emacs%{USERID}" dir file_context)
+	      (filecon "/tmp/emacs%{USERID}/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .tmp.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.tmp.base_template)
+
+	      (optional emacs_tmp_postfix
+			(call .postfix.sendmail.mailer.tmp.type (file))))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/user/emacs\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.user.unit.template)))
+
+(in file.unconfined
+
+    (call .emacs.data.data_file_type_transition_file (typeattr))
+    (call .emacs.data.lib_file_type_transition_file (typeattr))
+    (call .emacs.home.user_home_file_type_transition_file (typeattr))
+    (call .emacs.home.gnupg.emacs_home_file_type_transition_file (typeattr))
+    (call .emacs.run.user_run_file_type_transition_file (typeattr))
+
+    (call .terminfo.data.emacs_data_file_type_transition_file (typeattr)))
+
+(in file.home
+
+    (block emacs
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.user.home.base_template)
+
+		  (call .file.home.emacs.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.home.emacs.base_template))))
+
+(in terminfo.data
+
+    (filecon "/usr/share/emacs/([^/]*/)?etc/e/eterm-color" file file_context)
+
+    (macro emacs_data_file_type_transition_file ((type ARG1))
+	   (call .emacs.data.file_type_transition
+		 (ARG1 file file "eterm-color"))))
+
+(in user
+
+    (call .emacs.client.role (role))
+    (call .emacs.data.readinherited_file_files (subj))
+    (call .emacs.home.manage_file_dirs (subj))
+    (call .emacs.home.manage_file_files (subj))
+    (call .emacs.home.manage_file_lnk_files (subj))
+    (call .emacs.home.map_file_files (subj))
+    (call .emacs.home.relabel_file_dirs (subj))
+    (call .emacs.home.relabel_file_files (subj))
+    (call .emacs.home.relabel_file_lnk_files (subj))
+    (call .emacs.home.user_home_file_type_transition_file (subj))
+    (call .emacs.home.gnupg.emacs_home_file_type_transition_file (subj))
+    (call .emacs.home.gnupg.manage_file_dirs (subj))
+    (call .emacs.home.gnupg.manage_file_files (subj))
+    (call .emacs.home.gnupg.map_file_files (subj))
+    (call .emacs.home.gnupg.relabel_file_dirs (subj))
+    (call .emacs.home.gnupg.relabel_file_files (subj))
+    (call .emacs.role (role))
+    (call .emacs.run.manage_file_dirs (subj))
+    (call .emacs.run.manage_file_sock_files (subj))
+    (call .emacs.run.relabel_file_dirs (subj))
+    (call .emacs.run.relabel_file_sock_files (subj))
+    (call .emacs.run.user_run_file_type_transition_file (subj))
+    (call .emacs.tmp.manage_file_dirs (subj))
+    (call .emacs.tmp.manage_file_files (subj))
+    (call .emacs.tmp.manage_file_lnk_files (subj))
+    (call .emacs.tmp.manage_file_sock_files (subj))
+    (call .emacs.tmp.map_file_files (subj))
+    (call .emacs.tmp.relabel_file_dirs (subj))
+    (call .emacs.tmp.relabel_file_files (subj))
+    (call .emacs.tmp.relabel_file_lnk_files (subj))
+    (call .emacs.tmp.relabel_file_sock_files (subj)))
+
+(in wheel
+
+    (call .emacs.client.role (role))
+    (call .emacs.role (role)))

@@ -30,6 +30,9 @@
 
        (call .user.termdev.open_all_chr_files (subj))
 
+       (optional pinentry_emacs
+		 (call .emacs.unix_stream_connect_tmp (subj)))
+
        (optional pinentry_gnupgagent
 		 (call .gnupg.agent.unix_stream_connect (subj))
 		 (call .gnupg.read_subj_states (subj)))

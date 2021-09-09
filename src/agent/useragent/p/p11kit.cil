@@ -1,0 +1,100 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block p11kit
+
+       (blockinherit .user.agent.template)
+
+       (block conf
+
+	      (filecon "/etc/pkcs11" dir file_context)
+	      (filecon "/etc/pkcs11/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "pkcs11")))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/p11-kit" dir file_context)
+	      (filecon "/usr/share/p11-kit/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "p11-kit")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/p11-kit" file file_context)
+	      (filecon "/usr/bin/trust" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/pkcs11" dir file_context)
+		     (filecon "HOME_DIR/\.config/pkcs11/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "pkcs11")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block remote
+
+	      (blockinherit .user.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/p11-kit/p11-kit-remote" file
+			      file_context)))
+
+       (block server
+
+	      (blockinherit .user.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/p11-kit/p11-kit-server" file
+			      file_context))))
+
+(in file.unconfined
+
+    (call .p11kit.conf.conf_file_type_transition_file (typeattr))
+    (call .p11kit.data.data_file_type_transition_file (typeattr))
+    (call .p11kit.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr)))
+
+(in user
+
+    (call .p11kit.home.conf.manage_file_dirs (subj))
+    (call .p11kit.home.conf.manage_file_files (subj))
+    (call .p11kit.home.conf.manage_file_lnk_files (subj))
+    (call .p11kit.home.conf.map_file_files (subj))
+    (call .p11kit.home.conf.relabel_file_dirs (subj))
+    (call .p11kit.home.conf.relabel_file_files (subj))
+    (call .p11kit.home.conf.relabel_file_lnk_files (subj))
+    (call .p11kit.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .p11kit.remote.role (role))
+    (call .p11kit.role (role))
+    (call .p11kit.server.role (role)))
+
+(in wheel
+
+    (call .p11kit.remote.role (role))
+    (call .p11kit.role (role))
+    (call .p11kit.server.role (role)))

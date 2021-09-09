@@ -28,6 +28,9 @@
 
     (block exec
 
+	   (macro auditexecuteaccess_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (execute getattr))))
+
 	   (macro dontaudit_auditaccess_all_files ((type ARG1))
 		  (dontaudit ARG1 typeattr (file (audit_access))))
 

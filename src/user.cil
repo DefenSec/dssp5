@@ -202,16 +202,16 @@
 	   (blockabstract macro_template)
 
 	   (macro create_subj_keyrings ((type ARG1))
-		  (allow ARG1 typeattr (key (create))))
+		  (allow ARG1 subj (key (create))))
 
 	   (macro link_subj_keyrings ((type ARG1))
-		  (allow ARG1 typeattr (key (link))))
+		  (allow ARG1 subj (key (link))))
 
 	   (macro search_subj_keyrings ((type ARG1))
-		  (allow ARG1 typeattr (key (search))))
+		  (allow ARG1 subj (key (search))))
 
 	   (macro write_subj_keyrings ((type ARG1))
-		  (allow ARG1 typeattr (key (write))))
+		  (allow ARG1 subj (key (write))))
 
 	   (blockinherit .subj.macro_template))
 

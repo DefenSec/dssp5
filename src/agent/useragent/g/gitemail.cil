@@ -1,0 +1,113 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in git
+
+    (block email
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_tcp_socket)
+
+	   (call client.subj_type_transition (subj))
+
+	   (call git.home.search_file_dirs (subj))
+
+	   (call home.manage_file_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_pattern.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .media.search_file_pattern.type (subj))
+
+	   (call .media.home.traverse_file_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+	   (call .nss.protocols.type (subj))
+	   (call .nss.services.type (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .perl5.data.read_file_files (subj))
+	   (call .perl5.data.search_file_dirs (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.execute_file_files (subj))
+
+	   (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .user.home.deletename_file_dirs (subj))
+	   (call .user.home.read_file_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/git-core/git-send-email" file
+			   file_context))
+
+	   (block home
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.home.git.base_template))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file dir "*")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmp.base_template))))
+
+(in git.client
+
+    (call email.subj_type_transition (subj))
+    (call email.tmp.addname_file_dirs (subj))
+    (call email.tmp.manage_file_files (subj)))
+
+(in user
+
+    (call .git.email.home.manage_file_files (subj))
+    (call .git.email.home.relabel_file_files (subj))
+    (call .git.email.role (role))
+    (call .git.email.tmp.manage_file_dirs (subj))
+    (call .git.email.tmp.manage_file_files (subj))
+    (call .git.email.tmp.relabel_file_dirs (subj))
+    (call .git.email.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .git.email.role (role)))

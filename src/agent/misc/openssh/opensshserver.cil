@@ -13,11 +13,22 @@
 
     (block server
 
+	   (macro link_subj_keyrings ((type ARG1))
+		  (allow ARG1 subj (key (link))))
+
 	   (macro readwrite_subj_tcp_sockets ((type ARG1))
 		  (allow ARG1 subj readwrite_tcp_socket))
 
+	   (macro search_subj_keyrings ((type ARG1))
+		  (allow ARG1 subj (key (search))))
+
 	   (macro setattr_ptytermdev_chr_files ((type ARG1))
 		  (allow ARG1 ptytermdev (chr_file (setattr))))
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call tmp.search_file_dirs (ARG1))
+		  (call tmp.write_file_sock_files (ARG1)))
 
 	   (blockinherit .dbus.client.template)
 	   (blockinherit .loginptytermdev.template)
@@ -32,6 +43,7 @@
 	   (allow subj self create_unix_dgram_socket)
 	   (allow subj self (key (setattr write)))
 	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+	   (allow subj self (unix_stream_socket (accept listen)))
 
 	   (call readwrite_ptytermdev_chr_files (subj))
 	   (call relabelfrom_ptytermdev_chr_files (subj))
@@ -53,6 +65,11 @@
 	   (call run.manage_file_dirs (subj))
 	   (call run.manage_file_files (subj))
 	   (call run.run_file_type_transition_file (subj))
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.manage_file_sock_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj dir "*"))
+	   (call tmp.tmp_file_type_transition_file (subj sock_file "*"))
 
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
@@ -119,6 +136,8 @@
 
 	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
 
+	   (call .tmp.deletename_file_dirs (subj))
+
 	   (call .user.readwrite_ptytermdev_chr_files (subj))
 	   (call .user.relabelto_ptytermdev_chr_files (subj))
 	   (call .user.setattr_ptytermdev_chr_files (subj))
@@ -131,6 +150,14 @@
 	   (call .user.unpriv.write_all_keyrings (subj))
 
 	   (call .user.run.search_file_pattern.type (subj))
+
+	   (optional opensshserver_server_gnupgagent
+		     (call .gnupg.agent.run.manage_file_sock_files (subj))
+		     (call .gnupg.agent.run.gnupg_run_file_type_transition_file
+			   (subj))
+		     (call .gnupg.run.deletename_file_dirs (subj))
+
+		     (call .rbacsep.exempt.obj.type (subj)))
 
 	   (optional opensshserver_server_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
@@ -204,6 +231,19 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.run.base_template))
 
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file
+			 ((type ARG1)(class ARG2)(name ARG3))
+			 (call .tmp.file_type_transition
+			       (ARG1 file ARG2 ARG3)))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.tmp.base_template)
+
+		  (call .rbacsep.exempt.obj.type (file)))
+
 	   (block unit
 
 		  (filecon "/usr/lib/systemd/system/ssh\.service.*" file
@@ -219,6 +259,11 @@
 
     (call server.key.manage_file_files (subj))
     (call server.key.openssh_conf_file_type_transition_file (subj "*")))
+
+(in pam.linked
+
+    (call .openssh.server.link_subj_keyrings (typeattr))
+    (call .openssh.server.search_subj_keyrings (typeattr)))
 
 (in user.agent
 
