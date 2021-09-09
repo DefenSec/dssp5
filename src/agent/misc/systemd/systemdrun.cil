@@ -83,8 +83,6 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
 
-	   (call .devtmp.getattr_fs (typeattr))
-
 	   (call .devpts.getattr_fs (typeattr))
 
 	   (call .file.exec.dontaudit_auditaccess_all_files (typeattr))

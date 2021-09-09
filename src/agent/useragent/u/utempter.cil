@@ -5,9 +5,13 @@
 
        (blockinherit .user.agent.template)
 
+       (call .devpts.search_fs_pattern.type (subj))
+
        (call .log.search_file_pattern.type (subj))
 
        (call .nss.passwdgroup.type (subj))
+
+       (call .ptmx.readwriteinherited_nodedev_chr_files (subj))
 
        (call .utmp.run.readwrite_file_files (subj))
 

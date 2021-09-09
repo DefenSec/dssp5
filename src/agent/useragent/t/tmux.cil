@@ -22,6 +22,8 @@
 
        (call .nss.passwdgroup.type (subj))
 
+       (call .devpts.getattr_fs (subj))
+
        (call .ptmx.readwrite_nodedev_chr_files (subj))
 
        (call .subj.common.read_all_states (subj))
@@ -123,6 +125,10 @@
     (call .tmux.tmp.relabel_file_files (subj))
     (call .tmux.tmp.relabel_file_sock_files (subj))
     (call .tmux.role (role)))
+
+(in utempter
+
+    (call .tmux.readwrite_subj_unix_stream_sockets (subj)))
 
 (in wheel
 
