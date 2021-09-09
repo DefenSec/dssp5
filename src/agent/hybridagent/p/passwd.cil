@@ -5,6 +5,7 @@
 
     (blockinherit .hybrid.agent.template)
 
+    (allow subj self (capability (setuid)))
     (allow subj self (process (setrlimit)))
     (allow subj self create_unix_dgram_socket)
 
