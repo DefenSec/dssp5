@@ -120,7 +120,7 @@
        (call .loadavg.read_procfile_files (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
-       (call .locale.data.read_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
 
        (call .mail.search_file_pattern.type (subj))
 
@@ -305,6 +305,17 @@
 
 		     (filecon "/usr/bin/emacsclient.*" file file_context)))
 
+       (block conf
+
+	      (filecon "/etc/emacs" dir file_context)
+	      (filecon "/etc/emacs/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "emacs")))
+
+	      (blockinherit .file.conf.template))
+
        (block data
 
 	      (filecon "/usr/lib/emacs" dir file_context)
@@ -313,9 +324,14 @@
 	      (filecon "/usr/share/emacs" dir file_context)
 	      (filecon "/usr/share/emacs/.*" any file_context)
 
+	      (filecon "/usr/share/emacsen-common" dir file_context)
+	      (filecon "/usr/share/emacsen-common/.*" any file_context)
+
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
-			   (ARG1 file dir "emacs")))
+			   (ARG1 file dir "emacs"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "emacsen-common")))
 
 	      (macro lib_file_type_transition_file ((type ARG1))
 		     (call .lib.file_type_transition
@@ -434,6 +450,7 @@
 
 (in file.unconfined
 
+    (call .emacs.conf.conf_file_type_transition_file (typeattr))
     (call .emacs.data.data_file_type_transition_file (typeattr))
     (call .emacs.data.lib_file_type_transition_file (typeattr))
     (call .emacs.home.user_home_file_type_transition_file (typeattr))
