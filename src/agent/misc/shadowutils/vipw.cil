@@ -1,0 +1,70 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block vipw
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (chown dac_override dac_read_search)))
+       (allow subj self (process (setfscreate setpgid)))
+       (allow subj self create_unix_dgram_socket)
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .checkcontext_selinux_security (subj))
+
+       (call .conf.deletename_file_dirs (subj))
+
+       (call .editor.read_file_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .file.auth.relabelto.type (subj))
+       (call .file.auth.write.type (subj))
+       (call .file.home.dontaudit_listinherited_all_dirs (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .logindefs.read_file_files (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .passwd.manage_file_files (subj))
+       (call .passwd.relabelto_file_files (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .pwdlock.conf_file_type_transition_file (subj "*"))
+       (call .pwdlock.manage_file_files (subj))
+       (call .pwdlock.relabelfrom_file_files (subj))
+
+       (call .rbac.objchangesys.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+       (call .selinux.readwrite_fs_pattern.type (subj))
+
+       (call .shadow.manage_file_files (subj))
+       (call .shadow.read.type (subj))
+       (call .shadow.relabelto_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/grpck" file file_context)
+	      (filecon "/usr/bin/grpconv" file file_context)
+	      (filecon "/usr/bin/grpunconv" file file_context)
+	      (filecon "/usr/bin/pwck" file file_context)
+	      (filecon "/usr/bin/pwconv" file file_context)
+	      (filecon "/usr/bin/pwunconv" file file_context)
+	      (filecon "/usr/bin/vipw" file file_context)))
