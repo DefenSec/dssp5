@@ -5,8 +5,47 @@
 
        (blockinherit .sys.agent.template)
 
+       (call .cache.search_file_pattern.type (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pam.conf.manage_file_files (subj))
+       (call .pam.conf.readwrite_file_dirs (subj))
+
+       (call .pam.data.list_file_dirs (subj))
+       (call .pam.data.read_file_files (subj))
+
+       (call .pam.state.manage_file_files (subj))
+       (call .pam.state.readwrite_file_dirs (subj))
+
+       (call .perl5.data.read_file_files (subj))
+       (call .perl5.data.read_file_lnk_files (subj))
+       (call .perl5.data.search_file_dirs (subj))
+
+       (call .pkgmgr.cache.manage_file_files (subj))
+       (call .pkgmgr.cache.readwrite_file_dirs (subj))
+       (call .pkgmgr.conf.read_file_files (subj))
+       (call .pkgmgr.data.execute_file_files (subj))
+       (call .pkgmgr.data.search_file_dirs (subj))
+       (call .pkgmgr.state.read_file_files (subj))
+       (call .pkgmgr.state.search_file_dirs (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
+
+       (call .shadow.read.type (subj))
+       (call .shadow.read_file_files (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
 
        (block exec
 
