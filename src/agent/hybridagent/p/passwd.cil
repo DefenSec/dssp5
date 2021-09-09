@@ -5,19 +5,14 @@
 
     (blockinherit .hybrid.agent.template)
 
-    (allow subj self (capability (audit_write chown fsetid setuid)))
-    (allow subj self (process (setfscreate setrlimit)))
-    (allow subj self create_netlink_audit_socket)
+    (allow subj self (process (setrlimit)))
     (allow subj self create_unix_dgram_socket)
-    (allow subj self (netlink_audit_socket (nlmsg_relay)))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
     (call .crypto.read_sysctlfile_pattern.type (subj))
 
     (call .devpts.search_fs_pattern.type (subj))
-
-    (call .ibac.objchangesys.type (subj))
 
     (call .locale.data.map_file_pattern.type (subj))
     (call .locale.read_file_pattern.type (subj))
@@ -31,10 +26,6 @@
     (call .proc.getattr_fs_pattern.type (subj))
 
     (call .random.read_nodedev_chr_files (subj))
-
-    (call .rbac.objchangesys.type (subj))
-
-    (call .rbacsep.exempt.subj.type (subj))
 
     (call .selinux.file.read_file_pattern.type (subj))
     (call .selinux.map_fs_files (subj))
