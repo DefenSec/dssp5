@@ -1,0 +1,50 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block chage
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (audit_write dac_override dac_read_search
+				       sys_chroot)))
+       (allow subj self (process (setfscreate)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .checkcontext_selinux_security (subj))
+
+       (call .computeav_selinux_security (subj))
+
+       (call .file.auth.write.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .ibac.objchangesys.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .logindefs.read_file_files (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .rbac.objchangesys.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+       (call .selinux.map_fs_files (subj))
+       (call .selinux.readwrite_fs_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .unixupdate.subj_type_transition (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/chage" file file_context)))
