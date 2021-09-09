@@ -100,6 +100,8 @@
 
 	   (call .pam.login.type (subj))
 
+	   (call .passwd.subj_type_transition (subj))
+
 	   (call .proc.getattr_fs_pattern.type (subj))
 
 	   (call .ptmx.readwrite_nodedev_chr_files (subj))

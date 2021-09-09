@@ -29,6 +29,8 @@
 
        (call .systemd.journal.relay_msgs.type (subj))
 
+       (call .user.termdev.dontaudit_readwriteinherited_all_chr_files (subj))
+
        (block exec
 
 	      (filecon "/usr/bin/unix_chkpwd" file file_context)))

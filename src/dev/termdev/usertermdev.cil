@@ -27,6 +27,9 @@
 		  (allow ARG1 typeattr appendinherited_chr_file)
 		  (allowx ARG1 typeattr (ioctl chr_file (not (0x5412)))))
 
+	   (macro dontaudit_readwriteinherited_all_chr_files ((type ARG1))
+		  (dontaudit ARG1 typeattr readwriteinherited_chr_file))
+
 	   (macro open_all_chr_files ((type ARG1))
 		  (allow ARG1 typeattr (chr_file (open))))
 
