@@ -375,7 +375,7 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
-	   (call .editor.conf.read_file_files (subj))
+	   (call .editor.read_file_pattern.type (subj))
 
 	   (call .exec.execute_file_files (subj))
 

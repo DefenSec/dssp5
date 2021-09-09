@@ -91,6 +91,7 @@
        (call .devices.read_sysfile_files (subj))
        (call .devices.search_sysfile_pattern.type (subj))
 
+       (call .devpts.getattr_fs (subj))
        (call .devpts.search_fs_pattern.type (subj))
 
        (call .dictionaries.read_file_pattern.type (subj))

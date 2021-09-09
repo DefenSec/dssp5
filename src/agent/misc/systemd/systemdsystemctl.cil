@@ -59,7 +59,7 @@
 
 	   (call .dbus.client.type (subj))
 
-	   (call .editor.conf.read_file_files (subj))
+	   (call .editor.read_file_pattern.type (subj))
 
 	   (call .file.unit.control_all_services (subj))
 	   (call .file.unit.manage_all_files (subj))
