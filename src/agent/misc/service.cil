@@ -1,0 +1,133 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block service
+
+       (block admin
+
+	      (macro role ((role ARG1))
+		     (roleattributeset roleattr ARG1))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (roleattribute roleattr)
+	      (typeattribute typeattr)
+
+	      (call .cache.traverse_file_pattern.type (typeattr))
+
+	      (call .ibac.objchangesys.type (typeattr))
+
+	      (call .log.traverse_file_pattern.type (typeattr))
+
+	      (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .rbac.objchangesys.type (typeattr))
+
+	      (call .selinux.file.read_file_pattern.type (typeattr))
+	      (call .selinux.mapread_fs_pattern.type (typeattr))
+
+	      (call .state.traverse_file_pattern.type (typeattr))
+
+	      (call .sys.reload_system (typeattr))
+	      (call .sys.status_system (typeattr))
+
+	      (call .systemd.pager.type (typeattr))
+	      (call .systemd.private.type (typeattr))
+
+	      (call .systemd.askpassword.client.type (typeattr))
+	      (call .systemd.askpassword.role (roleattr))
+	      (call .systemd.askpassword.ttyagent.role (roleattr))
+
+	      (call .systemd.conf.traverse_file_pattern.type (typeattr))
+
+	      (call .systemd.journal.log.map_file_pattern.type (typeattr))
+	      (call .systemd.journal.log.read_file_pattern.type (typeattr))
+
+	      (call .systemd.systemctl.exec.execute_file_files (typeattr))
+
+	      (call .systemd.unit.manage_file_dirs (typeattr))
+
+	      (optional service_polkit
+			(call .polkit.ttyagent.role (roleattr))
+			(call .polkit.ttyagent.subj_type_transition
+			      (typeattr))))
+
+       (block template
+
+	      (blockabstract template)
+
+	      (block service
+
+		     (block admin
+
+			    (macro role ((role ARG1))
+				   (roleattributeset roleattr ARG1))
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (roleattribute roleattr)
+			    (typeattribute typeattr)
+
+			    (allow typeattr self
+				   (capability (chown dac_override
+						      dac_read_search fowner
+						      fsetid kill sys_ptrace
+						      sys_resource)))
+			    (allow typeattr self (cap_userns (kill sys_ptrace)))
+			    (allow typeattr self (process (setfscreate)))
+
+			    (allow typeattr obj.typeattr manage_dir)
+			    (allow typeattr obj.typeattr manage_fifo_file)
+			    (allow typeattr obj.typeattr manage_file)
+			    (allow typeattr obj.typeattr manage_lnk_file)
+			    (allow typeattr obj.typeattr manage_sock_file)
+			    (allow typeattr obj.typeattr (file (map)))
+
+			    (allow typeattr obj.typeattr relabel_dir)
+			    (allow typeattr obj.typeattr relabel_fifo_file)
+			    (allow typeattr obj.typeattr relabel_file)
+			    (allow typeattr obj.typeattr relabel_lnk_file)
+			    (allow typeattr obj.typeattr relabel_sock_file)
+
+			    (allow typeattr subj.typeattr
+				   (process (getattr getcap getrlimit getsched
+						     ptrace setrlimit setsched
+						     signal signull sigkill
+						     sigstop)))
+
+			    (allow typeattr subj.typeattr list_dir)
+			    (allow typeattr subj.typeattr read_file)
+			    (allow typeattr subj.typeattr read_lnk_file)
+
+			    (allow typeattr unit.typeattr manage_file)
+			    (allow typeattr unit.typeattr relabel_file)
+			    (allow typeattr unit.typeattr (file (map)))
+			    (allow typeattr unit.typeattr (service (all)))
+
+			    (call .service.admin.role (roleattr))
+			    (call .service.admin.type (typeattr)))
+
+		     (block obj
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr))
+
+		     (block subj
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr)
+
+			    (allow typeattr admin.typeattr (process (sigchld))))
+
+		     (block unit
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr)))))
