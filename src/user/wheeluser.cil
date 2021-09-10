@@ -9,6 +9,8 @@
 
        (call .sys.role_access (role id))
 
+       (call .systemd.analyze.role (role))
+
        (call .systemd.askpassword.client.role (role))
 
        (call .systemd.journalctl.role (role))
