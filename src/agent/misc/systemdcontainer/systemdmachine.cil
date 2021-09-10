@@ -1,0 +1,286 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .ptmx.readwriteinherited_nodedev_chr_files (subj))
+
+    (call .systemd.machine.readwriteinherited_ptytermdev_chr_files (subj))
+
+    (call .systemd.nspawn.container.obj.readwriteinherited_all_chr_files
+	  (subj)))
+
+(in file.unconfined
+
+    (call .lostfound.systemd_machine_state_file_type_transition_file (typeattr))
+
+    (call .systemd.machine.state.state_file_type_transition_file (typeattr)))
+
+(in getty
+
+    (call .systemd.machine.readwrite_ptytermdev_chr_files (subj))
+    (call .systemd.machine.setattr_ptytermdev_chr_files (subj)))
+
+(in login
+
+    (call .systemd.machine.readwrite_ptytermdev_chr_files (subj))
+    (call .systemd.machine.relabel_ptytermdev_chr_files (subj))
+    (call .systemd.machine.setattr_ptytermdev_chr_files (subj)))
+
+(in lostfound
+
+    (filecon "/var/lib/machines/\.journal" file ())
+    (filecon "/var/lib/machines/lost\+found" dir file_context)
+
+    (macro systemd_machine_state_file_type_transition_file ((type ARG1))
+	   (call .systemd.machine.state.file_type_transition
+		 (ARG1 file dir "lost+found"))))
+
+;; resolving container host names
+(in nss.hosts
+
+    (call .systemd.machines.run.search_file_pattern.type (typeattr)))
+
+;; resolving dynamic container uid
+(in nss.passwdgroup
+
+    (call .systemd.machine.connectto_subj_unix_stream_sockets (typeattr))
+
+    (call .systemd.userdb.run.list_file_dirs (typeattr))
+    (call .systemd.userdb.run.write_file_sock_files (typeattr)))
+
+(in systemd
+
+    (block machine
+
+	   (macro setattr_ptytermdev_chr_files ((type ARG1))
+		  (allow ARG1 ptytermdev (chr_file (setattr))))
+
+	   (blockinherit .dbus.nameclient.template)
+	   (blockinherit .loginptytermdev.template)
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self
+		  (capability (chown dac_override dac_read_search fowner fsetid
+				     kill setgid sys_admin sys_chroot)))
+	   (allow subj self
+		  (cap_userns (kill setgid setuid sys_admin sys_chroot
+				    sys_ptrace)))
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_netlink_route_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (netlink_route_socket (nlmsg_read)))
+	   (allow subj self (unix_dgram_socket (sendto)))
+	   (allow subj self (unix_stream_socket (accept listen)))
+
+	   (call readwrite_ptytermdev_chr_files (subj))
+
+	   (call state.manage_file_dirs (subj))
+	   (call state.manage_file_files (subj))
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.mounton_file_dirs (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call systemd.logparsenv.type (subj))
+
+	   (call systemd.hostname.conf.read_file_files (subj))
+
+	   (call systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.machinectl.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.machines.run.manage_file_dirs (subj))
+	   (call systemd.machines.run.manage_file_files (subj))
+	   (call systemd.machines.run.manage_file_lnk_files (subj))
+
+	   (call systemd.nspawn.read_subj_states (subj))
+
+	   (call systemd.nspawn.conf.deletename_file_dirs (subj))
+	   (call systemd.nspawn.conf.delete_file_files (subj))
+
+	   (call systemd.nspawn.run.manage_file_dirs (subj))
+	   (call systemd.nspawn.run.manage_file_files (subj))
+	   (call systemd.nspawn.run.systemd_run_file_type_transition_file
+		 (subj))
+
+	   ;; machinectl remove with tar and machinectl copy-to
+	   (call systemd.nspawn.container.obj.delete_all_chr_files (subj))
+	   (call systemd.nspawn.container.obj.delete_all_dirs (subj))
+	   (call systemd.nspawn.container.obj.delete_all_fifo_files (subj))
+	   (call systemd.nspawn.container.obj.delete_all_lnk_files (subj))
+	   (call systemd.nspawn.container.obj.delete_all_sock_files (subj))
+
+	   (call systemd.nspawn.container.obj.manage_all_files (subj))
+	   (call systemd.nspawn.container.obj.read_all_lnk_files (subj))
+	   (call systemd.nspawn.container.obj.readwrite_all_chr_files (subj))
+	   (call systemd.nspawn.container.obj.readwrite_all_dirs (subj))
+	   (call systemd.nspawn.container.obj.write_all_sock_files (subj))
+
+	   (call
+	    systemd.nspawn.container.subj.connectto_all_unix_stream_sockets
+	    (subj))
+	   (call systemd.nspawn.container.subj.read_all_states (subj))
+	   (call systemd.nspawn.container.subj.signal_all_processes (subj))
+	   (call systemd.nspawn.container.unit.status_all_services (subj))
+
+	   (call systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call systemd.unit.run.control_file_services (subj))
+
+	   (call systemd.userdb.run.manage_file_sock_files (subj))
+	   (call systemd.userdb.run.readwrite_file_dirs (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .devpts.fs_type_transition (subj ptytermdev chr_file "*"))
+	   (call .devpts.getattr_fs (subj))
+
+	   (call .getty.unit.start_file_services (subj))
+
+	   (call .home.search_file_pattern.type (subj))
+
+	   (call .image.delete_file_files (subj))
+	   (call .image.readwrite_file_files (subj))
+
+	   (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+	   (call .lostfound.dontaudit_auditaccess_dirs (subj))
+	   (call .lostfound.list_file_dirs (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .ptmx.readwrite_nodedev_chr_files (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.usefdtarget.type (subj))
+
+	   (call .root.dontaudit_auditaccess_file_dirs (subj))
+	   (call .root.list_file_dirs (subj))
+	   (call .root.mounton_file_dirs (subj))
+
+	   (call .subj.interactivefd.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .stordev.read.type (subj))
+	   (call .stordev.read_all_blk_files (subj))
+	   (call .stordev.read_all_chr_files (subj))
+
+	   (call .sys.modulerequest_subj_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.start_system (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .sys.user.read_subj_states (subj))
+	   (call .sys.user.sendmsg_subj_dbus.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (call .trace.search_fs_pattern.type (subj))
+
+	   (call .readwrite_unlabeled_dirs (subj))
+
+	   (call .user.home.manage_file_dirs (subj))
+	   (call .user.home.manage_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+	   (call .xattr.mount_fs (subj))
+
+	   (optional systemdmachine_polkit
+		     (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-machined" file
+			   file_context))
+
+	   (block state
+
+		  (filecon "/var/lib/machines" dir file_context)
+		  (filecon "/var/lib/machines/.*" any ())
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "machines")))
+
+		  (blockinherit .file.macro_template_chr_files)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.state.base_template)
+
+		  (call .mount.image.type (file))
+		  (call .mount.mountpoint.type (file)))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file dir "*"))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.tmp.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-machined\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template)
+
+		  (call .dbus.activated.unit.type (file)))))
+
+(in systemd.import
+
+    (call systemd.machine.state.manage_file_chr_files (subj))
+    (call systemd.machine.state.manage_file_dirs (subj))
+    (call systemd.machine.state.manage_file_files (subj))
+    (call systemd.machine.state.manage_file_lnk_files (subj))
+    (call systemd.machine.state.mounton_file_dirs (subj))
+    (call systemd.machine.state.relabelfrom_file_chr_files (subj))
+    (call systemd.machine.state.relabelfrom_file_dirs (subj))
+    (call systemd.machine.state.relabelfrom_file_files (subj))
+    (call systemd.machine.state.relabelfrom_file_lnk_files (subj))
+
+    (call .sys.home.readinherited_file_files (subj))
+
+    (call .sys.user.sendmsg_subj_dbus.type (subj))
+
+    (call .user.home.readinherited_file_files (subj)))
+
+;; TODO
+;;(in systemd.journalctl
+;;
+;;    (blockinherit .dbus.client.template)
+;;
+;;    (call systemd.machine.sendmsg_subj_dbus.type (subj)))
+
+(in systemd.stdiobridge
+
+    (call systemd.machine.sendmsg_subj_dbus.type (subj)))
+
+(in unixchkpwd
+
+    (call .systemd.machine.readwriteinherited_ptytermdev_chr_files (subj)))

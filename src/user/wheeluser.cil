@@ -32,4 +32,13 @@
 		 (call .openssh.sftpserver.role (role)))
 
        (optional wheeluser_ping
-		 (call .ping.role (role))))
+		 (call .ping.role (role)))
+
+       (optional wheeluser_systemddissect
+		 (call .systemd.dissect.role (role)))
+
+       (optional wheeluser_systemdmachinectl
+		 (call .systemd.machinectl.role (role)))
+
+       (optional wheeluser_systemdportablectl
+		 (call .systemd.portablectl.role (role))))

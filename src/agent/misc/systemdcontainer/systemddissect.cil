@@ -1,0 +1,99 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block dissect
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (capability (sys_admin sys_resource)))
+	   (allow subj self create_netlink_kobject_uevent_socket)
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.mounton_file_dirs (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .debug.search_fs_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_pattern.type (subj))
+
+	   (call .fsck.subj_type_transition (subj))
+
+	   (call .fstab.read_file_files (subj))
+
+	   (call .kernel.read_sysfile_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .loop.readwrite_stordev_blk_files (subj))
+
+	   (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+	   (call .media.addname_file_dirs (subj))
+	   (call .media.create_file_dirs (subj))
+	   (call .media.mounton_file_dirs (subj))
+
+	   (call .mount.image.readwrite_all_files (subj))
+	   (call .mount.image.search_all_dirs (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .root.mounton_file_dirs (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .stordev.readwrite.type (subj))
+
+	   (call .sys.dontaudit_setsched_subj_processes (subj))
+
+	   (call .sys.home.manage_file_dirs (subj))
+	   (call .sys.home.manage_file_files (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .xattr.mount_fs (subj))
+	   (call .xattr.unmount_fs (subj))
+
+	   (optional systemddissect_systemdnspawn
+		     (call .systemd.nspawn.container.obj.manage_all_dirs (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_files
+			   (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_lnk_files
+			   (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-dissect" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file dir "*")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.user.tmp.base_template))))

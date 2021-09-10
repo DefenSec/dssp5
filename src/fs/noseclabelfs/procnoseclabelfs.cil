@@ -8,6 +8,9 @@
 
        (genfscon "proc" "/" fs_context)
 
+       (macro dontaudit_setattr_fs_dirs ((type ARG1))
+	      (dontaudit ARG1 fs (dir (setattr))))
+
        (blockinherit .fs.macro_template_lnk_files)
        (blockinherit .noseclabelfs.template)
 

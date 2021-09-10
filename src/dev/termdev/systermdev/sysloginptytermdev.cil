@@ -23,6 +23,9 @@
 	   (call .loginptytermdev.all_type_change
 		 (ARG1 ptytermdev)))
 
+    (macro open_ptytermdev_chr_files ((type ARG1))
+	   (allow ARG1 ptytermdev (chr_file (open))))
+
     (macro setattr_ptytermdev_chr_files ((type ARG1))
 	   (allow ARG1 ptytermdev (chr_file (setattr))))
 

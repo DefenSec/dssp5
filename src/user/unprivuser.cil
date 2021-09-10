@@ -145,6 +145,23 @@
     (optional unprivuser_opensshsftpserver
 	      (call .openssh.sftpserver.role (role)))
 
+    (optional unprivuser_systemddissect
+	      (call .systemd.dissect.role (role))
+	      (call .systemd.dissect.tmp.manage_file_dirs (subj))
+	      (call .systemd.dissect.tmp.relabel_file_dirs (subj)))
+
+    (optional unprivuser_systemdmachine
+	      ;; sd-pam in shell .host
+	      (call .sys.dontaudit_signal_subj_processes (subj))
+
+	      (call .systemd.machine.ptytermdev_type_change (subj ptytermdev)))
+
+    (optional unprivuser_systemdmachinectl
+	      (call .systemd.machinectl.role (role)))
+
+    (optional unprivuser_systemdportablectl
+	      (call .systemd.portablectl.role (role)))
+
     (optional unprivuser_usermailfile
 	      (call mail.manage_file_pattern.type (subj))
 	      (call mail.map_file_files (subj))

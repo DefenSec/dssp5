@@ -27,6 +27,9 @@
 
        (call .systemd.udev.run.read_file_pattern.type (subj))
 
+       (optional devicemapper_systemdnspawn
+		 (call .systemd.nspawn.readwrite_subj_semaphores (subj)))
+
        (block cryptsetup
 
 	      (block run

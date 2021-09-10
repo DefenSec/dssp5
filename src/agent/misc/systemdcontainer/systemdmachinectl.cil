@@ -1,0 +1,114 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (call .systemd.machinectl.use_subj_fds (subj))
+
+    (call .user.home.readwriteinherited_file_files (subj)))
+
+(in systemd
+
+    (block machinectl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (process (setrlimit)))
+	   (allow subj self create_udp_socket)
+	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.askpassword.client.type (subj))
+
+	   (call systemd.catalog.state.list_file_dirs (subj))
+	   (call systemd.catalog.state.map_file_files (subj))
+	   (call systemd.catalog.state.read_file_files (subj))
+
+	   (call systemd.import.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.journal.log.map_file_pattern.type (subj))
+	   (call systemd.journal.log.read_file_pattern.type (subj))
+
+	   (call systemd.machine.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call systemd.nspawn.container.subj.read_all_states (subj))
+	   (call systemd.nspawn.container.unit.start_all_services (subj))
+	   (call systemd.nspawn.container.unit.status_all_services (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .machineid.read_file_files (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .ptmx.readwriteinherited_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .sys.tmp.open_file_files (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+	   (call .tmp.search_file_pattern.type (subj))
+
+	   (call .user.home.create_file_files (subj))
+	   (call .user.home.readwrite_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional systemdmachinectl_emacs
+		     (call .user.dontaudit_open_subj_fifo_files (subj)))
+
+	   (optional systemdmachinectl_opensshclient
+		     (call .openssh.client.subj_type_transition (subj)))
+
+	   (optional systemdmachinectl_polkit
+		     (call .polkit.ttyagent.subj_type_transition (subj)))
+
+	   (optional systemdmachinectl_unprivuser
+		     (call .user.exec_subj_type_transition (subj))
+		     (call .user.signal_subj_processes (subj)))
+
+	   (optional systemdmachinectl_usertermdev
+		     (call .user.termdev.open_all_chr_files (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/machinectl" file file_context))))
+
+(in systemd.import
+
+    (call systemd.machinectl.sendmsg_subj_dbus.type (subj))
+    (call systemd.machinectl.use_subj_fds (subj))
+
+    (call .user.home.setattr_file_files (subj))
+    (call .user.home.readwriteinherited_file_files (subj)))

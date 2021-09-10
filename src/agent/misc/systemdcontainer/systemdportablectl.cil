@@ -1,0 +1,60 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block portablectl
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.askpassword.client.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call systemd.portable.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .mount.image.getattr_all_files (subj))
+	   (call .mount.image.search_all_dirs (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+
+	   (optional systemdportablectl_opensshclient
+		     (call .openssh.client.subj_type_transition (subj)))
+
+	   (optional systemdportablectl_polkit
+		     (call .polkit.ttyagent.subj_type_transition (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/portablectl" file file_context))))
