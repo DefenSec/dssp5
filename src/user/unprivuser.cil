@@ -83,6 +83,13 @@
 
     (call .systemd.askpassword.client.role (role))
 
+    (call .systemd.journalctl.role (role))
+    (call .systemd.journalctl.tmp.manage_file_dirs (subj))
+    (call .systemd.journalctl.tmp.manage_file_files (subj))
+    (call .systemd.journalctl.tmp.map_file_files (subj))
+    (call .systemd.journalctl.tmp.relabel_file_dirs (subj))
+    (call .systemd.journalctl.tmp.relabel_file_files (subj))
+
     (call .systemd.stdiobridge.role (role))
 
     (call .systemd.systemctl.noatsecure_subj_processes (subj))
