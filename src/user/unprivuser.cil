@@ -115,9 +115,6 @@
     (optional unprivuser_mount
 	      (call .mount.role (role)))
 
-    (optional unprivuser_ping
-	      (call .ping.role (role)))
-
     (optional unprivuser_opensshclient
 	      (call .openssh.add.role (role))
 	      (call .openssh.add.tmp.manage_file_files (subj))
@@ -144,6 +141,13 @@
 
     (optional unprivuser_opensshsftpserver
 	      (call .openssh.sftpserver.role (role)))
+
+    (optional unprivuser_ping
+	      (call .ping.role (role)))
+
+    (optional unprivuser_polkit
+	      (call .polkit.check.role (role))
+	      (call .polkit.ttyagent.role (role)))
 
     (optional unprivuser_systemddissect
 	      (call .systemd.dissect.role (role))
