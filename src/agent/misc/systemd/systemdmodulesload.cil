@@ -62,12 +62,17 @@
 
 	   (block conf
 
+		  (filecon "/etc/modules" file file_context)
+		  (filecon "/etc/modules\..*" file file_context)
+
 		  (filecon "/etc/modules-load\.d" dir file_context)
 		  (filecon "/etc/modules-load\.d/.*" any file_context)
 
 		  (macro conf_file_type_transition_file ((type ARG1))
 			 (call .conf.file_type_transition
-			       (ARG1 file dir "modules-load.d")))
+			       (ARG1 file dir "modules-load.d"))
+			 (call .conf.file_type_transition
+			       (ARG1 file file "modules")))
 
 		  (blockinherit .file.conf.template))
 
