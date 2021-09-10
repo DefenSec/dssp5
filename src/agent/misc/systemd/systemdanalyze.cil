@@ -8,7 +8,7 @@
 	   (blockinherit .dbus.client.macro_template)
 	   (blockinherit .hybrid.agent.template)
 
-	   (allow subj self (capability (sys_rawio)))
+	   (allow subj self (capability (sys_admin sys_rawio)))
 	   (allow subj self (capability2 (bpf perfmon)))
 	   (allow subj self (bpf (prog_load prog_run)))
 	   (allow subj self create_netlink_kobject_uevent_socket)
@@ -41,6 +41,8 @@
 
 	   (call systemd.coredump.data.list_file_dirs (subj))
 	   (call systemd.coredump.data.read_file_files (subj))
+
+	   (call systemd.data.search_file_dirs (subj))
 
 	   (call systemd.exec.execute_file_files (subj))
 
@@ -219,6 +221,10 @@
 	   (call .zram.read_sysfile_files (subj))
 	   (call .zram.read_sysfile_lnk_files (subj))
 	   (call .zram.search_sysfile_dirs (subj))
+
+	   ;; for /usr/lib/systemd//user-environment-generators/90gpg-agent
+	   (optional systemdanalyze_gnupg
+		     (call .gnupg.subj_type_transition (subj)))
 
 	   (optional systemdanalyze_groffconffile
 		     (call .groff.conf.list_file_dirs (subj))
