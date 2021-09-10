@@ -1,0 +1,32 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.pstore
+
+    (blockinherit .sys.agent.template)
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call run.list_file_dirs (subj))
+    (call run.read_file_files (subj))
+
+    (call state.manage_file_files (subj))
+    (call state.readwrite_file_dirs (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-pstore" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-pstore\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))

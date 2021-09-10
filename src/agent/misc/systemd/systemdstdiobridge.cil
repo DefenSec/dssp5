@@ -1,0 +1,51 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block stdiobridge
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self create_unix_stream_socket)
+
+	   (call systemd.hostname.sendmsg_subj_dbus.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call systemd.network.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.resolve.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.timedate.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.timesync.sendmsg_subj_dbus.type (subj))
+
+	   (call systemd.unit.run.control_file_services (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .file.unit.control_all_services (subj))
+
+	   (call .fstab.status_file_services (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .sys.control_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_self (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-stdio-bridge" file file_context))))

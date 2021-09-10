@@ -1,0 +1,72 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block locale
+
+	   (blockinherit .dbus.nameclient.template)
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self create_unix_stream_socket)
+
+	   (call systemd.logparsenv.type (subj))
+	   (call systemd.notify.type (subj))
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .conf.deletename_file_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.conf.manage_file_files (subj))
+	   (call .locale.conf.conf_file_type_transition_file (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .sys.reload_system (subj))
+	   (call .sys.start_system (subj))
+
+	   (call .x11.conf.conf_file_type_transition_file (subj))
+	   (call .x11.conf.manage_file_dirs (subj))
+	   (call .x11.conf.manage_file_files (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional systemdlocale_polkit
+		     (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-localed" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-localed\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template)
+
+		  (call .dbus.activated.unit.type (file)))))

@@ -55,18 +55,20 @@
 
        (call .user.run.search_file_pattern.type (subj))
 
-       (call .user.termdev.readwrite_all_chr_files (subj))
-       (call .user.termdev.relabel_all_chr_files (subj))
-       (call .user.termdev.setattr_all_chr_files (subj))
-
-       (call .user.unpriv.create_all_keyrings (subj))
-       (call .user.unpriv.rlimitinh_all_processes (subj))
-       (call .user.unpriv.signal_all_processes (subj))
-       (call .user.unpriv.signull_all_processes (subj))
-       (call .user.unpriv.transition_all_processes (subj))
-       (call .user.unpriv.write_all_keyrings (subj))
-
        (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional login_unprivuser
+		 (call .user.unpriv.create_all_keyrings (subj))
+		 (call .user.unpriv.rlimitinh_all_processes (subj))
+		 (call .user.unpriv.signal_all_processes (subj))
+		 (call .user.unpriv.signull_all_processes (subj))
+		 (call .user.unpriv.transition_all_processes (subj))
+		 (call .user.unpriv.write_all_keyrings (subj)))
+
+       (optional login_usertermdev
+		 (call .user.termdev.readwrite_all_chr_files (subj))
+		 (call .user.termdev.relabel_all_chr_files (subj))
+		 (call .user.termdev.setattr_all_chr_files (subj)))
 
        (block exec
 

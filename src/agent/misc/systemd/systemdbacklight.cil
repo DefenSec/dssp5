@@ -1,0 +1,55 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.backlight
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self create_unix_dgram_socket)
+
+    (call state.manage_file_files (subj))
+    (call state.readwrite_file_dirs (subj))
+
+    (call systemd.logparsenv.type (subj))
+
+    (call systemd.state.search_file_pattern.type (subj))
+
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call systemd.udev.run.read_file_pattern.type (subj))
+
+    (call .bus.list_sysfile_dirs (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .class.list_sysfile_dirs (subj))
+    (call .class.read_sysfile_lnk_files (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .devices.readwrite_sysfile_files (subj))
+    (call .devices.traverse_sysfile_pattern.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-backlight" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-backlight.*@\.service.*"
+		    file file_context)
+
+	   (blockinherit .file.unit.template)))

@@ -26,8 +26,6 @@
 
 	   (call .media.search_file_dirs (subj))
 
-	   (call .media.home.traverse_file_pattern.type (subj))
-
 	   (call .nfs.getattr_fs_pattern.type (subj))
 	   (call .nfs.manage_fs_pattern.type (subj))
 
@@ -41,6 +39,9 @@
 	   (call .user.home.manage_file_files (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional opensshsftpserver_mediahomefile
+		     (call .media.home.traverse_file_pattern.type (subj)))
 
 	   (optional opensshsftpserver_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
@@ -60,11 +61,3 @@
 (in openssh.server
 
     (call openssh.sftpserver.exec.getattr_file_files (subj)))
-
-(in user
-
-    (call .openssh.sftpserver.role (role)))
-
-(in wheel
-
-    (call .openssh.sftpserver.role (role)))
