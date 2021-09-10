@@ -1,0 +1,181 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.sysusers.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.sysusers.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.sysusers.run.run_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block sysusers
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self
+		  (capability (dac_override dac_read_search sys_admin
+					    sys_resource)))
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_netlink_kobject_uevent_socket)
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call run.list_file_dirs (subj))
+	   (call run.read_file_files (subj))
+
+	   (call tmp.manage_file_dirs (subj))
+	   (call tmp.mounton_file_dirs (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call systemd.dynamicuser.type (subj))
+	   (call systemd.logparsenv.type (subj))
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call .bus.search_sysfile_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .conf.deletename_file_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dev.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_pattern.type (subj))
+
+	   (call .file.auth.write.type (subj))
+
+	   (call .fsck.subj_type_transition (subj))
+
+	   (call .ibac.objchangesys.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .logindefs.read_file_files (subj))
+
+	   (call .loop.readwrite_stordev_blk_files (subj))
+
+	   (call .loopcontrol.readwrite_nodedev_chr_files (subj))
+
+	   (call .mount.image.readwrite_all_files (subj))
+	   (call .mount.image.search_all_dirs (subj))
+
+	   (call .nss.linked.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .passwd.manage_file_files (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .pwdlock.conf_file_type_transition_file (subj "*"))
+	   (call .pwdlock.manage_file_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbac.objchangesys.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .root.mounton_file_dirs (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .shadow.manage_file_files (subj))
+	   (call .shadow.read.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .stordev.readwrite.type (subj))
+
+	   (call .sys.dontaudit_setsched_subj_processes (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+	   (call .xattr.mount_fs (subj))
+	   (call .xattr.unmount_fs (subj))
+
+	   (optional systemdsysusers_systemdnspawn
+		     (call .systemd.nspawn.container.obj.manage_all_dirs
+			   (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_files
+			   (subj))
+		     (call .systemd.nspawn.container.obj.manage_all_lnk_files
+			   (subj)))
+
+	   (block conf
+
+		  (filecon "/etc/sysusers\.d" dir file_context)
+		  (filecon "/etc/sysusers\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "sysusers.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/sysusers\.d" dir file_context)
+		  (filecon "/usr/lib/sysusers\.d/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "sysusers.d")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-sysusers" file file_context))
+
+	   (block run
+
+		  (filecon "/run/sysusers\.d" dir file_context)
+		  (filecon "/run/sysusers\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "sysusers.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file dir "*")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.tmp.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-sysusers\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template))))
