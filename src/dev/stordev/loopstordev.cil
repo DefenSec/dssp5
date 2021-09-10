@@ -5,5 +5,92 @@
 
        (filecon "/dev/loop.+" block stordev_context)
 
+       (macro dev_file_type_transition_stordev ((type ARG1))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p1"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p2"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p3"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p4"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p5"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p6"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p7"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p8"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop0p9"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p1"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p2"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p3"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p4"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p5"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p6"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p7"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p8"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop1p9"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p1"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p2"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p3"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p4"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p5"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p6"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p7"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p8"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop2p9"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p1"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p2"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p3"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p4"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p5"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p6"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p7"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p8"))
+	      (call .dev.file_type_transition
+		    (ARG1 stordev blk_file "loop3p9")))
+
        (blockinherit .stordev.base_template)
        (blockinherit .stordev.macro_template_blk_files))
+
+(in sys
+
+    ;; udev is not quick enough with labeling
+    (call .loop.dev_file_type_transition_stordev (subj)))

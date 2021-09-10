@@ -69,6 +69,7 @@
 	   (call .stordev.readwrite.type (subj))
 
 	   (call .sys.dontaudit_setsched_subj_processes (subj))
+	   (call .sys.modulerequest_subj_system (subj))
 
 	   (call .sys.home.manage_file_dirs (subj))
 	   (call .sys.home.manage_file_files (subj))
