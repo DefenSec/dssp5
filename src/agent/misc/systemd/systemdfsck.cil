@@ -54,6 +54,9 @@
     (allow subj self create_unix_dgram_socket)
     (allow subj self create_unix_stream_socket)
 
+    (call run.manage_file_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
     (call systemd.fsckd.unix_stream_connect (subj))
 
     (call systemd.logparsenv.type (subj))
@@ -64,9 +67,6 @@
 ;;    (call systemd.quotacheck.run.systemd_run_file_type_transition_file (subj))
 
     (call systemd.udev.run.read_file_pattern.type (subj))
-
-    (call run.manage_file_files (subj))
-    (call run.systemd_run_file_type_transition_file (subj))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
