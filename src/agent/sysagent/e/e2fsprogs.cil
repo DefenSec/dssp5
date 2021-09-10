@@ -149,10 +149,9 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
-;; TODO
-;;(in systemd.journalctl
+(in systemd.journalctl
 
-;;    (call .e2fsprogs.subj_type_transition (subj)))
+    (call .e2fsprogs.subj_type_transition (subj)))
 
 (in systemd.machineidsetup
 
