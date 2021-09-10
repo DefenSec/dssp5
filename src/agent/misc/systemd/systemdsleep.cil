@@ -1,0 +1,83 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in exec
+
+    (filecon "/usr/lib/systemd/system-sleep/.*" file file_context))
+
+(in systemd.sleep
+
+    (blockinherit .dbus.client.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (sys_resource)))
+    (allow subj self create_unix_dgram_socket)
+    (allow subj self create_unix_stream_socket)
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call run.list_file_dirs (subj))
+    (call run.read_file_files (subj))
+
+    (call systemd.logparsenv.type (subj))
+
+    (call systemd.conf.search_file_pattern.type (subj))
+
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dev.list_file_pattern.type (subj))
+
+    (call .exec.execute_file_files (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .power.write_sysfile_files (subj))
+    (call .power.search_sysfile_dirs (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_nodedev_chr_files (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .selinux.linked.type (subj))
+
+    (call .shell.exec.mapexecute_file_files (subj))
+    (call .shell.exec.read_file_files (subj))
+
+    (call .stordev.getattr_all_blk_files (subj))
+    (call .stordev.getattr_all_chr_files (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-sleep" file file_context))
+
+    (block unit
+
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-hybrid-sleep\.service.*" file
+	    file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-hibernate\.service.*" file
+	    file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-suspend\.service.*" file
+	    file_context)
+	   (filecon
+	    "/usr/lib/systemd/system/systemd-suspend-then-hibernate\.service.*"
+	    file file_context)
+
+	   (blockinherit .file.unit.template)))
