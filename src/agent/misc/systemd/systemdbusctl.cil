@@ -1,0 +1,79 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block busctl
+
+	   (blockinherit .dbus.client.macro_template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (call systemd.pager.type (subj))
+
+	   (call systemd.askpassword.client.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call systemd.unit.run.status_file_services (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .dbus.client.sendmsg_all_dbus.type (subj))
+	   (call .dbus.client.type (subj))
+
+	   (call .file.unit.status_all_services (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .fstab.status_file_services (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .subj.common.read_all_states (subj))
+	   (call .subj.dontaudit_read_all_states (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.start_system (subj))
+	   (call .sys.status_self (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .tmp.getattr_fs_pattern.type (subj))
+
+	   (optional systemdbusctl_opensshclient
+		     (call .openssh.client.subj_type_transition (subj)))
+
+	   (optional systemdbusctl_polkit
+		     (call .polkit.ttyagent.subj_type_transition (subj)))
+
+	   (optional systemdbusctl_userdbus
+		     (call .user.dbus.client.sendmsg_all_dbus.type (subj))
+		     (call .user.dbus.client.type (subj)))
+
+	   (optional systemdbusctl_usersystemd
+		     (call .user.systemd.home.conf.status_file_services (subj))
+		     (call .user.systemd.reload_system (subj))
+		     (call .user.systemd.start_system (subj))
+		     (call .user.systemd.status_self (subj))
+		     (call .user.systemd.status_system (subj))
+		     (call .user.systemd.unit.run.status_file_services (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/busctl" file file_context))))

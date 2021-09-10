@@ -1,0 +1,59 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block cg
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (cap_userns (sys_ptrace)))
+	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call systemd.pager.type (subj))
+	   (call systemd.private.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+	   (call .cgroup.list_fs_dirs (subj))
+	   (call .cgroup.read_fs_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .loadavg.read_procfile_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .meminfo.read_procfile_files (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .stat.read_procfile_files (subj))
+
+	   (call .subj.common.read_all_states (subj))
+	   (call .subj.dontaudit_read_all_states (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+
+	   (call .user.slice.list_cgroupfile_dirs (subj))
+	   (call .user.slice.read_cgroupfile_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-cgls" file file_context)
+		  (filecon "/usr/bin/systemd-cgtop" file file_context))))

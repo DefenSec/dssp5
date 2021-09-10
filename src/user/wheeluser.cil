@@ -13,11 +13,31 @@
 
        (call .systemd.askpassword.client.role (role))
 
+       (call .systemd.busctl.role (role))
+
+       (call .systemd.cg.role (role))
+
+       (call .systemd.hostnamectl.role (role))
+
+       (call .systemd.inhibit.role (role))
+
        (call .systemd.journalctl.role (role))
+
+       (call .systemd.localectl.role (role))
+
+       (call .systemd.loginctl.role (role))
+
+       (call .systemd.mount.role (role))
+
+       (call .systemd.networkctl.role (role))
+
+       (call .systemd.resolvectl.role (role))
 
        (call .systemd.stdiobridge.role (role))
 
        (call .systemd.systemctl.role (role))
+
+       (call .systemd.timedatectl.role (role))
 
        (optional wheeluser_consolesetupcon
 		 (call .consolesetup.setupcon.role (role)))

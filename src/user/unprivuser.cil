@@ -60,6 +60,9 @@
     (call .ci.manage_fs_pattern.type (subj))
     (call .ci.map_fs_files (subj))
 
+    ;; systemd-resolvectl bash-completion lists /sys/class/net
+    (call .class.list_sysfile_dirs (subj))
+
     (call .dos.getattr_fs_pattern.type (subj))
     (call .dos.manage_fs_pattern.type (subj))
     (call .dos.map_fs_files (subj))
@@ -92,6 +95,15 @@
 
     (call .systemd.askpassword.client.role (role))
 
+    (call .systemd.busctl.noatsecure_subj_processes (subj))
+    (call .systemd.busctl.role (role))
+
+    (call .systemd.cg.role (role))
+
+    (call .systemd.hostnamectl.role (role))
+
+    (call .systemd.inhibit.role (role))
+
     (call .systemd.journalctl.role (role))
     (call .systemd.journalctl.tmp.manage_file_dirs (subj))
     (call .systemd.journalctl.tmp.manage_file_files (subj))
@@ -99,10 +111,23 @@
     (call .systemd.journalctl.tmp.relabel_file_dirs (subj))
     (call .systemd.journalctl.tmp.relabel_file_files (subj))
 
+    (call .systemd.localectl.role (role))
+
+    (call .systemd.loginctl.role (role))
+
+    (call .systemd.mount.noatsecure_subj_processes (subj))
+    (call .systemd.mount.role (role))
+
+    (call .systemd.networkctl.role (role))
+
+    (call .systemd.resolvectl.role (role))
+
     (call .systemd.stdiobridge.role (role))
 
     (call .systemd.systemctl.noatsecure_subj_processes (subj))
     (call .systemd.systemctl.role (role))
+
+    (call .systemd.timedatectl.role (role))
 
     (call .tmp.deletename_file_dirs (subj))
     (call .tmp.deletename_fs_dirs (subj))
