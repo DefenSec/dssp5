@@ -2083,6 +2083,9 @@
 
 	   (typeattribute typeattr)
 
+	   ;; for compat
+	   (allow typeattr self create_netlink_selinux_socket)
+
 	   (call map_fs_files (typeattr))
 	   (call read_fs_files (typeattr))
 	   (call search_fs_pattern.type (typeattr)))

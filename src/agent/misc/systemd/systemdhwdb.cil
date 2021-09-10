@@ -8,7 +8,6 @@
 	   (blockinherit .sys.agent.template)
 
 	   (allow subj self (process (setfscreate)))
-	   (allow subj self create_netlink_selinux_socket)
 	   (allow subj self create_unix_dgram_socket)
 
 	   (call systemd.logparsenv.type (subj))
