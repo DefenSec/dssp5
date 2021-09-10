@@ -1,0 +1,95 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block mount
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+	   (dontaudit subj self (capability (net_admin)))
+
+	   (call systemd.pager.type (subj))
+	   (call systemd.private.type (subj))
+
+	   (call systemd.askpassword.client.type (subj))
+
+	   (call systemd.machines.run.list_file_dirs (subj))
+	   (call systemd.machines.run.read_file_files (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call systemd.unit.run.control_file_services (subj))
+
+	   (call .bus.list_sysfile_dirs (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .class.list_sysfile_dirs (subj))
+	   (call .class.read_sysfile_lnk_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.traverse_sysfile_pattern.type (subj))
+
+	   (call .fsck.subj_type_transition (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .mount.image.getattr_all_files (subj))
+	   (call .mount.image.search_all_dirs (subj))
+	   (call .mount.mountpoint.search_all_dirs (subj))
+	   (call .mount.subj_type_transition (subj))
+
+	   (call .ns.read_fs_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .stordev.getattr_all_blk_files (subj))
+	   (call .stordev.getattr_all_chr_files (subj))
+
+	   (call .sys.read_subj_states (subj))
+	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.start_system (subj))
+	   (call .sys.status_system (subj))
+	   (call .sys.stop_system (subj))
+
+	   (call .tmp.search_fs_dirs (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+	   (call .zram.read_sysfile_files (subj))
+	   (call .zram.read_sysfile_lnk_files (subj))
+	   (call .zram.search_sysfile_dirs (subj))
+
+	   (optional systemdmount_opensshclient
+		     (call .openssh.client.subj_type_transition (subj)))
+
+	   (optional systemdmount_polkit
+		     (call .polkit.ttyagent.subj_type_transition (subj)))
+
+	   (optional systemdmount_usersystemd
+		     (call .user.systemd.private.type (subj))
+		     (call .user.systemd.reload_system (subj))
+		     (call .user.systemd.start_system (subj))
+		     (call .user.systemd.status_system (subj))
+		     (call .user.systemd.stop_system (subj))
+		     (call .user.systemd.unit.run.control_file_services (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/systemd-mount" file file_context))))
