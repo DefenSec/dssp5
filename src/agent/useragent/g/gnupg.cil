@@ -85,6 +85,8 @@
        (call .tmp.deletename_file_dirs (subj))
 
        (call .user.home.manage_file_files (subj))
+       ;; removing locks
+       (call .user.home.deletename_file_dirs (subj))
 
        (call .user.systemd.agent (subj gnupg.exec.file))
 
