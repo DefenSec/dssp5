@@ -57,13 +57,6 @@
 	   (optional systemdlocale_polkit
 		     (call .polkit.sendmsg_subj_dbus.type (subj)))
 
-	   (optional systemdlocale_systemvconsolesetup
-		     (call .systemd.vconsolesetup.conf.conf_file_type_transition_file
-			   (subj))
-		     (call .systemd.vconsolesetup.conf.manage_file_files (subj))
-		     (call .systemd.vconsolesetup.unit.start_file_services
-			   (subj)))
-
 	   (block exec
 
 		  (filecon "/usr/lib/systemd/systemd-localed" file
