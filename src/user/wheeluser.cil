@@ -34,6 +34,10 @@
        (optional wheeluser_ping
 		 (call .ping.role (role)))
 
+       (optional wheeluser_polkit
+		 (call .polkit.check.role (role))
+		 (call .polkit.ttyagent.role (role)))
+
        (optional wheeluser_systemddissect
 		 (call .systemd.dissect.role (role)))
 
