@@ -16,6 +16,9 @@
 	   (call systemd.notify.type (subj))
 	   (call systemd.pager.type (subj))
 
+	   (call systemd.data.read_file_files (subj))
+	   (call systemd.data.search_file_dirs (subj))
+
 	   (call systemd.journal.relay_msgs.type (subj))
 
 	   (call systemd.run.search_file_pattern.type (subj))
@@ -30,6 +33,8 @@
 
 	   (call .locale.conf.manage_file_files (subj))
 	   (call .locale.conf.conf_file_type_transition_file (subj))
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.data.read_file_pattern.type (subj))
 
 	   (call .osrelease.read_sysctlfile_pattern.type (subj))
 
@@ -46,6 +51,7 @@
 	   (call .selinux.mapread_fs_pattern.type (subj))
 
 	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.start_system (subj))
 
 	   (call .x11.conf.conf_file_type_transition_file (subj))
@@ -53,6 +59,10 @@
 	   (call .x11.conf.manage_file_files (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional systemdlocale_consolesetup
+		     (call .consolesetup.conf.manage_file_files (subj))
+		     (call .consolesetup.conf.conf_file_type_transition (subj)))
 
 	   (optional systemdlocale_polkit
 		     (call .polkit.sendmsg_subj_dbus.type (subj)))

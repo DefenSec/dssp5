@@ -46,9 +46,9 @@
     (call systemd.inhibit.run.manage_file_fifo_files (subj))
     (call systemd.inhibit.run.readwrite_file_dirs (subj))
 
-    (call .systemd.journal.relay_msgs.type (subj))
-;; TODO
-;;    (call systemd.loginctl.read_subj_states (subj))
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call systemd.loginctl.read_subj_states (subj))
 
     (call systemd.network.sendmsg_subj_dbus.type (subj))
 
