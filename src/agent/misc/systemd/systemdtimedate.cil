@@ -1,0 +1,85 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block timedate
+
+	   (blockinherit .dbus.nameclient.template)
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (sys_time)))
+	   (allow subj self (process (setfscreate)))
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self create_unix_stream_socket)
+
+	   (call systemd.logparsenv.type (subj))
+	   (call systemd.notify.type (subj))
+
+	   (call systemd.conf.search_file_pattern.type (subj))
+
+	   (call systemd.ntpunits.conf.list_file_dirs (subj))
+	   (call systemd.ntpunits.conf.read_file_files (subj))
+	   (call systemd.ntpunits.data.list_file_dirs (subj))
+	   (call systemd.ntpunits.data.read_file_files (subj))
+	   (call systemd.ntpunits.run.list_file_dirs (subj))
+	   (call systemd.ntpunits.run.read_file_files (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.timesync.unit.control_file_services (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .clock.read_nodedev_chr_files (subj))
+
+	   (call .conf.manage_file_lnk_files (subj))
+	   (call .conf.readwrite_file_dirs (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .hwclock.conf.manage_file_files (subj))
+	   (call .hwclock.conf.conf_file_type_transition_file (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .selinux.file.read_file_pattern.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .sys.reload_system (subj))
+	   (call .sys.sendmsg_subj_dbus.type (subj))
+	   (call .sys.status_system (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional systemdtimedate_polkit
+		     (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-timedated" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-timedated\.service.*" file
+		   file_context)
+
+		  (blockinherit .file.unit.template)
+
+		  (call .dbus.activated.unit.type (file)))))
