@@ -2332,6 +2332,19 @@
 
 	   (call .log.search_file_pattern.type (typeattr))))
 
+(in systemd.machines.run
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .systemd.run.search_file_pattern.type (typeattr))))
+
 (in systemd.resolve.run
 
     (block search_file_pattern

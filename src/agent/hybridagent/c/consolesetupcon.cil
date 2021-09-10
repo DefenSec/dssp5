@@ -75,7 +75,7 @@
 	   (call .tty.open_serialtermdev_chr_files (subj))
 
 	   (optional consolesetupcon_systemdnspawn
-		     (call .systemd.nspawn.contained.subj,read_all_states
+		     (call .systemd.nspawn.container.subj.read_all_states
 			   (subj)))
 
 	   (optional consolesetupcon_usertermdev

@@ -449,6 +449,10 @@
 	   (call .zram.read_sysfile_lnk_files (subj))
 	   (call .zram.search_sysfile_dirs (subj))
 
+	   (optional usersystemd_systemdmachine
+		     (call .systemd.machine.ptytermdev_type_change
+			   (subj ptytermdev)))
+
 	   (block conf
 
 		  (filecon "/etc/systemd/user\.conf" file file_context)

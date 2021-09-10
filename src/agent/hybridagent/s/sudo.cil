@@ -190,6 +190,15 @@
     (optional sudo_opensshserver
 	      (call .openssh.server.unix_stream_connect (subj)))
 
+    (optional sudo_systemdnspawn
+	      ;; sudo -r sys.role runcon -t systemd.nspawn.subj -- \
+	      ;; systemd-nspawn -Z sys.id:sys.role:systemd.nspawn.privcontainer.subj:s0 \
+	      ;; -L sys.id:sys.role:systemd.nspawn.privcontainer.fs:s0 \
+	      ;; --resolv-conf=replace-host -a --volatile=overlay \
+	      ;; -D /var/lib/machines/myprivcontaine --console=pipe cat </etc/virc
+
+	      (call .file.except.readwriteinherited_all_files (subj)))
+
     (block cert
 
 	   (filecon "/etc/ssl/sudo" dir file_context)
