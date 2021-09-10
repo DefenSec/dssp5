@@ -83,6 +83,8 @@
 
     (call .systemd.askpassword.client.role (role))
 
+    (call .systemd.stdiobridge.role (role))
+
     (call .systemd.systemctl.noatsecure_subj_processes (subj))
     (call .systemd.systemctl.role (role))
 
@@ -182,6 +184,7 @@
 	   (call .subj.useinteractivefd.type (typeattr))
 
 	   (call .unixchkpwd.role (roleattr))
+	   (call .unixupdate.role (roleattr))
 
 	   (optional unprivuser_unpriv_opensshserver
 		     (call .openssh.server.ptytermdev_type_change

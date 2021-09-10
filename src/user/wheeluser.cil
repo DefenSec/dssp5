@@ -11,6 +11,8 @@
 
        (call .systemd.askpassword.client.role (role))
 
+       (call .systemd.stdiobridge.role (role))
+
        (call .systemd.systemctl.role (role))
 
        (optional wheeluser_consolesetupcon

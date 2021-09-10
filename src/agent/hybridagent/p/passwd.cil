@@ -30,7 +30,6 @@
 
     (call .systemd.journal.relay_msgs.type (subj))
 
-    (call .unixupdate.role (roleattr))
     (call .unixupdate.subj_type_transition (subj))
 
     (block exec
