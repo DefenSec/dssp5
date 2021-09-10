@@ -1,0 +1,53 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd
+
+    (block remountfs
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (sys_resource)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call systemd.logparsenv.type (subj))
+
+	   (call systemd.journal.relay_msgs.type (subj))
+
+	   (call systemd.run.search_file_pattern.type (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .fstab.read_file_files (subj))
+
+	   (call .mount.subj_type_transition (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-remount-fs" file
+			   file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-remount-fs\.service.*"
+		   file file_context)
+
+		  (blockinherit .file.unit.template))))
