@@ -68,7 +68,7 @@
 
 	   (call systemd.systemctl.exec.execute_file_files (subj))
 
-	   (call systemd.unit.run.search_file_dirs (subj))
+	   (call systemd.unit.run.getattr_dir_pattern.type (subj))
 
 	   (call .apparmor.readwrite_sysfile_files (subj))
 	   (call .apparmor.search_sysfile_dirs (subj))

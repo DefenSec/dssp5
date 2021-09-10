@@ -13,31 +13,30 @@
 
     (call .systemd.nspawn.container.subj.role (role)))
 
-;; TODO
-;;(in systemd.analyze
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
 
-;; TODO
-;;(in systemd.busctl
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
+(in systemd.analyze
 
-;; TODO
-;;(in systemd.cg
-;;
-;;    (allow subj self (capability (sys_admin)))
-;;
-;;    (call systemd.nspawn.container.subj.read_all_states (subj))
-;;    (call systemd.nspawn.container.unit.status_all_services (subj)))
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
+
+
+(in systemd.busctl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
+
+(in systemd.cg
+
+    (allow subj self (capability (sys_admin)))
+
+    (call systemd.nspawn.container.subj.read_all_states (subj))
+    (call systemd.nspawn.container.unit.status_all_services (subj)))
 
 (in systemd.import
 
@@ -51,39 +50,36 @@
     (call systemd.nspawn.container.obj.relabelto_all_files (subj))
     (call systemd.nspawn.container.obj.relabelto_all_lnk_files (subj)))
 
-;; TODO
-;;(in systemd.journalctl
-;;
-;;    (allow subj self
-;;	   (capability (dac_read_search setgid setuid sys_admin sys_chroot)))
-;;    (allow subj self (cap_userns (sys_admin sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.obj.getattr_all_fs (subj))
-;;
-;;    (call systemd.nspawn.container.obj.list_all_dirs (subj))
-;;    (call systemd.nspawn.container.obj.map_all_files (subj))
-;;    (call systemd.nspawn.container.obj.read_all_files (subj))
-;;    (call systemd.nspawn.container.obj.read_all_lnk_files (subj))
+(in systemd.journalctl
 
-;;    (call systemd.nspawn.container.subj.read_all_states (subj)))
+    (allow subj self
+	   (capability (dac_read_search setgid setuid sys_admin sys_chroot)))
+    (allow subj self (cap_userns (sys_admin sys_ptrace)))
 
-;; TODO
-;;(in systemd.localectl
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
+    (call systemd.nspawn.container.obj.getattr_all_fs (subj))
 
-;; TODO
-;;(in systemd.loginctl
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
+    (call systemd.nspawn.container.obj.list_all_dirs (subj))
+    (call systemd.nspawn.container.obj.map_all_files (subj))
+    (call systemd.nspawn.container.obj.read_all_files (subj))
+    (call systemd.nspawn.container.obj.read_all_lnk_files (subj))
+
+    (call systemd.nspawn.container.subj.read_all_states (subj)))
+
+(in systemd.localectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
+
+(in systemd.loginctl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
 
 (in systemd.machinectl
 
@@ -94,14 +90,13 @@
     (call systemd.nspawn.container.client.type (subj))
     (call systemd.nspawn.container.obj.readwriteinherited_all_chr_files (subj)))
 
-;; TODO
-;;(in systemd.mount
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
+(in systemd.mount
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
 
 (in systemd.nspawn
 
@@ -908,11 +903,10 @@
 
     (call systemd.nspawn.container.client.type (subj)))
 
-;; TODO
-;;(in systemd.timedatectl
-;;
-;;    (allow subj self (capability (sys_admin sys_chroot)))
-;;    (allow subj self
-;;	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
-;;
-;;    (call systemd.nspawn.container.client.type (subj)))
+(in systemd.timedatectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))

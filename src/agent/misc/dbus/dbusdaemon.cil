@@ -57,9 +57,18 @@
 
 	  (call systemd.analyze.sendmsg_subj_dbus.type (systemd.hostname.subj)))
 
+(optional systemdhostname_systemdhostnamectl
+
+	  (call systemd.hostnamectl.sendmsg_subj_dbus.type
+		(systemd.hostname.subj)))
+
 (optional systemdlogin_login
 
 	  (call login.sendmsg_subj_dbus.type (systemd.login.subj)))
+
+(optional systemdlogin_systemdloginctl
+
+	  (call systemd.loginctl.sendmsg_subj_dbus.type (systemd.login.subj)))
 
 (optional systemdlogin_opensshserver
 
@@ -74,3 +83,13 @@
 
 	  (call systemd.nspawn.sendmsg_subj_dbus.type
 		(systemd.machine.subj)))
+
+(optional systemdtimedate_systemdtimedatectl
+
+	  (call systemd.timedatectl.sendmsg_subj_dbus.type
+		(systemd.timedate.subj)))
+
+(optional systemdtimesync_systemdtimedatectl
+
+	  (call systemd.timedatectl.sendmsg_subj_dbus.type
+		(systemd.timesync.subj)))

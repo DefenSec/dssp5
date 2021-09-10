@@ -411,7 +411,7 @@
 
 	   (call .systemd.udev.run.read_file_pattern.type (subj))
 
-	   (call .systemd.unit.run.search_file_dirs (subj))
+	   (call .systemd.unit.run.getattr_dir_pattern.type (subj))
 
 	   (call .threadsmax.read_sysctlfile_files (subj))
 

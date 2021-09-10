@@ -76,6 +76,8 @@
     (call users.run.manage_file_files (subj))
     (call users.run.readwrite_file_dirs (subj))
 
+    (call .block.traverse_sysfile_pattern.type (subj))
+
     (call .bus.list_sysfile_dirs (subj))
     (call .bus.read_sysfile_lnk_files (subj))
 
@@ -96,8 +98,9 @@
 
     (call .dev.traverse_sysfile_pattern.type (subj))
 
+    (call .devices.list_sysfile_dirs (subj))
+    (call .devices.read_sysfile_lnk_files (subj))
     (call .devices.readwrite_sysfile_files (subj))
-    (call .devices.traverse_sysfile_pattern.type (subj))
 
     (call .devpts.search_fs_pattern.type (subj))
 
@@ -105,6 +108,9 @@
 
     (call .dri.readwrite_nodedev_pattern.type (subj))
     (call .dri.setattr_nodedev_chr_files (subj))
+
+    (call .efivar.read_fs_files (subj))
+    (call .efivar.search_fs_pattern.type (subj))
 
     (call .event.readwrite_nodedev_chr_files (subj))
     (call .event.setattr_nodedev_chr_files (subj))

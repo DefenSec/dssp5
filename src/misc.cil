@@ -2412,6 +2412,19 @@
 
 	   (call .run.search_file_pattern.type (typeattr))))
 
+(in systemd.unit.run
+
+    (block getattr_dir_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call getattr_file_dirs (typeattr))
+
+	   (call .systemd.run.search_file_pattern.type (typeattr))))
+
 (in terminfo
 
     (block read_file_pattern

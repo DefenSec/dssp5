@@ -75,7 +75,7 @@
     (call .systemd.run.exec.mapexecute_file_files (subj))
     (call .systemd.run.exec.read_file_files (subj))
 
-    (call .systemd.run.search_file_dirs (subj))
+    (call .systemd.unit.run.getattr_dir_pattern.type (subj))
 
     (call .user.agent.exec.auditexecuteaccess_all_files (subj))
     (call .user.agent.type (subj))

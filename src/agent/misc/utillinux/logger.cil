@@ -20,7 +20,7 @@
 
        (call .systemd.journal.relay_msgs.type (subj))
 
-       (call .systemd.unit.run.search_file_dirs (subj))
+       (call .systemd.unit.run.getattr_dir_pattern.type (subj))
 
        ;; grub runs os-prober which runs logger
        (optional logger_grub
