@@ -63,9 +63,6 @@
 
     (call systemd.journal.relay_msgs.type (subj))
 
-;;    (call systemd.quotacheck.run.manage_file_files (subj))
-;;    (call systemd.quotacheck.run.systemd_run_file_type_transition_file (subj))
-
     (call systemd.udev.run.read_file_pattern.type (subj))
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
@@ -96,6 +93,11 @@
     (call .stordev.getattr_all_chr_files (subj))
 
     (call .xattr.getattr_fs_pattern.type (subj))
+
+    (optional systemdfsck_systemdquotacheck
+	      (call systemd.quotacheck.run.manage_file_files (subj))
+	      (call systemd.quotacheck.run.systemd_run_file_type_transition_file
+		    (subj)))
 
     (block exec
 
