@@ -47,8 +47,7 @@
 
     (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
-    (call .cert.read_file_files (subj))
-    (call .cert.traverse_file_pattern.type (subj))
+    (call .cert.read_file_pattern.type (subj))
 
     (call .cgroup.getattr_fs_pattern.type (subj))
 
