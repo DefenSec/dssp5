@@ -81,6 +81,15 @@
 
     (call .sys.termdev.readwriteinherited_all_chr_files (subj))
 
+    (call .systemd.analyze.noatsecure_subj_processes (subj))
+    (call .systemd.analyze.role (role))
+    (call .systemd.analyze.tmp.manage_file_dirs (subj))
+    (call .systemd.analyze.tmp.manage_file_files (subj))
+    (call .systemd.analyze.tmp.relabel_file_dirs (subj))
+    (call .systemd.analyze.tmp.relabel_file_files (subj))
+    (call .systemd.analyze.tmpfs.manage_file_files (subj))
+    (call .systemd.analyze.tmpfs.relabel_file_files (subj))
+
     (call .systemd.askpassword.client.role (role))
 
     (call .systemd.journalctl.role (role))
