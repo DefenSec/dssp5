@@ -145,11 +145,8 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
+;; TODO: this needs to go to systemddissect.cil (its optional)
 ;;(in systemd.dissect
-
-;;    (call .e2fsprogs.subj_type_transition (subj)))
-
-;;(in systemd.firstboot
 
 ;;    (call .e2fsprogs.subj_type_transition (subj)))
 
@@ -157,17 +154,18 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
+;; TODO
 ;;(in systemd.journalctl
 
 ;;    (call .e2fsprogs.subj_type_transition (subj)))
 
-;;(in systemd.machineidsetup
+(in systemd.machineidsetup
 
-;;    (call .e2fsprogs.subj_type_transition (subj)))
+    (call .e2fsprogs.subj_type_transition (subj)))
 
-;;(in systemd.sysusers
+(in systemd.sysusers
 
-;;    (call .e2fsprogs.subj_type_transition (subj)))
+    (call .e2fsprogs.subj_type_transition (subj)))
 
 (in systemd.tmpfiles
 
