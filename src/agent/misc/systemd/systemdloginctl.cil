@@ -8,6 +8,8 @@
 	   (blockinherit .dbus.client.template)
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self (process (setrlimit)))
+
 	   (call systemd.pager.type (subj))
 
 	   (call systemd.askpassword.client.type (subj))
@@ -21,6 +23,8 @@
 	   (call systemd.machines.run.read_file_files (subj))
 
 	   (call systemd.udev.run.read_file_pattern.type (subj))
+
+	   (call systemd.unit.run.getattr_dir_pattern.type (subj))
 
 	   (call .bus.search_sysfile_pattern.type (subj))
 

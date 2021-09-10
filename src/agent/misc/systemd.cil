@@ -1433,6 +1433,9 @@
 		     (filecon "/run/systemd/transient" dir file_context)
 		     (filecon "/run/systemd/transient/.*" any file_context)
 
+		     (macro getattr_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (getattr))))
+
 		     (macro systemd_run_file_type_transition_file
 			    ((type ARG1)(class ARG2)(name ARG3))
 			    (call .systemd.run.file_type_transition
