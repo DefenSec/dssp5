@@ -126,6 +126,8 @@
 
 	      (call .systemd.run.search_file_dirs (subj))
 
+	      (call .systemd.timesync.exec.auditexecuteaccess_file_files (subj))
+
 	      (call .systemd.unit.run.search_file_dirs (subj))
 
 	      (block exec

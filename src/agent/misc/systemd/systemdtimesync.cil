@@ -74,7 +74,10 @@
 
     (block exec
 
-	   (filecon "/usr/lib/systemd/systemd-timesyncd" file file_context))
+	   (filecon "/usr/lib/systemd/systemd-timesyncd" file file_context)
+
+	   (macro auditexecuteaccess_file_files ((type ARG1))
+		  (allow ARG1 file (file (execute getattr)))))
 
     (block unit
 
