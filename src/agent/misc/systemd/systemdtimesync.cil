@@ -1,0 +1,84 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in systemd.timesync
+
+    (blockinherit .dbus.nameclient.template)
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (sys_time)))
+    (allow subj self (process (setfscreate)))
+    (allow subj self create_unix_dgram_socket)
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.systemd_run_file_type_transition_file (subj))
+
+    (call state.manage_file_files (subj))
+    (call state.readwrite_file_dirs (subj))
+
+    (call systemd.logparsenv.type (subj))
+    (call systemd.notify.type (subj))
+
+    (call systemd.journal.relay_msgs.type (subj))
+
+    (call systemd.netif.run.list_file_dirs (subj))
+    (call systemd.netif.run.read_file_files (subj))
+    (call systemd.netif.run.watch_file_dirs (subj))
+
+    (call systemd.state.search_file_pattern.type (subj))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cgroup.getattr_fs_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .dbus.run.listinherited_file_dirs (subj))
+    (call .dbus.run.readinherited_file_sock_files (subj))
+    (call .dbus.run.watch_file_dirs (subj))
+    (call .dbus.run.watch_file_sock_files (subj))
+
+    (call .hwclock.conf.read_file_files (subj))
+
+    (call .nss.hosts.type (subj))
+    (call .nss.passwdgroup.type (subj))
+
+    (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+    (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_sysctlfile_pattern.type (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .root.list_file_dirs (subj))
+    (call .root.watch_file_dirs (subj))
+
+    (call .run.list_file_dirs (subj))
+    (call .run.watch_file_dirs (subj))
+
+    (call .selinux.file.read_file_pattern.type (subj))
+    (call .selinux.mapread_fs_pattern.type (subj))
+
+    (call .xattr.getattr_fs_pattern.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/lib/systemd/systemd-timesyncd" file file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/systemd-timesyncd\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))
