@@ -1,0 +1,74 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .systemd.binfmt.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.binfmt.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.binfmt.run.run_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block binfmt
+
+	   (blockinherit .sys.agent.template)
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
+	   (call run.list_file_dirs (subj))
+	   (call run.read_file_files (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block conf
+
+		  (filecon "/etc/binfmt\.d" dir file_context)
+		  (filecon "/etc/binfmt\.d/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "binfmt.d")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/lib/binfmt\.d" dir file_context)
+		  (filecon "/usr/lib/binfmt\.d/.*" any file_context)
+
+		  (macro lib_file_type_transition_file ((type ARG1))
+			 (call .lib.file_type_transition
+			       (ARG1 file dir "binfmt.d")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/lib/systemd/systemd-binfmt" file file_context))
+
+	   (block run
+
+		  (filecon "/run/binfmt\.d" dir file_context)
+		  (filecon "/run/binfmt\.d/.*" any file_context)
+
+		  (macro run_file_type_transition_file ((type ARG1))
+			 (call .run.file_type_transition
+			       (ARG1 file dir "binfmt.d")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/systemd-binfmt\.service.*"
+			   file file_context)
+
+		  (blockinherit .file.unit.template))))
