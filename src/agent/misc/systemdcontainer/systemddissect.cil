@@ -78,6 +78,9 @@
 	   (call .xattr.mount_fs (subj))
 	   (call .xattr.unmount_fs (subj))
 
+	   (optional systemddissect_e2fsprogs
+		     (call .e2fsprogs.subj_type_transition (subj)))
+
 	   (optional systemddissect_systemdnspawn
 		     (call .systemd.nspawn.container.obj.manage_all_dirs (subj))
 		     (call .systemd.nspawn.container.obj.manage_all_files

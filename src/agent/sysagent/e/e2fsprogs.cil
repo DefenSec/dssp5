@@ -145,11 +145,6 @@
 
     (call .e2fsprogs.subj_type_transition (subj)))
 
-;; TODO: this needs to go to systemddissect.cil (its optional)
-;;(in systemd.dissect
-
-;;    (call .e2fsprogs.subj_type_transition (subj)))
-
 (in systemd.fsck
 
     (call .e2fsprogs.subj_type_transition (subj)))
