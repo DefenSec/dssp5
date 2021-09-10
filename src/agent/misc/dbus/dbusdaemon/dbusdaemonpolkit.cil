@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;; HACK for dbus-daemon method_return (not needed if you use dbus-broker)
+;; I would have moved this to dbusdaemon.cil, but I am not allowed to reference
+;; in-statements in optional blocks
+(in polkit
+
+    (block sendmsg_subj_dbus
+
+	   (allow subj typeattr (dbus (send_msg)))))
