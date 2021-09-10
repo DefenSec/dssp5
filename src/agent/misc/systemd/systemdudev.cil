@@ -241,6 +241,8 @@
 		  (filecon "/usr/lib/udev" dir file_context)
 		  (filecon "/usr/lib/udev/.*" any file_context)
 
+		  (filecon "/usr/lib/hwdb\.bin" file file_context)
+
 		  (macro lib_file_type_transition_file ((type ARG1))
 			 (call .lib.file_type_transition
 			       (ARG1 file dir "udev")))

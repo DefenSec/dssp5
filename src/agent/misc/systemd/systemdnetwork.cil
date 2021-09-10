@@ -49,6 +49,10 @@
     (call systemd.resolve.run.read_file_files (subj))
     (call systemd.resolve.run.search_file_pattern.type (subj))
 
+    (call systemd.udev.data.map_file_files (subj))
+    (call systemd.udev.data.read_file_files (subj))
+    (call systemd.udev.data.search_file_dirs (subj))
+
     (call systemd.udev.run.read_file_pattern.type (subj))
 
     (call .bus.search_sysfile_pattern.type (subj))
