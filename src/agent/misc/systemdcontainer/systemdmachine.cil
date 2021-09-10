@@ -84,6 +84,7 @@
 	   (call tmp.tmp_file_type_transition_file (subj))
 
 	   (call systemd.logparsenv.type (subj))
+	   (call systemd.notify.type (subj))
 
 	   (call systemd.hostname.conf.read_file_files (subj))
 
