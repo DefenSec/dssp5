@@ -40,13 +40,19 @@
 	      (filecon "/etc/default/keyboard" file file_context)
 	      (filecon "/etc/default/keyboard\..*" file file_context)
 
+	      ;; makes systemd-localed happy
+	      (filecon "/etc/vconsole\.conf" file file_context)
+	      (filecon "/etc/vconsole\.conf\..*" file file_context)
+
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "console-setup"))
 		     (call .conf.file_type_transition
 			   (ARG1 file file "console-setup"))
 		     (call .conf.file_type_transition
-			   (ARG1 file file "keyboard")))
+			   (ARG1 file file "keyboard"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "vconsole.conf")))
 
 	      (blockinherit .file.conf.template))
 
