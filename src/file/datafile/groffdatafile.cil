@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block groff
+
+       (block data
+
+	      (filecon "/usr/share/groff" dir file_context)
+	      (filecon "/usr/share/groff/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "groff")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .groff.data.data_file_type_transition_file (typeattr)))

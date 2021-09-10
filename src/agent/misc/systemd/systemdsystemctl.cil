@@ -89,9 +89,6 @@
 
 	   (call .rbac.objchangesys.type (subj))
 
-	   (call .rbacsep.constrained.type (subj))
-	   (call .rbacsep.readstatesource.type (subj))
-
 	   (call .selinux.file.read_file_pattern.type (subj))
 	   (call .selinux.mapread_fs_pattern.type (subj))
 
@@ -105,37 +102,14 @@
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.status_self (subj))
 
+	   (call .sys.user.connectto_subj_unix_stream_sockets (subj))
+
 	   (call .tmp.getattr_fs_pattern.type (subj))
-
-	   (call .user.dbus.client.type (subj))
-
-	   (call .user.home.conf.search_file_pattern.type (subj))
 
 	   (call .user.run.search_file_pattern.type (subj))
 
 	   (call .user.slice.list_cgroupfile_dirs (subj))
 	   (call .user.slice.read_cgroupfile_files (subj))
-
-	   (call .user.systemd.agent (subj exec.file))
-	   (call .user.systemd.control_system (subj))
-	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
-	   (call .user.systemd.service.noatsecure.type (subj))
-	   (call .user.systemd.private.type (subj))
-
-	   (call .user.systemd.home.conf.control_file_services (subj))
-	   (call .user.systemd.home.conf.manage_file_dirs (subj))
-	   (call .user.systemd.home.conf.manage_file_files (subj))
-	   (call .user.systemd.home.conf.manage_file_lnk_files (subj))
-
-	   (call .user.systemd.run.addname_file_dirs (subj))
-
-	   (call .user.systemd.unit.manage_file_dirs (subj))
-	   (call .user.systemd.unit.manage_file_lnk_files (subj))
-
-	   (call .user.systemd.unit.run.control_file_services (subj))
-	   (call .user.systemd.unit.run.manage_file_dirs (subj))
-	   (call .user.systemd.unit.run.manage_file_files (subj))
-	   (call .user.systemd.unit.run.manage_file_lnk_files (subj))
 
 	   (call .utmp.run.read_file_files (subj))
 
@@ -146,6 +120,30 @@
 
 	   (optional systemdsystemctl_polkit
 		     (call .polkit.ttyagent.subj_type_transition (subj)))
+
+	   (optional systemdsystemctl_userdbus
+		     (call .user.dbus.client.type (subj)))
+
+	   (optional systemdsystemctl_userhomeconffile
+		     (call .user.home.conf.search_file_pattern.type (subj)))
+
+	   (optional systemdsystemctl_usersystemd
+		     (call .user.systemd.agent (subj exec.file))
+		     (call .user.systemd.control_system (subj))
+		     (call .user.systemd.home.conf.control_file_services (subj))
+		     (call .user.systemd.home.conf.manage_file_dirs (subj))
+		     (call .user.systemd.home.conf.manage_file_files (subj))
+		     (call .user.systemd.home.conf.manage_file_lnk_files (subj))
+		     (call .user.systemd.private.type (subj))
+		     (call .user.systemd.run.addname_file_dirs (subj))
+		     (call .user.systemd.sendmsg_subj_dbus.type (subj))
+		     (call .user.systemd.service.noatsecure.type (subj))
+		     (call .user.systemd.unit.manage_file_dirs (subj))
+		     (call .user.systemd.unit.manage_file_lnk_files (subj))
+		     (call .user.systemd.unit.run.control_file_services (subj))
+		     (call .user.systemd.unit.run.manage_file_dirs (subj))
+		     (call .user.systemd.unit.run.manage_file_files (subj))
+		     (call .user.systemd.unit.run.manage_file_lnk_files (subj)))
 
 	   (block exec
 
