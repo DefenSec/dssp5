@@ -241,7 +241,7 @@
 		  (filecon "/usr/lib/udev" dir file_context)
 		  (filecon "/usr/lib/udev/.*" any file_context)
 
-		  (filecon "/usr/lib/hwdb\.bin" file file_context)
+		  (filecon "/usr/lib/udev/hwdb\.bin" file file_context)
 
 		  (macro lib_file_type_transition_file ((type ARG1))
 			 (call .lib.file_type_transition
@@ -262,7 +262,13 @@
 
 		  (block exec
 
-			 (filecon "/usr/lib/udev/[^/]*" file file_context)
+			 (filecon "/usr/lib/udev/ata_id" file file_context)
+			 (filecon "/usr/lib/udev/cdrom_id" file file_context)
+			 (filecon "/usr/lib/udev/fido_id" file file_context)
+			 (filecon "/usr/lib/udev/hwclock-set" file file_context)
+			 (filecon "/usr/lib/udev/mtd_probe" file file_context)
+			 (filecon "/usr/lib/udev/scsi_id" file file_context)
+			 (filecon "/usr/lib/udev/v4l_id" file file_context)
 
 			 (blockinherit .file.exec.template)))
 
