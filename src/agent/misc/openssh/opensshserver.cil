@@ -140,17 +140,6 @@
 
 	   (call .tmp.deletename_file_dirs (subj))
 
-	   (call .user.readwrite_ptytermdev_chr_files (subj))
-	   (call .user.relabelto_ptytermdev_chr_files (subj))
-	   (call .user.setattr_ptytermdev_chr_files (subj))
-
-	   (call .user.unpriv.create_all_keyrings (subj))
-	   (call .user.unpriv.rlimitinh_all_processes (subj))
-	   (call .user.unpriv.signal_all_processes (subj))
-	   (call .user.unpriv.signull_all_processes (subj))
-	   (call .user.unpriv.transition_all_processes (subj))
-	   (call .user.unpriv.write_all_keyrings (subj))
-
 	   (call .user.run.search_file_pattern.type (subj))
 
 	   (optional opensshserver_server_gnupgagent
@@ -165,6 +154,19 @@
 		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
 		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (optional opensshserver_server_unprivuser
+		     (call .user.unpriv.create_all_keyrings (subj))
+		     (call .user.unpriv.rlimitinh_all_processes (subj))
+		     (call .user.unpriv.signal_all_processes (subj))
+		     (call .user.unpriv.signull_all_processes (subj))
+		     (call .user.unpriv.transition_all_processes (subj))
+		     (call .user.unpriv.write_all_keyrings (subj)))
+
+	   (optional opensshserver_server_userptytermdev
+		     (call .user.readwrite_ptytermdev_chr_files (subj))
+		     (call .user.relabelto_ptytermdev_chr_files (subj))
+		     (call .user.setattr_ptytermdev_chr_files (subj)))
 
 	   (block conf
 
@@ -269,14 +271,6 @@
 
 (in user.agent
 
-    (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
-    (call .openssh.server.use_subj_fds (typeattr))
-
-    (call .rbacsep.exemptsource.type (typeattr)))
-
-(in user.unpriv
-
-    (call .openssh.server.ptytermdev_type_change (typeattr ptytermdev))
     (call .openssh.server.readwriteinherited_subj_fifo_files (typeattr))
     (call .openssh.server.use_subj_fds (typeattr))
 

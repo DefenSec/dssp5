@@ -116,6 +116,33 @@
     (optional unprivuser_ping
 	      (call .ping.role (role)))
 
+    (optional unprivuser_opensshclient
+	      (call .openssh.add.role (role))
+	      (call .openssh.add.tmp.manage_file_files (subj))
+	      (call .openssh.add.tmp.relabel_file_files (subj))
+	      (call .openssh.agent.role (role))
+	      (call .openssh.agent.run.manage_file_sock_files (subj))
+	      (call .openssh.agent.run.relabel_file_sock_files (subj))
+	      (call .openssh.agent.run.user_run_file_type_transition_file
+		    (subj))
+	      (call .openssh.agent.tmp.manage_file_dirs (subj))
+	      (call .openssh.agent.tmp.manage_file_sock_files (subj))
+	      (call .openssh.agent.tmp.relabel_file_dirs (subj))
+	      (call .openssh.agent.tmp.relabel_file_sock_files (subj))
+	      (call .openssh.client.role (role))
+	      (call .openssh.client.tmp.manage_file_sock_files (subj))
+	      (call .openssh.client.tmp.relabel_file_sock_files (subj))
+	      (call .openssh.home.manage_file_dirs (subj))
+	      (call .openssh.home.manage_file_files (subj))
+	      (call .openssh.home.relabel_file_dirs (subj))
+	      (call .openssh.home.relabel_file_files (subj))
+	      (call .openssh.home.user_home_file_type_transition_file (subj))
+	      (call .openssh.keygen.role (role))
+	      (call .openssh.keysign.role (role)))
+
+    (optional unprivuser_opensshsftpserver
+	      (call .openssh.sftpserver.role (role)))
+
     (optional unprivuser_usermailfile
 	      (call mail.manage_file_pattern.type (subj))
 	      (call mail.map_file_files (subj))
@@ -155,6 +182,15 @@
 	   (call .subj.useinteractivefd.type (typeattr))
 
 	   (call .unixchkpwd.role (roleattr))
+
+	   (optional unprivuser_unpriv_opensshserver
+		     (call .openssh.server.ptytermdev_type_change
+			   (typeattr ptytermdev))
+		     (call .openssh.server.readwriteinherited_subj_fifo_files
+			   (typeattr))
+		     (call .openssh.server.use_subj_fds (typeattr))
+
+		     (call .rbacsep.exemptsource.type (typeattr)))
 
 	   (block role_template
 

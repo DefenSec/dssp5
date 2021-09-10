@@ -19,5 +19,15 @@
        (optional wheeluser_mount
 		 (call .mount.role (role)))
 
+       (optional wheeluser_opensshclient
+		 (call .openssh.add.role (role))
+		 (call .openssh.agent.role (role))
+		 (call .openssh.client.role (role))
+		 (call .openssh.keygen.role (role))
+		 (call .openssh.keysign.role (role)))
+
+       (optional wheeluser_opensshsftpserver
+		 (call .openssh.sftpserver.role (role)))
+
        (optional wheeluser_ping
 		 (call .ping.role (role))))

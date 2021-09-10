@@ -108,16 +108,18 @@
 
 	   (call .tmp.deletename_file_dirs (subj))
 
-	   (call .user.shell_exec_subj_type_transition (subj))
-
 	   (call .user.run.deletename_file_dirs (subj))
-
-	   (call .user.systemd.agent (subj exec.file))
 
 	   (optional opensshclient_agent_p11kit
 		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
 		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (optional opensshclient_agent_user
+		     (call .user.shell_exec_subj_type_transition (subj)))
+
+	   (optional opensshclient_agent_usersystemd
+		     (call .user.systemd.agent (subj exec.file)))
 
 	   (block exec
 
@@ -220,8 +222,6 @@
 
 	   (call .media.search_file_pattern.type (subj))
 
-	   (call .media.home.traverse_file_pattern.type (subj))
-
 	   (call .mount.dontaudit_link_subj_keyrings (subj))
 
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
@@ -251,10 +251,11 @@
 
 	   (call .user.run.search_file_pattern.type (subj))
 
-	   (call .user.shell_exec_subj_type_transition (subj))
-
 	   (optional opensshclient_client_gnupgagent
 		     (call .gnupg.agent.unix_stream_connect (subj)))
+
+	   (optional opensshlclient_client_mediahomefile
+		     (call .media.home.traverse_file_pattern.type (subj)))
 
 	   (optional opensshclient_client_opensshserver
 		     (call server.unix_stream_connect (subj)))
@@ -263,6 +264,9 @@
 		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
 		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (optional opensshclient_client_user
+		     (call .user.shell_exec_subj_type_transition (subj)))
 
 	   (block conf
 
@@ -368,35 +372,3 @@
 
 		  (filecon "/usr/bin/ssh-keysign" file
 			   file_context))))
-
-(in user
-
-    (call .openssh.add.role (role))
-    (call .openssh.add.tmp.manage_file_files (subj))
-    (call .openssh.add.tmp.relabel_file_files (subj))
-    (call .openssh.agent.role (role))
-    (call .openssh.agent.run.manage_file_sock_files (subj))
-    (call .openssh.agent.run.relabel_file_sock_files (subj))
-    (call .openssh.agent.run.user_run_file_type_transition_file (subj))
-    (call .openssh.agent.tmp.manage_file_dirs (subj))
-    (call .openssh.agent.tmp.manage_file_sock_files (subj))
-    (call .openssh.agent.tmp.relabel_file_dirs (subj))
-    (call .openssh.agent.tmp.relabel_file_sock_files (subj))
-    (call .openssh.client.role (role))
-    (call .openssh.client.tmp.manage_file_sock_files (subj))
-    (call .openssh.client.tmp.relabel_file_sock_files (subj))
-    (call .openssh.home.manage_file_dirs (subj))
-    (call .openssh.home.manage_file_files (subj))
-    (call .openssh.home.relabel_file_dirs (subj))
-    (call .openssh.home.relabel_file_files (subj))
-    (call .openssh.home.user_home_file_type_transition_file (subj))
-    (call .openssh.keygen.role (role))
-    (call .openssh.keysign.role (role)))
-
-(in wheel
-
-    (call .openssh.add.role (role))
-    (call .openssh.agent.role (role))
-    (call .openssh.client.role (role))
-    (call .openssh.keygen.role (role))
-    (call .openssh.keysign.role (role)))
