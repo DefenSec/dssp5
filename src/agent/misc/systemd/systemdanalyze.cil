@@ -97,6 +97,8 @@
 
 	   (call .bus.search_sysfile_pattern.type (subj))
 
+	   (call .cache.search_file_pattern.type (subj))
+
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
 	   (call .cgroup.getattr_fs_pattern.type (subj))
@@ -109,6 +111,7 @@
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .data.list_file_dirs (subj))
+	   (call .data.read_file_lnk_files (subj))
 
 	   (call .dbus.client.type (subj))
 
@@ -175,6 +178,9 @@
 
 	   (call .selinux.linked.type (subj))
 
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
 	   (call .state.search_file_pattern.type (subj))
 
 	   (call .stordev.getattr_all_blk_files (subj))
@@ -202,6 +208,9 @@
 
 	   (call .user.run.search_file_pattern.type (subj))
 
+	   (call .user.slice.manage_cgroupfile_dirs (subj))
+	   (call .user.slice.readwrite_cgroupfile_files (subj))
+
 	   (call .xattr.getattr_fs_pattern.type (subj))
 
 	   (call .xdg.conf.read_file_lnk_files (subj))
@@ -210,6 +219,15 @@
 	   (call .zram.read_sysfile_files (subj))
 	   (call .zram.read_sysfile_lnk_files (subj))
 	   (call .zram.search_sysfile_dirs (subj))
+
+	   (optional systemdanalyze_groffconffile
+		     (call .groff.conf.list_file_dirs (subj))
+		     (call .groff.conf.read_file_files (subj)))
+
+	   (optional systemdanalyze_groffdatafile
+		     (call .groff.data.list_file_dirs (subj))
+		     (call .groff.data.read_file_files (subj))
+		     (call .groff.data.read_file_lnk_files (subj)))
 
 	   (optional systemdanalyze_opensshclient
 		     (call .openssh.client.subj_type_transition (subj)))

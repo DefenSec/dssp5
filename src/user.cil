@@ -50,6 +50,8 @@
 
 	   (call .auto.getattr_fs_dirs (typeattr))
 
+	   (call .cache.search_file_pattern.type (typeattr))
+
 	   (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
 
 	   (call .computecreate_selinux_security (typeattr))
@@ -168,6 +170,15 @@
 	   (call .utmp.run.read_file_files (typeattr))
 
 	   (call .xattr.getattr_fs_pattern.type (typeattr))
+
+	   (optional user_common_groffconffile
+		     (call .groff.conf.list_file_dirs (typeattr))
+		     (call .groff.conf.read_file_files (typeattr)))
+
+	   (optional user_common_groffdatafile
+		     (call .groff.data.list_file_dirs (typeattr))
+		     (call .groff.data.read_file_files (typeattr))
+		     (call .groff.data.read_file_lnk_files (typeattr)))
 
 	   (optional user_common_misc
 		     (call .font.cache.map_file_pattern.type (typeattr))

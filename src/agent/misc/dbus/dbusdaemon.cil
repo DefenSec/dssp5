@@ -53,6 +53,10 @@
 
 ;; system dbus-daemon specific method returns
 
+(optional systemdhostname_systemdanalyze
+
+	  (call systemd.analyze.sendmsg_subj_dbus.type (systemd.hostname.subj)))
+
 (optional systemdlogin_login
 
 	  (call login.sendmsg_subj_dbus.type (systemd.login.subj)))
