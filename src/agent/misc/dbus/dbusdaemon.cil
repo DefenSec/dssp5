@@ -65,3 +65,8 @@
 
 	  (call systemd.userrundir.sendmsg_subj_dbus.type
 		(systemd.login.subj)))
+
+(optional systemdmachine_systemdnspawn
+
+	  (call systemd.nspawn.sendmsg_subj_dbus.type
+		(systemd.machine.subj)))
