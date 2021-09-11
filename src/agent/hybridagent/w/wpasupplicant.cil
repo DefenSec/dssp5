@@ -1,0 +1,184 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wpasupplicant
+
+       (macro unix_dgram_send ((type ARG1))
+	      (call sendto_subj_unix_dgram_sockets (ARG1))
+	      (call run.list_file_dirs (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (blockinherit .dbus.nameclient.template)
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (chown dac_override dac_read_search fsetid net_admin
+				 net_raw sys_module)))
+       (allow subj self create_netlink_generic_socket)
+       (allow subj self create_netlink_route_socket)
+       (allow subj self create_packet_socket)
+       (allow subj self create_udp_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_route_socket (nlmsg_write)))
+
+       (call cli.unix_dgram_send (subj))
+
+       (call conf.manage_file_files (subj))
+       (call conf.readwrite_file_dirs (subj))
+
+       (call log.append_file_files (subj))
+       (call log.create_file_files (subj))
+       (call log.log_file_type_transition_file (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call .cert.read_file_files (subj))
+       (call .cert.traverse_file_pattern.type (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .debug.search_fs_pattern.type (subj))
+
+       (call .devices.traverse_sysfile_pattern.type (subj))
+
+       (call .ipv4.readwrite_sysctlfile_files (subj))
+       (call .ipv4.search_sysctlfile_dirs (subj))
+
+       (call .ipv6.readwrite_sysctlfile_files (subj))
+       (call .ipv6.search_sysctlfile_dirs (subj))
+
+       (call .net.read_procfile_pattern.type (subj))
+
+       (call .net.readwrite_sysctlfile_files (subj))
+       (call .net.search_sysctlfile_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rfkill.read_nodedev_chr_files (subj))
+
+       (call .run.deletename_file_dirs (subj))
+
+       (call .tmp.search_file_pattern.type (subj))
+
+       (call .trace.search_fs_pattern.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .sys.modulerequest_subj_system (subj))
+
+       (call .sys.user.unix_dgram_send (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (block cli
+
+	      (macro unix_dgram_send ((type ARG1))
+		     (call sendto_subj_unix_dgram_sockets (ARG1))
+		     (call tmp.write_file_sock_files (ARG1)))
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self create_unix_dgram_socket)
+
+	      (call tmp.manage_file_sock_files (subj))
+	      (call tmp.tmp_file_type_transition_file (subj))
+
+	      (call wpasupplicant.unix_dgram_send (subj))
+
+	      (call .run.search_file_pattern.type (subj))
+
+	      (call .tmp.deletename_file_dirs (subj))
+
+	      (optional wpasupplicant_cli_usersystemd
+			(call .user.systemd.agent (subj exec.file)))
+
+	      (block exec
+
+		     (filecon "/usr/bin/wpa_cli" file file_context)
+		     (filecon "/usr/bin/wpa_passphrase" file file_context))
+
+	      (block tmp
+
+		     (macro tmp_file_type_transition_file ((type ARG1))
+			    (call .tmp.file_type_transition
+				  (ARG1 file sock_file "*")))
+
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.user.tmp.base_template)))
+
+       (block conf
+
+	      (filecon "/etc/wpa_supplicant" dir file_context)
+	      (filecon "/etc/wpa_supplicant/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "wpa_supplicant")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/wpa_supplicant" file file_context))
+
+       (block helper
+
+	      (block exec
+
+		     (filecon "/usr/bin/wpa_action" file file_context)
+
+		     (blockinherit .file.exec.template)))
+
+       (block log
+
+	      (filecon "/var/log/wpa_supplicant\.log" file file_context)
+	      (filecon "/var/log/wpa_supplicant\.log\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file file "wpa_supplicant.log")))
+
+	      (blockinherit .file.log.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block run
+
+	      (filecon "/run/wpa_supplicant" dir file_context)
+	      (filecon "/run/wpa_supplicant/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "wpa_supplicant")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.run.base_template)
+
+	      (call .rbacsep.exempt.obj.type (file)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/wpa_supplicant\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/wpa_supplicant@.*\.service.*"
+		       file file_context)
+	      (filecon
+	       "/usr/lib/systemd/system/wpa_supplicant-nl80211@.*\.service.*"
+	       file file_context)
+	      (filecon
+	       "/usr/lib/systemd/system/wpa_supplicant-wired@.*\.service.*"
+	       file file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.unconfined
+
+    (call .wpasupplicant.conf.conf_file_type_transition_file (typeattr))
+    (call .wpasupplicant.log.log_file_type_transition_file (typeattr))
+    (call .wpasupplicant.run.run_file_type_transition_file (typeattr)))

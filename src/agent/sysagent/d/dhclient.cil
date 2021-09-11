@@ -99,8 +99,8 @@
 	      ;; /usr/bin/hostname
 	      (allow subj self (capability (sys_admin)))
 
+	      (call conf.execute_file_files (subj))
 	      (call conf.list_file_dirs (subj))
-	      (call conf.read_file_files (subj))
 	      (call conf.read_file_lnk_files (subj))
 
 	      (call .conf.deletename_file_dirs (subj))
@@ -117,6 +117,8 @@
 
 	      (call .iproute.subj_type_transition (subj))
 
+	      (call .logger.subj_type_transition (subj))
+
 	      (call .nss.passwdgroup.type (subj))
 
 	      (call .selinux.linked.type (subj))
@@ -127,6 +129,9 @@
 	      (call .systemd.timesync.exec.auditexecuteaccess_file_files (subj))
 
 	      (call .systemd.unit.run.getattr_dir_pattern.type (subj))
+
+	      (optional dhclient_script_avahiautoipd
+			(call .avahi.autoipd.subj_type_transition (subj)))
 
 	      (block exec
 

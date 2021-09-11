@@ -1,0 +1,18 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wirelesstools
+
+       (blockinherit .sys.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/iwconfig" file file_context)
+	      (filecon "/usr/bin/iwevent" file file_context)
+	      (filecon "/usr/bin/iwgetid" file file_context)
+	      (filecon "/usr/bin/iwlist" file file_context)
+	      (filecon "/usr/bin/iwpriv" file file_context)
+	      (filecon "/usr/bin/iwspy" file file_context)))
