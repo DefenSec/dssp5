@@ -26,6 +26,14 @@
        (call .boot.manage_file_files (subj))
        (call .boot.readwrite_file_dirs (subj))
 
+       (call .cmdline.read_procfile_files (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
        (call .exec.execute_file_files (subj))
 
        (call .file.exec.mapexecute_all_files (subj))
@@ -87,6 +95,9 @@
        (call .uptime.read_procfile_files (subj))
 
        (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional initramfstools_consolesetupcon
+		 (call .consolesetup.setupcon.subj_type_transition (subj)))
 
        (optional initramfstools_devicemapper
 		 (call .devicemapper.subj_type_transition (subj)))
