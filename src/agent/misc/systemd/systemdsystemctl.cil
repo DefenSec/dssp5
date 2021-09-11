@@ -23,6 +23,8 @@
 
 	   (call systemd.conf.search_file_pattern.type (subj))
 
+	   (call systemd.data.search_file_dirs (subj))
+
 	   (call systemd.journal.log.map_file_pattern.type (subj))
 	   (call systemd.journal.log.read_file_pattern.type (subj))
 
