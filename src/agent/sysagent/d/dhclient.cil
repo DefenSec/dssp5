@@ -157,3 +157,8 @@
 
     (call .dhclient.conf.conf_file_type_transition_file (typeattr))
     (call .dhclient.state.state_file_type_transition_file (typeattr)))
+
+(in logger
+
+    (call .dhclient.readwriteinherited_subj_fifo_files (subj))
+    (call .dhclient.use_subj_fds (subj)))

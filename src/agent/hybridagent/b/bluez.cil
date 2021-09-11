@@ -1,0 +1,235 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block bluez
+
+       (macro readwrite_subj_bluetooth_sockets ((type ARG1))
+	      (allow ARG1 subj readwrite_bluetooth_socket))
+
+       (blockinherit .dbus.nameclient.template)
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (net_admin net_bind_service)))
+       (allow subj self create_alg_stream_socket)
+       (allow subj self create_bluetooth_stream_socket)
+       (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self create_unix_stream_socket)
+       (allow subj self create_unix_dgram_socket)
+
+       (call cli.sendmsg_subj_dbus.type (subj))
+
+       (call common.type (subj))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+
+       (call tmp.manage_file_fifo_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.list_sysfile_pattern.type (subj))
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.read_sysfile_lnk_files (subj))
+
+       (call .event.readwrite_nodedev_chr_files (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.exempttarget.type (subj))
+       (call .rbacsep.usefdtarget.type (subj))
+
+       (call .rfkill.readwrite_nodedev_chr_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (call .sys.modulerequest_subj_system (subj))
+
+       (call .sys.user.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.notify.type (subj))
+
+       (call .systemd.hostname.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .usb.readwrite_nodedev_chr_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional bluez_wireplumber
+		 (call .wireplumber.sendmsg_subj_dbus.type (subj)))
+
+       (block cli
+
+	      (blockinherit .dbus.client.template)
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self create_bluetooth_socket)
+	      (allow subj self create_unix_stream_socket)
+
+	      (call bluez.sendmsg_subj_dbus.type (subj))
+
+	      (call client.type (subj))
+
+	      (call common.type (subj))
+
+	      (call home.cache.manage_file_files (subj))
+	      (call home.cache.user_home_cache_file_type_transition_file
+		    (subj "*"))
+
+	      (call .inputrc.read_file_pattern.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (call .user.home.cache.create_file_dir_pattern.type (subj))
+	      (call .user.home.cache.deletename_file_dirs (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/bccmd" file file_context)
+		     (filecon "/usr/bin/bluemoon" file file_context)
+		     (filecon "/usr/bin/bluetoothctl" file file_context)
+		     (filecon "/usr/bin/btattach" file file_context)
+		     (filecon "/usr/bin/btmgmt" file file_context)
+		     (filecon "/usr/bin/btmon" file file_context)
+		     (filecon "/usr/bin/ciptool" file file_context)
+		     (filecon "/usr/bin/gatttool" file file_context)
+		     (filecon "/usr/bin/hciattach" file file_context)
+		     (filecon "/usr/bin/hciconfig" file file_context)
+		     (filecon "/usr/bin/hex2hcd" file file_context)
+		     (filecon "/usr/bin/l2ping" file file_context)
+		     (filecon "/usr/bin/l2test" file file_context)
+		     (filecon "/usr/bin/mpris-proxy" file file_context)
+		     (filecon "/usr/bin/obexctl" file file_context)
+		     (filecon "/usr/bin/rfcomm" file file_context)
+		     (filecon "/usr/bin/sdptool" file file_context))
+
+	      (block home
+
+		     (block cache
+
+			    (filecon "HOME_DIR/\.cache/\.bluetoothctl_history"
+				     file file_context)
+			    (filecon
+			     "HOME_DIR/\.cache/\.bluetoothctl_history\..*" file
+			     file_context)
+
+			    (macro map_file_files ((type ARG1))
+				   (allow ARG1 file (file (map))))
+
+			    (macro user_home_cache_file_type_transition_file
+				   ((type ARG1)(name ARG2))
+				   (call .user.home.cache.file_type_transition
+					 (ARG1 file file ARG2)))
+
+			    (blockinherit .file.macro_template_files)
+			    (blockinherit
+			     .file.user.home.cache.base_template))))
+
+       (block client
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call readwrite_subj_bluetooth_sockets (typeattr))
+	      (call readwrite_subj_unix_stream_sockets (typeattr))
+	      (call use_subj_fds (typeattr)))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr)))
+
+       (block conf
+
+	      (filecon "/etc/bluetooth" dir file_context)
+	      (filecon "/etc/bluetooth/.*" any file_context)
+	      (filecon "/etc/default/bluetooth" file file_context)
+	      (filecon "/etc/default/bluetooth\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "bluetooth"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "bluetooth")))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/bluetooth/bluetoothd" file file_context))
+
+       (block state
+
+	      (filecon "/var/lib/bluetooth" dir file_context)
+	      (filecon "/var/lib/bluetooth/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "bluetooth")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file fifo_file "*")))
+
+	      (blockinherit .file.macro_template_fifo_files)
+	      (blockinherit .file.tmp.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/bluetooth\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)
+
+	      (call .dbus.activated.unit.type (file))))
+
+(in file.unconfined
+
+    (call .bluez.cli.home.cache.user_home_cache_file_type_transition_file
+	  (typeattr ".bluetoothctl_history"))
+    (call .bluez.conf.conf_file_type_transition_file (typeattr))
+    (call .bluez.state.state_file_type_transition_file (typeattr)))
+
+(in systemd.hostname
+
+    (call .bluez.sendmsg_subj_dbus.type (subj)))
+
+(in user
+
+    (call .bluez.cli.home.cache.manage_file_files (subj))
+    (call .bluez.cli.home.cache.map_file_files (subj))
+    (call .bluez.cli.home.cache.relabel_file_files (subj))
+    (call .bluez.cli.home.cache.user_home_cache_file_type_transition_file
+	  (subj ".bluetoothctl_history"))
+    (call .bluez.cli.role (role)))
+
+(in wheel
+
+    (call .bluez.cli.role (role)))

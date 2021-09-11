@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (allow subj self create_udp_socket)
+
        (call .rbacsep.constrained.type (subj))
        (call .rbacsep.usefdsource.type (subj))
 
