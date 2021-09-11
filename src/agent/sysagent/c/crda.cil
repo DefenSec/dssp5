@@ -1,0 +1,62 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block crda
+
+       (blockinherit .sys.agent.template)
+
+       (call .exec.execute_file_files (subj))
+
+       (call .iw.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .logger.subj_type_transition (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/default/crda" file file_context)
+	      (filecon "/etc/default/crda\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "crda")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block data
+
+	      (filecon "/usr/lib/crda" dir file_context)
+	      (filecon "/usr/lib/crda/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "crda")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/regdbdump" file file_context)
+
+	      (filecon "/usr/lib/crda/crda" file file_context)
+	      (filecon "/usr/lib/crda/setregdomain" file file_context)))
+
+(in file.unconfined
+
+    (call .crda.conf.conf_file_type_transition_file (typeattr))
+    (call .crda.data.lib_file_type_transition_file (typeattr)))
