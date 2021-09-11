@@ -26,6 +26,8 @@
        (call .block.list_sysfile_dirs (subj))
        (call .block.traverse_sysfile_pattern.type (subj))
 
+       (call .boot.list_file_dirs (subj))
+
        (call .crypto.read_sysctlfile_pattern.type (subj))
 
        (call .devices.list_sysfile_pattern.type (subj))
@@ -40,6 +42,9 @@
        (call .firmware.search_sysfile_pattern.type (subj))
 
        (call .kmod.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
 
        (call .logger.subj_type_transition (subj))
 
@@ -67,6 +72,7 @@
 
        (call .sys.home.list_file_dirs (subj))
 
+       (call .systemd.udev.data.search_file_dirs (subj))
        (call .systemd.udev.subj_type_transition (subj))
 
        (call .terminfo.read_file_pattern.type (subj))
