@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (call conf.read_file_files (subj))
+
        (call data.list_file_dirs (subj))
        (call data.mapexecute_file_files (subj))
        (call data.read_file_files (subj))
