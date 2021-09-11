@@ -5,6 +5,10 @@
 
        (blockinherit .sys.agent.template)
 
+       (call data.list_file_dirs (subj))
+       (call data.mapexecute_file_files (subj))
+       (call data.read_file_files (subj))
+
        (call .exec.execute_file_files (subj))
 
        (call .iw.subj_type_transition (subj))
