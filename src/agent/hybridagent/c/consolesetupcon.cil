@@ -7,6 +7,8 @@
 
 	   (blockinherit .hybrid.agent.template)
 
+	   (allow subj self (capability (mknod)))
+	   (allow subj self (process (getsched setfscreate)))
 	   (dontaudit subj self (capability (sys_ptrace)))
 
 	   (call conf.manage_file_files (subj))
@@ -42,6 +44,8 @@
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
+	   (call .null.manage_nodedev_chr_files (subj))
+
 	   (call .perl5.data.search_file_dirs (subj))
 
 	   (call .proc.list_fs_dirs (subj))
@@ -73,6 +77,13 @@
 	   (call .tmp.deletename_file_dirs (subj))
 
 	   (call .tty.open_serialtermdev_chr_files (subj))
+
+	   (call .var.traverse_file_pattern.type (subj))
+
+	   (optional consolesetupcon_initramfstools
+		     (call .initramfstools.tmp.manage_file_files (subj))
+		     (call .initramfstools.tmp.manage_file_dirs (subj))
+		     (call .initramfstools.tmp.read_file_lnk_files (subj)))
 
 	   (optional consolesetupcon_systemdnspawn
 		     (call .systemd.nspawn.container.subj.read_all_states
@@ -114,3 +125,7 @@
 
     (call .consolesetup.setupcon.home.user_home_file_type_transition_file
 	  (typeattr)))
+
+(in null
+
+    (call .xattr.associate_fs (nodedev)))
