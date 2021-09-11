@@ -1,0 +1,67 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block cryptsetup
+
+       (blockinherit .sys.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/default/cryptdisks" file file_context)
+	      (filecon "/etc/default/cryptdisks\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "cryptdisks")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/cryptdisks_start" file file_context)
+	      (filecon "/usr/bin/cryptdisks_stop"file file_context)
+	      (filecon "/usr/bin/cryptsetup" file file_context)
+	      (filecon "/usr/bin/cryptsetup-reencrypt" file file_context)
+	      (filecon "/usr/bin/integritysetup" file file_context)
+	      (filecon "/usr/bin/luksformat" file file_context)
+	      (filecon "/usr/bin/veritysetup" file file_context))
+
+       (block helper
+
+	      (block exec
+
+		     (filecon "/usr/lib/cryptsetup/askpass" file file_context)
+		     (filecon "/usr/lib/cryptsetup/checks/blkid" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/checks/ext2" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/checks/swap" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/checks/un_blkid" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/checks/xfs" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_derived" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_gnupg" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_gnupg-sc"
+			      file file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_keyctl" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_opensc" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/decrypt_ssl" file
+			      file_context)
+		     (filecon "/usr/lib/cryptsetup/scripts/passdev" file
+			      file_context)
+
+		     (blockinherit .file.exec.template))))
+
+(in file.unconfined
+
+    (call .cryptsetup.conf.conf_file_type_transition_file (typeattr)))

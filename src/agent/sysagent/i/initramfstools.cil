@@ -93,10 +93,15 @@
 
        (block conf
 
+	      (filecon "/etc/cryptsetup-initramfs" dir file_context)
+	      (filecon "/etc/cryptsetup-initramfs/.*" any file_context)
+
 	      (filecon "/etc/initramfs-tools" dir file_context)
 	      (filecon "/etc/initramfs-tools/.*" any file_context)
 
 	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "cryptsetup-initramfs"))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "initramfs-tools")))
 
@@ -134,6 +139,14 @@
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.macro_template_lnk_files)
 	      (blockinherit .file.tmp.base_template)))
+
+(in blktools
+
+    (call .initramfstools.tmp.writeinherited_file_files (subj)))
+
+(in devicemapper
+
+    (call .initramfstools.tmp.writeinherited_file_files (subj)))
 
 (in file.unconfined
 
