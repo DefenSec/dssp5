@@ -217,6 +217,11 @@
 	      (call run.map_file_files (subj))
 	      (call run.relabel_file_pattern.type (subj)))
 
+    (optional unprivuser_wpasupplicant
+	      (call .wpasupplicant.cli.role (role))
+	      (call .wpasupplicant.cli.tmp.manage_file_sock_files (subj))
+	      (call .wpasupplicant.cli.tmp.relabel_file_sock_files (subj)))
+
     (block unpriv
 
 	   (macro role ((role ARG1))

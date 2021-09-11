@@ -33,6 +33,9 @@
 
        (call .devices.search_sysfile_pattern.type (subj))
 
+       (call .firmware.data.read_file_files (subj))
+       (call .firmware.data.search_file_dirs (subj))
+
        (call .net.list_procfile_dirs (subj))
        (call .net.read_procfile_pattern.type (subj))
 

@@ -32,10 +32,9 @@
 
 	   (call conf.manage_file_dirs (subj))
 	   (call conf.manage_file_files (subj))
-	   (call conf.map_file_files (subj))
-	   (call conf.relabel_file_files (subj))
 
 	   (call data.list_file_dirs (subj))
+	   (call data.map_file_files (subj))
 	   (call data.read_file_files (subj))
 
 	   (call exec.execute_file_files (subj))
@@ -264,6 +263,8 @@
 			 (filecon "/usr/lib/udev/cdrom_id" file file_context)
 			 (filecon "/usr/lib/udev/fido_id" file file_context)
 			 (filecon "/usr/lib/udev/hwclock-set" file file_context)
+			 (filecon "/usr/lib/udev/ifupdown-hotplug" file
+				  file_context)
 			 (filecon "/usr/lib/udev/mtd_probe" file file_context)
 			 (filecon "/usr/lib/udev/scsi_id" file file_context)
 			 (filecon "/usr/lib/udev/v4l_id" file file_context)

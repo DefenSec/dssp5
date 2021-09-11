@@ -62,6 +62,10 @@
 	  (call systemd.hostnamectl.sendmsg_subj_dbus.type
 		(systemd.hostname.subj)))
 
+(optional systemdhostname_systemdnetwork
+
+	  (call systemd.network.sendmsg_subj_dbus.type (systemd.hostname.subj)))
+
 (optional systemdlogin_login
 
 	  (call login.sendmsg_subj_dbus.type (systemd.login.subj)))
