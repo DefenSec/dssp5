@@ -51,6 +51,9 @@
        (call .ipv6.readwrite_sysctlfile_files (subj))
        (call .ipv6.search_sysctlfile_dirs (subj))
 
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
        (call .net.read_procfile_pattern.type (subj))
 
        (call .net.readwrite_sysctlfile_files (subj))

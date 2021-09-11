@@ -16,6 +16,7 @@
 	   (allow subj self (netlink_route_socket (nlmsg_read)))
 
 	   (call conf.execute_file_files (subj))
+	   (call conf.search_file_dirs (subj))
 
 	   (call run.manage_file_files (subj))
 	   (call run.run_file_type_transition_file (subj))
@@ -24,10 +25,21 @@
 	   (call state.manage_file_files (subj))
 	   (call state.state_file_type_transition_file (subj))
 
+	   (call .class.traverse_sysfile_pattern.type (subj))
+
+	   (call .devices.read_sysfile_files (subj))
+	   (call .devices.search_sysfile_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .iproute.subj_type_transition (subj))
+
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
 	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
 
 	   (call .random.read_nodedev_chr_files (subj))
 
@@ -36,7 +48,14 @@
 
 	   (call .run.deletename_file_dirs (subj))
 
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
 	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (optional avahiautoipd_dhclient
+		     (call .dhclient.readwriteinherited_subj_fifo_files (subj))
+		     (call .dhclient.use_subj_fds (subj)))
 
 	   (block exec
 

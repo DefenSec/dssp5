@@ -20,6 +20,7 @@
 
        (call .network.conf.execute_file_files (subj))
        (call .network.conf.list_file_dirs (subj))
+       (call .network.conf.read_file_lnk_files (subj))
 
        (call .network.run.manage_file_dirs (subj))
        (call .network.run.manage_file_files (subj))
@@ -32,6 +33,9 @@
 
        (call .sysctl.subj_type_transition (subj))
 
+       (optional ifupdown_avahiautoipd
+		 (call .avahi.autoipd.subj_type_transition (subj)))
+
        (optional ifupdown_dhclient
 		 (call .dhclient.subj_type_transition (subj)))
 
@@ -41,7 +45,9 @@
        (optional ifupdown_wpasupplicant
 		 (call .wpasupplicant.cli.subj_type_transition (subj))
 		 (call .wpasupplicant.conf.execute_file_files (subj))
-		 (call .wpasupplicant.helper.exec.execute_file_files (subj)))
+		 (call .wpasupplicant.conf.search_file_dirs (subj))
+		 (call .wpasupplicant.helper.exec.execute_file_files (subj))
+		 (call .wpasupplicant.subj_type_transition (subj)))
 
        (block data
 

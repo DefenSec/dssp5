@@ -3,6 +3,7 @@
 
 (block usb
 
+       (filecon "/dev/bus/usb/.+" char nodedev_context)
        (filecon "/dev/usb.+" char nodedev_context)
 
        (macro getattr_nodedev_chr_files ((type ARG1))
