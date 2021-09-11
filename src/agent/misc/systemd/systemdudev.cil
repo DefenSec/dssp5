@@ -209,6 +209,7 @@
 	   (call .zramcontrol.list_sysfile_dirs (subj))
 
 	   (optional systemdudev_crda
+		     (call .crda.data.search_file_dirs (subj))
 		     (call .crda.subj_type_transition (subj)))
 
 	   (optional systemdudev_devicemapper

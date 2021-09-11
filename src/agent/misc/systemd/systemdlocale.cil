@@ -62,7 +62,8 @@
 
 	   (optional systemdlocale_consolesetup
 		     (call .consolesetup.conf.manage_file_files (subj))
-		     (call .consolesetup.conf.conf_file_type_transition (subj)))
+		     (call .consolesetup.conf.conf_file_type_transition_file
+			   (subj)))
 
 	   (optional systemdlocale_polkit
 		     (call .polkit.sendmsg_subj_dbus.type (subj)))
