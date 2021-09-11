@@ -36,6 +36,8 @@
 
 	   (call .file.exec.getattr_all_files (subj))
 
+	   (call .ibac.objchangesys.type (subj))
+
 	   (call .kbd.data.read_file_files (subj))
 	   (call .kbd.data.read_file_lnk_files (subj))
 	   (call .kbd.data.search_file_dirs (subj))
@@ -51,6 +53,8 @@
 	   (call .proc.list_fs_dirs (subj))
 
 	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .rbac.objchangesys.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 
