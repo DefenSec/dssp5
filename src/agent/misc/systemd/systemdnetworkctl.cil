@@ -34,6 +34,9 @@
 
 	   (call systemd.udev.conf.map_file_files (subj))
 	   (call systemd.udev.conf.read_file_pattern.type (subj))
+	   (call systemd.udev.data.map_file_files (subj))
+	   (call systemd.udev.data.read_file_files (subj))
+	   (call systemd.udev.data.search_file_dirs (subj))
 	   (call systemd.udev.run.read_file_pattern.type (subj))
 
 	   (call .bus.search_sysfile_pattern.type (subj))
