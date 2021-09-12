@@ -49,4 +49,12 @@
 
 	   (block exec
 
-		  (filecon "/usr/bin/systemd-hwdb" file file_context))))
+		  (filecon "/usr/bin/systemd-hwdb" file file_context))
+
+	   (block unit
+
+		  (filecon
+		   "/usr/lib/systemd/system/systemd-hwdb-update\.service.*" file
+		   file_context)
+
+		  (blockinherit .file.unit.template))))

@@ -94,7 +94,7 @@
 
 	   (call .fs.dontaudit_getattr_all_fs (typeattr))
 
-	   (call .inputrc.conf.read_file_files (typeattr))
+	   (call .inputrc.read_file_pattern.type (typeattr))
 
 	   (call .kernel.search_sysctlfile_pattern.type (typeattr))
 

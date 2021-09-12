@@ -1,0 +1,137 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block gh
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (getsched)))
+       (allow subj self create_tcp_socket)
+
+       (call home.conf.manage_file_dirs (subj))
+       (call home.conf.manage_file_files (subj))
+       (call home.conf.user_home_conf_file_type_transition_file (subj))
+
+       (call home.data.manage_file_dirs (subj))
+       (call home.data.manage_file_files (subj))
+       (call home.data.user_home_data_file_type_transition_file (subj))
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call .cert.read_file_pattern.type (subj))
+
+       (call .editor.read_file_pattern.type (subj))
+
+       ;; fall-back to generic editors
+       (call .exec.execute_file_files (subj))
+
+       (call .git.client.subj_type_transition (subj))
+       (call .git.home.getattr_file_dirs (subj))
+
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .kernel.read_sysfile_files (subj))
+       (call .kernel.search_sysfile_dirs (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+
+       (call .openssh.client.conf.list_file_dirs (subj))
+       (call .openssh.client.conf.read_file_files (subj))
+
+       (call .openssh.conf.search_file_dirs (subj))
+
+       (call .openssh.home.dontaudit_search_file_dirs (subj))
+
+       (call .openssh.keygen.subj_type_transition (subj))
+
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
+       (call .sys.search_fs_pattern.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       ;; ~/.local/bin/web-browser (BROWSER=web-browser)
+       (call .user.exec_home_subj_type_transition (subj))
+
+       (call .user.home.conf.create_file_dir_pattern.type (subj))
+
+       (call .user.home.data.create_file_dir_pattern.type (subj))
+
+       (call .user.home.getattr_file_files (subj))
+
+       (optional gh_emacs
+		 (call .emacs.client.subj_type_transition (subj)))
+
+       (block exec
+
+	      (filecon "/usr/bin/gh" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/gh" dir file_context)
+		     (filecon "HOME_DIR/\.config/gh/.*" any file_context)
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "gh")))
+
+		     (blockinherit .file.user.home.conf.template))
+
+	      (block data
+
+		     (filecon "HOME_DIR/\.local/state/gh" dir file_context)
+		     (filecon "HOME_DIR/\.local/state/gh/.*" any file_context)
+
+		     (macro user_home_data_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.data.file_type_transition
+				  (ARG1 file dir "gh")))
+
+		     (blockinherit .file.user.home.data.template)))
+
+       (block tmp
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .gh.home.conf.user_home_conf_file_type_transition_file (typeattr))
+    (call .gh.home.data.user_home_data_file_type_transition_file (typeattr)))
+
+(in openssh.client
+
+    (call .gh.use_subj_fds (subj))
+    (call .gh.writeinherited_subj_fifo_files (subj)))
+
+(in user
+
+    (call .gh.home.conf.manage_file_dirs (subj))
+    (call .gh.home.conf.manage_file_files (subj))
+    (call .gh.home.conf.relabel_file_dirs (subj))
+    (call .gh.home.conf.relabel_file_files (subj))
+    (call .gh.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .gh.home.data.manage_file_dirs (subj))
+    (call .gh.home.data.manage_file_files (subj))
+    (call .gh.home.data.relabel_file_dirs (subj))
+    (call .gh.home.data.relabel_file_files (subj))
+    (call .gh.home.data.user_home_data_file_type_transition_file (subj))
+    (call .gh.role (role))
+    (call .gh.tmp.manage_file_files (subj))
+    (call .gh.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .gh.role (role)))

@@ -18,10 +18,10 @@
 	   (block unit
 
 		  (filecon
-		   "/usr/lib/systemd/system/systemd-bless-initctl\.service.*"
-		   file file_context)
+		   "/usr/lib/systemd/system/systemd-initctl\.service.*" file
+		   file_context)
 		  (filecon
-		   "/usr/lib/systemd/system/systemd-bless-initctl\.socket.*"
-		   file file_context)
+		   "/usr/lib/systemd/system/systemd-initctl\.socket.*" file
+		   file_context)
 
 		  (blockinherit .file.unit.template))))
