@@ -5,7 +5,8 @@
 
        (macro unix_stream_connect ((type ARG1))
 	      (call connectto_subj_unix_stream_sockets (ARG1))
-	      (call run.write_file_sock_files (ARG1)))
+	      (call run.write_file_sock_files (ARG1))
+	      (call run.search_file_dirs (ARG1)))
 
        (blockinherit .sys.agent.template)
 
@@ -14,6 +15,7 @@
        (allow subj self create_unix_dgram_socket)
        (allow subj self create_unix_stream_stream_socket)
 
+       (call run.manage_file_dirs (subj))
        (call run.manage_file_sock_files (subj))
        (call run.run_file_type_transition_file (subj))
 
@@ -66,12 +68,14 @@
 
        (block run
 
-	      (filecon "/run/irqbalance.*\.sock" socket file_context)
+	      (filecon "/run/irqbalance" dir file_context)
+	      (filecon "/run/irqbalance/.*" any file_context)
 
 	      (macro run_file_type_transition_file ((type ARG1))
 		     (call .run.file_type_transition
-			   (ARG1 file sock_file "*")))
+			   (ARG1 file dir "irqbalance")))
 
+	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_sock_files)
 	      (blockinherit .file.run.base_template))
 
@@ -84,4 +88,5 @@
 
 (in file.unconfined
 
-    (call .irqbalance.conf.conf_file_type_transition_file (typeattr)))
+    (call .irqbalance.conf.conf_file_type_transition_file (typeattr))
+    (call .irqbalance.run.run_file_type_transition_file (typeattr)))
