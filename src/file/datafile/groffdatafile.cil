@@ -5,6 +5,9 @@
 
        (block data
 
+	      (filecon "/usr/lib/groff" dir file_context)
+	      (filecon "/usr/lib/groff/.*" any file_context)
+
 	      (filecon "/usr/share/groff" dir file_context)
 	      (filecon "/usr/share/groff/.*" any file_context)
 
@@ -12,8 +15,13 @@
 		     (call .data.file_type_transition
 			   (ARG1 file dir "groff")))
 
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "groff")))
+
 	      (blockinherit .file.data.template)))
 
 (in file.unconfined
 
-    (call .groff.data.data_file_type_transition_file (typeattr)))
+    (call .groff.data.data_file_type_transition_file (typeattr))
+    (call .groff.data.lib_file_type_transition_file (typeattr)))
