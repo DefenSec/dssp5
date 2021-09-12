@@ -143,8 +143,9 @@
     (call .gh.home.conf.user_home_conf_file_type_transition_file (subj))
 
     (call .gh.role (role))
-
+    (call .gh.tmp.manage_file_dirs (subj))
     (call .gh.tmp.manage_file_files (subj))
+    (call .gh.tmp.relabel_file_dirs (subj))
     (call .gh.tmp.relabel_file_files (subj))
     (call .gh.tmp.tmp_file_type_transition_file (subj dir "gh-cli-cache")))
 
