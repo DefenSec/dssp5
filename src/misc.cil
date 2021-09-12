@@ -1577,7 +1577,12 @@
 
 	   (typeattribute typeattr)
 
-	   (call data.read_file_pattern.type (typeattr))))
+	   (call conf.read_file_files (typeattr))
+	   (call data.read_file_pattern.type (typeattr))
+	   (call home.conf.read_file_pattern.type (typeattr))
+	   (call home.data.read_file_pattern.type (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
 
 (in mime.data
 
@@ -1655,16 +1660,6 @@
 	   (call read_file_files (typeattr))
 
 	   (call .user.home.data.search_file_pattern.type (typeattr))))
-
-(in mime.read_file_pattern
-
-    (call conf.read_file_files (typeattr))
-
-    (call home.conf.read_file_pattern.type (typeattr))
-
-    (call home.data.read_file_pattern.type (typeattr))
-
-    (call .conf.search_file_pattern.type (typeattr)))
 
 (in module
 
@@ -1895,6 +1890,48 @@
 	   (call read_sysctlfile_files (typeattr))
 
 	   (call .vm.search_sysctlfile_pattern.type (typeattr))))
+
+(in perl5
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.read_file_pattern.type (typeattr))
+	   (call data.read_file_pattern.type (typeattr))))
+
+(in perl5.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
+
+(in perl5.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
 
 (in p11kit.conf
 

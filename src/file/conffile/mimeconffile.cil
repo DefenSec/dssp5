@@ -9,10 +9,14 @@
 
     (block conf
 
+	   (filecon "/etc/mailcap" file file_context)
+	   (filecon "/etc/mailcap\..*" file file_context)
 	   (filecon "/etc/mime\.types" file file_context)
 	   (filecon "/etc/mime\.types\..*" file file_context)
 
 	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file "mailcap"))
 		  (call .conf.file_type_transition
 			(ARG1 file file "mime.types")))
 

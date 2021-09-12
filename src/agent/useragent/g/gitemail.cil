@@ -50,8 +50,7 @@
 	   (call .nfs.getattr_fs_pattern.type (subj))
 	   (call .nfs.manage_fs_pattern.type (subj))
 
-	   (call .perl5.data.read_file_files (subj))
-	   (call .perl5.data.search_file_dirs (subj))
+	   (call .perl5.read_file_pattern.type (subj))
 
 	   (call .random.read_nodedev_chr_files (subj))
 
