@@ -84,6 +84,8 @@
 
 	   (call .var.traverse_file_pattern.type (subj))
 
+	   (call .user.home.search_file_pattern.type (subj))
+
 	   (optional consolesetupcon_initramfstools
 		     (call .initramfstools.tmp.manage_file_files (subj))
 		     (call .initramfstools.tmp.manage_file_dirs (subj))
@@ -129,6 +131,10 @@
 
     (call .consolesetup.setupcon.home.user_home_file_type_transition_file
 	  (typeattr)))
+
+(in kbd
+
+    (call .consolesetup.setupcon.tmp.read_file_files (subj)))
 
 (in null
 

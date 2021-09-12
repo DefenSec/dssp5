@@ -42,6 +42,9 @@
        (optional wheeluser_consolesetupcon
 		 (call .consolesetup.setupcon.role (role)))
 
+       (optional wheeluser_kbd
+		 (call .kbd.role (role)))
+
        (optional wheeluser_mount
 		 (call .mount.role (role)))
 
