@@ -14,10 +14,6 @@
        (call data.map_file_files (subj))
        (call data.read_file_files (subj))
 
-       (call home.conf.manage_file_dirs (subj))
-       (call home.conf.manage_file_files (subj))
-       (call home.conf.user_home_conf_file_type_transition_file (subj))
-
        (call home.data.manage_file_dirs (subj))
        (call home.data.manage_file_files (subj))
        (call home.data.user_home_data_file_type_transition_file (subj))
@@ -44,8 +40,6 @@
        (call .state.search_file_pattern.type (subj))
 
        (call .systemd.udev.run.read_file_pattern.type (subj))
-
-       (call .user.home.conf.create_file_dir_pattern.type (subj))
 
        (call .user.home.data.create_file_dir_pattern.type (subj))
 
@@ -83,21 +77,6 @@
 
        (block home
 
-	      (block conf
-
-		     (filecon "HOME_DIR/\.config/wireplumber" dir file_context)
-		     (filecon "HOME_DIR/\.config/wireplumber/.*" any
-			      file_context)
-
-		     (macro user_home_conf_file_type_transition_file
-			    ((type ARG1))
-			    (call .user.home.conf.file_type_transition
-				  (ARG1 file dir "wireplumber")))
-
-		     (blockinherit .file.macro_template_dirs)
-		     (blockinherit .file.macro_template_files)
-		     (blockinherit .file.user.home.conf.base_template))
-
 	      (block data
 
 		     (filecon "HOME_DIR/\.local/state/wireplumber" dir
@@ -127,8 +106,8 @@
 
 	      (allow subj self (process (getsched setsched)))
 
-	      (call home.conf.read_file_files (subj))
-	      (call home.conf.search_file_dirs (subj))
+	      (call home.data.read_file_files (subj))
+	      (call home.data.search_file_dirs (subj))
 
 	      (call .crypto.read_sysctlfile_pattern.type (subj))
 
@@ -137,15 +116,15 @@
 
 	      (call .nss.passwdgroup.type (subj))
 
+	      (call .pipewire.data.list_file_dirs (subj))
 	      (call .pipewire.data.map_file_files (subj))
 	      (call .pipewire.data.read_file_files (subj))
-	      (call .pipewire.data.search_file_dirs (subj))
 
 	      (call .pipewire.unix_stream_connect (subj))
 
 	      (call .selinux.linked.type (subj))
 
-	      (call .user.home.conf.search_file_pattern.type (subj))
+	      (call .user.home.data.search_file_pattern.type (subj))
 
 	      (call .user.run.search_file_pattern.type (subj))
 
@@ -157,8 +136,6 @@
 (in file.unconfined
 
     (call .wireplumber.data.data_file_type_transition_file (typeattr))
-    (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
-	  (typeattr))
     (call .wireplumber.home.data.user_home_data_file_type_transition_file
 	  (typeattr)))
 
@@ -169,12 +146,6 @@
 
 (in user
 
-    (call .wireplumber.home.conf.manage_file_dirs (subj))
-    (call .wireplumber.home.conf.manage_file_files (subj))
-    (call .wireplumber.home.conf.relabel_file_dirs (subj))
-    (call .wireplumber.home.conf.relabel_file_files (subj))
-    (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
-	  (subj))
     (call .wireplumber.home.data.manage_file_dirs (subj))
     (call .wireplumber.home.data.manage_file_files (subj))
     (call .wireplumber.home.data.relabel_file_dirs (subj))

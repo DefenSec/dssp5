@@ -33,6 +33,8 @@
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
 
+       (call .state.search_file_pattern.type (subj))
+
        (call .sys.modulerequest_subj_system (subj))
 
        (call .user.dbus.client.type (subj))
