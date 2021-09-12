@@ -14,9 +14,6 @@
 
 (in user
 
-    (call systemd.tmpfiles.role (role))
-    (call systemd.tmpfiles.subj_type_transition (subj))
-
     (call systemd.tmpfiles.home.conf.manage_file_dirs (subj))
     (call systemd.tmpfiles.home.conf.manage_file_files (subj))
     (call systemd.tmpfiles.home.conf.map_file_files (subj))
@@ -24,7 +21,8 @@
     (call systemd.tmpfiles.home.conf.relabel_file_files (subj))
     (call systemd.tmpfiles.home.conf.user_home_conf_file_type_transition_file
 	  (subj))
-
+    (call systemd.tmpfiles.role (role))
+    (call systemd.tmpfiles.subj_type_transition (subj))
     (call systemd.tmpfiles.home.data.manage_file_dirs (subj))
     (call systemd.tmpfiles.home.data.manage_file_files (subj))
     (call systemd.tmpfiles.home.data.map_file_files (subj))
@@ -32,7 +30,6 @@
     (call systemd.tmpfiles.home.data.relabel_file_files (subj))
     (call systemd.tmpfiles.home.data.user_home_data_file_type_transition_file
 	  (subj))
-
     (call systemd.tmpfiles.run.manage_file_dirs (subj))
     (call systemd.tmpfiles.run.manage_file_files (subj))
     (call systemd.tmpfiles.run.map_file_files (subj))

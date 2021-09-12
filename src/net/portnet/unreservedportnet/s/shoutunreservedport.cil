@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block shout
+
+       (portcon "dccp" (8000 8001) port_context)
+       (portcon "sctp" (8000 8001) port_context)
+       (portcon "tcp" (8000 8001) port_context)
+       (portcon "udp" (8000 8001) port_context)
+
+       (blockinherit .net.port.unreserved.template))

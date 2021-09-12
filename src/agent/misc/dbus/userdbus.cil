@@ -9,17 +9,15 @@
 
 (in user
 
-    (call dbus.role (role))
-
     (call dbus.home.data.manage_file_files (subj))
     (call dbus.home.data.map_file_files (subj))
     (call dbus.home.data.relabel_file_files (subj))
     (call dbus.home.data.user_home_data_file_type_transition_file (subj))
-
+    (call dbus.role (role))
     (call dbus.run.manage_file_sock_files (subj))
     (call dbus.run.relabel_file_sock_files (subj))
     (call dbus.run.user_run_file_type_transition_file (subj))
-
+    (call dbus.subj_type_transition (subj))
     (call dbus.tmpfs.manage_file_files (subj))
     (call dbus.tmpfs.map_file_files (subj))
     (call dbus.tmpfs.relabel_file_files (subj))
