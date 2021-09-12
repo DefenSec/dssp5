@@ -190,6 +190,9 @@
 	      (call .polkit.check.role (role))
 	      (call .polkit.ttyagent.role (role)))
 
+    (optional unprivuser_rtkit
+	      (call .rtkit.cli.role (role)))
+
     (optional unprivuser_systemddissect
 	      (call .systemd.dissect.role (role))
 	      (call .systemd.dissect.tmp.manage_file_dirs (subj))
