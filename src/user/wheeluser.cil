@@ -65,6 +65,9 @@
 		 (call .polkit.check.role (role))
 		 (call .polkit.ttyagent.role (role)))
 
+       (optional wheeluser_rtkit
+		 (call .rtkit.cli.role (role)))
+
        (optional wheeluser_systemddissect
 		 (call .systemd.dissect.role (role)))
 

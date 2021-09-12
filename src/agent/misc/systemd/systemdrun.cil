@@ -5,6 +5,10 @@
 
     (call .systemd.run.pipe.client.type (subj)))
 
+(in sys
+
+    (call .systemd.run.subj_type_transition (subj)))
+
 (in systemd.run
 
     (macro agent ((type ARG1)(type ARG2))

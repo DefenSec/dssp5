@@ -1,0 +1,178 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .mpd.ncmpc.conf.conf_file_type_transition_file (typeattr))
+    (call .mpd.ncmpc.data.data_file_type_transition_file (typeattr))
+    (call .mpd.ncmpc.home.cache.user_home_cache_file_type_transition_file
+	  (typeattr))
+    (call .mpd.ncmpc.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .mpd.ncmpc.home.conf.user_home_file_type_transition_file (typeattr)))
+
+(in mpd
+
+    (block ncmpc
+
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self (process (getsched setsched)))
+	   (allow subj self create_tcp_socket)
+	   (allow subj self create_unix_stream_socket)
+
+	   (call nameconnect_port_tcp_sockets (subj))
+
+	   (call unix_stream_connect (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call data.execute_file_files (subj))
+	   (call data.list_file_dirs (subj))
+
+	   (call home.cache.manage_file_dirs (subj))
+	   (call home.cache.manage_file_files (subj))
+	   (call home.cache.user_home_cache_file_type_transition_file (subj))
+
+	   (call home.conf.list_file_dirs (subj))
+	   (call home.conf.read_file_files (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .user.home.cache.create_file_dir_pattern.type (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.run.search_file_pattern.type (subj))
+
+	   (optional mpc_usermpd
+		     (call .user.mpd.unix_stream_connect (subj)))
+
+	   (block conf
+
+		  (filecon "/etc/ncmpc" dir file_context)
+		  (filecon "/etc/ncmpc/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "ncmpc")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block data
+
+		  (filecon "/usr/share/ncmpc" dir file_context)
+		  (filecon "/usr/share/ncmpc/.*" any file_context)
+
+		  (macro data_file_type_transition_file ((type ARG1))
+			 (call .data.file_type_transition
+			       (ARG1 file dir "ncmpc")))
+
+		  (blockinherit .file.data.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))
+
+	   (block exec
+
+		  (filecon "/usr/bin/mpc" file file_context)
+		  (filecon "/usr/bin/ncmpc" file file_context))
+
+	   (block home
+
+		  (block cache
+
+			 (filecon "HOME_DIR/\.cache/ncmpc" dir file_context)
+			 (filecon "HOME_DIR/\.cache/ncmpc/.*" any file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_cache_file_type_transition_file
+				((type ARG1))
+				(call .user.home.cache.file_type_transition
+				      (ARG1 file dir "ncmpc")))
+
+			 (blockinherit .file.user.home.cache.template))
+
+		  (block conf
+
+			 (filecon "HOME_DIR/\.config/ncmpc" dir file_context)
+			 (filecon "HOME_DIR/\.config/ncmpc/.*" any file_context)
+
+			 (filecon "HOME_DIR/\.lyrics" dir file_context)
+			 (filecon "HOME_DIR/\.lyrics/.*" any file_context)
+			 (filecon "HOME_DIR/\.ncmpc" dir file_context)
+			 (filecon "HOME_DIR/\.ncmpc/.*" any file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "ncmpc")))
+
+			 (macro user_home_file_type_transition_file
+				((type ARG1))
+				(call .user.home.file_type_transition
+				      (ARG1 file dir ".lyrics"))
+				(call .user.home.file_type_transition
+				      (ARG1 file dir ".ncmpc")))
+
+			 (blockinherit .file.user.home.conf.template)))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmp.base_template))))
+
+(in user
+
+    (call .mpd.ncmpc.home.cache.manage_file_dirs (subj))
+    (call .mpd.ncmpc.home.cache.manage_file_files (subj))
+    (call .mpd.ncmpc.home.cache.map_file_files (subj))
+    (call .mpd.ncmpc.home.cache.relabel_file_dirs (subj))
+    (call .mpd.ncmpc.home.cache.relabel_file_files (subj))
+    (call .mpd.ncmpc.home.cache.user_home_cache_file_type_transition_file
+	  (subj))
+    (call .mpd.ncmpc.home.conf.manage_file_dirs (subj))
+    (call .mpd.ncmpc.home.conf.manage_file_files (subj))
+    (call .mpd.ncmpc.home.conf.map_file_files (subj))
+    (call .mpd.ncmpc.home.conf.relabel_file_dirs (subj))
+    (call .mpd.ncmpc.home.conf.relabel_file_files (subj))
+    (call .mpd.ncmpc.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .mpd.ncmpc.home.conf.user_home_file_type_transition_file (subj))
+    (call .mpd.ncmpc.role (role))
+    (call .mpd.ncmpc.tmp.manage_file_files (subj))
+    (call .mpd.ncmpc.tmp.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .mpd.ncmpc.role (role)))
