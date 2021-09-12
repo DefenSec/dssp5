@@ -305,6 +305,8 @@
 
 	      (call .nss.passwdgroup.type (subj))
 
+	      (call .user.home.conf.search_file_pattern.type (subj))
+
 	      (call .user.run.search_file_pattern.type (subj))
 
 	      (call .user.systemd.agent (subj exec.file))
