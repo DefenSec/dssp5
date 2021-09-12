@@ -5,6 +5,8 @@
 
        (blockinherit .sys.agent.template)
 
+       (call exec.execute_file_files (subj))
+
        (call .cache.search_file_pattern.type (subj))
 
        (call .exec.execute_file_files (subj))
@@ -23,7 +25,7 @@
        (call .pam.state.manage_file_files (subj))
        (call .pam.state.readwrite_file_dirs (subj))
 
-       (call .perl5.data.read_file_pattern.type (subj))
+       (call .perl5.read_file_pattern.type (subj))
 
        (call .pkgmgr.cache.manage_file_files (subj))
        (call .pkgmgr.cache.readwrite_file_dirs (subj))

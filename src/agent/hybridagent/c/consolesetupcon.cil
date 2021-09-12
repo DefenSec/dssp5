@@ -56,8 +56,6 @@
 
 	   (call .rbac.objchangesys.type (subj))
 
-	   (call .rbacsep.constrained.type (subj))
-
 	   (call .root.list_file_dirs (subj))
 
 	   (call .shell.exec.execute_file_files (subj))

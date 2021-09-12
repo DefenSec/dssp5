@@ -129,7 +129,7 @@
 	      (call .locale.data.map_file_pattern.type (subj))
 	      (call .locale.read_file_pattern.type (subj))
 
-	      (call .perl5.data.read_file_pattern.type (subj))
+	      (call .perl5.read_file_pattern.type (subj))
 
 	      (call .pkgmgr.state.manage_file_files (subj))
 	      (call .pkgmgr.state.readwrite_file_dirs (subj))
@@ -140,6 +140,8 @@
 	      (call .rbacsep.usefdsource.type (subj))
 
 	      (call .shell.exec.execute_file_files (subj))
+
+	      (call .state.search_file_pattern.type (subj))
 
 	      (call .tmp.deletename_file_dirs (subj))
 
