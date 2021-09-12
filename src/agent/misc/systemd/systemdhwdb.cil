@@ -16,14 +16,10 @@
 
 	   (call systemd.journal.relay_msgs.type (subj))
 
-	   (call systemd.udev.conf.conf_file_type_transition_file (subj))
-	   (call systemd.udev.conf.manage_file_dirs (subj))
-	   (call systemd.udev.conf.manage_file_files (subj))
-	   (call systemd.udev.conf.map_file_files (subj))
-	   (call systemd.udev.conf.relabel_file_files (subj))
 	   (call systemd.udev.data.lib_file_type_transition_file (subj))
 	   (call systemd.udev.data.manage_file_dirs (subj))
 	   (call systemd.udev.data.manage_file_files (subj))
+	   (call systemd.udev.data.relabel_file_files (subj))
 
 	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
