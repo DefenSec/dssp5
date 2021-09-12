@@ -101,8 +101,6 @@
 (in user
 
     (call systemd.forked.type (subj))
-    (call systemd.role (role))
-
     (call systemd.home.conf.manage_file_dirs (subj))
     (call systemd.home.conf.manage_file_files (subj))
     (call systemd.home.conf.manage_file_lnk_files (subj))
@@ -111,17 +109,14 @@
     (call systemd.home.conf.relabel_file_files (subj))
     (call systemd.home.conf.relabel_file_lnk_files (subj))
     (call systemd.home.conf.user_home_conf_file_type_transition_file (subj))
-
     (call systemd.inaccessible.run.dontaudit_getattr_file (subj))
-
     (call systemd.notify.run.manage_file_sock_files (subj))
     (call systemd.notify.run.relabel_file_sock_files (subj))
     (call systemd.notify.run.user_systemd_run_file_type_transition_file (subj))
-
     (call systemd.private.run.manage_file_sock_files (subj))
     (call systemd.private.run.relabel_file_sock_files (subj))
     (call systemd.private.run.user_systemd_run_file_type_transition_file (subj))
-
+    (call systemd.role (role))
     (call systemd.run.manage_file_dirs (subj))
     (call systemd.run.manage_file_files (subj))
     (call systemd.run.manage_file_lnk_files (subj))
@@ -130,10 +125,8 @@
     (call systemd.run.relabel_file_files (subj))
     (call systemd.run.relabel_file_lnk_files (subj))
     (call systemd.run.user_run_file_type_transition_file (subj))
-
     (call systemd.tmpfs.manage_file_files (subj))
     (call systemd.tmpfs.relabel_file_files (subj))
-
     (call systemd.unit.run.manage_file_dirs (subj))
     (call systemd.unit.run.manage_file_files (subj))
     (call systemd.unit.run.manage_file_lnk_files (subj))
@@ -142,7 +135,6 @@
     (call systemd.unit.run.relabel_file_files (subj))
     (call systemd.unit.run.relabel_file_lnk_files (subj))
     (call systemd.unit.run.user_systemd_run_file_type_transition_file (subj))
-
     (call systemd.unit.control_file_services (subj))
     (call systemd.unit.lib_file_type_transition_file (subj))
     (call systemd.unit.read_file_files (subj))
@@ -208,8 +200,8 @@
 
 	   (allow subj self (cap_userns (sys_admin sys_ptrace)))
 	   (allow subj self
-		  (process (getcap getsched setcap setexec setfscreate setsched
-				   setsockcreate)))
+		  (process (getcap getsched setcap setexec setfscreate setrlimit
+				   setsched setsockcreate)))
 	   (allow subj self (bpf (prog_load prog_run)))
 	   (allow subj self create_netlink_kobject_uevent_socket)
 	   (allow subj self create_netlink_selinux_socket)

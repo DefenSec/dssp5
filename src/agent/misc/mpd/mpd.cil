@@ -99,6 +99,8 @@
 	   (call .nss.hosts.type (typeattr))
 	   (call .nss.passwdgroup.type (typeattr))
 
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
 	   (call .random.read_nodedev_chr_files (typeattr))
 
 	   (call .selinux.linked.type (typeattr))
@@ -149,7 +151,9 @@
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_files)
 	   (blockinherit .file.macro_template_sock_files)
-	   (blockinherit .file.run.base_template))
+	   (blockinherit .file.run.base_template)
+
+	   (call .rbacsep.exempt.obj.type (file)))
 
     (block state
 
