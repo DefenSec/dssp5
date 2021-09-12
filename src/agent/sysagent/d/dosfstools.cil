@@ -15,6 +15,7 @@
        (call .stordev.readwrite_all_blk_files (subj))
        (call .stordev.readwrite_all_chr_files (subj))
 
+       (call .systemd.fsck.readwrite_subj_unix_stream_sockets (subj))
        (call .systemd.fsck.writeinherited_subj_fifo_files (subj))
        (call .systemd.fsck.use_subj_fds (subj))
 
