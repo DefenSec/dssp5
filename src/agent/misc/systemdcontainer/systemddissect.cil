@@ -79,6 +79,9 @@
 	   (call .xattr.mount_fs (subj))
 	   (call .xattr.unmount_fs (subj))
 
+	   (optional systemddissect_dosfstools
+		     (call .dosfstools.subj_type_transition (subj)))
+
 	   (optional systemddissect_e2fsprogs
 		     (call .e2fsprogs.subj_type_transition (subj)))
 

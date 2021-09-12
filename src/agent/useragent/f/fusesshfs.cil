@@ -1,0 +1,46 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block fusesshfs
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_unix_stream_socket)
+
+       (call .cpu.read_sysfile_files (subj))
+       (call .cpu.search_sysfile_pattern.type (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .fs.read_sysctlfile_files (subj))
+       (call .fs.search_sysctlfile_pattern.type (subj))
+
+       (call .fuse.readwrite_stordev_chr_files (subj))
+
+       (call .fuse3.subj_type_transition (subj))
+       (call .fuse3.use_subj_fds (subj))
+
+       (call .media.home.mounton_file_dirs (subj))
+       (call .media.home.readwrite_file_dirs (subj))
+
+       (call .openssh.client.subj_type_transition (subj))
+
+       (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+       (call .stordev.readwrite.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/sshfs" file file_context)))
+
+(in fuse3
+
+    (call .fusesshfs.readwrite_subj_unix_stream_sockets (subj)))
+
+(in user
+
+    (call .fusesshfs.role (role)))
+
+(in wheel
+
+    (call .fusesshfs.role (role)))

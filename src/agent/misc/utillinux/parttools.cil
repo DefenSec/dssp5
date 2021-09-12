@@ -11,7 +11,7 @@
 
        (call .devices.read_sysfile_pattern.type (subj))
 
-       (call .inputrc.conf.read_file_files (subj))
+       (call .inputrc.read_file_pattern.type (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
