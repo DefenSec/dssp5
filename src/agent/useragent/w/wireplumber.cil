@@ -10,12 +10,17 @@
        (allow subj self create_netlink_kobject_uevent_socket)
        (allow subj self (bluetooth_socket (listen)))
 
+       (call data.list_file_dirs (subj))
+       (call data.map_file_files (subj))
        (call data.read_file_files (subj))
-       (call data.search_file_dirs (subj))
 
        (call home.conf.manage_file_dirs (subj))
        (call home.conf.manage_file_files (subj))
        (call home.conf.user_home_conf_file_type_transition_file (subj))
+
+       (call home.data.manage_file_dirs (subj))
+       (call home.data.manage_file_files (subj))
+       (call home.data.user_home_data_file_type_transition_file (subj))
 
        (call .bus.list_sysfile_pattern.type (subj))
        (call .bus.read_sysfile_lnk_files (subj))
@@ -42,6 +47,8 @@
 
        (call .user.home.conf.create_file_dir_pattern.type (subj))
 
+       (call .user.home.data.create_file_dir_pattern.type (subj))
+
        (call .user.dbus.nameclient.type (subj))
 
        (call .user.run.search_file_pattern.type (subj))
@@ -65,6 +72,9 @@
 		     (call .data.file_type_transition
 			   (ARG1 file dir "wireplumber")))
 
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
 	      (blockinherit .file.data.template))
 
        (block exec
@@ -86,7 +96,21 @@
 
 		     (blockinherit .file.macro_template_dirs)
 		     (blockinherit .file.macro_template_files)
-		     (blockinherit .file.user.home.conf.base_template)))
+		     (blockinherit .file.user.home.conf.base_template))
+
+	      (block data
+
+		     (filecon "HOME_DIR/\.local/state/wireplumber" dir
+			      file_context)
+		     (filecon "HOME_DIR/\.local/state/wireplumber/.*" any
+			      file_context)
+
+		     (macro user_home_data_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.data.file_type_transition
+				  (ARG1 file dir "wireplumber")))
+
+		     (blockinherit .file.user.home.data.template)))
 
        (block unit
 
@@ -134,6 +158,8 @@
 
     (call .wireplumber.data.data_file_type_transition_file (typeattr))
     (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr))
+    (call .wireplumber.home.data.user_home_data_file_type_transition_file
 	  (typeattr)))
 
 (in pipewire
@@ -148,6 +174,12 @@
     (call .wireplumber.home.conf.relabel_file_dirs (subj))
     (call .wireplumber.home.conf.relabel_file_files (subj))
     (call .wireplumber.home.conf.user_home_conf_file_type_transition_file
+	  (subj))
+    (call .wireplumber.home.data.manage_file_dirs (subj))
+    (call .wireplumber.home.data.manage_file_files (subj))
+    (call .wireplumber.home.data.relabel_file_dirs (subj))
+    (call .wireplumber.home.data.relabel_file_files (subj))
+    (call .wireplumber.home.data.user_home_data_file_type_transition_file
 	  (subj))
     (call .wireplumber.role (role))
     (call .wireplumber.util.role (role)))

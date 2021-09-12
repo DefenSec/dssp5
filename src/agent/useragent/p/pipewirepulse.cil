@@ -46,6 +46,8 @@
 
 	   (call .user.dbus.nameclient.type (subj))
 
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
 	   (call .user.run.deletename_file_dirs (subj))
 
 	   (call .user.systemd.agent (subj exec.file))

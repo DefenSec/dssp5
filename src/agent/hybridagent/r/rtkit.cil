@@ -1,0 +1,94 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block rtkit
+
+       (blockinherit .dbus.nameclient.template)
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (setgid setuid sys_chroot sys_nice)))
+       (allow subj self (cap_userns (sys_ptrace)))
+       (allow subj self (process (setcap setrlimit setsched)))
+       (allow subj self create_unix_dgram_socket)
+       (dontaudit subj self (capability (sys_ptrace)))
+
+       (call client.sendmsg_all_dbus.type (subj))
+       (call client.setsched_all_processes (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .proc.list_fs_dirs (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .subj.common.getsched_all_processes (subj))
+       (call .subj.common.read_all_states (subj))
+       (call .subj.dontaudit_read_all_states (subj))
+
+       (call .sys.getsched_subj_processes (subj))
+       (call .sys.read_subj_states (subj))
+
+       (call .sys.user.getsched_subj_processes (subj))
+       (call .sys.user.read_subj_states (subj))
+       (call .sys.user.sendmsg_subj_dbus.type (subj))
+       (call .sys.user.setsched_subj_processes (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (optional rtkit_polkit
+		 (call .polkit.sendmsg_subj_dbus.type (subj)))
+
+       (block cli
+
+	      (blockinherit .dbus.client.template)
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self create_unix_stream_socket)
+
+	      (call rtkit.sendmsg_subj_dbus.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/rtkitctl" file file_context)))
+
+       (block client
+
+	      (macro setsched_all_processes ((type ARG1))
+		     (allow ARG1 typeattr (process (setsched))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call sendmsg_subj_dbus.type (typeattr))
+
+	      (block sendmsg_all_dbus
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow client.typeattr typeattr (dbus (send_msg)))))
+
+       (block exec
+
+	      (filecon "/usr/bin/rtkit-daemon" file file_context))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/rtkit-daemon\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)
+
+	      (call .dbus.activated.unit.type (file))))
