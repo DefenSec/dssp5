@@ -65,7 +65,7 @@
        ;; consolesetup copies /dev/null to /var/tmp/initramfs.*
        (call .null.delete_nodedev_chr_files (subj))
 
-       (call .perl5.data.read_file_files (subj))
+       (call .perl5.data.read_file_pattern.type (subj))
 
        (call .pkgmgr.conf.read_file_files (subj))
        (call .pkgmgr.state.manage_file_files (subj))

@@ -1,0 +1,57 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block reprepro
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (getsched)))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+       (call .ci.map_fs_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+       (call .dos.map_fs_files (subj))
+
+       (call .exec.execute_file_files (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+       (call .fuse.map_fs_files (subj))
+
+       (call .gnupg.subj_type_transition (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .media.search_file_pattern.type (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+       (call .nfs.map_fs_files (subj))
+
+       (call .tmp.search_file_dirs (subj))
+
+       (call .user.home.manage_file_dirs (subj))
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.map_file_files (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/changestool" file file_context)
+	      (filecon "/usr/bin/reprepro" file file_context)
+	      (filecon "/usr/bin/rredtool" file file_context)))
+
+(in user
+
+    (call .reprepro.role (role)))
+
+(in wheel
+
+    (call .reprepro.role (role)))
