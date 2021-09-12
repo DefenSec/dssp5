@@ -92,7 +92,7 @@
 
 		  (call .meminfo.read_procfile_files (typeattr))
 
-		  (call .mime.data.read_file_pattern.type (typeattr))
+		  (call .mime.read_file_pattern.type (typeattr))
 
 		  (call .net.traverse_procfile_pattern.type (typeattr))
 
@@ -142,8 +142,7 @@
 
 		  (call .sysfile.dontaudit_listinherited_all_dirs (typeattr))
 
-		  (call .terminfo.conf.read_file_pattern.type (typeattr))
-		  (call .terminfo.data.read_file_pattern.type (typeattr))
+		  (call .terminfo.read_file_pattern.type (typeattr))
 
 		  (call .tty.read_procfile_files (typeattr))
 		  (call .tty.search_procfile_dirs (typeattr))
