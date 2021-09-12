@@ -147,6 +147,8 @@
 
        (call .meminfo.read_procfile_files (subj))
 
+       (call .mime.read_file_pattern.type (subj))
+
        (call .mpd.nameconnect_port_tcp_sockets (subj))
 
        (call .net.nodebind_netnode_tcp_sockets (subj))
@@ -304,6 +306,8 @@
 	      (call .devpts.search_fs_pattern.type (subj))
 
 	      (call .nss.passwdgroup.type (subj))
+
+	      (call .user.home.conf.search_file_pattern.type (subj))
 
 	      (call .user.run.search_file_pattern.type (subj))
 
