@@ -42,6 +42,8 @@
 
 	   (call .dbus.client.type (subj))
 
+	   (call .root.list_file_dirs (subj))
+
 	   (call .tmp.deletename_fs_dirs (subj))
 
 	   (call .user.dbus.nameclient.type (subj))
