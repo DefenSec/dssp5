@@ -16,8 +16,10 @@
        (call home.data.manage_file_files (subj))
        (call home.data.user_home_data_file_type_transition_file (subj))
 
+       (call tmp.manage_file_dirs (subj))
        (call tmp.manage_file_files (subj))
-       (call tmp.tmp_file_type_transition_file (subj))
+       (call tmp.tmp_file_type_transition_file (subj dir "gh-cli-cache"))
+       (call tmp.tmp_file_type_transition_file (subj file "*"))
 
        (call .cert.read_file_pattern.type (subj))
 
@@ -99,17 +101,20 @@
 
        (block tmp
 
-	      (macro tmp_file_type_transition_file ((type ARG1))
+	      (macro tmp_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
 		     (call .tmp.file_type_transition
-			   (ARG1 file file "*")))
+			   (ARG1 file ARG2 ARG3)))
 
+	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.user.tmp.base_template)))
 
 (in file.unconfined
 
     (call .gh.home.conf.user_home_conf_file_type_transition_file (typeattr))
-    (call .gh.home.data.user_home_data_file_type_transition_file (typeattr)))
+    (call .gh.home.data.user_home_data_file_type_transition_file (typeattr))
+    (call .gh.tmp.tmp_file_type_transition_file (typeattr dir "gh-cli-cache")))
 
 (in openssh.client
 
@@ -130,7 +135,8 @@
     (call .gh.home.data.user_home_data_file_type_transition_file (subj))
     (call .gh.role (role))
     (call .gh.tmp.manage_file_files (subj))
-    (call .gh.tmp.relabel_file_files (subj)))
+    (call .gh.tmp.relabel_file_files (subj))
+    (call .gh.tmp.tmp_file_type_transition_file (subj dir "gh-cli-cache")))
 
 (in wheel
 
