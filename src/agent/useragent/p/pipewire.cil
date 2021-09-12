@@ -28,12 +28,16 @@
 
        (call .dbus.client.type (subj))
 
+       (call .root.list_file_dirs (subj))
+
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
 
        (call .sys.modulerequest_subj_system (subj))
 
        (call .user.dbus.client.type (subj))
+
+       (call .user.home.conf.search_file_pattern.type (subj))
 
        (call .user.run.deletename_file_dirs (subj))
 
@@ -67,6 +71,8 @@
 	      (call .locale.read_file_pattern.type (typeattr))
 
 	      (call .nss.passwdgroup.type (typeattr))
+
+	      (call .rtkit.client.type (typeattr))
 
 	      (call .selinux.linked.type (typeattr))
 
