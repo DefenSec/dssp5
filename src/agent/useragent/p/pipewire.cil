@@ -1,0 +1,191 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block pipewire
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (blockinherit .dbus.client.macro_template)
+       (blockinherit .user.agent.template)
+
+       (allow subj self (unix_stream_socket (accept listen)))
+
+       (call common.type (subj))
+
+       (call run.manage_file_files (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.user_run_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .class.traverse_sysfile_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dbus.client.type (subj))
+
+       (call .snd.map_nodedev_chr_files (subj))
+       (call .snd.readwrite_nodedev_chr_files (subj))
+
+       (call .sys.modulerequest_subj_system (subj))
+
+       (call .user.dbus.client.type (subj))
+
+       (call .user.run.deletename_file_dirs (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+       (call .user.systemd.service.nnptransition.type (subj))
+       (call .user.systemd.socketactivated.unixstream.type (subj))
+
+       (call .v4l.readwrite_nodedev_chr_files (subj))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (process (getsched setrlimit setsched)))
+	      (allow typeattr self create_unix_dgram_socket)
+
+	      (call data.list_file_dirs (typeattr))
+	      (call data.map_file_files (typeattr))
+	      (call data.read_file_files (typeattr))
+
+	      (call .alsa.data.read_file_files (typeattr))
+	      (call .alsa.data.search_file_dirs (typeattr))
+
+	      (call .devices.read_sysfile_files (typeattr))
+	      (call .devices.traverse_sysfile_pattern.type (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .nss.passwdgroup.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+
+	      (call .systemd.journal.relay_msgs.type (typeattr)))
+
+       (block data
+
+	      (filecon "/usr/share/pipewire" dir file_context)
+	      (filecon "/usr/share/pipewire/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "pipewire")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/pipewire" file file_context))
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/pipewire-([0-9]+)?" socket
+		       file_context)
+	      (filecon "/run/user/%{USERID}/pipewire-([0-9]+)?\.lock" file
+		       file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "pipewire-0.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "pipewire-1.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "pipewire-2.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file file "pipewire-3.lock"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "pipewire-0"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "pipewire-1"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "pipewire-2"))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "pipewire-3")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.run.base_template)
+
+	      (call .user.systemd.socketactivated.type (file)))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/user/pipewire\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/user/pipewire\.socket.*" file
+		       file_context)
+
+	      (blockinherit .file.user.unit.template))
+
+       (block util
+
+	      (blockinherit .user.agent.template)
+
+	      (block exec
+
+		     (filecon "/usr/bin/pw-cat" file file_context)
+		     (filecon "/usr/bin/pw-cli" file file_context)
+		     (filecon "/usr/bin/pw-dot" file file_context)
+		     (filecon "/usr/bin/pw-dump" file file_context)
+		     (filecon "/usr/bin/pw-link" file file_context)
+		     (filecon "/usr/bin/pw-loopback" file file_context)
+		     (filecon "/usr/bin/pw-metadata" file file_context)
+		     (filecon "/usr/bin/pw-mididump" file file_context)
+		     (filecon "/usr/bin/pw-mon" file file_context)
+		     (filecon "/usr/bin/pw-profiler" file file_context)
+		     (filecon "/usr/bin/pw-reserve" file file_context)
+		     (filecon "/usr/bin/pw-top" file file_context)
+		     (filecon "/usr/bin/spa-acp-tool" file file_context)
+		     (filecon "/usr/bin/spa-inspect" file file_context)
+		     (filecon "/usr/bin/spa-json-dump" file file_context)
+		     (filecon "/usr/bin/spa-monitor" file file_context)
+		     (filecon "/usr/bin/spa-resample" file file_context))))
+
+(in file.unconfined
+
+    (call .pipewire.data.data_file_type_transition_file (typeattr))
+    (call .pipewire.run.user_run_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .pipewire.role (role))
+    (call .pipewire.run.manage_file_files (subj))
+    (call .pipewire.run.manage_file_sock_files (subj))
+    (call .pipewire.run.relabel_file_files (subj))
+    (call .pipewire.run.relabel_file_sock_files (subj))
+    (call .pipewire.run.user_run_file_type_transition_file (subj))
+    (call .pipewire.tmpfs.manage_file_files (subj))
+    (call .pipewire.tmpfs.relabel_file_files (subj))
+    (call .pipewire.util.role (role)))
+
+(in wheel
+
+    (call .pipewire.role (role))
+    (call .pipewire.util.role (role)))

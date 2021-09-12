@@ -8,9 +8,14 @@
 	      (filecon "/usr/share/alsa" dir file_context)
 	      (filecon "/usr/share/alsa/.*" any file_context)
 
+	      (filecon "/usr/share/alsa-card-profile" dir file_context)
+	      (filecon "/usr/share/alsa-card-profile/.*" any file_context)
+
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
-			   (ARG1 file dir "alsa")))
+			   (ARG1 file dir "alsa"))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "alsa-card-profile")))
 
 	      (blockinherit .file.data.base_template)
 	      (blockinherit .file.macro_template_dirs)
