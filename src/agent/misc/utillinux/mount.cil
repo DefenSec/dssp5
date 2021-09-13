@@ -74,6 +74,8 @@
        (call .sys.dontaudit_setsched_subj_processes (subj))
        (call .sys.modulerequest_subj_system (subj))
 
+       (call .sys.tmp.appendinherited_file_files (subj))
+
        ;; /var/run
        (call .var.read_file_lnk_files (subj))
 
@@ -168,3 +170,8 @@
 (in file.unconfined
 
     (call .mount.run.run_file_type_transition_file (typeattr)))
+
+(in sys.tmp
+
+    ;; for dssp5-debian-createtar
+    (call .mount.mountpoint.type (file)))
