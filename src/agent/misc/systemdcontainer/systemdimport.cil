@@ -75,6 +75,8 @@
     (call .selinux.file.read_file_pattern.type (subj))
     (call .selinux.mapread_fs_pattern.type (subj))
 
+    (call .sys.tmp.readinherited_file_files (subj))
+
     (call .tmp.deletename_file_dirs (subj))
 
     (call .manage_unlabeled_chr_files (subj))

@@ -75,7 +75,7 @@
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.status_system (subj))
 
-	   (call .sys.tmp.open_file_files (subj))
+	   (call .sys.tmp.read_file_files (subj))
 
 	   (call .tmp.getattr_fs_pattern.type (subj))
 	   (call .tmp.search_file_pattern.type (subj))

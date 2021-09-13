@@ -14,9 +14,6 @@
 	   (macro map_file_files ((type ARG1))
 		  (allow ARG1 file (file (map))))
 
-	   (macro open_file_files ((type ARG1))
-		  (allow ARG1 file (file (open))))
-
 	   (macro tmp_file_type_transition_file
 		  ((type ARG1)(class ARG2)(name ARG3))
 		  (call .tmp.file_type_transition
