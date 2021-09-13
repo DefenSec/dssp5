@@ -7,16 +7,38 @@
 
 	   (blockinherit .sys.agent.template)
 
+	   (allow subj self
+		  (capability (chown dac_override dac_read_search fowner
+				     fsetid)))
+
+	   (call cache.manage_file_dirs (subj))
+	   (call cache.manage_file_files (subj))
+	   (call cache.map_file_files (subj))
+	   (call cache.cache_file_type_transition_file (subj))
+
+	   (call man.conf.read_file_files (subj))
+
+	   (call man.data.read_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
 	   (block cache
 
-		  (filecon "/var/cache/man" file file_context)
+		  (filecon "/var/cache/man" dir file_context)
+		  (filecon "/var/cache/man/.*" any file_context)
 
 		  (macro cache_file_type_transition_file ((type ARG1))
 			 (call .cache.file_type_transition
 			       (ARG1 file dir "man")))
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
 
 		  (blockinherit .file.cache.template))
 
