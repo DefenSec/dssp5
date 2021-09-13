@@ -29,6 +29,8 @@
 
 	   (call .machineid.read_file_files (subj))
 
+	   (call .ns.read_fs_pattern.type (subj))
+
 	   (call .proc.getattr_fs_pattern.type (subj))
 
 	   (call .random.read_sysctlfile_pattern.type (subj))

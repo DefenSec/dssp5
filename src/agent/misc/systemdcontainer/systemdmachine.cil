@@ -113,6 +113,7 @@
 	   (call systemd.nspawn.container.obj.delete_all_lnk_files (subj))
 	   (call systemd.nspawn.container.obj.delete_all_sock_files (subj))
 
+	   (call systemd.nspawn.container.obj.getattr_all_fs (subj))
 	   (call systemd.nspawn.container.obj.manage_all_files (subj))
 	   (call systemd.nspawn.container.obj.read_all_lnk_files (subj))
 	   (call systemd.nspawn.container.obj.readwrite_all_chr_files (subj))
@@ -271,12 +272,11 @@
 
     (call .user.home.readinherited_file_files (subj)))
 
-;; TODO
-;;(in systemd.journalctl
-;;
-;;    (blockinherit .dbus.client.template)
-;;
-;;    (call systemd.machine.sendmsg_subj_dbus.type (subj)))
+(in systemd.journalctl
+
+    (blockinherit .dbus.client.template)
+
+    (call systemd.machine.sendmsg_subj_dbus.type (subj)))
 
 (in systemd.stdiobridge
 

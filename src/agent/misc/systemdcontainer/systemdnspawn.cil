@@ -38,6 +38,14 @@
     (call systemd.nspawn.container.subj.read_all_states (subj))
     (call systemd.nspawn.container.unit.status_all_services (subj)))
 
+(in systemd.hostnamectl
+
+    (allow subj self (capability (sys_admin sys_chroot)))
+    (allow subj self
+	   (cap_userns (setgid setuid sys_admin sys_chroot sys_ptrace)))
+
+    (call systemd.nspawn.container.client.type (subj)))
+
 (in systemd.import
 
     (call systemd.nspawn.container.obj.manage_all_chr_files (subj))
