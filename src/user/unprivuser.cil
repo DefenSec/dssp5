@@ -165,6 +165,12 @@
     (optional unprivuser_mount
 	      (call .mount.role (role)))
 
+    (optional unprivuser_mpg123
+	      (call .mpg123.role (role))
+	      (call .mpg123.tmpfs.manage_file_files (subj))
+	      (call .mpg123.tmpfs.map_file_files (subj))
+	      (call .mpg123.tmpfs.relabel_file_files (subj)))
+
     (optional unprivuser_opensshclient
 	      (call .openssh.add.role (role))
 	      (call .openssh.add.tmp.manage_file_files (subj))

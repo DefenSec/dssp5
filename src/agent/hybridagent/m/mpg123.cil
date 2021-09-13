@@ -1,0 +1,89 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mpg123
+
+       (blockinherit .hybrid.agent.template)
+
+       (allow subj self create_tcp_socket)
+       (allow subj self create_sem)
+       (allow subj self create_shm)
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .alsa.data.read_file_files (subj))
+       (call .alsa.data.search_file_dirs (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .http.nameconnect_port_tcp_sockets (subj))
+       (call .http.https.nameconnect_port_tcp_sockets (subj))
+
+       (call .media.search_file_dirs (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .machineid.read_file_files (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .shout.nameconnect_port_tcp_sockets (subj))
+
+       (call .snd.readwrite_nodedev_chr_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
+
+       (optional mpg123_mediahomefile
+
+		 (call .media.home.traverse_file_pattern.type (subj)))
+
+       (optional mpg123_pipewirepulse
+		 (call .pipewire.pulse.client.type (subj)))
+
+       (block exec
+
+	      (filecon "/usr/bin/mpg123-alsa" file file_context)
+	      (filecon "/usr/bin/mpg123-id3dump" file file_context)
+	      (filecon "/usr/bin/mpg123-jack" file file_context)
+	      (filecon "/usr/bin/mpg123-nas" file file_context)
+	      (filecon "/usr/bin/mpg123-openal" file file_context)
+	      (filecon "/usr/bin/mpg123-oss" file file_context)
+	      (filecon "/usr/bin/mpg123-portaudio" file file_context)
+	      (filecon "/usr/bin/mpg123-pulse" file file_context)
+	      (filecon "/usr/bin/mpg123-strip" file file_context)
+	      (filecon "/usr/bin/mpg123.bin" file file_context)
+	      (filecon "/usr/bin/out123" file file_context))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)))
