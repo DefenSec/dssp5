@@ -145,6 +145,15 @@
 	      (call .consolesetup.setupcon.tmp.manage_file_files (subj))
 	      (call .consolesetup.setupcon.tmp.relabel_file_files (subj)))
 
+    (optional unprivuser_glib2
+	      (call .glib2.home.conf.manage_file_dirs (subj))
+	      (call .glib2.home.conf.manage_file_files (subj))
+	      (call .glib2.home.conf.map_file_files (subj))
+	      (call .glib2.home.conf.relabel_file_dirs (subj))
+	      (call .glib2.home.conf.relabel_file_files (subj))
+	      (call .glib2.home.conf.user_home_conf_file_type_transition_file
+		    (subj)))
+
     (optional unprivuser_initrcfile
 	      ;; bash completion
 	      (call .initrc.auditexecuteaccess_file_files (subj))
@@ -209,6 +218,9 @@
 
     (optional unprivuser_systemdportablectl
 	      (call .systemd.portablectl.role (role)))
+
+    (optional unprivuser_traceroute
+	      (call .traceroute.role (role)))
 
     (optional unprivuser_usermailfile
 	      (call mail.manage_file_pattern.type (subj))

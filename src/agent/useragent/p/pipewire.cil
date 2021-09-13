@@ -22,13 +22,15 @@
        (call tmpfs.map_file_files (subj))
        (call tmpfs.tmp_fs_type_transition_file (subj))
 
-       (call .class.traverse_sysfile_pattern.type (subj))
+       (call util.read_subj_states (subj))
 
-       (call .crypto.read_sysctlfile_pattern.type (subj))
+       (call .class.traverse_sysfile_pattern.type (subj))
 
        (call .dbus.client.type (subj))
 
        (call .root.list_file_dirs (subj))
+
+       (call .rtkit.client.type (subj))
 
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
@@ -38,8 +40,6 @@
        (call .sys.modulerequest_subj_system (subj))
 
        (call .user.dbus.client.type (subj))
-
-       (call .user.home.conf.search_file_pattern.type (subj))
 
        (call .user.run.deletename_file_dirs (subj))
 
@@ -66,6 +66,8 @@
 	      (call .alsa.data.read_file_files (typeattr))
 	      (call .alsa.data.search_file_dirs (typeattr))
 
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
 	      (call .devices.read_sysfile_files (typeattr))
 	      (call .devices.traverse_sysfile_pattern.type (typeattr))
 
@@ -74,11 +76,11 @@
 
 	      (call .nss.passwdgroup.type (typeattr))
 
-	      (call .rtkit.client.type (typeattr))
-
 	      (call .selinux.linked.type (typeattr))
 
-	      (call .systemd.journal.relay_msgs.type (typeattr)))
+	      (call .systemd.journal.relay_msgs.type (typeattr))
+
+	      (call .user.home.conf.search_file_pattern.type (subj)))
 
        (block data
 
@@ -155,6 +157,14 @@
        (block util
 
 	      (blockinherit .user.agent.template)
+
+	      (call unix_stream_connect (subj))
+
+	      (call common.type (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (call .user.run.search_file_pattern.type (subj))
 
 	      (block exec
 

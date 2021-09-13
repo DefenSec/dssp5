@@ -77,5 +77,8 @@
        (optional wheeluser_systemdportablectl
 		 (call .systemd.portablectl.role (role)))
 
+       (optional wheeluser_traceroute
+		 (call .traceroute.role (role)))
+
        (optional wheeluser_wpasupplicant
 		 (call .wpasupplicant.cli.role (role))))
