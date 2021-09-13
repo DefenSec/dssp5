@@ -113,7 +113,6 @@
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .data.list_file_dirs (subj))
-	   (call .data.read_file_lnk_files (subj))
 
 	   (call .dbus.client.type (subj))
 
@@ -227,13 +226,14 @@
 		     (call .gnupg.subj_type_transition (subj)))
 
 	   (optional systemdanalyze_groffconffile
-		     (call .groff.conf.list_file_dirs (subj))
-		     (call .groff.conf.read_file_files (subj)))
+		     (call .groff.conf.read_file_pattern.type (subj)))
 
 	   (optional systemdanalyze_groffdatafile
-		     (call .groff.data.list_file_dirs (subj))
-		     (call .groff.data.read_file_files (subj))
-		     (call .groff.data.read_file_lnk_files (subj)))
+		     (call .groff.data.read_file_pattern.type (subj)))
+
+	   (optional systemdanalyze_mandb
+		     (call .man.db.cache.map_file_pattern.type (subj))
+		     (call .man.db.cache.read_file_pattern.type (subj)))
 
 	   (optional systemdanalyze_opensshclient
 		     (call .openssh.client.subj_type_transition (subj)))

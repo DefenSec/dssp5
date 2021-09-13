@@ -20,7 +20,7 @@
 	      (block exec
 
 		     (filecon
-		      "/usr/lib/glib-2\.0/([^/]+/)?/glib-compile-schemas" file
+		      "/usr/lib/([^/]+/)?glib-2\.0/glib-compile-schemas" file
 		      file_context)))
 
        (block data
@@ -73,7 +73,7 @@
 		     (block exec
 
 			    (filecon
-			     "/usr/lib/glib-2\.0/([^/]+/)?gio-querymodules"
+			     "/usr/lib/([^/]+/)?glib-2\.0/gio-querymodules"
 			     file file_context))))
 
        (block home

@@ -48,7 +48,6 @@
 		  (call .data.list_file_dirs (typeattr))
 		  (call .data.map_file_files (typeattr))
 		  (call .data.read_file_files (typeattr))
-		  (call .data.traverse_file_pattern.type (typeattr))
 
 		  (call .dev.dontaudit_getattr_all_chr_files (typeattr))
 		  (call .dev.getattr_all_chr_files (typeattr))
@@ -157,13 +156,18 @@
 		  (call .xattr.getattr_fs_pattern.type (typeattr))
 
 		  (optional usersandbox_agent_groffconffile
-			    (call .groff.conf.list_file_dirs (typeattr))
-			    (call .groff.conf.read_file_files (typeattr)))
+			    (call .groff.conf.read_file_pattern.type
+				  (typeattr)))
 
 		  (optional usersandbox_agent_groffdatafile
-			    (call .groff.data.list_file_dirs (typeattr))
-			    (call .groff.data.read_file_files (typeattr))
-			    (call .groff.data.read_file_lnk_files (typeattr)))
+			    (call .groff.data.read_file_pattern.type
+				  (typeattr)))
+
+		  (optional usersandbox_agent_mandb
+			    (call .man.db.cache.map_file_pattern.type
+				  (typeattr))
+			    (call .man.db.cache.read_file_pattern.type
+				  (typeattr)))
 
 		  (optional usersandbox_agent_misc
 			    (call .font.cache.map_file_pattern.type (typeattr))

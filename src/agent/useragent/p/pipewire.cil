@@ -80,7 +80,7 @@
 
 	      (call .systemd.journal.relay_msgs.type (typeattr))
 
-	      (call .user.home.conf.search_file_pattern.type (subj)))
+	      (call .user.home.conf.search_file_pattern.type (typeattr)))
 
        (block data
 

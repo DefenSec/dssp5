@@ -9,7 +9,7 @@
 
 	   (block exec
 
-		  (filecon "/usr/lib/glib-2\.0/([^/]+/)?gio-launch-desktop"
+		  (filecon "/usr/lib/([^/]+/)?glib-2\.0/gio-launch-desktop"
 			   file file_context))))
 
 (in user

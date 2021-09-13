@@ -5,6 +5,11 @@
 
        (blockinherit .hybrid.agent.template)
 
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+
        (call .rbacsep.constrained.type (subj))
 
        (block exec
