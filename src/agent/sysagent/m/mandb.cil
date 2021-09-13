@@ -1,0 +1,52 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in man
+
+    (block db
+
+	   (blockinherit .sys.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block cache
+
+		  (filecon "/var/cache/man" file file_context)
+
+		  (macro cache_file_type_transition_file ((type ARG1))
+			 (call .cache.file_type_transition
+			       (ARG1 file dir "man")))
+
+		  (blockinherit .file.cache.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/mandb" file file_context))
+
+	   (block state
+
+		  (filecon "/var/lib/man-db" dir file_context)
+		  (filecon "/var/lib/man-db/.*" any file_context)
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "man-db")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.state.base_template))
+
+	   (block unit
+
+		  (filecon "/usr/lib/systemd/system/man-db\.service.*" file
+			   file_context)
+		  (filecon "/usr/lib/systemd/system/man-db\.timer.*" file
+			   file_context)
+
+		  (blockinherit .file.unit.template))))
+
+(in file.unconfined
+
+    (call .man.db.cache.cache_file_type_transition_file (typeattr))
+    (call .man.db.state.state_file_type_transition_file (typeattr)))

@@ -108,8 +108,6 @@
 	      (filecon "/usr/bin/e2mmpstatus" file file_context)
 	      (filecon "/usr/bin/e2scrub" file file_context)
 	      (filecon "/usr/bin/e2scrub_all" file file_context)
-	      (filecon "/usr/bin/e2scrub_all_cron" file file_context)
-	      (filecon "/usr/bin/e2scrub_fail" file file_context)
 	      (filecon "/usr/bin/e2undo" file file_context)
 	      (filecon "/usr/bin/e4crypt" file file_context)
 	      (filecon "/usr/bin/e4defrag" file file_context)
@@ -120,7 +118,12 @@
 	      (filecon "/usr/bin/mke2fs" file file_context)
 	      (filecon "/usr/bin/mklost\+found" file file_context)
 	      (filecon "/usr/bin/resize2fs" file file_context)
-	      (filecon "/usr/bin/tune2fs" file file_context))
+	      (filecon "/usr/bin/tune2fs" file file_context)
+
+	      (filecon "/usr/lib/([^/]+/)?e2fsprogs/e2scrub_all_cron" file
+		       file_context)
+	      (filecon "/usr/lib/([^/]+/)?e2fsprogs/e2scrub_fail" file
+		       file_context))
 
        (block unit
 

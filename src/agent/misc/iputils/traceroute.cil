@@ -1,0 +1,16 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block traceroute
+
+       (blockinherit .hybrid.agent.template)
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/lft\.db" file file_context)
+	      (filecon "/usr/bin/traceproto\.db" file file_context)
+	      (filecon "/usr/bin/traceroute-nanog\.db" file file_context)
+	      (filecon "/usr/bin/traceroute\.db" file file_context)
+	      (filecon "/usr/bin/tcptraceroute\.db" file file_context)))

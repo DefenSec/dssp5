@@ -19,7 +19,8 @@
 
        (block exec
 
-	      (filecon "/usr/bin/utempter" file file_context)))
+	      (filecon "/usr/lib/([^/]+/)?utempter/utempter" file
+		       file_context)))
 
 (in user
 

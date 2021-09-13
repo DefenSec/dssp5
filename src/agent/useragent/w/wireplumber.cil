@@ -24,8 +24,6 @@
        (call .class.list_sysfile_pattern.type (subj))
        (call .class.read_sysfile_lnk_files (subj))
 
-       (call .crypto.read_sysctlfile_pattern.type (subj))
-
        (call .dbus.client.type (subj))
 
        (call .dev.list_file_pattern.type (subj))
@@ -33,6 +31,8 @@
 
        (call .pipewire.common.type (subj))
        (call .pipewire.unix_stream_connect (subj))
+
+       (call .rtkit.client.type (subj))
 
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
@@ -104,25 +104,11 @@
 
 	      (blockinherit .user.agent.template)
 
-	      (allow subj self (process (getsched setsched)))
-
+	      (call home.data.list_file_dirs (subj))
 	      (call home.data.read_file_files (subj))
-	      (call home.data.search_file_dirs (subj))
 
-	      (call .crypto.read_sysctlfile_pattern.type (subj))
-
-	      (call .locale.data.map_file_pattern.type (subj))
-	      (call .locale.read_file_pattern.type (subj))
-
-	      (call .nss.passwdgroup.type (subj))
-
-	      (call .pipewire.data.list_file_dirs (subj))
-	      (call .pipewire.data.map_file_files (subj))
-	      (call .pipewire.data.read_file_files (subj))
-
+	      (call .pipewire.common.type (subj))
 	      (call .pipewire.unix_stream_connect (subj))
-
-	      (call .selinux.linked.type (subj))
 
 	      (call .user.home.data.search_file_pattern.type (subj))
 
