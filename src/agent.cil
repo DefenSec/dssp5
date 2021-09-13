@@ -9,7 +9,6 @@
        (typeattribute typeattr)
 
        (call .subj.common.type (typeattr))
-
        (call .subj.useinteractivefd.type (typeattr))
 
        (block exec
