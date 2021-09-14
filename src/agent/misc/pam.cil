@@ -57,6 +57,9 @@
 	      (call conf.list_file_dirs (typeattr))
 	      (call conf.read_file_files (typeattr))
 
+	      (call data.list_file_dirs (typeattr))
+	      (call data.read_file_files (typeattr))
+
 	      (call login.link_all_keyrings (typeattr))
 	      (call login.search_all_keyrings (typeattr))
 
