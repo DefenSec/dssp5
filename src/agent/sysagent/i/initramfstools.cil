@@ -158,6 +158,7 @@
 
 (in blktools
 
+    (call .initramfstools.read_subj_states (subj))
     (call .initramfstools.tmp.writeinherited_file_files (subj)))
 
 (in devicemapper
