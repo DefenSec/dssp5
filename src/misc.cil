@@ -1147,6 +1147,33 @@
 
 	   (call .fs.search_sysfile_pattern.type (typeattr))))
 
+(in glib2.gio
+
+    (block linked
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call lib.mapexecute_file_files (typeattr))
+	   (call lib.read_file_files (typeattr))
+
+	   (call lib.search_file_pattern.type (typeattr))))
+
+(in glib2.gio.lib
+
+    (block search_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call search_file_dirs (typeattr))
+
+	   (call .lib.search_file_pattern.type (typeattr))))
+
 (in groff
 
     (block read_file_pattern
