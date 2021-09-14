@@ -15,6 +15,7 @@
        (allow subj self create_netlink_audit_socket)
        (allow subj self create_unix_dgram_socket)
        (allow subj self (netlink_audit_socket (nlmsg_relay)))
+       (dontaudit subj self (cap_userns (sys_ptrace)))
        (dontaudit subj self (capability (sys_ptrace)))
 
        (call conf.read_file_files (subj))
@@ -24,10 +25,14 @@
        (call .checkcontext_selinux_security (subj))
 
        (call .conf.deletename_file_dirs (subj))
+       ;; /etc/skel
+       (call .conf.read_file_files (subj))
 
        (call .crypto.read_sysctlfile_pattern.type (subj))
 
        (call .devpts.search_fs_pattern.type (subj))
+
+       (call .faillog.log.readwrite_file_files (subj))
 
        (call .file.auth.write.type (subj))
 
@@ -41,8 +46,6 @@
 
        (call .ibac.objchange.type (subj))
 
-       (call .kernel.read_sysctlfile_files (subj))
-
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
@@ -51,6 +54,8 @@
        (call .logindefs.read_file_files (subj))
 
        (call .mail.readwrite_file_dirs (subj))
+
+       (call .ngroupsmax.read_sysctlfile_files (subj))
 
        (call .nss.passwdgroup.type (subj))
 
@@ -87,6 +92,10 @@
        (call .utmp.log.readwrite_file_files (subj))
 
        (call .xattr.getattr_fs_pattern.type (subj))
+
+       (optional useradd_systemdnspawn
+		 (call .systemd.nspawn.container.obj.getattr_all_dirs (subj))
+		 (call .systemd.nspawn.container.subj.read_all_states (subj)))
 
        (block conf
 
