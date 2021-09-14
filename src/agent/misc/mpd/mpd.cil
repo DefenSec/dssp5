@@ -122,7 +122,7 @@
 	   (call .nss.hosts.type (typeattr))
 	   (call .nss.passwdgroup.type (typeattr))
 
-	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (typeattr))
 
 	   (call .random.read_nodedev_chr_files (typeattr))
 
