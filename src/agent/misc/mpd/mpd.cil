@@ -135,10 +135,15 @@
 
     (block conf
 
+	   (filecon "/etc/default/mpd" file file_context)
+	   (filecon "/etc/default/mpd\..*" file file_context)
+
 	   (filecon "/etc/mpd\.conf" file file_context)
 	   (filecon "/etc/mpd\.conf\..*" file file_context)
 
 	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file "mpd"))
 		  (call .conf.file_type_transition
 			(ARG1 file file "mpd.conf")))
 
