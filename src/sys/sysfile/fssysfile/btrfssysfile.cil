@@ -6,4 +6,5 @@
        (genfscon "sysfs" "/fs/btrfs" sysfile_context)
 
        (blockinherit .sysfile.fs.template)
-       (blockinherit .sysfile.macro_template_dirs))
+       (blockinherit .sysfile.macro_template_dirs)
+       (blockinherit .sysfile.macro_template_lnk_files))
