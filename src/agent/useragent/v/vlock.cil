@@ -11,6 +11,8 @@
        (allow subj self create_unix_dgram_socket)
        (allow subj self (netlink_audit_socket (nlmsg_relay)))
 
+       (call exec.execute_file_files (subj))
+
        (call .caplastcap.read_sysctlfile_pattern.type (subj))
 
        (call .crypto.read_sysctlfile_pattern.type (subj))
@@ -26,11 +28,15 @@
 
        (call .proc.getattr_fs_pattern.type (subj))
 
+       (call .shell.exec.mapexecute_file_files (subj))
+       (call .shell.exec.read_file_files (subj))
+
        (call .systemd.journal.relay_msgs.type (subj))
 
        (block exec
 
-	      (filecon "/usr/bin/vlock" file file_context)))
+	      (filecon "/usr/bin/vlock" file file_context)
+	      (filecon "/usr/bin/vlock-main" file file_context)))
 
 (in user
 
