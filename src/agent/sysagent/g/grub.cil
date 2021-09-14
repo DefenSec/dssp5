@@ -61,7 +61,7 @@
        (call .stordev.read_all_blk_files (subj))
        (call .stordev.read_all_chr_files (subj))
 
-       (call .sys.modulerequest_subj_system (subj))
+       (call .sys.modulerequest_system (subj))
 
        (call .systemd.exec.auditexecuteaccess_file_files (subj))
 

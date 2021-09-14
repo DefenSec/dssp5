@@ -96,7 +96,7 @@
     (call .subj.ps_all_states (subj))
     (call .subj.signull_all_processes (subj))
 
-    (call .sys.syslogread_subj_system (subj))
+    (call .sys.syslogread_system (subj))
 
     (call .tmp.getattr_fs_pattern.type (subj))
 

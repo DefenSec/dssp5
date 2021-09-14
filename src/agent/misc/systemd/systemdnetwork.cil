@@ -126,7 +126,7 @@
     (call .selinux.mapread_fs_pattern.type (subj))
 
     (call .sys.getattr_fs (subj))
-    (call .sys.modulerequest_subj_system (subj))
+    (call .sys.modulerequest_system (subj))
 
     (call .trace.search_fs_pattern.type (subj))
 

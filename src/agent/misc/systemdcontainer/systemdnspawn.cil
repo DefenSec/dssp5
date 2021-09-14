@@ -327,8 +327,8 @@
 
     (call .sys.dontaudit_setsched_subj_processes (subj))
     (call .sys.getrlimit_subj_processes (subj))
-    (call .sys.ipcinfo_subj_system (subj))
-    (call .sys.modulerequest_subj_system (subj))
+    (call .sys.ipcinfo_system (subj))
+    (call .sys.modulerequest_system (subj))
     (call .sys.search_subj_keyrings (subj))
     (call .sys.start_system (subj))
     (call .sys.stop_system (subj))
@@ -709,7 +709,7 @@
 		  (call .subj.useinteractivefd.type (typeattr))
 
 		  (call .sys.dontaudit_search_subj_keyrings (typeattr))
-		  (call .sys.modulerequest_subj_system (typeattr))
+		  (call .sys.modulerequest_system (typeattr))
 
 		  (call .sysctlfile.dontaudit_writeinherited_all_files
 			(typeattr))
