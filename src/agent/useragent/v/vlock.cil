@@ -1,0 +1,41 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block vlock
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (capability (audit_write setuid)))
+       (allow subj self (process (getcap)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .pam.linked.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/vlock" file file_context)))
+
+(in user
+
+    (call .vlock.role (role)))
+
+(in wheel
+
+    (call .vlock.role (role)))
