@@ -97,7 +97,7 @@
        (call .stordev.read_all_blk_files (subj))
 
        (call .sys.moduleload.type (subj))
-       (call .sys.modulerequest_subj_system (subj))
+       (call .sys.modulerequest_system (subj))
        (call .sys.search_subj_keyrings (subj))
 
        (call .sysctl.subj_type_transition (subj))

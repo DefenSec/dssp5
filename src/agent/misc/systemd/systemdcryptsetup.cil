@@ -54,7 +54,7 @@
 	   (call .stordev.read_all_blk_files (subj))
 	   (call .stordev.read_all_chr_files (subj))
 
-	   (call .sys.ipcinfo_subj_system (subj))
+	   (call .sys.ipcinfo_system (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
 

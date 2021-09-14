@@ -186,7 +186,7 @@
 	   (call .stordev.read_all_blk_files (subj))
 	   (call .stordev.read_all_chr_files (subj))
 
-	   (call .sys.modulerequest_subj_system (subj))
+	   (call .sys.modulerequest_system (subj))
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 	   (call .sys.start_system (subj))
 	   (call .sys.status_system (subj))

@@ -73,7 +73,7 @@
 
        (call .selinux.linked.type (subj))
 
-       (call .sys.modulerequest_subj_system (subj))
+       (call .sys.modulerequest_system (subj))
 
        (call .sys.user.unix_dgram_send (subj))
 

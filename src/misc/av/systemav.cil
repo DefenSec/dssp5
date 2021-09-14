@@ -8,19 +8,19 @@
 
 (in sys
 
-    (macro ipcinfo_subj_system ((type ARG1))
+    (macro ipcinfo_system ((type ARG1))
 	   (allow ARG1 subj (system (ipc_info))))
 
-    (macro modulerequest_subj_system ((type ARG1))
+    (macro modulerequest_system ((type ARG1))
 	   (allow ARG1 subj (system (module_request))))
 
-    (macro syslogconsole_subj_system ((type ARG1))
+    (macro syslogconsole_system ((type ARG1))
 	   (allow ARG1 subj (system (syslog_console))))
 
-    (macro syslogmod_subj_system ((type ARG1))
+    (macro syslogmod_system ((type ARG1))
 	   (allow ARG1 subj (system (syslog_mod))))
 
-    (macro syslogread_subj_system ((type ARG1))
+    (macro syslogread_system ((type ARG1))
 	   (allow ARG1 subj (system (syslog_read))))
 
     (block moduleload
