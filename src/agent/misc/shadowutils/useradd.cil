@@ -1,0 +1,112 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;; https://github.com/shadow-maint/shadow/issues/322
+;; (in user.home (filecon "HOME_DIR" file file_context))
+
+(block useradd
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (audit_write chown dac_override dac_read_search
+				       fowner fsetid)))
+       (allow subj self (process (setfscreate)))
+       (allow subj self create_netlink_audit_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (netlink_audit_socket (nlmsg_relay)))
+       (dontaudit subj self (capability (sys_ptrace)))
+
+       (call conf.read_file_files (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .checkcontext_selinux_security (subj))
+
+       (call .conf.deletename_file_dirs (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .devpts.search_fs_pattern.type (subj))
+
+       (call .file.auth.write.type (subj))
+
+       (call .file.user.home.manage_all_dirs (subj))
+       (call .file.user.home.delete_all_fifo_files (subj))
+       (call .file.user.home.manage_all_files (subj))
+       (call .file.user.home.delete_all_lnk_files (subj))
+       (call .file.user.home.delete_all_sock_files (subj))
+
+       (call .home.readwrite_file_dirs (subj))
+
+       (call .ibac.objchange.type (subj))
+
+       (call .kernel.read_sysctlfile_files (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .log.search_file_pattern.type (subj))
+
+       (call .logindefs.read_file_files (subj))
+
+       (call .mail.readwrite_file_dirs (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .passwd.manage_file_files (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+       (call .proc.list_fs_dirs (subj))
+
+       (call .pwdlock.conf_file_type_transition_file (subj "*"))
+       (call .pwdlock.manage_file_files (subj))
+
+       (call .random.read_sysctlfile_pattern.type (subj))
+
+       (call .rbac.objchange.type (subj))
+
+       (call .selinux.file.read_file_pattern.type (subj))
+       (call .selinux.readwrite_fs_pattern.type (subj))
+
+       (call .shadow.manage_file_files (subj))
+       (call .shadow.read.type (subj))
+
+       (call .spool.traverse_file_pattern.type (subj))
+
+       (call .subj.common.read_all_states (subj))
+
+       (call .sys.read_subj_states (subj))
+
+       (call .sys.user.read_subj_states (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .user.mail.manage_file_files (subj))
+
+       (call .utmp.log.readwrite_file_files (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (block conf
+
+	      (filecon "/etc/default/useradd" file file_context)
+	      (filecon "/etc/default/useradd\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "useradd")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block exec
+
+	      (filecon "/usr/bin/newusers" file file_context)
+	      (filecon "/usr/bin/useradd" file file_context)
+	      (filecon "/usr/bin/userdel" file file_context)
+	      (filecon "/usr/bin/usermod" file file_context)))
+
+(in file.unconfined
+
+    (call .useradd.conf.conf_file_type_transition_file (typeattr)))
