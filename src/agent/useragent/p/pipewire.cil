@@ -14,8 +14,6 @@
 
        (call common.type (subj))
 
-       (call home.conf.list_file_dirs (subj))
-
        (call run.manage_file_files (subj))
        (call run.manage_file_sock_files (subj))
        (call run.user_run_file_type_transition_file (subj))
@@ -26,14 +24,16 @@
 
        (call .class.traverse_sysfile_pattern.type (subj))
 
-       (call .crypto.read_sysctlfile_pattern.type (subj))
-
        (call .dbus.client.type (subj))
 
-       (call .gcrypt.conf.read_file_pattern.type (subj))
+       (call .root.list_file_dirs (subj))
+
+       (call .rtkit.client.type (subj))
 
        (call .snd.map_nodedev_chr_files (subj))
        (call .snd.readwrite_nodedev_chr_files (subj))
+
+       (call .state.search_file_pattern.type (subj))
 
        (call .sys.modulerequest_system (subj))
 
@@ -47,6 +47,9 @@
 
        (call .v4l.readwrite_nodedev_chr_files (subj))
 
+       (optional pipewire_pipewireutil
+		 (call util.read_subj_states (subj)))
+
        (block common
 
 	      (macro type ((type ARG1))
@@ -57,10 +60,6 @@
 	      (allow typeattr self (process (getsched setrlimit setsched)))
 	      (allow typeattr self create_unix_dgram_socket)
 
-	      (call conf.list_file_dirs (typeattr))
-	      (call conf.map_file_files (typeattr))
-	      (call conf.read_file_files (typeattr))
-
 	      (call data.list_file_dirs (typeattr))
 	      (call data.map_file_files (typeattr))
 	      (call data.read_file_files (typeattr))
@@ -70,6 +69,10 @@
 	      (call .alsa.data.read_file_files (typeattr))
 	      (call .alsa.data.search_file_dirs (typeattr))
 
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .gcrypt.conf.read_file_pattern.type (typeattr))
+
 	      (call .devices.read_sysfile_files (typeattr))
 	      (call .devices.traverse_sysfile_pattern.type (typeattr))
 
@@ -78,31 +81,9 @@
 
 	      (call .nss.passwdgroup.type (typeattr))
 
-	      (call .root.list_file_dirs (typeattr))
-
-	      (call .rtkit.client.type (typeattr))
-
 	      (call .selinux.linked.type (typeattr))
 
-	      (call .state.search_file_pattern.type (typeattr))
-
-	      (call .systemd.journal.relay_msgs.type (typeattr))
-
-	      (call .user.home.conf.search_file_dirs (typeattr)))
-
-       (block conf
-
-	      (filecon "/etc/pipewire" dir file_context)
-	      (filecon "/etc/pipewire/.*" any file_context)
-
-	      (macro conf_file_type_transition_file ((type ARG1))
-		     (call .conf.file_type_transition
-			   (ARG1 file dir "pipewire")))
-
-	      (macro map_file_files ((type ARG1))
-		     (allow ARG1 file (file (map))))
-
-	      (blockinherit .file.conf.template))
+	      (call .systemd.journal.relay_msgs.type (typeattr)))
 
        (block data
 
@@ -123,30 +104,6 @@
        (block exec
 
 	      (filecon "/usr/bin/pipewire" file file_context))
-
-       (block home
-
-	      (block conf
-
-		     (filecon "HOME_DIR/\.config/pipewire" dir file_context)
-		     (filecon "HOME_DIR/\.config/pipewire/.*" any file_context)
-
-		     (filecon "HOME_DIR/\.pipewire" dir file_context)
-		     (filecon "HOME_DIR/\.pipewire/.*" any file_context)
-
-		     (macro map_file_files ((type ARG1))
-			    (allow ARG1 file (file (map))))
-
-		     (macro user_home_conf_file_type_transition_file
-			    ((type ARG1))
-			    (call .user.home.conf.file_type_transition
-				  (ARG1 file dir "pipewire")))
-
-		     (macro user_home_file_type_transition_file ((type ARG1))
-			    (call .user.home.file_type_transition
-				  (ARG1 file dir ".pipewire")))
-
-		     (blockinherit .file.user.home.conf.template)))
 
        (block run
 
@@ -173,7 +130,6 @@
 		     (call .user.run.file_type_transition
 			   (ARG1 file sock_file "pipewire-3")))
 
-	      (blockinherit .file.macro_template_dirs)
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.macro_template_sock_files)
 	      (blockinherit .file.user.run.base_template)
@@ -203,33 +159,17 @@
 
 (in file.unconfined
 
-    (call .pipewire.conf.conf_file_type_transition_file (typeattr))
     (call .pipewire.data.data_file_type_transition_file (typeattr))
-    (call .pipewire.home.conf.user_home_conf_file_type_transition_file
-	  (typeattr))
-    (call .pipewire.home.conf.user_home_file_type_transition_file (typeattr))
     (call .pipewire.run.user_run_file_type_transition_file (typeattr)))
 
 (in user
 
     (call .pipewire.role (role))
-
-    (call .pipewire.run.manage_file_dirs (subj))
     (call .pipewire.run.manage_file_files (subj))
     (call .pipewire.run.manage_file_sock_files (subj))
-    (call .pipewire.run.relabel_file_dirs (subj))
     (call .pipewire.run.relabel_file_files (subj))
     (call .pipewire.run.relabel_file_sock_files (subj))
     (call .pipewire.run.user_run_file_type_transition_file (subj))
-
-    (call .pipewire.home.conf.manage_file_dirs (subj))
-    (call .pipewire.home.conf.manage_file_files (subj))
-    (call .pipewire.home.conf.map_file_files (subj))
-    (call .pipewire.home.conf.relabel_file_dirs (subj))
-    (call .pipewire.home.conf.relabel_file_files (subj))
-    (call .pipewire.home.conf.user_home_conf_file_type_transition_file (subj))
-    (call .pipewire.home.conf.user_home_file_type_transition_file (subj))
-
     (call .pipewire.tmpfs.manage_file_files (subj))
     (call .pipewire.tmpfs.relabel_file_files (subj)))
 

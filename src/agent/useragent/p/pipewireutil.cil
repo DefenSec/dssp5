@@ -1,0 +1,44 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in pipewire
+
+       (block util
+
+	      (blockinherit .user.agent.template)
+
+	      (call unix_stream_connect (subj))
+
+	      (call common.type (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (call .user.run.search_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/pw-cat" file file_context)
+		     (filecon "/usr/bin/pw-cli" file file_context)
+		     (filecon "/usr/bin/pw-dot" file file_context)
+		     (filecon "/usr/bin/pw-dump" file file_context)
+		     (filecon "/usr/bin/pw-link" file file_context)
+		     (filecon "/usr/bin/pw-loopback" file file_context)
+		     (filecon "/usr/bin/pw-metadata" file file_context)
+		     (filecon "/usr/bin/pw-mididump" file file_context)
+		     (filecon "/usr/bin/pw-mon" file file_context)
+		     (filecon "/usr/bin/pw-profiler" file file_context)
+		     (filecon "/usr/bin/pw-reserve" file file_context)
+		     (filecon "/usr/bin/pw-top" file file_context)
+		     (filecon "/usr/bin/spa-acp-tool" file file_context)
+		     (filecon "/usr/bin/spa-inspect" file file_context)
+		     (filecon "/usr/bin/spa-json-dump" file file_context)
+		     (filecon "/usr/bin/spa-monitor" file file_context)
+		     (filecon "/usr/bin/spa-resample" file file_context))))
+
+(in user
+
+    (call .pipewire.util.role (role)))
+
+(in wheel
+
+    (call .pipewire.util.role (role)))

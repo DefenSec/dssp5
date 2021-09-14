@@ -21,8 +21,6 @@
 
 	   (call common.type (subj))
 
-	   (call pipewire.home.conf.list_file_dirs (subj))
-
 	   (call pipewire.tmpfs.map_file_files (subj))
 	   (call pipewire.tmpfs.readwriteinherited_file_files (subj))
 
@@ -40,11 +38,13 @@
 
 	   (call .class.traverse_sysfile_pattern.type (subj))
 
-	   (call .crypto.read_sysctlfile_pattern.type (subj))
-
 	   (call .dbus.client.type (subj))
 
-	   (call .gcrypt.conf.read_file_pattern.type (subj))
+	   (call .root.list_file_dirs (subj))
+
+	   (call .rtkit.client.type (subj))
+
+	   (call .tmp.deletename_fs_dirs (subj))
 
 	   (call .user.dbus.nameclient.type (subj))
 
@@ -173,9 +173,7 @@
     (call .pipewire.pulse.home.conf.relabel_file_files (subj))
     (call .pipewire.pulse.home.conf.user_home_conf_file_type_transition_file
 	  (subj))
-
     (call .pipewire.pulse.role (role))
-
     (call .pipewire.pulse.run.manage_file_dirs (subj))
     (call .pipewire.pulse.run.manage_file_files (subj))
     (call .pipewire.pulse.run.manage_file_sock_files (subj))
@@ -183,7 +181,6 @@
     (call .pipewire.pulse.run.relabel_file_files (subj))
     (call .pipewire.pulse.run.relabel_file_sock_files (subj))
     (call .pipewire.pulse.run.user_run_file_type_transition_file (subj))
-
     (call .pipewire.pulse.tmpfs.manage_file_files (subj))
     (call .pipewire.pulse.tmpfs.relabel_file_files (subj)))
 
