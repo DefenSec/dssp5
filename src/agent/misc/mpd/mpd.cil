@@ -16,8 +16,11 @@
 	   (call run.write_file_sock_files (ARG1)))
 
     (blockinherit .agent.template)
+    (blockinherit .dbus.client.template)
 
     (allow subj self (capability (dac_override dac_read_search setgid setuid)))
+    (allow subj self create_sem)
+    (allow subj self create_shm)
 
     (call common.type (subj))
 
@@ -34,19 +37,39 @@
 
     (call state.manage_file_dirs (subj))
     (call state.manage_file_files (subj))
+    (call state.manage_file_lnk_files (subj))
+
+    (call tmp.manage_file_dirs (subj))
+    (call tmp.tmp_file_type_transition_file (subj))
 
     (call tmpfs.manage_file_files (subj))
     (call tmpfs.map_file_files (subj))
     (call tmpfs.tmp_fs_type_transition_file (subj))
 
+    (call .alsa.data.read_file_files (subj))
+    (call .alsa.data.search_file_dirs (subj))
+
+    (call .log.search_file_pattern.type (subj))
+
+    (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
+
     (call .rbacsep.constrained.type (subj))
     (call .rbacsep.usefdsource.type (subj))
+
+    (call .snd.readwrite_nodedev_chr_files (subj))
+
+    (call .state.search_file_pattern.type (subj))
 
     (call .sys.agent.type (subj))
 
     (call .systemd.notify.type (subj))
 
+    (call .tmp.deletename_file_dirs (subj))
     (call .tmp.deletename_fs_dirs (subj))
+
+    (optional mpd_pipewirepulse
+	      (call .pipewire.pulse.conf.list_file_dirs (subj))
+	      (call .pipewire.pulse.conf.read_file_files (subj)))
 
     (block common
 
@@ -166,7 +189,21 @@
 
 	   (blockinherit .file.macro_template_dirs)
 	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_lnk_files)
 	   (blockinherit .file.state.base_template))
+
+    (block tmp
+
+	   (macro map_file_files ((type ARG1))
+		  (allow ARG1 file (file (map))))
+
+	   (macro tmp_file_type_transition_file ((type ARG1))
+		  (call .tmp.file_type_transition
+			(ARG1 file dir "*")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.tmpfs.base_template))
 
     (block tmpfs
 

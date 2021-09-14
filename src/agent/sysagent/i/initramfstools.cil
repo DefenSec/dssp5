@@ -26,6 +26,9 @@
        (call .boot.manage_file_files (subj))
        (call .boot.readwrite_file_dirs (subj))
 
+       (call .btrfs.list_sysfile_dirs (subj))
+       (call .btrfs.read_sysfile_lnk_files (subj))
+
        (call .cmdline.read_procfile_files (subj))
 
        (call .cpuinfo.read_procfile_files (subj))
@@ -158,6 +161,7 @@
 
 (in blktools
 
+    (call .initramfstools.read_subj_states (subj))
     (call .initramfstools.tmp.writeinherited_file_files (subj)))
 
 (in devicemapper

@@ -181,6 +181,8 @@
 
 	   (call .root.auditwriteaccess_file_dirs (subj))
 
+	   (call .security.search_fs_dirs (subj))
+
 	   (call .selinux.file.read_file_pattern.type (subj))
 	   (call .selinux.mapread_fs_pattern.type (subj))
 
