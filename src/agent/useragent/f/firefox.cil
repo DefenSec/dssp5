@@ -20,6 +20,10 @@
        (call conf.list_file_dirs (subj))
        (call conf.read_file_files (subj))
 
+       (call data.list_file_dirs (subj))
+       (call data.map_file_files (subj))
+       (call data.read_file_files (subj))
+
        (call exec.execute_file_files (subj))
 
        (call lib.execute_file_files (subj))
@@ -57,13 +61,6 @@
 
        (call .class.list_sysfile_dirs (subj))
        (call .class.read_sysfile_lnk_files (subj))
-
-       (call .conf.list_file_dirs (subj))
-       (call .conf.watch_file_dirs (subj))
-
-       (call .data.list_file_dirs (subj))
-       (call .data.read_file_files (subj))
-       (call .data.watch_file_dirs (subj))
 
        (call .dbus.client.type (subj))
 
@@ -123,7 +120,7 @@
        (call .icons.data.map_file_pattern.type (subj))
        (call .icons.data.read_file_pattern.type (subj))
 
-       (call .ipp.nameconnect_port_tcp_sockets (subj))
+;;       (call .ipp.nameconnect_port_tcp_sockets (subj))
 
        (call .kbd.data.map_file_pattern.type (subj))
        (call .kbd.data.read_file_pattern.type (subj))
@@ -158,10 +155,6 @@
 
        (call .mount.run.read_file_files (subj))
        (call .mount.run.search_file_dirs (subj))
-
-       (call .mozilla.data.list_file_dirs (subj))
-       (call .mozilla.data.map_file_files (subj))
-       (call .mozilla.data.read_file_files (subj))
 
        (call .mozilla.home.manage_file_dirs (subj))
        (call .mozilla.home.manage_file_files (subj))
@@ -220,7 +213,7 @@
 
        (call .terminfo.read_file_pattern.type (subj))
 
-       (call .themes.data.read_file_pattern.type (subj))
+;;       (call .themes.data.read_file_pattern.type (subj))
 
        (call .tmp.deletename_file_dirs (subj))
        (call .tmp.watch_file_dirs (subj))
@@ -301,6 +294,9 @@
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "firefox")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
 
 	      (blockinherit .file.data.base_template)
 	      (blockinherit .file.macro_template_dirs)
@@ -402,7 +398,7 @@
 
 	      (call .wlroots.client.tmpfs.type (file))))
 
-(in file.exec
+(in exec
 
     (filecon "/usr/lib/firefox/minidump-analyzer" file file_context)
     (filecon "/usr/lib/firefox/pingsender" file file_context))
