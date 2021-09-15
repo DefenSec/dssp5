@@ -154,6 +154,9 @@
 	      (call .glib2.home.conf.user_home_conf_file_type_transition_file
 		    (subj)))
 
+    (optional unprivuser_gtkupdateiconcache
+	      (call .gtk.updateiconcache.role (role)))
+
     (optional unprivuser_initrcfile
 	      ;; bash completion
 	      (call .initrc.auditexecuteaccess_file_files (subj))

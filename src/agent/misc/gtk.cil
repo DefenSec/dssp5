@@ -1,0 +1,37 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block gtk
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/gtk-3\.0" dir file_context)
+		     (filecon "HOME_DIR/\.config/gtk-3\.0/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "gtk-3.0")))
+
+		     (macro watch_file_dirs ((type ARG1))
+			    (allow ARG1 file (dir (watch))))
+
+		     (blockinherit .file.user.home.conf.template))))
+
+(in file.unconfined
+
+    (call .gtk.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .gtk.home.conf.manage_file_dirs (subj))
+    (call .gtk.home.conf.manage_file_files (subj))
+    (call .gtk.home.conf.map_file_files (subj))
+    (call .gtk.home.conf.relabel_file_dirs (subj))
+    (call .gtk.home.conf.relabel_file_files (subj))
+    (call .gtk.home.conf.user_home_conf_file_type_transition_file (subj)))
