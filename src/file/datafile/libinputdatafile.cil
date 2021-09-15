@@ -19,3 +19,7 @@
 (in file.unconfined
 
     (call .libinput.data.data_file_type_transition_file (typeattr)))
+
+(in systemd.udev.helper.exec
+
+    (filecon "/usr/lib/udev/libinput-device-group" file file_context))
