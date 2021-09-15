@@ -1,0 +1,443 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block sway
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (blockinherit .dbus.client.template)
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (getcap getsched setcap setpgid setsched)))
+       (allow subj self create_netlink_kobject_uevent_socket)
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+
+       (call bar.noatsecure_subj_processes (subj))
+       (call bar.role (roleattr))
+       (call bar.signal_subj_processes (subj))
+       (call bar.subj_type_transition (subj))
+
+       (call client.run.map_file_files (subj))
+       (call client.run.readwriteinherited_file_files (subj))
+       (call client.use_all_fds (subj))
+
+       (call conf.list_file_dirs (subj))
+       (call conf.read_file_files (subj))
+
+       (call home.conf.list_file_dirs (subj))
+       (call home.conf.read_file_files (subj))
+
+       (call run.manage_file_sock_files (subj))
+       (call run.user_run_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+;;       (call .backgrounds.data.search_file_dirs (subj))
+
+       (call .bus.list_sysfile_dirs (subj))
+
+       (call .class.list_sysfile_dirs (subj))
+       (call .class.read_sysfile_lnk_files (subj))
+
+       (call .cpu.read_sysfile_pattern.type (subj))
+
+       (call .cpuinfo.read_procfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+
+       (call .dev.read_sysctlfile_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_pattern.type (subj))
+
+       (call .dri.map_nodedev_pattern.type (subj))
+       (call .dri.readwrite_nodedev_pattern.type (subj))
+
+       (call .event.readwriteinherited_nodedev_chr_files (subj))
+
+       (call .firmware.search_sysfile_pattern.type (subj))
+
+       (call .font.cache.dontaudit_setattr_file.type (subj))
+       (call .font.cache.map_file_pattern.type (subj))
+       (call .font.cache.read_file_pattern.type (subj))
+       (call .font.conf.read_file_pattern.type (subj))
+       (call .font.data.map_file_pattern.type (subj))
+       (call .font.data.read_file_pattern.type (subj))
+
+       (call .font.home.cache.manage_file_pattern.type (subj))
+       (call .font.home.cache.map_file_pattern.type (subj))
+       (call .font.home.conf.read_file_pattern.type (subj))
+       (call .font.home.data.map_file_pattern.type (subj))
+       (call .font.home.data.read_file_pattern.type (subj))
+
+;;       (call .icons.data.read_file_pattern.type (subj))
+
+;;       (call .libdrm.data.read_file_pattern.type (subj))
+
+;;       (call .libglvnd.read_file_pattern.type (subj))
+
+;;       (call .libinput.data.list_file_dirs (subj))
+;;       (call .libinput.data.read_file_files (subj))
+
+;;       (call .mesa.data.read_file_pattern.type (subj))
+
+;;       (call .mesa.home.cache.manage_file_pattern.type (subj))
+;;       (call .mesa.home.cache.map_file_pattern.type (subj))
+
+       (call .modules.read_procfile_pattern.type (subj))
+
+       (call .nss.passwdgroup.type (subj))
+
+       (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+;;       (call .pixmaps.data.read_file_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .selinux.conf.read_file_files (subj))
+       (call .selinux.linked.type (subj))
+       (call .selinux.search_fs_pattern.type (subj))
+
+       (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+       (call .systemd.seats.run.list_file_dirs (subj))
+       (call .systemd.seats.run.read_file_files (subj))
+
+       (call .systemd.sessions.run.list_file_dirs (subj))
+       (call .systemd.sessions.run.read_file_files (subj))
+
+       (call .systemd.udev.run.read_file_pattern.type (subj))
+
+       (call .tmp.getattr_fs_pattern.type (subj))
+
+       (call .user.shell_exec_subj_type_transition (subj))
+
+       (call .user.systemd.agent (subj exec.file))
+
+       (call .user.unpriv.read_all_states (subj))
+
+       (call .wlroots.compositor.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+;;       (call .xkb.data.map_file_pattern.type (subj))
+;;       (call .xkb.data.read_file_pattern.type (subj))
+
+       (block bar
+
+	      (blockinherit .user.agent.template)
+	      (blockinherit .user.dbus.nameclient.template)
+
+	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_unix_stream_socket)
+
+	      (call sendmsg_subj_dbus.type (subj))
+
+	      (call tmpfs.manage_file_files (subj))
+	      (call tmpfs.map_file_files (subj))
+	      (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	      (call sway.client.read_all_states (subj))
+	      (call sway.client.type (subj))
+
+	      (call sway.run.write_file_sock_files (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .font.cache.dontaudit_setattr_file.type (subj))
+	      (call .font.cache.map_file_pattern.type (subj))
+	      (call .font.cache.read_file_pattern.type (subj))
+	      (call .font.conf.read_file_pattern.type (subj))
+	      (call .font.data.map_file_pattern.type (subj))
+	      (call .font.data.read_file_pattern.type (subj))
+
+	      (call .font.home.cache.manage_file_pattern.type (subj))
+	      (call .font.home.cache.map_file_pattern.type (subj))
+	      (call .font.home.conf.read_file_pattern.type (subj))
+	      (call .font.home.data.map_file_pattern.type (subj))
+	      (call .font.home.data.read_file_pattern.type (subj))
+
+;;	      (call .icons.data.read_file_pattern.type (subj))
+
+;;	      (call .mesa.home.cache.manage_file_pattern.type (subj))
+;;	      (call .mesa.home.cache.map_file_pattern.type (subj))
+
+;;	      (call .pixmaps.data.read_file_pattern.type (subj))
+
+	      (call .random.read_nodedev_chr_files (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .user.signal_subj_processes (subj))
+
+	      (call .user.shell_exec_subj_type_transition (subj))
+
+	      (call .wlroots.client.type (subj))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/swaybar" file file_context))
+
+	      (block tmpfs
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro tmp_fs_type_transition_file ((type ARG1))
+			    (call .tmp.fs_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.tmpfs.base_template)
+
+		     (call .wlroots.client.tmpfs.type (file))))
+
+       (block client
+
+	      (macro read_all_states ((type ARG1))
+		     (allow ARG1 typeattr (state (read))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (macro use_all_fds ((type ARG1))
+		     (allow ARG1 typeattr (fd (use))))
+
+	      (typeattribute typeattr)
+
+	      (call run.manage_file_files (typeattr))
+	      (call run.map_file_files (typeattr))
+	      (call run.user_run_file_type_transition_file (typeattr))
+
+	      ;; probably leaks
+	      ;; (call sway.conf.readinherited_file_files (typeattr))
+	      ;; (call sway.home.conf.readinherited_file_files (typeattr))
+	      (call sway.readinherited_subj_fifo_files (typeattr))
+	      (call sway.readwrite_subj_unix_stream_sockets (typeattr))
+	      (call sway.use_subj_fds (typeattr))
+
+	      (call .runuser.search_file_pattern.type (typeattr))
+
+	      (call .user.run.deletename_file_dirs (typeattr))
+
+	      (block run
+
+		     (macro manage_file_files ((type ARG1))
+			    (allow ARG1 file manage_file))
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro user_run_file_type_transition_file ((type ARG1))
+			    (call .user.run.file_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.run.base_template)))
+
+       (block conf
+
+	      (filecon "/etc/sway" dir file_context)
+	      (filecon "/etc/sway/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "sway")))
+
+	      (macro dontaudit_readinherited_file_files ((type ARG1))
+		     (dontaudit ARG1 file readinherited_file))
+
+	      (macro readinherited_file_files ((type ARG1))
+		     (allow ARG1 file readinherited_file))
+
+	      (blockinherit .file.conf.template))
+
+       (block exec
+
+	      (filecon "/usr/bin/sway" file file_context))
+
+       (block home
+
+	      (block conf
+
+		     (filecon "HOME_DIR/\.config/sway" dir file_context)
+		     (filecon "HOME_DIR/\.config/sway/.*" any file_context)
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro readinherited_file_files ((type ARG1))
+			    (allow ARG1 file readinherited_file))
+
+		     (macro user_home_conf_file_type_transition_file
+			    ((type ARG1))
+			    (call .user.home.conf.file_type_transition
+				  (ARG1 file dir "sway")))
+
+		     (blockinherit .file.user.home.conf.template)))
+
+       (block msg
+
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self create_unix_stream_socket)
+
+	      (call sway.unix_stream_connect (subj))
+
+	      (call sway.exec.execute_file_files (subj))
+
+	      (call sway.client.type (subj))
+
+	      (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .random.read_nodedev_chr_files (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.execute_file_files (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/swaymsg" file file_context)))
+
+       (block nag
+
+	      (blockinherit .user.agent.template)
+
+	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_unix_stream_socket)
+
+	      (call tmpfs.manage_file_files (subj))
+	      (call tmpfs.map_file_files (subj))
+	      (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	      (call sway.client.type (subj))
+
+	      (call sway.msg.role (roleattr))
+	      (call sway.msg.signal_subj_processes (subj))
+	      (call sway.msg.subj_type_transition (subj))
+
+	      (call .font.cache.dontaudit_setattr_file.type (subj))
+	      (call .font.cache.map_file_pattern.type (subj))
+	      (call .font.cache.read_file_pattern.type (subj))
+	      (call .font.conf.read_file_pattern.type (subj))
+	      (call .font.data.map_file_pattern.type (subj))
+	      (call .font.data.read_file_pattern.type (subj))
+
+	      (call .font.home.cache.manage_file_pattern.type (subj))
+	      (call .font.home.cache.map_file_pattern.type (subj))
+	      (call .font.home.conf.read_file_pattern.type (subj))
+	      (call .font.home.data.map_file_pattern.type (subj))
+	      (call .font.home.data.read_file_pattern.type (subj))
+
+;;	      (call .icons.data.read_file_pattern.type (subj))
+
+;;	      (call .mesa.home.cache.manage_file_pattern.type (subj))
+;;	      (call .mesa.home.cache.map_file_pattern.type (subj))
+
+;;	      (call .pixmaps.data.read_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .user.shell_exec_subj_type_transition (subj))
+
+	      (call .wlroots.client.type (subj))
+
+	      (call .xattr.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/swaynag" file file_context))
+
+	      (block tmpfs
+
+		     (macro map_file_files ((type ARG1))
+			    (allow ARG1 file (file (map))))
+
+		     (macro tmp_fs_type_transition_file ((type ARG1))
+			    (call .tmp.fs_type_transition
+				  (ARG1 file file "*")))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.tmpfs.base_template)
+
+		     (call .wlroots.client.tmpfs.type (file))))
+
+       (block run
+
+	      (filecon "/run/user/%{USERID}/sway-ipc\..*\.sock" socket
+		       file_context)
+
+	      (macro user_run_file_type_transition_file ((type ARG1))
+		     (call .user.run.file_type_transition
+			   (ARG1 file sock_file "*")))
+
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.user.run.base_template))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.compositor.tmpfs.type (file))))
+
+(in file.unconfined
+
+    (call .sway.conf.conf_file_type_transition_file (typeattr))
+    (call .sway.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+
+(in systemd.login
+
+    (call .sway.sendmsg_subj_dbus.type (subj)))
+
+(in user
+
+    (call .sway.bar.noatsecure_subj_processes (subj))
+    (call .sway.bar.readwrite_subj_unix_stream_sockets (subj))
+    (call .sway.bar.tmpfs.manage_file_files (subj))
+    (call .sway.bar.tmpfs.relabel_file_files (subj))
+    (call .sway.client.run.manage_file_files (subj))
+    (call .sway.client.run.relabel_file_files (subj))
+    (call .sway.conf.dontaudit_readinherited_file_files (subj))
+    (call .sway.home.conf.manage_file_dirs (subj))
+    (call .sway.home.conf.manage_file_files (subj))
+    (call .sway.home.conf.map_file_files (subj))
+    (call .sway.home.conf.relabel_file_dirs (subj))
+    (call .sway.home.conf.relabel_file_files (subj))
+    (call .sway.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .sway.nag.role (role))
+    (call .sway.nag.tmpfs.manage_file_files (subj))
+    (call .sway.nag.tmpfs.relabel_file_files (subj))
+    (call .sway.readwrite_subj_unix_stream_sockets (subj))
+    (call .sway.role (role))
+    (call .sway.run.manage_file_sock_files (subj))
+    (call .sway.run.relabel_file_sock_files (subj))
+    (call .sway.tmpfs.manage_file_files (subj))
+    (call .sway.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .sway.nag.role (role))
+    (call .sway.role (role)))
