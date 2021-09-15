@@ -69,8 +69,8 @@
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
 
-;;	   (call .xkb.data.map_file_pattern.type (subj))
-;;	   (call .xkb.data.read_file_pattern.type (subj))
+	   (call .kbd.data.map_file_pattern.type (subj))
+	   (call .kbd.data.read_file_pattern.type (subj))
 
 	   (block exec
 

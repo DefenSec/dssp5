@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block sounds
+
+       (block data
+
+	      (filecon "/usr/share/sounds" dir file_context)
+	      (filecon "/usr/share/sounds/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "sounds")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .sounds.data.data_file_type_transition_file (typeattr)))

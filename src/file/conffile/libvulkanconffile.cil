@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block vulkan
+
+       (block conf
+
+	      (filecon "/etc/vulkan" dir file_context)
+	      (filecon "/etc/vulkan/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "vulkan")))
+
+	      (blockinherit .file.conf.template)))
+
+(in file.unconfined
+
+    (call .vulkan.conf.conf_file_type_transition_file (typeattr)))

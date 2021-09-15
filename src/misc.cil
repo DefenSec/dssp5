@@ -1261,6 +1261,32 @@
 	   (call read_sysfile_lnk_files (typeattr))
 	   (call search_sysfile_pattern.type (typeattr))))
 
+(in icons.data
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
 (in inputrc
 
     (block read_file_pattern
@@ -1298,6 +1324,40 @@
 	   (call read_file_files (typeattr))
 
 	   (call .user.home.search_file_pattern.type (typeattr))))
+
+(in kbd.data
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_pattern.type (typeattr))
+	   (call read_file_files (typeattr))))
 
 (in kernel
 
@@ -1432,6 +1492,117 @@
 
 	   (call read_file_lnk_files (typeattr))
 	   (call search_file_pattern.type (typeattr))))
+
+(in libdrm.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+	   (call search_file_dirs (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
+(in libglvnd
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.list_file_pattern.type (typeattr))
+	   (call data.list_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call conf.read_file_pattern.type (typeattr))
+	   (call data.read_file_pattern.type (typeattr))))
+
+(in libglvnd.conf
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+	   (call read_file_lnk_files (typeattr))
+	   (call list_file_pattern.type (typeattr))))
+
+(in libglvnd.data
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call read_file_files (typeattr))
+	   (call list_file_pattern.type (typeattr))))
+
+(in libinput.data
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr))))
+
+(in libnl.conf
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+	   (call read_file_files (typeattr))
+
+	   (call .conf.search_file_pattern.type (typeattr))))
 
 (in locale
 
@@ -1678,6 +1849,55 @@
 
 	   (call read_sysfile_lnk_files (typeattr))
 	   (call search_sysfile_pattern.type (typeattr))))
+
+(in mesa.data
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_pattern.type (typeattr))
+	   (call read_file_files (typeattr))))
+
+(in mesa.home.cache
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .user.home.cache.search_file_pattern.type (typeattr)))
+
+    (block manage_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call manage_file_dirs (typeattr))
+	   (call manage_file_files (typeattr))
+	   (call user_home_cache_file_type_transition_file (typeattr))
+
+	   (call .user.home.cache.create_file_dir_pattern.type (typeattr))))
 
 (in mime
 
@@ -2083,6 +2303,40 @@
 	   (call read_file_files (typeattr))
 
 	   (call .data.search_file_pattern.type (typeattr))))
+
+(in pixmaps.data
+
+    (block list_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_dirs (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .data.search_file_pattern.type (typeattr)))
+
+    (block read_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call list_file_pattern.type (typeattr))
+	   (call read_file_files (typeattr))))
 
 (in power
 

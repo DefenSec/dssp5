@@ -87,7 +87,8 @@
 
 	      (call .wayland.run.manage_file_files (typeattr))
 	      (call .wayland.run.manage_file_sock_files (typeattr))
-	      (call .wayland.run.user_run_file_type_transition_file (typeattr))
+	      (call .wayland.run.user_run_file_type_transition_file
+		    (typeattr))
 
 	      (block tmpfs
 

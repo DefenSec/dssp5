@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block libdrm
+
+       (block data
+
+	      (filecon "/usr/share/libdrm" dir file_context)
+	      (filecon "/usr/share/libdrm/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "libdrm")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .libdrm.data.data_file_type_transition_file (typeattr)))

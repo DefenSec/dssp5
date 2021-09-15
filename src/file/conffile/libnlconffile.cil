@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block libnl
+
+       (block conf
+
+	      (filecon "/etc/libnl-3" dir file_context)
+	      (filecon "/etc/libnl-3/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "libnl-3")))
+
+	      (blockinherit .file.conf.template)))
+
+(in file.unconfined
+
+    (call .libnl.conf.conf_file_type_transition_file (typeattr)))

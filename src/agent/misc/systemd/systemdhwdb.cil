@@ -16,6 +16,9 @@
 
 	   (call systemd.journal.relay_msgs.type (subj))
 
+	   (call systemd.udev.conf.list_file_dirs (subj))
+	   (call systemd.udev.conf.read_file_files (subj))
+
 	   (call systemd.udev.data.lib_file_type_transition_file (subj))
 	   (call systemd.udev.data.manage_file_dirs (subj))
 	   (call systemd.udev.data.manage_file_files (subj))

@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block openal
+
+       (block data
+
+	      (filecon "/usr/share/openal" dir file_context)
+	      (filecon "/usr/share/openal/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "openal")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)))
+
+(in file.unconfined
+
+    (call .openal.data.data_file_type_transition_file (typeattr)))
