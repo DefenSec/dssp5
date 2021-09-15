@@ -91,6 +91,7 @@
 
 		  (call .meminfo.read_procfile_files (typeattr))
 
+		  (call .mime.data.map_file_pattern.type (typeattr))
 		  (call .mime.read_file_pattern.type (typeattr))
 
 		  (call .net.traverse_procfile_pattern.type (typeattr))
@@ -170,11 +171,15 @@
 				  (typeattr)))
 
 		  (optional usersandbox_agent_misc
-			    (call .font.cache.map_file_pattern.type (typeattr))
-			    (call .font.cache.read_file_pattern.type (typeattr))
-			    (call .font.conf.read_file_pattern.type (typeattr))
+			    (call .font.cache.map_file_pattern.type
+				  (typeattr))
+			    (call .font.cache.read_file_pattern.type
+				  (typeattr))
+			    (call .font.conf.read_file_pattern.type
+				  (typeattr))
 			    (call .font.data.map_file_pattern.type (typeattr))
-			    (call .font.data.read_file_pattern.type (typeattr)))
+			    (call .font.data.read_file_pattern.type
+				  (typeattr)))
 
 		  (block template
 

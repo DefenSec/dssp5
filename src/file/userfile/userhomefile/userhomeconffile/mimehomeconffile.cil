@@ -3,7 +3,8 @@
 
 (in file.unconfined
 
-    (call .mime.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+    (call .mime.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr "mimeapps.list")))
 
 (in mime.home
 
@@ -15,9 +16,10 @@
 	   (macro map_file_files ((type ARG1))
 		  (allow ARG1 file (file (map))))
 
-	   (macro user_home_conf_file_type_transition_file ((type ARG1))
+	   (macro user_home_conf_file_type_transition_file
+		  ((type ARG1)(name ARG2))
 		  (call .user.home.conf.file_type_transition
-			(ARG1 file file "mimeapps.list")))
+			(ARG1 file file ARG2)))
 
 	   (blockinherit .file.macro_template_files)
 	   (blockinherit .file.user.home.conf.base_template)))
@@ -27,4 +29,5 @@
     (call .mime.home.conf.manage_file_files (subj))
     (call .mime.home.conf.map_file_files (subj))
     (call .mime.home.conf.relabel_file_files (subj))
-    (call .mime.home.conf.user_home_conf_file_type_transition_file (subj)))
+    (call .mime.home.conf.user_home_conf_file_type_transition_file
+	  (subj "mimeapps.list")))
