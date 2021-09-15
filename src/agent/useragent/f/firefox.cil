@@ -261,6 +261,12 @@
        (call .xdg.conf.read_file_files (subj))
        (call .xdg.conf.watch_file_dirs (subj))
 
+       (optional firefox_foot
+		 (call .foot.subj_type_transition (subj)))
+
+       (optional firefox_mpc
+		 (call .mpd.ncmpc.exec.auditexecuteaccess_file_files (subj)))
+
        (optional firefox_p11kit
 		 (call .p11kit.conf.read_file_pattern.type (subj))
 		 (call .p11kit.data.map_file_files (subj))
