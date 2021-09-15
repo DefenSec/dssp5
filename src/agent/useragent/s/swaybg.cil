@@ -13,8 +13,8 @@
 
 	   (call sway.client.type (subj))
 
-;;	   (call .backgrounds.data.read_file_files (subj))
-;;	   (call .backgrounds.data.search_file_dirs (subj))
+	   (call .backgrounds.data.read_file_files (subj))
+	   (call .backgrounds.data.search_file_dirs (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))

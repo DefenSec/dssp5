@@ -36,7 +36,7 @@
        (call tmpfs.map_file_files (subj))
        (call tmpfs.tmp_fs_type_transition_file (subj))
 
-;;       (call .backgrounds.data.search_file_dirs (subj))
+       (call .backgrounds.data.search_file_dirs (subj))
 
        (call .bus.list_sysfile_dirs (subj))
 
@@ -77,19 +77,18 @@
        (call .font.home.data.map_file_pattern.type (subj))
        (call .font.home.data.read_file_pattern.type (subj))
 
-;;       (call .icons.data.read_file_pattern.type (subj))
+       (call .icons.data.read_file_pattern.type (subj))
 
-;;       (call .libdrm.data.read_file_pattern.type (subj))
+       (call .libdrm.data.read_file_pattern.type (subj))
 
-;;       (call .libglvnd.read_file_pattern.type (subj))
+       (call .libglvnd.read_file_pattern.type (subj))
 
-;;       (call .libinput.data.list_file_dirs (subj))
-;;       (call .libinput.data.read_file_files (subj))
+       (call .libinput.data.read_file_pattern.type (subj))
 
-;;       (call .mesa.data.read_file_pattern.type (subj))
+       (call .mesa.data.read_file_pattern.type (subj))
 
-;;       (call .mesa.home.cache.manage_file_pattern.type (subj))
-;;       (call .mesa.home.cache.map_file_pattern.type (subj))
+       (call .mesa.home.cache.manage_file_pattern.type (subj))
+       (call .mesa.home.cache.map_file_pattern.type (subj))
 
        (call .modules.read_procfile_pattern.type (subj))
 
@@ -97,7 +96,7 @@
 
        (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
-;;       (call .pixmaps.data.read_file_pattern.type (subj))
+       (call .pixmaps.data.read_file_pattern.type (subj))
 
        (call .random.read_nodedev_chr_files (subj))
 
@@ -127,8 +126,8 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
-;;       (call .xkb.data.map_file_pattern.type (subj))
-;;       (call .xkb.data.read_file_pattern.type (subj))
+       (call .kbd.data.map_file_pattern.type (subj))
+       (call .kbd.data.read_file_pattern.type (subj))
 
        (block bar
 

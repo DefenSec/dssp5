@@ -1,6 +1,14 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in exec
+
+    (filecon "/usr/lib/man-db/globbing" file file_context)
+    (filecon "/usr/lib/man-db/manconv" file file_context)
+    (filecon "/usr/lib/man-db/zsoelim" file file_context)
+
+    (filecon "/usr/share/man-db/chconfig" file file_context))
+
 (in man
 
     (block db

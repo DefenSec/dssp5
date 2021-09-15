@@ -43,7 +43,7 @@
        (call .font.home.data.map_file_pattern.type (subj))
        (call .font.home.data.read_file_pattern.type (subj))
 
-;;       (call .icons.data.read_file_pattern.type (subj))
+       (call .icons.data.read_file_pattern.type (subj))
 
        (call .libnotify.send.subj_type_transition (subj))
 
@@ -52,7 +52,7 @@
 
        (call .nss.passwdgroup.type (subj))
 
-;;       (call .pixmaps.data.read_file_pattern.type (subj))
+       (call .pixmaps.data.read_file_pattern.type (subj))
 
        (call .ptmx.readwrite_nodedev_chr_files (subj))
 
@@ -85,8 +85,8 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
-;;       (call .xkb.data.map_file_pattern.type (subj))
-;;       (call .xkb.data.read_file_pattern.type (subj))
+       (call .kbd.data.map_file_pattern.type (subj))
+       (call .kbd.data.read_file_pattern.type (subj))
 
        (optional foot_waypipe
 		 (call .waypipe.agent (subj exec.file)))
