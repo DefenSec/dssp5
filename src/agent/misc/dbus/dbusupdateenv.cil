@@ -8,6 +8,10 @@
 	   (blockinherit .user.agent.template)
 	   (blockinherit .user.dbus.client.template)
 
+	   (allow subj self create_unix_stream_socket)
+
+	   (call .user.systemd.reload_system (subj))
+	   (call .user.systemd.run.search_file_pattern.type (subj))
 	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
 
 	   (block exec
