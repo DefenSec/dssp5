@@ -1,0 +1,61 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in sway
+
+    (block bg
+
+	   (blockinherit .user.agent.template)
+
+	   (call tmpfs.manage_file_files (subj))
+	   (call tmpfs.map_file_files (subj))
+	   (call tmpfs.tmp_fs_type_transition_file (subj))
+
+	   (call sway.client.type (subj))
+
+;;	   (call .backgrounds.data.read_file_files (subj))
+;;	   (call .backgrounds.data.search_file_dirs (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .mime.data.map_file_pattern.type (subj))
+	   (call .mime.read_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .user.home.read_file_files (subj))
+
+	   (call .wlroots.client.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/swaybg" file file_context))
+
+	   (block tmpfs
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_fs_type_transition_file ((type ARG1))
+			 (call .tmp.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.user.tmpfs.base_template)
+
+		  (call .wlroots.client.tmpfs.type (file)))))
+
+(in sway
+
+    (call bg.subj_type_transition (subj)))
+
+(in user
+
+    (call .sway.bg.role (role))
+    (call .sway.bg.tmpfs.manage_file_files (subj))
+    (call .sway.bg.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .sway.bg.role (role)))

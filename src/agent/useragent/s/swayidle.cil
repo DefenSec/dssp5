@@ -1,0 +1,87 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .sway.idle.conf.conf_file_type_transition_file (typeattr))
+    (call .sway.idle.home.conf.user_home_conf_file_type_transition_file
+	  (typeattr)))
+
+(in sway
+
+    (block idle
+
+	   (blockinherit .dbus.client.template)
+	   (blockinherit .user.agent.template)
+
+	   (allow subj self create_unix_stream_socket)
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+
+	   (call home.conf.list_file_dirs (subj))
+	   (call home.conf.read_file_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .systemd.login.inhibit.type (subj))
+	   (call .systemd.login.sendmsg_subj_dbus.type (subj))
+
+	   (call .user.home.conf.search_file_pattern.type (subj))
+
+	   (call .user.shell_exec_subj_type_transition (subj))
+
+	   (call .wlroots.client.type (subj))
+
+	   (block conf
+
+		  (filecon "/etc/swayidle" dir file_context)
+		  (filecon "/etc/swayidle/.*" any file_context)
+
+		  (macro conf_file_type_transition_file ((type ARG1))
+			 (call .conf.file_type_transition
+			       (ARG1 file dir "swayidle")))
+
+		  (blockinherit .file.conf.template))
+
+	   (block exec
+
+		  (filecon "/usr/bin/swayidle" file file_context))
+
+	   (block home
+
+		  (block conf
+
+			 (filecon "HOME_DIR/\.config/swayidle" dir file_context)
+			 (filecon "HOME_DIR/\.config/swayidle/.*" any
+				  file_context)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro user_home_conf_file_type_transition_file
+				((type ARG1))
+				(call .user.home.conf.file_type_transition
+				      (ARG1 file dir "swayidle")))
+
+			 (blockinherit .file.user.home.conf.template)))))
+
+(in systemd.login
+
+    (call .sway.idle.sendmsg_subj_dbus.type (subj)))
+
+(in user
+
+    (call .sway.idle.home.conf.manage_file_dirs (subj))
+    (call .sway.idle.home.conf.manage_file_files (subj))
+    (call .sway.idle.home.conf.map_file_files (subj))
+    (call .sway.idle.home.conf.relabel_file_dirs (subj))
+    (call .sway.idle.home.conf.relabel_file_files (subj))
+    (call .sway.idle.home.conf.user_home_conf_file_type_transition_file (subj))
+    (call .sway.idle.role (role)))
+
+(in wheel
+
+    (call .sway.idle.role (role)))
