@@ -72,8 +72,6 @@
 
 	   (call .mpd.common.type (subj))
 
-	   (call .pipewire.pulse.client.type (subj))
-
 	   (call .runuser.search_file_pattern.type (subj))
 
 	   (call .user.agent.type (subj))
@@ -91,6 +89,9 @@
 	   (call .user.systemd.service.nnptransition.type (subj))
 	   (call .user.systemd.socketactivated.tcp.type (subj))
 	   (call .user.systemd.socketactivated.unixstream.type (subj))
+
+	   (optional usermpd_pipewirepulse
+		     (call .pipewire.pulse.client.type (subj)))
 
 	   (block home
 

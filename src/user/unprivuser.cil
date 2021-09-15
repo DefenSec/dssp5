@@ -188,6 +188,7 @@
 	      (call .openssh.agent.tmp.relabel_file_dirs (subj))
 	      (call .openssh.agent.tmp.relabel_file_sock_files (subj))
 	      (call .openssh.client.role (role))
+	      (call .openssh.subj_type_transition (subj))
 	      (call .openssh.client.tmp.manage_file_sock_files (subj))
 	      (call .openssh.client.tmp.relabel_file_sock_files (subj))
 	      (call .openssh.home.manage_file_dirs (subj))
