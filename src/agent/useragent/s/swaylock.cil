@@ -54,6 +54,9 @@
 	   (call .font.home.data.map_file_pattern.type (subj))
 	   (call .font.home.data.read_file_pattern.type (subj))
 
+	   (call .kbd.data.map_file_pattern.type (subj))
+	   (call .kbd.data.read_file_pattern.type (subj))
+
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
@@ -68,9 +71,6 @@
 	   (call .wlroots.client.type (subj))
 
 	   (call .xattr.getattr_fs_pattern.type (subj))
-
-	   (call .kbd.data.map_file_pattern.type (subj))
-	   (call .kbd.data.read_file_pattern.type (subj))
 
 	   (block exec
 

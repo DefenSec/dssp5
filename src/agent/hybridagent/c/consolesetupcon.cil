@@ -38,9 +38,7 @@
 
 	   (call .ibac.objchangesys.type (subj))
 
-	   (call .kbd.data.read_file_files (subj))
-	   (call .kbd.data.read_file_lnk_files (subj))
-	   (call .kbd.data.search_file_dirs (subj))
+	   (call .kbd.data.read_file_pattern.type (subj))
 	   (call .kbd.subj_type_transition (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
