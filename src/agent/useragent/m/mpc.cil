@@ -97,6 +97,9 @@
 
 	   (block exec
 
+		  (macro auditexecuteaccess_file_files ((type ARG1))
+			 (allow ARG1 file (file (execute getattr))))
+
 		  (filecon "/usr/bin/mpc" file file_context)
 		  (filecon "/usr/bin/ncmpc" file file_context))
 
