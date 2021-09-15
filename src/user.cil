@@ -110,6 +110,7 @@
 
 	   (call .meminfo.read_procfile_files (typeattr))
 
+	   (call .mime.data.map_file_pattern.type (typeattr))
 	   (call .mime.read_file_pattern.type (typeattr))
 
 	   (call .net.traverse_procfile_pattern.type (typeattr))

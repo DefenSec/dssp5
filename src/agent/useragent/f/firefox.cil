@@ -67,6 +67,8 @@
        (call .conf.watch_file_dirs (subj))
 
        (call .data.list_file_dirs (subj))
+       ;; /usr/share/applications/*.desktop
+       (call .data.read_file_files (subj))
        (call .data.watch_file_dirs (subj))
 
        (call .dbus.client.type (subj))
@@ -152,6 +154,11 @@
 
        (call .mime.data.map_file_pattern.type (subj))
        (call .mime.read_file_pattern.type (subj))
+
+       (call .mime.home.conf.manage_file_pattern.type (subj))
+
+       (call .mime.home.data.manage_file_pattern.type (subj))
+       (call .mime.home.data.map_file_pattern.type (subj))
 
        (call .media.search_file_dirs (subj))
 
@@ -239,6 +246,7 @@
        (call .user.home.manage_file_files (subj))
        (call .user.home.watch_file_dirs (subj))
 
+       (call .user.home.conf.deletename_file_dirs (subj))
        (call .user.home.conf.watch_file_dirs (subj))
 
        (call .user.home.data.create_file_dir_pattern.type (subj))

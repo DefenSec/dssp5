@@ -1992,9 +1992,10 @@
 	   (typeattribute typeattr)
 
 	   (call manage_file_files (typeattr))
-	   (call user_home_conf_file_type_transition_file (typeattr))
+	   (call user_home_conf_file_type_transition_file (typeattr "*"))
 
-	   (call .user.home.conf.create_file_dir_pattern.type (typeattr)))
+	   (call .user.home.conf.create_file_dir_pattern.type(typeattr))
+	   (call .user.home.conf.deletename_file_dirs (typeattr)))
 
     (block read_file_pattern
 
@@ -2008,6 +2009,17 @@
 	   (call .user.home.conf.search_file_pattern.type (typeattr))))
 
 (in mime.home.data
+
+    (block map_file_pattern
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (call map_file_files (typeattr))
+
+	   (call .user.home.data.search_file_pattern.type (typeattr)))
 
     (block manage_file_pattern
 
