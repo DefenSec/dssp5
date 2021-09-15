@@ -15,9 +15,7 @@
 	      (macro map_file_files ((type ARG1))
 		     (allow ARG1 file (file (map))))
 
-	      (blockinherit .file.macro_template_dirs)
-	      (blockinherit .file.macro_template_files)
-	      (blockinherit .file.data.base_template)))
+	      (blockinherit .file.data.template)))
 
 (in file.unconfined
 

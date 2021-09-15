@@ -43,6 +43,9 @@
        (call .class.list_sysfile_dirs (subj))
        (call .class.read_sysfile_lnk_files (subj))
 
+       ;; /etc/debian_version
+       (call .conf.read_file_files (subj))
+
        (call .cpu.read_sysfile_pattern.type (subj))
 
        (call .cpuinfo.read_procfile_files (subj))
@@ -78,6 +81,9 @@
        (call .font.home.data.read_file_pattern.type (subj))
 
        (call .icons.data.read_file_pattern.type (subj))
+
+       (call .kbd.data.map_file_pattern.type (subj))
+       (call .kbd.data.read_file_pattern.type (subj))
 
        (call .libdrm.data.read_file_pattern.type (subj))
 
@@ -115,6 +121,7 @@
        (call .systemd.udev.run.read_file_pattern.type (subj))
 
        (call .tmp.getattr_fs_pattern.type (subj))
+       (call .tmp.deletename_file_dirs (subj))
 
        (call .user.shell_exec_subj_type_transition (subj))
 
@@ -126,8 +133,10 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
-       (call .kbd.data.map_file_pattern.type (subj))
-       (call .kbd.data.read_file_pattern.type (subj))
+       (optional sway_x11usertmpfile
+		 (call .x11.tmp.manage_file_files (subj))
+		 (call .x11.tmp.manage_file_sock_files (subj))
+		 (call .x11.tmp.tmp_file_type_transition_file (subj)))
 
        (block bar
 
@@ -217,9 +226,8 @@
 	      (call run.map_file_files (typeattr))
 	      (call run.user_run_file_type_transition_file (typeattr))
 
-	      ;; probably leaks
-	      ;; (call sway.conf.readinherited_file_files (typeattr))
-	      ;; (call sway.home.conf.readinherited_file_files (typeattr))
+	      (call sway.conf.readinherited_file_files (typeattr))
+	      (call sway.home.conf.readinherited_file_files (typeattr))
 	      (call sway.readinherited_subj_fifo_files (typeattr))
 	      (call sway.readwrite_subj_unix_stream_sockets (typeattr))
 	      (call sway.use_subj_fds (typeattr))

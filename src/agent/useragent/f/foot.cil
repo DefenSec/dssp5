@@ -45,6 +45,9 @@
 
        (call .icons.data.read_file_pattern.type (subj))
 
+       (call .kbd.data.map_file_pattern.type (subj))
+       (call .kbd.data.read_file_pattern.type (subj))
+
        (call .libnotify.send.subj_type_transition (subj))
 
        (call .locale.data.map_file_pattern.type (subj))
@@ -84,9 +87,6 @@
        (call .wlroots.client.type (subj))
 
        (call .xattr.getattr_fs_pattern.type (subj))
-
-       (call .kbd.data.map_file_pattern.type (subj))
-       (call .kbd.data.read_file_pattern.type (subj))
 
        (optional foot_waypipe
 		 (call .waypipe.agent (subj exec.file)))

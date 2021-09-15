@@ -28,8 +28,7 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
-	   (call .kbd.data.list_file_dirs (subj))
-	   (call .kbd.data.read_file_files (subj))
+	   (call .kbd.data.read_file_pattern.type (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))

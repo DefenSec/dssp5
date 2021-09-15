@@ -1,0 +1,24 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dbus
+
+    (block updateenv
+
+	   (blockinherit .user.agent.template)
+	   (blockinherit .user.dbus.client.template)
+
+	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/dbus-update-activation-environment" file
+			   file_context))))
+
+(in user
+
+    (call .dbus.updateenv.role (role)))
+
+(in wheel
+
+    (call .dbus.updateenv.role (role)))

@@ -1,0 +1,40 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in x11
+
+    (block tmp
+
+	   (macro tmp_file_type_transition_file ((type ARG1))
+		  (call .tmp.file_type_transition
+			(ARG1 file file ".X0.lock"))
+		  (call .tmp.file_type_transition
+			(ARG1 file file ".X1.lock"))
+		  (call .tmp.file_type_transition
+			(ARG1 file file ".X2.lock"))
+		  (call .tmp.file_type_transition
+			(ARG1 file file ".X3.lock"))
+		  (call .tmp.file_type_transition
+			(ARG1 file sock_file "X0"))
+		  (call .tmp.file_type_transition
+			(ARG1 file sock_file "X1"))
+		  (call .tmp.file_type_transition
+			(ARG1 file sock_file "X2"))
+		  (call .tmp.file_type_transition
+			(ARG1 file sock_file "X3")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_sock_files)
+	   (blockinherit .file.user.tmp.base_template)))
+
+(in file.unconfined
+
+    (call .x11.tmp.tmp_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call .x11.tmp.manage_file_files (subj))
+    (call .x11.tmp.manage_file_sock_files (subj))
+    (call .x11.tmp.relabel_file_files (subj))
+    (call .x11.tmp.relabel_file_sock_files (subj))
+    (call .x11.tmp.tmp_file_type_transition_file (subj)))
