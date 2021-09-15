@@ -22,4 +22,6 @@
 
 (in systemd.udev.helper.exec
 
-    (filecon "/usr/lib/udev/libinput-device-group" file file_context))
+    (filecon "/usr/lib/udev/libinput-device-group" file file_context)
+    (filecon "/usr/lib/udev/libinput-fuzz-extract" file file_context)
+    (filecon "/usr/lib/udev/libinput-fuzz-to-zero" file file_context))
