@@ -28,6 +28,7 @@
 
        (call lib.execute_file_files (subj))
        (call lib.list_file_dirs (subj))
+       (call lib.read_file_lnk_files (subj))
 
        (call plugincontainer.noatsecure_subj_processes (subj))
        (call plugincontainer.ptrace_subj_processes (subj))
@@ -167,6 +168,8 @@
 
        (call .mount.run.read_file_files (subj))
        (call .mount.run.search_file_dirs (subj))
+
+       (call .mozilla.data.list_file_dirs (subj))
 
        (call .mozilla.home.manage_file_dirs (subj))
        (call .mozilla.home.manage_file_files (subj))
@@ -332,7 +335,8 @@
 			   (ARG1 file dir "firefox")))
 
 	      (blockinherit .file.lib.template)
-	      (blockinherit .file.macro_template_dirs))
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_lnk_files))
 
        (block plugincontainer
 
@@ -424,6 +428,7 @@
 
 (in user
 
+    (call .firefox.lib.search_file_dirs (subj))
     (call .firefox.plugincontainer.role (role))
     (call .firefox.plugincontainer.tmpfs.manage_file_files (subj))
     (call .firefox.plugincontainer.tmpfs.relabel_file_files (subj))
