@@ -243,7 +243,8 @@
        (call .xattr.getattr_fs_pattern.type (subj))
 
        (optional emacs_firefox
-		 (call .firefox.exec.dontaudit_auditaccess_file_files (subj)))
+		 (call .firefox.lib.search_file_dirs (subj))
+		 (call .firefox.subj_type_transition (subj)))
 
        (optional emacs_gh
 		 (call .gh.tmp.readwrite_file_files (subj)))

@@ -54,6 +54,9 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
+       (optional wireplumber_glib
+		 (call .glib.gio.linked.type (subj)))
+
        (optional wireplumber_bluez
 		 (call .bluez.sendmsg_subj_dbus.type (subj)))
 
