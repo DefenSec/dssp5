@@ -1544,8 +1544,15 @@
 			      file_context)
 		     (filecon "/usr/lib/systemd/zram-generator\.conf\.d" dir
 			      file_context)
-		     (filecon "/usr/lib/systemd/zram-generator\.conf\.d/.*" any
-			      file_context)
+		     (filecon "/usr/lib/systemd/zram-generator\.conf\.d/.*"
+			      any file_context)
+
+		     (filecon "/usr/share/systemd-zram" dir file_context)
+		     (filecon "/usr/share/systemd-zram/.*" any file_context)
+
+		     (macro data_file_type_transition_file ((type ARG1))
+			    (call .data.file_type_transition
+				  (ARG1 file dir "systemd-zram")))
 
 		     (macro lib_file_type_transition_file ((type ARG1))
 			    (call .lib.file_type_transition
@@ -1891,6 +1898,8 @@
     (call .systemd.volatileroot.run.systemd_run_file_type_transition_file
 	  (typeattr))
     (call .systemd.zramgenerator.conf.systemd_conf_file_type_transition_file
+	  (typeattr))
+    (call .systemd.zramgenerator.data.data_file_type_transition_file
 	  (typeattr))
     (call .systemd.zramgenerator.data.lib_file_type_transition_file (typeattr))
     (call .systemd.zramgenerator.run.systemd_run_file_type_transition_file

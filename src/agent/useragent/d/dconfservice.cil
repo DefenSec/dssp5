@@ -3,6 +3,20 @@
 
 (block dconf
 
+       (block conf
+
+	      (filecon "/etc/dconf" dir file_context)
+	      (filecon "/etc/dconf/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dconf")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.conf.template))
+
        (block home
 
 	      (block cache
@@ -43,6 +57,10 @@
 		     (typeattributeset typeattr ARG1))
 
 	      (typeattribute typeattr)
+
+	      (call conf.list_file_dirs (typeattr))
+	      (call conf.map_file_files (typeattr))
+	      (call conf.read_file_files (typeattr))
 
 	      (call home.cache.manage_file_dirs (typeattr))
 	      (call home.cache.manage_file_files (typeattr))
@@ -128,6 +146,10 @@
 		     (blockinherit .file.user.unit.template)
 
 		     (call .user.dbus.activated.unit.type (file)))))
+
+(in file.unconfined
+
+    (call .dconf.conf.conf_file_type_transition_file (typeattr)))
 
 (in user
 

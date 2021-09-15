@@ -3,6 +3,17 @@
 
 (block gtk
 
+       (block conf
+
+	      (filecon "/etc/gtk-3\.0" dir file_context)
+	      (filecon "/etc/gtk-3\.0/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "gtk-3.0")))
+
+	      (blockinherit .file.conf.template))
+
        (block home
 
 	      (block conf
@@ -25,6 +36,7 @@
 
 (in file.unconfined
 
+    (call .gtk.conf.conf_file_type_transition_file (typeattr))
     (call .gtk.home.conf.user_home_conf_file_type_transition_file (typeattr)))
 
 (in user
