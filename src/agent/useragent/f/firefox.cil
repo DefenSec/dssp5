@@ -20,10 +20,6 @@
        (call conf.list_file_dirs (subj))
        (call conf.read_file_files (subj))
 
-       (call data.list_file_dirs (subj))
-       (call data.map_file_files (subj))
-       (call data.read_file_files (subj))
-
        (call exec.execute_file_files (subj))
 
        (call lib.execute_file_files (subj))
@@ -120,7 +116,7 @@
        (call .icons.data.map_file_pattern.type (subj))
        (call .icons.data.read_file_pattern.type (subj))
 
-;;       (call .ipp.nameconnect_port_tcp_sockets (subj))
+       (call .ipp.nameconnect_port_tcp_sockets (subj))
 
        (call .kbd.data.map_file_pattern.type (subj))
        (call .kbd.data.read_file_pattern.type (subj))
@@ -213,7 +209,7 @@
 
        (call .terminfo.read_file_pattern.type (subj))
 
-;;       (call .themes.data.read_file_pattern.type (subj))
+       (call .themes.data.read_file_pattern.type (subj))
 
        (call .tmp.deletename_file_dirs (subj))
        (call .tmp.watch_file_dirs (subj))
@@ -294,6 +290,9 @@
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "firefox")))
+
+	      (macro getattr_file_files ((type ARG1))
+		     (allow ARG1 file (file (getattr))))
 
 	      (macro map_file_files ((type ARG1))
 		     (allow ARG1 file (file (map))))

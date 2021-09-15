@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block mozilla
+
+       (block data
+
+	      (filecon "/usr/lib/mozilla" dir file_context)
+	      (filecon "/usr/lib/mozilla/.*" any file_context)
+
+	      (macro lib_file_type_transition_file ((type ARG1))
+		     (call .lib.file_type_transition
+			   (ARG1 file dir "mozilla")))
+
+	      (blockinherit .file.data.template)))
+
+(in file.unconfined
+
+    (call .mozilla.data.lib_file_type_transition_file (typeattr)))

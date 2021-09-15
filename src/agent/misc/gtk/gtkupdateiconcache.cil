@@ -19,6 +19,10 @@
 
 	   (call .selinux.linked.type (subj))
 
+	   (optional gtkupdateiconcache_firefox
+		     (call .firefox.data.getattr_file_files (subj))
+		     (call .firefox.data.search_file_dirs (subj)))
+
 	   (block exec
 
 		  (filecon "/usr/bin/gtk-update-icon-cache" file
