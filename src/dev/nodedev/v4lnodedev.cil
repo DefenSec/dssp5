@@ -9,6 +9,9 @@
        (macro getattr_nodedev_chr_files ((type ARG1))
 	      (allow ARG1 nodedev (chr_file (getattr))))
 
+       (macro map_nodedev_chr_files ((type ARG1))
+	      (allow ARG1 nodedev (chr_file (map))))
+
        (macro setattr_nodedev_chr_files ((type ARG1))
 	      (allow ARG1 nodedev (chr_file (setattr))))
 

@@ -33,7 +33,7 @@
 
        (call .crypto.read_sysctlfile_pattern.type (subj))
 
-       (call .glib2.gio.linked.type (subj))
+       (call .glib.gio.linked.type (subj))
 
        (call .kernel.read_sysctlfile_pattern.type (subj))
 

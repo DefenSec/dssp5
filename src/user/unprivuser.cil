@@ -145,14 +145,17 @@
 	      (call .consolesetup.setupcon.tmp.manage_file_files (subj))
 	      (call .consolesetup.setupcon.tmp.relabel_file_files (subj)))
 
-    (optional unprivuser_glib2
-	      (call .glib2.home.conf.manage_file_dirs (subj))
-	      (call .glib2.home.conf.manage_file_files (subj))
-	      (call .glib2.home.conf.map_file_files (subj))
-	      (call .glib2.home.conf.relabel_file_dirs (subj))
-	      (call .glib2.home.conf.relabel_file_files (subj))
-	      (call .glib2.home.conf.user_home_conf_file_type_transition_file
+    (optional unprivuser_glib
+	      (call .glib.home.conf.manage_file_dirs (subj))
+	      (call .glib.home.conf.manage_file_files (subj))
+	      (call .glib.home.conf.map_file_files (subj))
+	      (call .glib.home.conf.relabel_file_dirs (subj))
+	      (call .glib.home.conf.relabel_file_files (subj))
+	      (call .glib.home.conf.user_home_conf_file_type_transition_file
 		    (subj)))
+
+    (optional unprivuser_gtkupdateiconcache
+	      (call .gtk.updateiconcache.role (role)))
 
     (optional unprivuser_initrcfile
 	      ;; bash completion

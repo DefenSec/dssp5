@@ -1,7 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(block glib2
+(block glib
 
        (block compileschemas
 
@@ -100,6 +100,6 @@
 
 (in file.unconfined
 
-    (call .glib2.data.data_file_type_transition_file (typeattr))
-    (call .glib2.gio.lib.lib_file_type_transition_file (typeattr))
-    (call .glib2.home.conf.user_home_conf_file_type_transition_file (typeattr)))
+    (call .glib.data.data_file_type_transition_file (typeattr))
+    (call .glib.gio.lib.lib_file_type_transition_file (typeattr))
+    (call .glib.home.conf.user_home_conf_file_type_transition_file (typeattr)))

@@ -1,7 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(in glib2.gio
+(in glib.gio
 
     (block launchdesktop
 
@@ -14,8 +14,8 @@
 
 (in user
 
-    (call .glib2.gio.launchdesktop.role (role)))
+    (call .glib.gio.launchdesktop.role (role)))
 
 (in wheel
 
-    (call .glib2.gio.launchdesktop.role (role)))
+    (call .glib.gio.launchdesktop.role (role)))

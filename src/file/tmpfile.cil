@@ -38,6 +38,9 @@
 	   (call .var.file_type_transition
 		 (ARG1 file dir "tmp")))
 
+    (macro watch_file_dirs ((type ARG1))
+	   (allow ARG1 file (dir (watch))))
+
     (blockinherit .file.tmp.template)
 
     (call .rbacsep.exempt.obj.type (file))

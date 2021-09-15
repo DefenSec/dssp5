@@ -1,0 +1,25 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in gtk
+
+    (block updateiconcache
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .icons.data.manage_file_dirs (subj))
+	   (call .icons.data.manage_file_files (subj))
+	   (call .icons.data.manage_file_lnk_files (subj))
+	   (call .icons.data.map_file_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/gtk-update-icon-cache" file
+			   file_context))))
