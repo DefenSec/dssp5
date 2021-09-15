@@ -30,6 +30,8 @@
        (call .cpu.read_sysfile_files (subj))
        (call .cpu.search_sysfile_pattern.type (subj))
 
+       (call .devpts.getattr_fs (subj))
+
        (call .font.cache.dontaudit_setattr_file.type (subj))
        (call .font.cache.map_file_pattern.type (subj))
        (call .font.cache.read_file_pattern.type (subj))
