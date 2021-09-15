@@ -17,6 +17,9 @@
 	      (call .root.file_type_transition
 		    (ARG1 file dir "etc")))
 
+       (macro watch_file_dirs ((type ARG1))
+	      (allow ARG1 file (dir (watch))))
+
        (macro watch_file_lnk_files ((type ARG1))
 	      (allow ARG1 file (lnk_file (watch))))
 

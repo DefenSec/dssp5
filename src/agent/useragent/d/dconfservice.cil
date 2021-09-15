@@ -108,6 +108,7 @@
 	      (blockinherit .user.dbus.nameclient.template)
 
 	      (allow subj self (process (getsched setsched)))
+	      (allow subj self create_unix_stream_socket)
 
 	      (call home.cache.manage_file_dirs (subj))
 	      (call home.cache.manage_file_files (subj))

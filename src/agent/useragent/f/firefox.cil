@@ -20,6 +20,10 @@
        (call conf.list_file_dirs (subj))
        (call conf.read_file_files (subj))
 
+       (call data.list_file_dirs (subj))
+       (call data.read_file_files (subj))
+       (call data.read_file_lnk_files (subj))
+
        (call exec.execute_file_files (subj))
 
        (call lib.execute_file_files (subj))
@@ -58,7 +62,15 @@
        (call .class.list_sysfile_dirs (subj))
        (call .class.read_sysfile_lnk_files (subj))
 
+       (call .conf.list_file_dirs (subj))
+       (call .conf.watch_file_dirs (subj))
+
+       (call .data.list_file_dirs (subj))
+       (call .data.watch_file_dirs (subj))
+
        (call .dbus.client.type (subj))
+
+       (call .dconf.linked.type (subj))
 
        (call .debug.search_fs_pattern.type (subj))
 
@@ -102,10 +114,14 @@
        (call .glib.data.map_file_pattern.type (subj))
        (call .glib.data.read_file_pattern.type (subj))
 
+       (call .glib.gio.linked.type (subj))
+
        (call .glib.home.conf.manage_file_dirs (subj))
        (call .glib.home.conf.manage_file_files (subj))
        (call .glib.home.conf.user_home_conf_file_type_transition_file (subj))
        (call .glib.home.conf.watch_file_dirs (subj))
+
+       (call .gtk.conf.search_file_dirs (subj))
 
        (call .gtk.home.conf.manage_file_pattern.type (subj))
        (call .gtk.home.conf.watch_file_dirs (subj))
@@ -297,16 +313,14 @@
 	      (macro map_file_files ((type ARG1))
 		     (allow ARG1 file (file (map))))
 
-	      (blockinherit .file.data.base_template)
-	      (blockinherit .file.macro_template_dirs)
-	      (blockinherit .file.macro_template_files))
+	      (blockinherit .file.data.template))
 
        (block exec
 
 	      (macro dontaudit_auditaccess_file_files ((type ARG1))
 		     (dontaudit ARG1 file (file (audit_access))))
 
-	      (filecon "/usr/bin/firefox" file file_context))
+	      (filecon "/usr/lib/firefox/firefox" file file_context))
 
        (block lib
 
