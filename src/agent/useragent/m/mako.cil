@@ -52,6 +52,8 @@
 
        (call .systemd.journal.relay_msgs.type (subj))
 
+       (call .tmp.getattr_fs_pattern.type (subj))
+
        (call .user.systemd.agent (subj exec.file))
        (call .user.systemd.service.noatsecure.type (subj))
 
