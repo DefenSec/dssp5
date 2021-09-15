@@ -5,9 +5,9 @@
 
     (block run
 
-	   (filecon "/run/user/%{USERID}/wayland-([1-9]+)?" socket
+	   (filecon "/run/user/%{USERID}/wayland-([0-9]+)?" socket
 		    file_context)
-	   (filecon "/run/user/%{USERID}/wayland-([1-9]+)?\.lock" file
+	   (filecon "/run/user/%{USERID}/wayland-([0-9]+)?\.lock" file
 		    file_context)
 
 	   (macro user_run_file_type_transition_file ((type ARG1))
