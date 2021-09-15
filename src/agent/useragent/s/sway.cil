@@ -163,12 +163,12 @@
 	      (call .font.home.data.map_file_pattern.type (subj))
 	      (call .font.home.data.read_file_pattern.type (subj))
 
-;;	      (call .icons.data.read_file_pattern.type (subj))
+	      (call .icons.data.read_file_pattern.type (subj))
 
-;;	      (call .mesa.home.cache.manage_file_pattern.type (subj))
-;;	      (call .mesa.home.cache.map_file_pattern.type (subj))
+	      (call .mesa.home.cache.manage_file_pattern.type (subj))
+	      (call .mesa.home.cache.map_file_pattern.type (subj))
 
-;;	      (call .pixmaps.data.read_file_pattern.type (subj))
+	      (call .pixmaps.data.read_file_pattern.type (subj))
 
 	      (call .random.read_nodedev_chr_files (subj))
 
@@ -343,12 +343,12 @@
 	      (call .font.home.data.map_file_pattern.type (subj))
 	      (call .font.home.data.read_file_pattern.type (subj))
 
-;;	      (call .icons.data.read_file_pattern.type (subj))
+	      (call .icons.data.read_file_pattern.type (subj))
 
-;;	      (call .mesa.home.cache.manage_file_pattern.type (subj))
-;;	      (call .mesa.home.cache.map_file_pattern.type (subj))
+	      (call .mesa.home.cache.manage_file_pattern.type (subj))
+	      (call .mesa.home.cache.map_file_pattern.type (subj))
 
-;;	      (call .pixmaps.data.read_file_pattern.type (subj))
+	      (call .pixmaps.data.read_file_pattern.type (subj))
 
 	      (call .selinux.linked.type (subj))
 

@@ -2,7 +2,7 @@
 ;; SPDX-License-Identifier: Unlicense
 
 ;; https://github.com/shadow-maint/shadow/issues/322
-;; (in user.home (filecon "HOME_DIR" file file_context))
+(in user.home (filecon "HOME_DIR" file file_context))
 
 (block useradd
 
