@@ -280,9 +280,6 @@
        (optional firefox_rtkit
 		 (call .rtkit.client.type (subj)))
 
-       (optional firefox_waypipe
-		 (call .waypipe.agent (subj exec.file)))
-
        (optional firefox_wfrecorder
 		 (call .wfrecorder.tmp.read_file_files (subj)))
 
