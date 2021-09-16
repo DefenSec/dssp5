@@ -90,9 +90,6 @@
 
        (call .xattr.getattr_fs_pattern.type (subj))
 
-       (optional foot_waypipe
-		 (call .waypipe.agent (subj exec.file)))
-
        (block client
 
 	      (blockinherit .user.agent.template)

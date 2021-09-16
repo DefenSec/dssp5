@@ -283,9 +283,6 @@
        (optional emacs_sudo
 		 (call .sudo.tmp.readwrite_file_files (subj)))
 
-       (optional emacs_translateshell
-		 (call .translateshell.subj_type_transition (subj)))
-
        (optional emacs_usermpd
 		 (call .user.mpd.home.conf.read_file_files (subj))
 		 (call .user.mpd.home.conf.search_file_dirs (subj))
