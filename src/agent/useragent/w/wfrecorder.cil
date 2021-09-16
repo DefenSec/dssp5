@@ -46,6 +46,8 @@
 
        (call .kernel.read_sysctlfile_pattern.type (subj))
 
+       (call .kernel.search_sysfile_pattern.type (subj))
+
        (call .libdrm.data.read_file_pattern.type (subj))
 
        (call .locale.data.map_file_pattern.type (subj))

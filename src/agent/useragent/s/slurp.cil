@@ -18,6 +18,8 @@
 
        (call .pixmaps.data.read_file_pattern.type (subj))
 
+       (call .tmp.getattr_fs_pattern.type (subj))
+
        (call .user.home.conf.search_file_pattern.type (subj))
 
        (call .wlroots.client.type (subj))
