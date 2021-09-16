@@ -44,6 +44,19 @@
 
 	      (call .wayland.run.write_file_sock_files (typeattr))
 
+	      (optional wlroots_client_waypipe
+			(call .waypipe.connectto_subj_unix_stream_sockets
+			      (typeattr))
+			(call .waypipe.run.write_file_sock_files (typeattr))
+			(call .waypipe.tmpfs.map_file_files (typeattr))
+			(call .waypipe.tmpfs.readwriteinherited_file_files
+			      (typeattr)))
+
+	      (optional wlroots_client_wlclipboard
+			(call .wlclipboard.paste.use_subj_fds (typeattr))
+			(call .wlclipboard.paste.writeinherited_subj_fifo_files
+			      (typeattr)))
+
 	      (block tmpfs
 
 		     (macro map_all_files ((type ARG1))

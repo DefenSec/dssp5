@@ -1,0 +1,79 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wlclipboard
+
+       (macro type ((type ARG1))
+	      (typeattributeset typeattr ARG1))
+
+       (typeattribute typeattr)
+
+       (allow typeattr self create_unix_stream_socket)
+
+       ;; cat
+       (call .exec.execute_file_files (typeattr))
+
+       (call .locale.data.map_file_pattern.type (typeattr))
+       (call .locale.read_file_pattern.type (typeattr))
+
+       (optional wlclipboard_wlroots
+		 (call .wlroots.client.type (typeattr)))
+
+       (block copy
+
+	      (blockinherit .user.agent.template)
+
+	      (call type (subj))
+
+	      (call tmp.manage_file_dirs (subj))
+	      (call tmp.manage_file_files (subj))
+	      (call tmp.tmp_file_type_transition_file (subj))
+
+	      (call .user.home.read_file_files (subj))
+
+	      (call .tmp.deletename_file_dirs (subj))
+	      (call .tmp.getattr_fs_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/wl-copy" file file_context))
+
+	      (block tmp
+
+		     (macro tmp_file_type_transition_file ((type ARG1))
+			    (call .tmp.file_type_transition
+				  (ARG1 file dir "*")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.tmp.base_template)))
+
+       (block paste
+
+	      (blockinherit .user.agent.template)
+
+	      (call type (subj))
+
+	      (call .devpts.search_fs_pattern.type (subj))
+
+	      (call .user.home.addname_file_dirs (subj))
+	      (call .user.home.create_file_files (subj))
+	      (call .user.home.write_file_files (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/wl-paste" file file_context))))
+
+(in user
+
+    (call .wlclipboard.copy.role (role))
+    (call .wlclipboard.copy.tmp.manage_file_dirs (subj))
+    (call .wlclipboard.copy.tmp.manage_file_files (subj))
+    (call .wlclipboard.copy.tmp.relabel_file_dirs (subj))
+    (call .wlclipboard.copy.tmp.relabel_file_files (subj))
+    (call .wlclipboard.paste.role (role)))
+
+(in wheel
+
+    (call .wlclipboard.copy.role (role))
+    (call .wlclipboard.paste.role (role)))

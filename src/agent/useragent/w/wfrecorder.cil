@@ -1,0 +1,136 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block wfrecorder
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self (process (getsched setsched)))
+       (allow subj self create_tcp_socket)
+       (allow subj self create_unix_dgram_socket)
+
+       (call tmp.manage_file_files (subj))
+       (call tmp.map_file_files (subj))
+       (call tmp.tmp_file_type_transition_file (subj))
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .cert.read_file_files (subj))
+       (call .cert.search_file_pattern.type (subj))
+
+       (call .ci.getattr_fs_pattern.type (subj))
+       (call .ci.manage_fs_pattern.type (subj))
+
+       (call .cpu.list_sysfile_dirs (subj))
+       (call .cpu.read_sysfile_files (subj))
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .dev.list_file_pattern.type (subj))
+
+       (call .dev.traverse_sysfile_pattern.type (subj))
+
+       (call .devices.read_sysfile_files (subj))
+       (call .devices.traverse_sysfile_pattern.type (subj))
+
+       (call .dri.map_nodedev_pattern.type (subj))
+       (call .dri.readwrite_nodedev_pattern.type (subj))
+
+       (call .dos.getattr_fs_pattern.type (subj))
+       (call .dos.manage_fs_pattern.type (subj))
+
+       (call .fuse.getattr_fs_pattern.type (subj))
+       (call .fuse.manage_fs_pattern.type (subj))
+
+       (call .kernel.read_sysctlfile_pattern.type (subj))
+
+       (call .libdrm.data.read_file_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .media.search_file_dirs (subj))
+
+       (call .media.home.traverse_file_pattern.type (subj))
+
+       (call .mesa.data.read_file_pattern.type (subj))
+       (call .mesa.home.cache.manage_file_pattern.type (subj))
+       (call .mesa.home.cache.map_file_pattern.type (subj))
+
+       (call .mfcs.nameconnect_port_tcp_sockets (subj))
+
+       (call .nfs.getattr_fs_pattern.type (subj))
+       (call .nfs.manage_fs_pattern.type (subj))
+
+       (call .node.read_sysfile_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+       (call .random.read_nodedev_chr_files (subj))
+
+       (call .selinux.linked.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .tmp.deletename_file_dirs (subj))
+
+       (call .user.home.cache.create_file_dir_pattern.type (subj))
+
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.readwrite_file_files (subj))
+
+       (call .v4l.readwrite_nodedev_chr_files (subj))
+
+       (call .wlroots.client.type (subj))
+
+       (optional wfrecorder_pipewirepulse
+		 (call .pipewire.pulse.client.type (subj)))
+
+       (block exec
+
+	      (filecon "/usr/bin/wf-recorder" file file_context))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmp.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file)))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file))))
+
+(in user
+
+    (call .wfrecorder.role (role))
+    (call .wfrecorder.tmp.manage_file_files (subj))
+    (call .wfrecorder.tmp.relabel_file_files (subj))
+    (call .wfrecorder.tmpfs.manage_file_files (subj))
+    (call .wfrecorder.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .wfrecorder.role (role)))

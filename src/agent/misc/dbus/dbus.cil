@@ -28,6 +28,7 @@
        ;; for systemd-run --pipe and machinectl
        (call .file.except.readwriteinherited_all_files (subj))
 
+       (call .sys.reload_system (subj))
        (call .sys.agent.type (subj))
        (call .sys.sendmsg_subj_dbus.type (subj))
        (call .sys.status_system (subj))
