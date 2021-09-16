@@ -39,6 +39,7 @@
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
+       (call .nss.passwdgroup.type (subj))
        (call .nss.hosts.type (subj))
 
        (call .openssh.client.conf.list_file_dirs (subj))
@@ -54,6 +55,8 @@
        (call .shell.exec.read_file_files (subj))
 
        (call .sys.search_fs_pattern.type (subj))
+
+       (call .terminfo.read_file_pattern.type (subj))
 
        (call .tmp.deletename_file_dirs (subj))
 
