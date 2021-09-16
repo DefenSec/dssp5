@@ -14,6 +14,8 @@
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 
+       (call .tmp.getattr_fs_pattern.type (subj))
+
        (call .user.home.manage_file_files (subj))
        (call .user.home.readwrite_file_dirs (subj))
 
