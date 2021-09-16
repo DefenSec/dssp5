@@ -110,6 +110,8 @@
 	      (allow subj self (process (getsched setsched)))
 	      (allow subj self create_unix_stream_socket)
 
+	      (allow subj linked.typeattr (dbus (send_msg)))
+
 	      (call home.cache.manage_file_dirs (subj))
 	      (call home.cache.manage_file_files (subj))
 	      (call home.cache.map_file_files (subj))
@@ -126,7 +128,11 @@
 	      (call run.map_file_files (subj))
 	      (call run.user_run_file_type_transition_file (subj))
 
+	      (call .cmdline.read_procfile_pattern.type (subj))
+
 	      (call .runuser.search_file_pattern.type (subj))
+
+	      (call .selinux.linked.type (subj))
 
 	      (call .user.home.cache.create_file_dir_pattern.type (subj))
 	      (call .user.home.conf.create_file_dir_pattern.type (subj))
