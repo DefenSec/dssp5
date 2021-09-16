@@ -209,6 +209,16 @@
 	      (call .polkit.check.role (role))
 	      (call .polkit.ttyagent.role (role)))
 
+    (optional unprivuser_qemu
+	      (call .qemu.data.list_file_dirs (subj))
+	      (call .qemu.data.read_file_files (subj))
+	      (call .qemu.data.read_file_lnk_files (subj))
+
+	      (call .qemu.bridgehelper.role (role)))
+
+    (optional unprivuser_qemuutils
+	      (call .qemu.img.role (role)))
+
     (optional unprivuser_rtkit
 	      (call .rtkit.cli.role (role)))
 

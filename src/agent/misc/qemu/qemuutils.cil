@@ -1,0 +1,146 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .qemu.nbd.cert.cert_file_type_transition_file (typeattr))
+    (call .qemu.nbd.run.run_file_type_transition_file (typeattr)))
+
+(in qemu
+
+    (block img
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .cpu.read_sysfile_pattern.type (subj))
+
+	   (call .cpuinfo.read_procfile_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .state.search_file_pattern.type (subj))
+
+	   (optional qemuutils_img_qemu
+		     (call guest.state.addname_file_dirs (subj))
+		     (call guest.state.manage_file_files (subj)))
+
+	   (optional qemuutils_img_userqemu
+		     (call .user.qemu.home.addname_file_dirs (subj))
+		     (call .user.qemu.home.manage_file_files (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/qemu-io" file file_context)
+		  (filecon "/usr/bin/qemu-img" file file_context))))
+
+(in qemu.nbd
+
+    (macro unix_stream_connect ((type ARG1))
+	   (call connectto_subj_unix_stream_sockets (ARG1))
+	   (call run.search_file_dirs (ARG1))
+	   (call run.write_file_sock_files (ARG1)))
+
+    (blockinherit .sys.agent.template)
+
+    (allow subj self (capability (ipc_lock sys_admin)))
+    (allow subj self create_tcp_stream_socket)
+    (allow subj self create_unix_stream_stream_socket)
+    (allow subj self (unix_stream_socket (connectto)))
+
+    (call namebind_port_tcp_sockets (subj))
+
+    (call readwrite_stordev_blk_files (subj))
+
+    (call cert.list_file_dirs (subj))
+    (call cert.read_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.run_file_type_transition_file (subj))
+
+    (call runlock.manage_file_sock_files (subj))
+    (call runlock.runlock_file_type_transition_file (subj "*"))
+
+    (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+    (call .cert.read_file_files (subj))
+    (call .cert.traverse_file_pattern.type (subj))
+
+    (call .crypto.read_sysctlfile_pattern.type (subj))
+
+    (call .debug.search_fs_pattern.type (subj))
+
+    (call .net.nodebind_netnode_tcp_sockets (subj))
+
+    (call .proc.getattr_fs_pattern.type (subj))
+
+    (call .random.read_nodedev_chr_files (subj))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (call .runlock.deletename_file_dirs (subj))
+
+    (call .state.search_file_pattern.type (subj))
+
+    (call .stordev.readwrite.type (subj))
+
+    (call .trace.search_fs_pattern.type (subj))
+
+    (call .var.read_file_lnk_files (subj))
+
+    (optional qemuutils_nbd_qemu
+	      (call guest.state.readwrite_file_files (subj))
+	      (call guest.state.search_file_dirs (subj)))
+
+    (block cert
+
+	   (filecon "/etc/pki/qemu-nbd" dir file_context)
+	   (filecon "/etc/pki/qemu-nbd/.*" any file_context)
+
+	   (macro cert_file_type_transition_file ((type ARG1))
+		  (call .cert.file_type_transition
+			(ARG1 file dir "qemu-nbd")))
+
+	   (blockinherit .file.cert.template))
+
+    (block exec
+
+	   (filecon "/usr/bin/qemu-nbd" file file_context))
+
+    (block run
+
+	   (filecon "/run/qemu-nbd" dir file_context)
+	   (filecon "/run/qemu-nbd/.*" any file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "qemu-nbd")))
+
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.macro_template_sock_files)
+	   (blockinherit .file.run.base_template))
+
+    (block runlock
+
+	   (filecon "/run/lock/qemu-nbd-nbd[0-9]+" socket file_context)
+
+	   (macro runlock_file_type_transition_file ((type ARG1)(name ARG2))
+		  (call .runlock.file_type_transition
+			(ARG1 file sock_file ARG2)))
+
+	   (blockinherit .file.macro_template_sock_files)
+	   (blockinherit .file.runlock.base_template)))

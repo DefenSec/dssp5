@@ -71,6 +71,12 @@
 		 (call .polkit.check.role (role))
 		 (call .polkit.ttyagent.role (role)))
 
+       (optional wheeluser_qemu
+		 (call .qemu.bridgehelper.role (role)))
+
+       (optional wheeluser_qemuutils
+		 (call .qemu.img.role (role)))
+
        (optional wheeluser_rtkit
 		 (call .rtkit.cli.role (role)))
 
