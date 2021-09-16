@@ -427,7 +427,8 @@
 	      (blockinherit .file.macro_template_files)
 	      (blockinherit .file.user.tmpfs.base_template)
 
-	      (call .wlroots.client.tmpfs.type (file))))
+	      (optional firefox_tmpfs_wlroots
+			(call .wlroots.client.tmpfs.type (file)))))
 
 (in exec
 

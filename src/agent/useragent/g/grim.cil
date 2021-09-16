@@ -1,0 +1,48 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block grim
+
+       (blockinherit .user.agent.template)
+
+       (allow subj self create_unix_stream_socket)
+
+       (call tmpfs.manage_file_files (subj))
+       (call tmpfs.map_file_files (subj))
+       (call tmpfs.tmp_fs_type_transition_file (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .user.home.manage_file_files (subj))
+       (call .user.home.readwrite_file_dirs (subj))
+
+       (call .wlroots.client.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/grim" file file_context))
+
+       (block tmpfs
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_fs_type_transition_file ((type ARG1))
+		     (call .tmp.fs_type_transition
+			   (ARG1 file file "*")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.user.tmpfs.base_template)
+
+	      (call .wlroots.client.tmpfs.type (file))))
+
+(in user
+
+    (call .grim.role (role))
+    (call .grim.tmpfs.manage_file_files (subj))
+    (call .grim.tmpfs.relabel_file_files (subj)))
+
+(in wheel
+
+    (call .grim.role (role)))
