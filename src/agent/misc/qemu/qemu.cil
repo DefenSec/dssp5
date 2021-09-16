@@ -1,0 +1,728 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;;/etc/qemu-ifdown
+;;/etc/qemu-ifup
+;;/usr/bin/qemu-pr-helper
+;;/usr/bin/qemu-storage-daemon
+;;/usr/lib/qemu/virtfs-proxy-helper
+;;/usr/lib/qemu/virtiofsd
+
+(in qemu
+
+    (block bridgehelper
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (capability (net_admin setgid setpcap setuid)))
+	   (allow subj self (process (getcap setcap)))
+	   (allow subj self create_tcp_socket)
+	   (allow subj self create_tun_socket)
+	   (allow subj self create_udp_socket)
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call common.readwrite_all_unix_stream_sockets (subj))
+
+	   (call conf.read_file_files (subj))
+	   (call conf.search_file_dirs (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .mcs.constrained.type (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .sys.modulerequest_system (subj))
+
+	   (call .tuntap.readwrite_nodedev_chr_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/qemu/qemu-bridge-helper" file
+			   file_context)))
+
+    (block common
+
+	   (macro readwrite_all_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 typeattr readwrite_unix_stream_socket))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr self (process (getsched)))
+	   (allow typeattr self (unix_stream_socket (accept listen)))
+	   (allow typeattr self create_icmp_socket)
+	   (allow typeattr self create_unix_dgram_socket)
+
+	   (call bridgehelper.subj_type_transition (typeattr))
+	   (call bridgehelper.use_subj_fds (typeattr))
+
+	   (call conf.read_file_files (typeattr))
+	   (call conf.search_file_dirs (typeattr))
+
+	   (call data.read_file_files (typeattr))
+	   (call data.read_file_lnk_files (typeattr))
+	   (call data.search_file_dirs (typeattr))
+
+	   (call exec.entrypoint_file_files (typeattr))
+	   (call exec.mapexecute_file_files (typeattr))
+	   (call exec.read_file_files (typeattr))
+
+	   (call .bus.search_sysfile_pattern.type (typeattr))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .cert.read_file_files (typeattr))
+	   (call .cert.traverse_file_pattern.type (typeattr))
+
+	   (call .cpu.read_sysfile_pattern.type (typeattr))
+
+	   (call .cpuinfo.read_procfile_files (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .debug.search_fs_pattern.type (typeattr))
+
+	   (call .devpts.getattr_fs (typeattr))
+
+	   (call .kernel.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .kvm.readwrite_nodedev_chr_files (typeattr))
+
+	   (call .locale.data.map_file_pattern.type (typeattr))
+	   (call .locale.read_file_pattern.type (typeattr))
+
+	   (call .net.nodebind_netnode_tcp_sockets (typeattr))
+
+	   (call .net.read_procfile_pattern.type (typeattr))
+
+	   (call .node.read_sysfile_pattern.type (typeattr))
+
+	   (call .nss.hosts.type (typeattr))
+	   (call .nss.passwdgroup.type (typeattr))
+
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .proc.getattr_fs_pattern.type (typeattr))
+
+	   (call .ptmx.readwrite_nodedev_chr_files (typeattr))
+
+	   (call .random.read_nodedev_chr_files (typeattr))
+
+	   (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+
+	   (call .systemd.journal.relay_msgs.type (typeattr))
+
+	   (call .trace.search_fs_pattern.type (typeattr))
+
+	   (call .tuntap.readwriteinherited_nodedev_chr_files (typeattr))
+
+	   (call .xattr.getattr_fs_pattern.type (typeattr)))
+
+    (block conf
+
+	   (filecon "/etc/qemu" dir file_context)
+	   (filecon "/etc/qemu/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "qemu")))
+
+	   (blockinherit .file.conf.qemu.template))
+
+    (block data
+
+	   (filecon "/usr/share/ipxe" dir file_context)
+	   (filecon "/usr/share/ipxe/.*" any file_context)
+
+	   (filecon "/usr/share/OVMF" dir file_context)
+	   (filecon "/usr/share/OVMF/.*" any file_context)
+
+	   (filecon "/usr/share/qemu" dir file_context)
+	   (filecon "/usr/share/qemu/.*" any file_context)
+
+	   (filecon "/usr/share/seabios" dir file_context)
+	   (filecon "/usr/share/seabios/.*" any file_context)
+
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "ipxe"))
+		  (call .data.file_type_transition
+			(ARG1 file dir "OVMF"))
+		  (call .data.file_type_transition
+			(ARG1 file dir "qemu"))
+		  (call .data.file_type_transition
+			(ARG1 file dir "seabios")))
+
+	   (blockinherit .file.data.template))
+
+    (block exec
+
+	   (filecon "/usr/bin/qemu-system-.*" file file_context)
+
+	   (blockinherit .file.exec.template)
+
+	   (call .hybrid.agent.exec.type (file)))
+
+    (block guest
+
+	   (macro relabelfrom_subj_tun_sockets ((type ARG1))
+		  (allow ARG1 subj (tun_socket (relabelfrom))))
+
+	   (allow subj self
+		  (capability (dac_override dac_read_search ipc_lock
+					    net_admin setgid setuid)))
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self create_tun_socket)
+	   (allow subj self (tun_socket (relabelfrom relabelto)))
+
+	   (blockinherit template)
+
+	   (call .net.port.nameconnect_all_tcp_sockets (subj))
+	   (call .net.port.unreserved.namebind_all_tcp_sockets (subj))
+
+	   (call .sys.read_subj_states (subj))
+
+	   (call .systemd.network.relabelfrom_subj_tun_sockets (subj))
+
+	   (call .tuntap.open_nodedev_chr_files (subj))
+
+	   (call .vhost.readwrite_nodedev_chr_files (subj))
+
+	   (call .vfio.readwrite_nodedev_chr_files (subj))
+
+	   (block cert
+
+		  (filecon "/etc/pki/qemu" dir file_context)
+		  (filecon "/etc/pki/qemu/.*" any file_context))
+
+	   (block log
+
+		  (filecon "/var/log/qemu" dir file_context)
+		  (filecon "/var/log/qemu/.*" any file_context))
+
+	   (block obj
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (blockinherit .file.all_macro_template_chr_files)
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .qemu.guest.obj.ptytermdev.base_template)
+
+			 (block cert
+
+				(blockinherit
+				 .qemu.guest.obj.cert.base_template))
+
+			 (block hugetlbfs
+
+				(blockinherit
+				 .qemu.guest.obj.hugetlbfs.base_template))
+
+			 (block log
+
+				(blockinherit
+				 .qemu.guest.obj.log.base_template))
+
+			 (block run
+
+				(blockinherit
+				 .qemu.guest.obj.run.base_template))
+
+			 (block state
+
+				(blockinherit
+				 .qemu.guest.obj.state.base_template)))
+
+		  (block cert
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_files)
+			 (blockinherit .file.all_macro_template_lnk_files)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .file.cert.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .file.cert.base_template)
+
+				(call .qemu.guest.obj.cert.type (file)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(macro cert_file_type_transition_file
+				       ((type ARG1)(class ARG2)(name ARG3))
+				       (call .cert.file_type_transition
+					     (ARG1 file ARG2 ARG3)))
+
+				(blockinherit .file.macro_template_dirs)
+				(blockinherit .file.macro_template_files)
+				(blockinherit .file.macro_template_lnk_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.cert.base_template)
+				(blockinherit
+				 .qemu.guest.obj.cert.macro_template)))
+
+		  (block hugetlbfs
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_files)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .file.hugetlbfs.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .file.hugetlbfs.base_template)
+
+				(call .qemu.guest.obj.hugetlbfs.type (file)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(macro hugetlb_fs_type_transition_file
+				       ((type ARG1)(class ARG2)(name ARG3))
+				       (call .hugetlb.fs_type_transition
+					     (ARG1 file ARG2 ARG3)))
+
+				(blockinherit .file.macro_template_dirs)
+				(blockinherit .file.macro_template_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.hugetlbfs.base_template)
+				(blockinherit
+				 .qemu.guest.obj.hugetlbfs.macro_template)))
+
+		  (block log
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_files)
+			 (blockinherit .file.all_macro_template_lnk_files)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .file.log.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .file.log.base_template)
+
+				(call .qemu.guest.obj.log.type (file)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(macro log_file_type_transition_file
+				       ((type ARG1)(class ARG2)(name ARG3))
+				       (call .log.file_type_transition
+					     (ARG1 file ARG2 ARG3)))
+
+				(blockinherit .file.macro_template_dirs)
+				(blockinherit .file.macro_template_files)
+				(blockinherit .file.macro_template_lnk_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.log.base_template)
+				(blockinherit
+				 .qemu.guest.obj.log.macro_template)))
+
+		  (block ptytermdev
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (blockinherit .file.all_macro_template_chr_files)
+
+			 (typeattribute typeattr)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .ptytermdev.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .ptytermdev.base_template)
+
+				(call .qemu.guest.obj.ptytermdev.type
+				      (ptytermdev)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(blockinherit
+				 .ptytermdev.macro_template_chr_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.ptytermdev.base_template)
+				(blockinherit
+				 .qemu.guest.obj.ptytermdev.macro_template)))
+
+		  (block run
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_sock_files)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .file.run.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .file.run.base_template)
+
+				(call .qemu.guest.obj.run.type (file)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(macro run_file_type_transition_file
+				       ((type ARG1)(class ARG2)(name ARG3))
+				       (call .run.file_type_transition
+					     (ARG1 file ARG2 ARG3)))
+
+				(blockinherit .file.macro_template_dirs)
+				(blockinherit .file.macro_template_sock_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.run.base_template)
+				(blockinherit
+				 .qemu.guest.obj.run.macro_template)))
+
+		  (block state
+
+			 (macro map_all_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_files)
+			 (blockinherit .file.all_macro_template_lnk_files)
+
+			 (call guest.obj.type (typeattr))
+
+			 (call .file.state.type (typeattr))
+
+			 (block base_template
+
+				(blockabstract base_template)
+
+				(blockinherit .file.state.base_template)
+
+				(call .qemu.guest.obj.state.type (file)))
+
+			 (block macro_template
+
+				(blockabstract macro_template)
+
+				(macro map_file_files ((type ARG1))
+				       (allow ARG1 file (file (map))))
+
+				(macro state_file_type_transition_file
+				       ((type ARG1)(class ARG2)(name ARG3))
+				       (call .state.file_type_transition
+					     (ARG1 file ARG2 ARG3)))
+
+				(blockinherit .file.macro_template_dirs)
+				(blockinherit .file.macro_template_files))
+
+			 (block template
+
+				(blockabstract template)
+
+				(blockinherit
+				 .qemu.guest.obj.state.base_template)
+				(blockinherit
+				 .qemu.guest.obj.state.macro_template)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (blockinherit .qemu.guest.obj.base_template)
+			 (blockinherit
+			  .qemu.guest.obj.ptytermdev.macro_template)
+
+			 (block cert
+
+				(blockinherit
+				 .qemu.guest.obj.cert.macro_template))
+
+			 (block hugetlbfs
+
+				(blockinherit
+				 .qemu.guest.obj.hugetlbfs.macro_template))
+
+			 (block log
+
+				(blockinherit
+				 .qemu.guest.obj.log.macro_template))
+
+			 (block run
+
+				(blockinherit
+				 .qemu.guest.obj.run.macro_template))
+
+			 (block state
+
+				(blockinherit
+				 .qemu.guest.obj.state.macro_template))))
+
+	   (block run
+
+		  (filecon "/run/qemu" dir file_context)
+		  (filecon "/run/qemu/.*" any file_context))
+
+	   (block state
+
+		  (filecon "/var/lib/qemu" dir file_context)
+		  (filecon "/var/lib/qemu/.*" any file_context))
+
+	   (block subj
+
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (roleattribute roleattr)
+		  (typeattribute typeattr)
+
+		  (roletype roleattr typeattr)
+
+		  (blockinherit .subj.all_macro_template)
+
+		  (call common.type (typeattr))
+
+		  (call .sys.agent.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (macro role ((role ARG1))
+				(roleattributeset roleattr ARG1))
+
+			 (roleattribute roleattr)
+			 (roletype roleattr subj)
+
+			 (blockinherit .subj.common.base_template)
+
+			 (call .qemu.guest.subj.type (subj)))
+
+		  (block common
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (call .hugetlb.getattr_fs (typeattr))
+
+			 (call .cert.search_file_pattern.type (typeattr))
+
+			 (call .log.search_file_pattern.type (typeattr))
+
+			 (call .mcs.constrained.type (typeattr))
+
+			 (call .qemu.common.type (typeattr))
+
+			 (call .rbacsep.constrained.type (typeattr))
+			 (call .rbacsep.readstatetarget.type (typeattr))
+			 (call .rbacsep.usefdsource.type (typeattr))
+
+			 (call .shell.exec.entrypoint_file_files (typeattr))
+			 (call .shell.exec.mapexecute_file_files (typeattr))
+			 (call .shell.exec.read_file_files (typeattr))
+
+			 (call .state.search_file_pattern.type (typeattr))
+
+			 (optional qemu_guest_common_usersystemd
+				   ;; sudo -r sys.role -t sys.subj
+				   (call .user.systemd.forked.type (typeattr))))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (blockinherit .qemu.guest.subj.base_template)
+			 (blockinherit .subj.macro_template)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro subj_type_transition ((type ARG1))
+			 (allow ARG1 subj (process (transition)))
+
+			 (allow subj ARG1 (process (sigchld)))
+			 (allow subj ARG1 (fd (use)))
+			 (allow subj ARG1 readwriteinherited_fifo_file)
+
+			 (call .qemu.exec.mapexecute_file_files (ARG1))
+			 (call .qemu.exec.read_file_files (ARG1))
+			 (call .qemu.exec.subj_type_transition (ARG1 subj)))
+
+		  (macro unix_stream_connect ((type ARG1))
+			 (call connectto_subj_unix_stream_sockets (ARG1))
+			 (call run.search_file_dirs (ARG1))
+			 (call run.write_file_sock_files (ARG1)))
+
+		  (blockinherit .qemu.guest.obj.template)
+		  (blockinherit .qemu.guest.subj.template)
+
+		  (call readwrite_ptytermdev_chr_files (subj))
+
+		  (call cert.list_file_dirs (subj))
+		  (call cert.read_file_files (subj))
+
+		  (call hugetlbfs.manage_file_files (subj))
+		  (call hugetlbfs.hugetlb_fs_type_transition_file
+			(subj file "*"))
+
+		  (call log.append_file_files (subj))
+		  (call log.create_file_files (subj))
+		  (call log.read_file_files (subj))
+		  (call log.addname_file_dirs (subj))
+
+		  (call run.manage_file_dirs (subj))
+		  (call run.manage_file_sock_files (subj))
+		  (call run.run_file_type_transition_file (subj dir "*"))
+
+		  (call state.manage_file_files (subj))
+		  (call state.map_file_files (subj))
+		  (call state.readwrite_file_dirs (subj))
+
+		  (call .devpts.fs_type_transition
+			(subj ptytermdev chr_file "*"))
+
+		  (call .hugetlb.deletename_fs_dirs (subj)))))
+
+(in file.conf
+
+    (block qemu
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.qemu.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.qemu.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .qemu.conf.conf_file_type_transition_file (typeattr))
+    (call .qemu.data.data_file_type_transition_file (typeattr))
+    (call .qemu.guest.cert.cert_file_type_transition_file (typeattr dir "qemu"))
+    (call .qemu.guest.log.log_file_type_transition_file (typeattr dir "qemu"))
+    (call .qemu.guest.run.run_file_type_transition_file (typeattr dir "qemu"))
+    (call .qemu.guest.state.state_file_type_transition_file
+	  (typeattr dir "qemu")))
+
+(in systemd.network
+
+    (call .qemu.guest.relabelfrom_subj_tun_sockets (subj)))
