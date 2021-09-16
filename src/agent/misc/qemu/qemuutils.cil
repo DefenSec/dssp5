@@ -31,6 +31,8 @@
 
 	   (call .state.search_file_pattern.type (subj))
 
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
 	   (optional qemuutils_img_qemu
 		     (call guest.state.addname_file_dirs (subj))
 		     (call guest.state.manage_file_files (subj)))
