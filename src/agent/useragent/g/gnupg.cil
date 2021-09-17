@@ -223,6 +223,30 @@
 
 	      (block run
 
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent" socket
+		      file_context)
+		     (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\..*"
+			      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.browser"
+		      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.browser\..*"
+		      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.extra"
+		      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.extra\..*"
+		      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.ssh"
+		      socket file_context)
+		     (filecon
+		      "/run/user/%{USERID}/gnupg/d\..*/S\.gpg-agent\.ssh\..*"
+		      socket file_context)
+
 		     (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent" socket
 			      file_context)
 		     (filecon "/run/user/%{USERID}/gnupg/S\.gpg-agent\..*"
@@ -500,6 +524,11 @@
 
 	      (block run
 
+		     (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.dirmngr"
+			      socket file_context)
+		     (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.dirmngr\..*"
+			      socket file_context)
+
 		     (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr" socket
 			      file_context)
 		     (filecon "/run/user/%{USERID}/gnupg/S\.dirmngr\..*" socket
@@ -683,6 +712,11 @@
 		     (blockinherit .file.macro_template_files))
 
 	      (block run
+
+		     (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.scdaemon"
+			      socket file_context)
+		     (filecon "/run/user/%{USERID}/gnupg/d\..*/S\.scdaemon\..*"
+			      socket file_context)
 
 		     (filecon "/run/user/%{USERID}/gnupg/S\.scdaemon" socket
 			      file_context)
