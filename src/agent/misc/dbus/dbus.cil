@@ -26,9 +26,10 @@
        (call tmpfs.tmp_fs_type_transition_file (subj))
 
        (call .sys.agent.type (subj))
+       (call .sys.reload_system (subj))
        (call .sys.sendmsg_subj_dbus.type (subj))
+       (call .sys.start_system (subj))
        (call .sys.status_system (subj))
-
        (call .systemd.notify.type (subj))
 
        (call .systemd.sessions.run.writeinherited_file_fifo_files (subj))
@@ -36,6 +37,10 @@
        (call .systemd.unit.start_file_services (subj))
        (call .systemd.unit.status_file_services (subj))
        (call .systemd.unit.stop_file_services (subj))
+
+       (call .systemd.unit.run.start_file_services (subj))
+       (call .systemd.unit.run.status_file_services (subj))
+       (call .systemd.unit.run.stop_file_services (subj))
 
        (call .systemd.inhibit.run.writeinherited_file_fifo_files (subj))
 
