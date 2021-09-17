@@ -22,6 +22,8 @@
 	   (call .file.content.sys.type (typeattr))
 	   (call .file.content.web.type (typeattr))
 
+	   (call .file.var.type (typeattr))
+
 	   (block ra
 
 		  (macro map_all_files ((type ARG1))
@@ -132,6 +134,8 @@
 		  (call .file.content.sys.web.type (typeattr))
 		  (call .file.content.web.rw.type (typeattr))
 
+		  (call .file.tmp.type (typeattr))
+
 		  (block base_template
 
 			 (blockabstract base_template)
@@ -166,7 +170,6 @@
 
 		  (typeattribute typeattr)
 
-		  (call .file.content.sys.web.type (typeattr))
 		  (call .file.content.web.script.type (typeattr))
 
 		  (call .sys.agent.type (typeattr))

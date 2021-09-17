@@ -1,0 +1,61 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.git.ro.user_home_file_type_transition_file (typeattr)))
+
+(in git.client
+
+    (call .user.git.ro.manage_file_dirs (subj))
+    (call .user.git.ro.manage_file_files (subj))
+    (call .user.git.ro.manage_file_lnk_files (subj))
+    (call .user.git.ro.map_file_files (subj))
+    (call .user.user_git_ro_subj_type_transition (subj)))
+
+(in user
+
+    (call .user.git.ro.entrypoint_file_files (subj))
+    (call .user.git.ro.manage_file_dirs (subj))
+    (call .user.git.ro.manage_file_files (subj))
+    (call .user.git.ro.manage_file_lnk_files (subj))
+    (call .user.git.ro.map_file_files (subj))
+    (call .user.git.ro.relabel_file_dirs (subj))
+    (call .user.git.ro.relabel_file_files (subj))
+    (call .user.git.ro.relabel_file_lnk_files (subj))
+    (call .user.git.ro.user_home_file_type_transition_file (subj))
+
+    (macro user_git_ro_subj_type_transition ((type ARG1))
+	   (allow ARG1 subj (process (transition)))
+
+	   (allow subj ARG1 (process (sigchld)))
+	   (allow subj ARG1 (fd (use)))
+	   (allow subj ARG1 readwriteinherited_fifo_file)
+
+	   (call .user.git.ro.mapexecute_file_files (ARG1))
+	   (call .user.git.ro.read_file_files (ARG1))
+	   (call .user.git.ro.subj_type_transition (ARG1 subj)))
+
+    (block git
+
+	   (block ro
+
+		  (filecon "HOME_DIR/public_git" dir file_context)
+		  (filecon "HOME_DIR/public_git/.*" any file_context)
+
+		  (macro entrypoint_file_files ((type ARG1))
+			 (allow ARG1 file (file (entrypoint))))
+
+		  (macro subj_type_transition ((type ARG1)(type ARG2))
+			 (typetransition ARG1 file process "*" ARG2))
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file dir "public_git")))
+
+		  (blockinherit .file.content.user.ro.template)
+		  (blockinherit .file.macro_template_lnk_files)
+
+		  (call .file.user.home.type (file))
+
+		  (call .subj.entry.type (file)))))
