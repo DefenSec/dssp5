@@ -22,7 +22,7 @@
 (macro setcontext_invalid_associations ((type ARG1))
        (allow ARG1 invalid (association (setcontext))))
 
-(tunableif invalid_associations
+(booleanif invalid_associations
 	   (true
 
 	    (call association_invalid_sctp_sockets

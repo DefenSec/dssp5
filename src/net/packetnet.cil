@@ -25,13 +25,13 @@
 (macro send_invalid_packets ((type ARG1))
        (allow ARG1 invalid (packet (send))))
 
-(tunableif invalid_packets
+(booleanif invalid_packets
 	   (true
 
 	    (call forward_invalid_packets (invalidpackets.except.typeattr))
 	    (call recvsend_invalid_packets (invalidpackets.except.typeattr))))
 
-(tunableif (or invalid_associations invalid_peers)
+(booleanif (or invalid_associations invalid_peers)
 	   (true
 
 	    (call forward_invalid_packets (invalid))

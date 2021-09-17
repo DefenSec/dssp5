@@ -15,7 +15,7 @@
 (macro sendto_invalid_nodes ((type ARG1))
        (allow ARG1 invalid (node (sendto))))
 
-(tunableif (or invalid_associations invalid_peers)
+(booleanif (or invalid_associations invalid_peers)
 	   (true
 
 	    (call net.netnode.recvfromsendto_all_nodes (invalid))))
