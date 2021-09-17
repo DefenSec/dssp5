@@ -77,11 +77,16 @@
 	   (call .user.home.data.search_file_pattern.type (subj))
 
 	   (call .user.systemd.agent (subj .dbus.exec.file))
+	   (call .user.systemd.reload_system (subj))
 	   (call .user.systemd.service.noatsecure.type (subj))
 	   (call .user.systemd.notify.type (subj))
 	   (call .user.systemd.sendmsg_subj_dbus.type (subj))
 	   (call .user.systemd.socketactivated.unixstream.type (subj))
+	   (call .user.systemd.start_system (subj))
 	   (call .user.systemd.status_system (subj))
+	   (call .user.systemd.unit.run.start_file_services (subj))
+	   (call .user.systemd.unit.run.status_file_services (subj))
+	   (call .user.systemd.unit.run.stop_file_services (subj))
 
 	   (block activated
 

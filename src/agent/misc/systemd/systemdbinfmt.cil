@@ -28,7 +28,7 @@
 	   (block conf
 
 		  (filecon "/etc/binfmt\.d" dir file_context)
-		  (filecon "/etc/binfmt\d/.*" any file_context)
+		  (filecon "/etc/binfmt\.d/.*" any file_context)
 
 		  (macro conf_file_type_transition_file ((type ARG1))
 			 (call .conf.file_type_transition
@@ -39,7 +39,7 @@
 	   (block data
 
 		  (filecon "/usr/lib/binfmt\.d" dir file_context)
-		  (filecon "/usr/lib/binfmt\d/.*" any file_context)
+		  (filecon "/usr/lib/binfmt\.d/.*" any file_context)
 
 		  (macro lib_file_type_transition_file ((type ARG1))
 			 (call .lib.file_type_transition
@@ -56,7 +56,7 @@
 	   (block run
 
 		  (filecon "/run/binfmt\.d" dir file_context)
-		  (filecon "/run/binfmt\d/.*" any file_context)
+		  (filecon "/run/binfmt\.d/.*" any file_context)
 
 		  (macro run_file_type_transition_file ((type ARG1))
 			 (call .run.file_type_transition

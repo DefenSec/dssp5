@@ -42,3 +42,7 @@
        (block exec
 
 	      (filecon "/usr/bin/unix_update" file file_context)))
+
+(in user.unpriv
+
+    (call .unixupdate.role (roleattr)))
