@@ -1,0 +1,191 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.content
+
+    (block web
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (call .file.content.type (typeattr))
+
+	   (block ra
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro rename_all_files ((type ARG1))
+			 (allow ARG1 typeattr rename_file))
+
+		  (macro setattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (setattr))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.ra.type (typeattr))
+		  (call .file.content.web.type (typeattr)))
+
+	   (block ro
+
+		  (macro dontaudit_auditaccess_all_dirs ((type ARG1))
+			 (dontaudit ARG1 typeattr (dir (audit_access))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.ro.type (typeattr))
+		  (call .file.content.web.type (typeattr)))
+
+	   (block rw
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.rw.type (typeattr))
+		  (call .file.content.web.type (typeattr)))
+
+	   (block script
+
+		  (macro agent ((type ARG1)(type ARG2))
+			 (typetransition webserver.typeattr ARG2 process ARG1)
+			 (call exec.type (ARG2))
+			 (call type (ARG1)))
+
+		  (macro signal_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (signal))))
+
+		  (macro signull_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (signull))))
+
+		  (macro transition_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (transition))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (typeattribute typeattr)
+
+		  (call webserver.sigchld_all_processes (typeattr))
+		  (call webserver.signull_all_processes (typeattr))
+
+		  (call .file.content.script.type (typeattr))
+
+		  (optional webcontentfile_httpd
+			    (call .httpd.accept_subj_unix_stream_sockets
+				  (typeattr))
+			    (call .httpd.log.append_file_files (typeattr))
+			    (call .httpd.log.search_file_dirs (typeattr))
+			    (call .httpd.readwrite_subj_unix_stream_sockets
+				  (typeattr))
+			    (call .httpd.use_subj_fds (typeattr))
+			    (call .httpd.writeinherited_subj_fifo_files
+				  (typeattr)))
+
+		  (block exec
+
+			 (macro entrypoint_all_files ((type ARG1))
+				(allow ARG1 typeattr (file (entrypoint))))
+
+			 (macro map_all_files ((type ARG1))
+				(allow ARG1 typeattr (file (map))))
+
+			 (macro mapexecute_all_files ((type ARG1))
+				(allow ARG1 typeattr mapexecute_file))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (blockinherit .file.all_macro_template_dirs)
+			 (blockinherit .file.all_macro_template_files)
+			 (blockinherit .file.all_macro_template_lnk_files)
+
+			 (typeattribute typeattr)
+
+			 (call .file.content.script.exec.type (typeattr))
+			 (call .file.content.web.type (typeattr)))
+
+		  (block webserver
+
+			 (macro sigchld_all_processes ((type ARG1))
+				(allow ARG1 typeattr (process (sigchld))))
+
+			 (macro signull_all_processes ((type ARG1))
+				(allow ARG1 typeattr (process (signull))))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)
+
+			 (call ra.append_all_files (typeattr))
+			 (call ra.create_all_files (typeattr))
+			 (call ra.delete_all_files (typeattr))
+			 (call ra.read_all_files (typeattr))
+			 (call ra.read_all_lnk_files (typeattr))
+			 (call ra.readwrite_all_dirs (typeattr))
+			 (call ra.rename_all_files (typeattr))
+			 (call ra.setattr_all_files (typeattr))
+
+			 (call ro.dontaudit_auditaccess_all_dirs (typeattr))
+			 (call ro.list_all_dirs (typeattr))
+			 (call ro.read_all_files (typeattr))
+			 (call ro.read_all_lnk_files (typeattr))
+
+			 (call rw.manage_all_dirs (typeattr))
+			 (call rw.manage_all_fifo_files (typeattr))
+			 (call rw.manage_all_files (typeattr))
+			 (call rw.manage_all_lnk_files (typeattr))
+			 (call rw.manage_all_sock_files (typeattr))
+
+			 (call script.exec.list_all_dirs (typeattr))
+			 (call script.exec.mapexecute_all_files (typeattr))
+			 (call script.exec.read_all_files (typeattr))
+			 (call script.exec.read_all_lnk_files (typeattr))
+			 (call script.signal_all_processes (typeattr))
+			 (call script.signull_all_processes (typeattr))
+			 (call script.transition_all_processes (typeattr))
+
+			 (call web.map_all_files (typeattr))))))
