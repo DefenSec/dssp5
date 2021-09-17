@@ -1,7 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(tunable invalid_packets true)
+(boolean invalid_packets true)
 
 (block invalid_packets
 

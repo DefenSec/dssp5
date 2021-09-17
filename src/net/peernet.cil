@@ -9,7 +9,7 @@
 (macro recv_invalid_peers ((type ARG1))
        (allow ARG1 invalid (peer (recv))))
 
-(tunableif invalid_peers
+(booleanif invalid_peers
 	   (true
 
 	    (call association_invalid_sctp_sockets

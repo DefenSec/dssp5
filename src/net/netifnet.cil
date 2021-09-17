@@ -15,7 +15,7 @@
 (macro ingress_invalid_netifs ((type ARG1))
        (allow ARG1 invalid (netif (ingress))))
 
-(tunableif (or invalid_associations invalid_peers)
+(booleanif (or invalid_associations invalid_peers)
 	   (true
 
 	    (call net.netif.egressingress_all_netifs (invalid))))
