@@ -3,6 +3,6 @@
 
 (block usb
 
-       (filecon "/dev/usb.+" char nodedev_context)
+       (filecon "/dev/bus/usb/.+" char nodedev_context)
 
        (blockinherit .nodedev.template))
