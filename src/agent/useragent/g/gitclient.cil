@@ -146,8 +146,8 @@
 	   (optional gitclient_emacs
 		     (call .emacs.tmp.readwriteinherited_file_files (subj)))
 
-	   (optional gitclient_gitcontent
-		     (call content.script.exec.getattr_file_files (subj)))
+	   (optional gitclient_gitsysfile
+		     (call .sys.git.script.exec.getattr_file_files (subj)))
 
 	   (optional gitclient_gnupg
 		     (call .gnupg.subj_type_transition (subj)))

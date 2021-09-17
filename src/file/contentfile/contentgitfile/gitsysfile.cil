@@ -1,0 +1,302 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.content.sys
+
+    (block git
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (call .file.content.sys.type (typeattr))
+	   (call .file.content.git.type (typeattr))
+
+	   (call .file.state.type (typeattr))
+
+	   (block ra
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro rename_all_files ((type ARG1))
+			 (allow ARG1 typeattr rename_file))
+
+		  (macro setattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (setattr))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.git.ra.type (typeattr))
+		  (call .file.content.sys.git.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.sys.ra.base_template)
+
+			 (call .file.content.sys.git.ra.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro rename_file_files ((type ARG1))
+				(allow ARG1 file rename_file))
+
+			 (macro setattr_file_files ((type ARG1))
+				(allow ARG1 file (file (setattr))))
+
+			 (blockinherit .file.content.sys.git.ra.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_files)))
+
+	   (block ro
+
+		  (macro dontaudit_auditaccess_all_dirs ((type ARG1))
+			 (dontaudit ARG1 typeattr (dir (audit_access))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.git.ro.type (typeattr))
+		  (call .file.content.sys.git.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.sys.ro.base_template)
+
+			 (call .file.content.sys.git.ro.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (blockinherit .file.content.sys.git.ro.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_files)))
+
+	   (block rw
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.git.rw.type (typeattr))
+		  (call .file.content.sys.git.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.sys.rw.base_template)
+
+			 (call .file.content.sys.git.rw.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro tmp_file_type_transition_file
+				((type ARG1)(class ARG2)(name ARG3))
+				(call .tmp.file_type_transition
+				      (ARG1 file ARG2 ARG3)))
+
+			 (blockinherit .file.content.sys.git.rw.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_fifo_files)
+			 (blockinherit .file.macro_template_files)
+			 (blockinherit .file.macro_template_lnk_files)
+			 (blockinherit .file.macro_template_sock_files)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (block ra
+
+			 (blockinherit .file.content.sys.git.ra.template))
+
+		  (block ro
+
+			 (blockinherit .file.content.sys.git.ro.template))
+
+		  (block rw
+
+			 (blockinherit .file.content.sys.git.rw.template)))))
+
+(in file.unconfined
+
+    (call .sys.git.htaccess.sys_git_ra_file_type_transition_file (typeattr))
+    (call .sys.git.htaccess.sys_git_ro_file_type_transition_file (typeattr))
+    (call .sys.git.htaccess.sys_git_rw_file_type_transition_file (typeattr))
+    (call .sys.git.ro.state_file_type_transition_file (typeattr)))
+
+(in sys
+
+    (block git
+
+	   (blockinherit .file.content.sys.git.template)
+
+	   (block htaccess
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htaccess" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htaccess\..*" file
+			   file_context)
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htgroup" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htgroup\..*" file
+			   file_context)
+
+		  (filecon "/var/lib/git/([^/]*/)?\.htpasswd" file file_context)
+		  (filecon "/var/lib/git/([^/]*/)?\.htpasswd\..*" file
+			   file_context)
+
+		  (macro sys_git_ra_file_type_transition_file ((type ARG1))
+			 (call .sys.git.ra.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .sys.git.ra.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .sys.git.ra.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro sys_git_ro_file_type_transition_file ((type ARG1))
+			 (call .sys.git.ro.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .sys.git.ro.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .sys.git.ro.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (macro sys_git_rw_file_type_transition_file ((type ARG1))
+			 (call .sys.git.rw.file_type_transition
+			       (ARG1 file file ".htaccess"))
+			 (call .sys.git.rw.file_type_transition
+			       (ARG1 file file ".htgroup"))
+			 (call .sys.git.rw.file_type_transition
+			       (ARG1 file file ".htpasswd")))
+
+		  (blockinherit .file.content.sys.git.ro.base_template)
+		  (blockinherit .file.macro_template_files))
+
+	   (block ra
+
+		  (blockinherit .file.macro_template_lnk_files))
+
+	   (block ro
+
+		  (filecon "/var/lib/git" dir file_context)
+		  (filecon "/var/lib/git/.*" any ())
+
+		  (macro state_file_type_transition_file ((type ARG1))
+			 (call .state.file_type_transition
+			       (ARG1 file dir "git")))
+
+		  (blockinherit .file.macro_template_lnk_files))
+
+	   (block rw
+
+		  (call .rbacsep.exempt.obj.type (file))
+
+		  (call .file.tmp.type (file)))
+
+	   (block script
+
+		  (blockinherit .file.content.sys.web.script.template)
+
+		  (allow subj self (process (getsched)))
+
+		  (call ra.append_file_files (subj))
+		  (call ra.create_file_files (subj))
+		  (call ra.delete_file_files (subj))
+		  (call ra.map_file_files (subj))
+		  (call ra.read_file_files (subj))
+		  (call ra.readwrite_file_dirs (subj))
+
+		  (call ro.list_file_dirs (subj))
+		  (call ro.map_file_files (subj))
+		  (call ro.read_file_files (subj))
+
+		  (call rw.execute_file_files (subj))
+		  (call rw.manage_file_dirs (subj))
+		  (call rw.manage_file_fifo_files (subj))
+		  (call rw.manage_file_files (subj))
+		  (call rw.manage_file_lnk_files (subj))
+		  (call rw.manage_file_sock_files (subj))
+
+		  (call rw.tmp_file_type_transition_file (subj dir "*"))
+		  (call rw.tmp_file_type_transition_file (subj fifo_file "*"))
+		  (call rw.tmp_file_type_transition_file (subj file "*"))
+		  (call rw.tmp_file_type_transition_file (subj lnk_file "*"))
+		  (call rw.tmp_file_type_transition_file (subj sock_file "*"))
+
+		  (call .cpu.read_sysfile_files (subj))
+		  (call .cpu.search_sysfile_pattern.type (subj))
+
+		  (call .git.client.exec.execute_file_files (subj))
+
+		  (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+		  (call .state.search_file_pattern.type (subj))
+
+		  (call .tmp.deletename_file_dirs (subj))
+
+		  (block exec
+
+			 (filecon "/usr/lib/git-core/git-http-backend" file
+				  file_context)
+
+			 (macro getattr_file_files ((type ARG1))
+				(allow ARG1 file (file (getattr))))))))
