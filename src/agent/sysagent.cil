@@ -11,7 +11,6 @@
 	   (blockinherit .subj.all_macro_template)
 
 	   (typeattribute typeattr)
-
 	   (roletype role typeattr)
 
 	   (call home.search_file_pattern.type (typeattr))
