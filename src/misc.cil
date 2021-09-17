@@ -1,7 +1,7 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
-(tunable xserver_object_manager false)
+(boolean xserver_object_manager false)
 
 (in block
 

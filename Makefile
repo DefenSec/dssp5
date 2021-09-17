@@ -157,15 +157,15 @@ ifeq ($(MCS),false)
 endif
 ifndef DESTDIR
 ifeq ($(VERBOSE),false)
-	semodule --priority=100 -NP -s $(SELINUXTYPE) -i $(MODULES)
+	semodule --priority=100 -N -s $(SELINUXTYPE) -i $(MODULES)
 else
-	semodule --priority=100 -NP -vvv -s $(SELINUXTYPE) -i $(MODULES)
+	semodule --priority=100 -N -vvv -s $(SELINUXTYPE) -i $(MODULES)
 endif
 else
 ifeq ($(VERBOSE),false)
-	semodule --priority=100 -NP -s $(SELINUXTYPE) -i $(MODULES) -p $(DESTDIR)
+	semodule --priority=100 -N -s $(SELINUXTYPE) -i $(MODULES) -p $(DESTDIR)
 else
-	semodule --priority=100 -NP -vvv -s $(SELINUXTYPE) -i $(MODULES) -p $(DESTDIR)
+	semodule --priority=100 -N -vvv -s $(SELINUXTYPE) -i $(MODULES) -p $(DESTDIR)
 endif
 endif
 ifeq ($(MCS),false)
