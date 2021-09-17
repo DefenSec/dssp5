@@ -94,7 +94,7 @@
        (call .xattr.getattr_fs_pattern.type (subj))
 
        (optional useradd_systemdnspawn
-		 (call .systemd.nspawn.container.obj.getattr_all_dirs (subj))
+		 (call .systemd.nspawn.container.obj.getattr_all_files (subj))
 		 (call .systemd.nspawn.container.subj.read_all_states (subj)))
 
        (block conf

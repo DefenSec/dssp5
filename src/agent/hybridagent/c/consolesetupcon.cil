@@ -88,6 +88,8 @@
 		     (call .initramfstools.tmp.read_file_lnk_files (subj)))
 
 	   (optional consolesetupcon_systemdnspawn
+		     (call .systemd.nspawn.container.obj.getattr_all_files
+			   (subj))
 		     (call .systemd.nspawn.container.subj.read_all_states
 			   (subj)))
 

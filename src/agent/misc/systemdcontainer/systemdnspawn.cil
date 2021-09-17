@@ -483,6 +483,9 @@
 		  (macro getattr_all_dirs ((type ARG1))
 			 (allow ARG1 typeattr (dir (getattr))))
 
+		  (macro getattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (getattr))))
+
 		  (macro map_all_chr_files ((type ARG1))
 			 (allow ARG1 typeattr (chr_file (map))))
 
