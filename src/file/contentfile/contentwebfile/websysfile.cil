@@ -199,6 +199,8 @@
 
 		  (block template
 
+			 (blockabstract template)
+
 			 (macro subj_type_transition ((type ARG1))
 				(allow ARG1 subj (process (transition)))
 

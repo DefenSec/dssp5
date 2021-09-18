@@ -205,6 +205,8 @@
 
 		  (block template
 
+			 (blockabstract template)
+
 			 (macro role ((role ARG1))
 				(roleattributeset roleattr ARG1))
 
