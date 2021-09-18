@@ -14,6 +14,7 @@
 	   (call log.create_file_files (subj))
 	   (call log.apache_log_file_type_transition_file (subj))
 
+	   (call apache.log.append_file_files (subj))
 	   (call apache.server.readwrite_subj_unix_stream_sockets (subj))
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
