@@ -65,3 +65,7 @@
 
 		  (blockinherit .file.log.apache.base_template)
 		  (blockinherit .file.macro_template_files))))
+
+(in sys
+
+    (call .file.content.user.web.script.role (role)))
