@@ -228,7 +228,7 @@
 			 (call .sys.git.rw.file_type_transition
 			       (ARG1 file file ".htpasswd")))
 
-		  (blockinherit .file.content.sys.git.ro.base_template)
+		  (blockinherit .file.content.sys.web.ro.base_template)
 		  (blockinherit .file.macro_template_files))
 
 	   (block rw
