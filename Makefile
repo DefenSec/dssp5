@@ -69,8 +69,6 @@ config_install:
 \n/sysroot/usr/lib/gnupg /usr/bin\
 \n/sysroot/usr/lib/klibc/bin /usr/bin\
 \n/sysroot/usr/lib/openssh /usr/bin\
-\n/sysroot/usr/lib/x86_64-linux-gnu/e2fsprogs /usr/bin\
-\n/sysroot/usr/lib/x86_64-linux-gnu/utempter /usr/bin\
 \n/sysroot/usr/lib32 /usr/lib\
 \n/sysroot/usr/lib64 /usr/lib\
 \n/sysroot/usr/libexec /usr/bin\
