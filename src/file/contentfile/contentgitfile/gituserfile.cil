@@ -94,7 +94,7 @@
 		  (typeattribute typeattr)
 
 		  (call .file.content.user.git.type (typeattr))
-		  (call .file.content.web.ro.type (typeattr))
+		  (call .file.content.git.ro.type (typeattr))
 
 		  (block base_template
 
@@ -132,7 +132,7 @@
 		  (typeattribute typeattr)
 
 		  (call .file.content.user.git.type (typeattr))
-		  (call .file.content.web.rw.type (typeattr))
+		  (call .file.content.git.rw.type (typeattr))
 
 		  (call .file.user.tmp.type (typeattr))
 
