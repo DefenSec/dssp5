@@ -232,7 +232,7 @@
 
 	   (block template
 
-		  (blockabstract base_template)
+		  (blockabstract template)
 
 		  (block ra
 
