@@ -187,6 +187,8 @@
 
 		  (block template
 
+			 (blockabstract template)
+
 			 (macro subj_type_transition ((type ARG1))
 				(allow ARG1 subj (process (transition)))
 
@@ -252,18 +254,15 @@
 			 (call ra.map_file_files (subj))
 			 (call ra.read_file_files (subj))
 			 (call ra.readwrite_file_dirs (subj))
-
 			 (call ro.list_file_dirs (subj))
 			 (call ro.map_file_files (subj))
 			 (call ro.read_file_files (subj))
-
 			 (call rw.manage_file_dirs (subj))
 			 (call rw.manage_file_fifo_files (subj))
 			 (call rw.manage_file_files (subj))
 			 (call rw.manage_file_lnk_files (subj))
 			 (call rw.manage_file_sock_files (subj))
 			 (call rw.map_file_files (subj))
-
 			 (call rw.tmp_file_type_transition_file (subj dir "*"))
 			 (call rw.tmp_file_type_transition_file
 			       (subj fifo_file "*"))

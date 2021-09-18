@@ -5,6 +5,9 @@
 
     (block web
 
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
+
 	   (macro map_all_files ((type ARG1))
 		  (allow ARG1 typeattr (file (map))))
 
@@ -165,6 +168,9 @@
 
 	   (block script
 
+		  (macro signal_all_processes ((type ARG1))
+			 (allow ARG1 typeattr (process (signal))))
+
 		  (macro type ((type ARG1))
 			 (typeattributeset typeattr ARG1))
 
@@ -194,7 +200,8 @@
 			 (call .file.content.user.web.type (typeattr))
 			 (call .file.content.web.script.exec.type (typeattr))
 
-			 (call .user.agent.exec.type (typeattr)))
+			 (call .user.agent.exec.type (typeattr))
+			 (call .user.web.ro.search_file_dirs (typeattr)))
 
 		  (block template
 
@@ -263,18 +270,15 @@
 			 (call ra.map_file_files (subj))
 			 (call ra.read_file_files (subj))
 			 (call ra.readwrite_file_dirs (subj))
-
 			 (call ro.list_file_dirs (subj))
 			 (call ro.map_file_files (subj))
 			 (call ro.read_file_files (subj))
-
 			 (call rw.manage_file_dirs (subj))
 			 (call rw.manage_file_fifo_files (subj))
 			 (call rw.manage_file_files (subj))
 			 (call rw.manage_file_lnk_files (subj))
 			 (call rw.manage_file_sock_files (subj))
 			 (call rw.map_file_files (subj))
-
 			 (call rw.tmp_file_type_transition_file (subj dir "*"))
 			 (call rw.tmp_file_type_transition_file
 			       (subj fifo_file "*"))
@@ -313,21 +317,18 @@
     (call .user.web.htaccess.user_web_rw_file_type_transition_file (subj))
     (call .user.web.htaccess.user_web_script_exec_file_type_transition_file
 	  (subj))
-
     (call .user.web.ra.manage_file_dirs (subj))
     (call .user.web.ra.manage_file_files (subj))
     (call .user.web.ra.map_file_files (subj))
     (call .user.web.ra.relabel_file_dirs (subj))
     (call .user.web.ra.relabel_file_files (subj))
     (call .user.web.ra.user_web_ro_file_type_transition_file (subj))
-
     (call .user.web.ro.manage_file_dirs (subj))
     (call .user.web.ro.manage_file_files (subj))
     (call .user.web.ro.map_file_files (subj))
     (call .user.web.ro.relabel_file_dirs (subj))
     (call .user.web.ro.relabel_file_files (subj))
     (call .user.web.ro.user_home_file_type_transition_file (subj))
-
     (call .user.web.rw.manage_file_dirs (subj))
     (call .user.web.rw.manage_file_fifo_files (subj))
     (call .user.web.rw.manage_file_files (subj))
@@ -340,14 +341,11 @@
     (call .user.web.rw.relabel_file_lnk_files (subj))
     (call .user.web.rw.relabel_file_sock_files (subj))
     (call .user.web.rw.user_web_ro_file_type_transition_file (subj))
-
     (call .user.web.script.exec.manage_file_dirs (subj))
     (call .user.web.script.exec.manage_file_files (subj))
-    (call .user.web.script.exec.map_file_files (subj))
     (call .user.web.script.exec.relabel_file_dirs (subj))
     (call .user.web.script.exec.relabel_file_files (subj))
     (call .user.web.script.exec.user_web_ro_file_type_transition_file (subj))
-
     (call .user.web.script.role (role))
     (call .user.web.script.subj_type_transition (subj))
 
@@ -568,8 +566,6 @@
 			       (ARG1 file dir "uploads"))))
 
 	   (block script
-
-		  (call .user.web.ro.search_file_dirs (subj))
 
 		  (block exec
 

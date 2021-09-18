@@ -1,6 +1,184 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in file.content.user
+
+    (block git
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (typeattribute typeattr)
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_fifo_files)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+	   (blockinherit .file.all_macro_template_sock_files)
+
+	   (call .file.content.user.type (typeattr))
+	   (call .file.content.git.type (typeattr))
+
+	   (call .file.user.home.type (typeattr))
+
+	   (block ra
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro rename_all_files ((type ARG1))
+			 (allow ARG1 typeattr rename_file))
+
+		  (macro setattr_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (setattr))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.user.git.type (typeattr))
+		  (call .file.content.git.ra.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.user.ra.base_template)
+
+			 (call .file.content.user.git.ra.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro rename_file_files ((type ARG1))
+				(allow ARG1 file rename_file))
+
+			 (macro setattr_file_files ((type ARG1))
+				(allow ARG1 file (file (setattr))))
+
+			 (blockinherit .file.content.user.git.ra.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_files)))
+
+	   (block ro
+
+		  (macro dontaudit_auditaccess_all_dirs ((type ARG1))
+			 (dontaudit ARG1 typeattr (dir (audit_access))))
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.user.git.type (typeattr))
+		  (call .file.content.web.ro.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.user.ro.base_template)
+
+			 (call .file.content.user.git.ro.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (blockinherit .file.content.user.git.ro.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_files)))
+
+	   (block rw
+
+		  (macro map_all_files ((type ARG1))
+			 (allow ARG1 typeattr (file (map))))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (blockinherit .file.all_macro_template_dirs)
+		  (blockinherit .file.all_macro_template_fifo_files)
+		  (blockinherit .file.all_macro_template_files)
+		  (blockinherit .file.all_macro_template_lnk_files)
+		  (blockinherit .file.all_macro_template_sock_files)
+
+		  (typeattribute typeattr)
+
+		  (call .file.content.user.git.type (typeattr))
+		  (call .file.content.web.rw.type (typeattr))
+
+		  (call .file.user.tmp.type (typeattr))
+
+		  (block base_template
+
+			 (blockabstract base_template)
+
+			 (blockinherit .file.content.user.rw.base_template)
+
+			 (call .file.content.user.git.rw.type (file)))
+
+		  (block template
+
+			 (blockabstract template)
+
+			 (macro map_file_files ((type ARG1))
+				(allow ARG1 file (file (map))))
+
+			 (macro tmp_file_type_transition_file
+				((type ARG1)(class ARG2)(name ARG3))
+				(call .tmp.file_type_transition
+				      (ARG1 file ARG2 ARG3)))
+
+			 (blockinherit .file.content.user.git.rw.base_template)
+			 (blockinherit .file.macro_template_dirs)
+			 (blockinherit .file.macro_template_fifo_files)
+			 (blockinherit .file.macro_template_files)
+			 (blockinherit .file.macro_template_lnk_files)
+			 (blockinherit .file.macro_template_sock_files)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (block ra
+
+			 (blockinherit .file.content.user.git.ra.template))
+
+		  (block ro
+
+			 (blockinherit .file.content.user.git.ro.template))
+
+		  (block rw
+
+			 (blockinherit .file.content.user.git.rw.template)))))
+
 (in file.unconfined
 
     (call .user.git.ro.user_home_file_type_transition_file (typeattr)))
@@ -53,7 +231,7 @@
 			 (call .user.home.file_type_transition
 			       (ARG1 file dir "public_git")))
 
-		  (blockinherit .file.content.user.ro.template)
+		  (blockinherit .file.content.user.git.ro.template)
 		  (blockinherit .file.macro_template_lnk_files)
 
 		  (call .file.user.home.type (file))

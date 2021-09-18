@@ -113,15 +113,15 @@
 
 		  (call .file.content.script.type (typeattr))
 
-		  (optional webcontentfile_httpd
-			    (call .httpd.accept_subj_unix_stream_sockets
+		  (optional contentwebfile_apache
+			    (call .apache.log.append_file_files (typeattr))
+			    (call .apache.log.search_file_dirs (typeattr))
+			    (call .apache.server.accept_subj_unix_stream_sockets
 				  (typeattr))
-			    (call .httpd.log.append_file_files (typeattr))
-			    (call .httpd.log.search_file_dirs (typeattr))
-			    (call .httpd.readwrite_subj_unix_stream_sockets
+			    (call .apache.server.readwrite_subj_unix_stream_sockets
 				  (typeattr))
-			    (call .httpd.use_subj_fds (typeattr))
-			    (call .httpd.writeinherited_subj_fifo_files
+			    (call .apache.server.use_subj_fds (typeattr))
+			    (call .apache.server.writeinherited_subj_fifo_files
 				  (typeattr)))
 
 		  (block exec
@@ -168,18 +168,15 @@
 			 (call ra.readwrite_all_dirs (typeattr))
 			 (call ra.rename_all_files (typeattr))
 			 (call ra.setattr_all_files (typeattr))
-
 			 (call ro.dontaudit_auditaccess_all_dirs (typeattr))
 			 (call ro.list_all_dirs (typeattr))
 			 (call ro.read_all_files (typeattr))
 			 (call ro.read_all_lnk_files (typeattr))
-
 			 (call rw.manage_all_dirs (typeattr))
 			 (call rw.manage_all_fifo_files (typeattr))
 			 (call rw.manage_all_files (typeattr))
 			 (call rw.manage_all_lnk_files (typeattr))
 			 (call rw.manage_all_sock_files (typeattr))
-
 			 (call script.exec.list_all_dirs (typeattr))
 			 (call script.exec.mapexecute_all_files (typeattr))
 			 (call script.exec.read_all_files (typeattr))

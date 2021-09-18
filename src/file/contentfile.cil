@@ -175,10 +175,10 @@
 			 (macro type ((type ARG1))
 				(typeattributeset typeattr ARG1))
 
-			 (blockinherit .file.all_macro_template_dirs)
-			 (blockinherit .file.all_macro_template_files)
-			 (blockinherit .file.all_macro_template_lnk_files)
+			 (blockinherit file.all_macro_template_dirs)
+			 (blockinherit file.all_macro_template_files)
+			 (blockinherit file.all_macro_template_lnk_files)
 
 			 (typeattribute typeattr)
 
-			 (call .file.content.type (typeattr))))))
+			 (call file.content.type (typeattr))))))
