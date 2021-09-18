@@ -28,23 +28,14 @@
 
 	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
 
+	   (call .state.search_file_pattern.type (subj))
+
+	   (call .sys.git.rw.list_file_dirs (subj))
+	   (call .sys.git.rw.map_file_files (subj))
+	   (call .sys.git.rw.read_file_files (subj))
+	   (call .sys.git.rw.read_file_lnk_files (subj))
+
 	   (call .systemd.journal.relay_msgs.type (subj))
-
-	   (optional gitdaemon_gitsysfile
-		     (call .sys.git.ra.list_file_dirs (subj))
-		     (call .sys.git.ra.map_file_files (subj))
-		     (call .sys.git.ra.read_file_files (subj))
-		     (call .sys.git.ra.read_file_lnk_files (subj))
-		     (call .sys.git.ro.list_file_dirs (subj))
-		     (call .sys.git.ro.map_file_files (subj))
-		     (call .sys.git.ro.read_file_files (subj))
-		     (call .sys.git.ro.read_file_lnk_files (subj))
-		     (call .sys.git.rw.list_file_dirs (subj))
-		     (call .sys.git.rw.map_file_files (subj))
-		     (call .sys.git.rw.read_file_files (subj))
-		     (call .sys.git.rw.read_file_lnk_files (subj))
-
-		     (call .state.search_file_pattern.type (subj)))
 
 	   (optional gitdaemon_gituserfile
 		     (call .user.git.ro.list_file_dirs (subj))

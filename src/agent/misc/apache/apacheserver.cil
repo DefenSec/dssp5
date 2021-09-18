@@ -1,0 +1,107 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in apache
+
+    (block server
+
+	   (macro accept_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_stream_socket (accept))))
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (chown dac_override dac_read_search kill
+					       net_admin net_bind_service setgid
+					       setuid)))
+	   (allow subj self (process (getpgid getsched)))
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self create_sem)
+	   (allow subj self create_shm)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (unix_stream_socket (accept connectto listen)))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .cgroup.getattr_fs_pattern.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
+
+	   (call .cpuinfo.read_procfile_files (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .exec.mapexecute_file_files (subj))
+	   (call .exec.read_file_files (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .file.content.web.script.webserver.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .http.namebind_port_tcp_sockets (subj))
+	   (call .http.https.namebind_port_tcp_sockets (subj))
+
+	   (call .kernel.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .mime.conf.read_file_pattern.type (subj))
+	   (call .mime.data.read_file_pattern.type (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .net.read_procfile_pattern.type (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+	   (call .overcommitmemory.read_sysctlfile_pattern.type (subj))
+
+	   (call .pixmaps.data.read_file_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+	   (call .selinux.mapread_fs_pattern.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .systemd.logparsenv.type (subj))
+	   (call .systemd.notify.type (subj))
+
+	   (optional apacheserver_certbot
+		     (call .certbot.conf.read_file_pattern.type (subj)))
+
+	   (optional apacheserver_p11kit
+		     (call .p11kit.conf.read_file_pattern.type (subj))
+		     (call .p11kit.data.map_file_files (subj))
+		     (call .p11kit.data.read_file_pattern.type (subj)))
+
+	   (optional apacheserver_phpfpm
+		     (call .phpfpm.unix_stream_connect (subj)))
+
+	   (optional apacheserver_phpfpmunreservedport
+		     (call .phpfpm.nameconnect_port_tcp_sockets (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/apache2" file file_context))))

@@ -1,0 +1,283 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block apache
+
+       (block cache
+
+	      (filecon "/var/cache/apache2" dir file_context)
+	      (filecon "/var/cache/apache2/.*" any file_context)
+
+	      (macro cache_file_type_transition_file ((type ARG1))
+		     (call .cache.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (blockinherit .file.cache.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block cert
+
+	      (filecon "/etc/ssl/apache2" dir file_context)
+	      (filecon "/etc/ssl/apache2/.*" any file_context)
+
+	      (macro cert_file_type_transition_file ((type ARG1))
+		     (call .cert.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (blockinherit .file.cert.template))
+
+       (block cli
+
+	      (blockinherit .sys.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/a2disconf" file file_context)
+		     (filecon "/usr/bin/a2dismod" file file_context)
+		     (filecon "/usr/bin/a2dissite" file file_context)
+		     (filecon "/usr/bin/a2enconf" file file_context)
+		     (filecon "/usr/bin/a2enmod" file file_context)
+		     (filecon "/usr/bin/a2ensite" file file_context)
+		     (filecon "/usr/bin/a2query" file file_context)
+		     (filecon "/usr/bin/apache2ctl" file file_context)
+		     (filecon "/usr/bin/apachectl" file file_context)))
+
+       (block conf
+
+	      (filecon "/etc/apache2" dir file_context)
+	      (filecon "/etc/apache2/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (blockinherit .file.conf.apache.template))
+
+       (block data
+
+	      (filecon "/usr/share/apache2" dir file_context)
+	      (filecon "/usr/share/apache2/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (blockinherit .file.data.template))
+
+       (block htcacheclean
+
+	      (block conf
+
+		     (filecon "/etc/default/apache-htcacheclean" file
+			      file_context)
+		     (filecon "/etc/default/apache-htcacheclean\..*" file
+			      file_context)
+
+		     (macro conf_file_type_transition_file ((type ARG1))
+			    (call .conf.file_type_transition
+				  (ARG1 file file "apache-htcacheclean")))
+
+		     (blockinherit .file.conf.apache.base_template)
+		     (blockinherit .file.macro_template_files))
+
+	      (block run
+
+		     (filecon "/run/apache2/htcacheclean" dir file_context)
+		     (filecon "/run/apache2/htcacheclean/.*" any file_context)
+
+		     (macro apache_run_file_type_transition_file ((type ARG1))
+			    (call .apache.run.file_type_transition
+				  (ARG1 file dir "htcacheclean")))
+
+		     (blockinherit .file.run.apache.template))
+
+	      (block unit
+
+		     (filecon
+		      "/usr/lib/systemd/system/apache-htcacheclean\.service.*"
+		      file file_context)
+		     (filecon
+		      "/usr/lib/systemd/system/apache-htcacheclean@.*\.service.*"
+		      file file_context)
+
+		     (blockinherit .file.unit.template)))
+
+       (block log
+
+	      (filecon "/var/log/apach2" dir file_context)
+	      (filecon "/var/log/apache2/.*" any file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1))
+		     (call .log.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (macro rename_file_files ((type ARG1))
+		     (allow ARG1 file rename_file))
+
+	      (macro setattr_file_files ((type ARG1))
+		     (allow ARG1 file (file (setattr))))
+
+	      (blockinherit .file.log.template))
+
+       (block run
+
+	      (filecon "/run/apache2" dir file_context)
+	      (filecon "/run/apache2/.*" any file_context)
+
+	      (filecon "/run/mod_fcgid" dir file_context)
+	      (filecon "/run/mod_fcgid/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "apache2"))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "mod_fcgid")))
+
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.run.apache.template))
+
+       (block state
+
+	      (filecon "/var/lib/apache2" dir file_context)
+	      (filecon "/var/lib/apache2/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "apache2")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/apache2\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/apache2@.*\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in apache.server
+
+    (call cache.manage_file_dirs (subj))
+    (call cache.manage_file_files (subj))
+
+    (call cert.list_file_dirs (subj))
+    (call cert.read_file_files (subj))
+
+    (call conf.list_file_dirs (subj))
+    (call conf.read_file_files (subj))
+    (call conf.read_file_lnk_files (subj))
+
+    (call data.list_file_dirs (subj))
+    (call data.read_file_files (subj))
+    (call data.read_file_lnk_files (subj))
+
+    (call log.append_file_files (subj))
+    (call log.create_file_files (subj))
+    (call log.delete_file_files (subj))
+    (call log.read_file_files (subj))
+    (call log.readwrite_file_dirs (subj))
+    (call log.rename_file_files (subj))
+    (call log.setattr_file_files (subj))
+
+    (call run.manage_file_dirs (subj))
+    (call run.manage_file_files (subj))
+    (call run.manage_file_sock_files (subj))
+    (call run.run_file_type_transition_file (subj))
+
+    (call state.manage_file_dirs (subj))
+    (call state.manage_file_files (subj))
+
+    (call suexec.signal_subj_processes (subj))
+    (call suexec.subj_type_transition (subj))
+
+    (call .apacheutils.rotatelogs.signal_subj_processes (subj))
+    (call .apacheutils.rotatelogs.subj_type_transition (subj))
+
+    (call .cache.search_file_pattern.type (subj))
+
+    (call .log.search_file_pattern.type (subj))
+
+    (call .state.search_file_pattern.type (subj)))
+
+(in file.conf
+
+    (block apache
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.apache.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.apache.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.run
+
+    (block apache
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.run.base_template)
+
+		  (call .file.run.apache.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.run.apache.base_template))))
+
+(in file.unconfined
+
+    (call .apache.cache.cache_file_type_transition_file (typeattr))
+    (call .apache.cert.cert_file_type_transition_file (typeattr))
+    (call .apache.conf.conf_file_type_transition_file (typeattr))
+    (call .apache.data.data_file_type_transition_file (typeattr))
+    (call .apache.htcacheclean.conf.conf_file_type_transition_file (typeattr))
+    (call .apache.htcacheclean.run.apache_run_file_type_transition_file
+	  (typeattr))
+    (call .apache.log.log_file_type_transition_file (typeattr))
+    (call .apache.run.run_file_type_transition_file (typeattr))
+    (call .apache.state.state_file_type_transition_file (typeattr)))

@@ -1,0 +1,92 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .gitweb.conf.conf_file_type_transition_file (typeattr))
+    (call .gitweb.htaccess.gitweb_ro_file_type_transition_file (typeattr))
+    (call .gitweb.ro.sys_web_ro_file_type_transition_file (typeattr)))
+
+(block gitweb
+
+       (block conf
+
+	      (filecon "/etc/gitweb\.conf" file file_context)
+	      (filecon "/etc/gitweb\.conf\..*" file file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "gitweb.conf")))
+
+	      (blockinherit .file.conf.base_template)
+	      (blockinherit .file.macro_template_files))
+
+       (block htaccess
+
+	      (filecon "/var/www/git/([^/]*/)?\.htaccess" file file_context)
+	      (filecon "/var/www/git/([^/]*/)?\.htaccess\..*" file file_context)
+	      (filecon "/var/www/git/([^/]*/)?\.htgroup" file file_context)
+	      (filecon "/var/www/git/([^/]*/)?\.htgroup\..*" file file_context)
+	      (filecon "/var/www/git/([^/]*/)?\.htpasswd" file file_context)
+	      (filecon "/var/www/git/([^/]*/)?\.htpasswd\..*" file file_context)
+
+	      (macro gitweb_ro_file_type_transition_file ((type ARG1))
+		     (call ro.file_type_transition
+			   (ARG1 file file ".htaccess"))
+		     (call ro.file_type_transition
+			   (ARG1 file file ".htgroup"))
+		     (call ro.file_type_transition
+			   (ARG1 file file ".htpasswd")))
+
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.content.sys.web.ro.base_template))
+
+       (block ro
+
+	      (filecon "/var/www/git" dir file_context)
+	      (filecon "/var/www/git/.*" any file_context)
+
+	      (macro sys_web_ro_file_type_transition_file ((type ARG1))
+		     (call .sys.web.ro.file_type_transition
+			   (ARG1 file dir "git")))
+
+	      (blockinherit .file.content.sys.web.ro.template))
+
+       (block script
+
+	      (blockinherit .file.content.sys.web.script.template)
+
+	      (allow subj self (process (execmem getsched)))
+
+	      (call conf.read_file_files (subj))
+
+	      (call .cpu.read_sysfile_files (subj))
+	      (call .cpu.search_sysfile_pattern.type (subj))
+
+	      (call .git.client.exec.execute_file_files (subj))
+
+	      (call .loadavg.read_procfile_files (subj))
+
+	      (call .mime.conf.read_file_pattern.type (subj))
+	      (call .mime.data.read_file_pattern.type (subj))
+
+	      (call .perl5.data.read_file_pattern.type (subj))
+
+	      (call .sys.git.rw.list_file_dirs (subj))
+	      (call .sys.git.rw.map_file_files (subj))
+	      (call .sys.git.rw.read_file_files (subj))
+	      (call .sys.git.rw.read_file_lnk_files (subj))
+
+	      (call .state.search_file_pattern.type (subj))
+
+	      (optional gitwebsysfile_gituserfile
+			(call .user.home.search_file_pattern.type (subj))
+
+			(call .user.git.ro.list_file_dirs (subj))
+			(call .user.git.ro.map_file_files (subj))
+			(call .user.git.ro.read_file_files (subj))
+			(call .user.git.ro.read_file_lnk_files (subj)))
+
+	      (block exec
+
+		     (filecon "/var/www/git/gitweb\.cgi" file file_context))))

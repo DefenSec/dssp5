@@ -1,0 +1,52 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;; /usr/bin/ab
+;; /usr/bin/checkgid
+;; /usr/bin/fcgistarter
+;; /usr/bin/htdbm
+;; /usr/bin/htdigest
+;; /usr/bin/htpasswd
+;; /usr/bin/logresolve
+;; /usr/sbin/check_forensic
+;; /usr/sbin/httxt2dbm
+;; /usr/sbin/split-logfile
+
+(block apacheutils
+
+       (block htcacheclean
+
+	      (blockinherit .sys.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (optional apacheutils_htcacheclean_apache
+			(call .apache.cache.delete_file_dirs (subj))
+			(call .apache.cache.delete_file_files (subj))
+			(call .apache.cache.deletename_file_dirs (subj))
+
+			(call .apache.htcacheclean.conf.read_file_files (subj))
+
+			(call .cache.search_file_pattern.type (subj)))
+
+	      (block exec
+
+		     (filecon "/usr/bin/htcacheclean" file file_context)))
+
+       (block rotatelogs
+
+	      (blockinherit .sys.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (optional apacheutils_rotatelogs_apache
+			(call .apache.log.manage_file_files (subj))
+			(call .apache.log.readwrite_file_dirs (subj))
+
+			(call .log.search_file_pattern.type (subj)))
+
+	      (block exec
+
+		     (filecon "/usr/bin/rotatelogs" file file_context))))

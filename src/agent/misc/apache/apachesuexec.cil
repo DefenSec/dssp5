@@ -1,0 +1,53 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in apache
+
+    (block suexec
+
+	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (capability (setgid setuid)))
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call apache.log.append_file_files (subj))
+	   (call apache.log.search_file_dirs (subj))
+
+	   (call apache.server.readwrite_subj_unix_stream_sockets (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .exec.mapexecute_file_files (subj))
+	   (call .exec.read_file_files (subj))
+
+	   (call .file.content.user.web.getattr_all_files (subj))
+	   (call .file.content.user.web.list_all_dirs (subj))
+	   (call .file.content.user.web.read_all_lnk_files (subj))
+	   (call .file.content.user.web.script.signal_all_processes (subj))
+
+	   (call .kernel.read_sysctlfile_pattern.type (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .log.search_file_pattern.type (subj))
+
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (call .user.home.search_file_pattern.type (subj))
+
+	   (call .user.web.script.subj_type_transition (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/apache2/suexec-pristine" file
+			   file_context))))
