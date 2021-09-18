@@ -205,3 +205,7 @@
     (call .pkgmgr.data.lib_file_type_transition_file (typeattr))
     (call .pkgmgr.log.log_file_type_transition_file (typeattr))
     (call .pkgmgr.state.state_file_type_transition_file (typeattr)))
+
+(in sys.agent
+
+    (call .sys.tmp.readwriteinherited_file_files (typeattr)))
