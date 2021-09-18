@@ -72,9 +72,9 @@
 	   (call .user.systemd.socketactivated.unixstream.type (subj))
 
 	   (optional gnupgdirmngr_p11kit
-		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
-		     (call .p11kit.data.read_file_pattern.type (subj)))
+		     (call .p11kit.home.conf.read_file_pattern.type (subj))
+		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (block client
 
