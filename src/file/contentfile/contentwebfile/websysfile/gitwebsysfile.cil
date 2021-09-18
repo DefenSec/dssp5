@@ -30,6 +30,7 @@
 			   (ARG1 file dir "gitweb")))
 
 	      (blockinherit .file.content.sys.web.ro.template)
+	      (blockinherit .file.macro_template_lnk_files)
 
 	      (call file.data.type (file)))
 
@@ -42,6 +43,7 @@
 	      (call conf.read_file_files (subj))
 
 	      (call data.read_file_files (subj))
+	      (call data.read_file_lnk_files (subj))
 	      (call data.search_file_dirs (subj))
 
 	      (call .cpu.read_sysfile_files (subj))
@@ -54,7 +56,7 @@
 	      (call .mime.conf.read_file_pattern.type (subj))
 	      (call .mime.data.read_file_pattern.type (subj))
 
-	      (call .perl5.data.read_file_pattern.type (subj))
+	      (call .perl5.read_file_pattern.type (subj))
 
 	      (call .sys.git.rw.list_file_dirs (subj))
 	      (call .sys.git.rw.map_file_files (subj))
