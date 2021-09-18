@@ -38,6 +38,8 @@
 	      (call conf.read_file_files (subj))
 	      (call conf.readwrite_file_dirs (subj))
 
+	      (call exec.execute_file_files (subj))
+
 	      (call run.manage_file_dirs (subj))
 	      (call run.run_file_type_transition_file (subj))
 
