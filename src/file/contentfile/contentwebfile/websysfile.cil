@@ -290,6 +290,7 @@
     (call .sys.web.ra.sys_web_ro_file_type_transition_file (typeattr))
     (call .sys.web.rw.sys_web_ro_file_type_transition_file (typeattr))
     (call .sys.web.ro.var_file_type_transition_file (typeattr))
+    (call .sys.web.script.exec.lib_file_type_transition_file (typeattr))
     (call .sys.web.script.exec.sys_web_ro_file_type_transition_file (typeattr)))
 
 (in sys
@@ -299,6 +300,21 @@
 	   (blockinherit .file.content.sys.web.template)
 
 	   (block htaccess
+
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htaccess" file
+			   file_context)
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htaccess\..*" file
+			   file_context)
+
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htgroup" file
+			   file_context)
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htgroup\..*" file
+			   file_context)
+
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htpasswd" file
+			   file_context)
+		  (filecon "/usr/lib/cgi-bin/([^/]*/)?\.htpasswd\..*" file
+			   file_context)
 
 		  (filecon "/var/www/([^/]*/)?\.htaccess" file file_context)
 		  (filecon "/var/www/([^/]*/)?\.htaccess\..*" file file_context)
@@ -467,6 +483,9 @@
 
 		  (block exec
 
+			 (filecon "/usr/lib/cgi-bin" dir file_context)
+			 (filecon "/usr/lib/cgi-bin/.*" any file_context)
+
 			 (filecon "/var/www/([^/]*/)?cgi-bin" dir file_context)
 			 (filecon "/var/www/([^/]*/)?cgi-bin/.*" any
 				  file_context)
@@ -474,6 +493,10 @@
 			 (filecon "/var/www/([^/]*/)?fcgi-bin" dir file_context)
 			 (filecon "/var/www/([^/]*/)?fcgi-bin/.*" any
 				  file_context)
+
+			 (macro lib_file_type_transition_file ((type ARG1))
+				(call .lib.file_type_transition
+				      (ARG1 file dir "cgi-bin")))
 
 			 (macro sys_web_ro_file_type_transition_file
 				((type ARG1))

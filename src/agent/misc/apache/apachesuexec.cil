@@ -10,8 +10,9 @@
 	   (allow subj self (capability (setgid setuid)))
 	   (allow subj self create_unix_dgram_socket)
 
-	   (call apache.log.append_file_files (subj))
-	   (call apache.log.search_file_dirs (subj))
+	   (call log.append_file_files (subj))
+	   (call log.create_file_files (subj))
+	   (call log.apache_log_file_type_transition_file (subj))
 
 	   (call apache.server.readwrite_subj_unix_stream_sockets (subj))
 
@@ -25,12 +26,12 @@
 	   (call .file.content.user.web.read_all_lnk_files (subj))
 	   (call .file.content.user.web.script.signal_all_processes (subj))
 
-	   (call .kernel.read_sysctlfile_pattern.type (subj))
-
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
 	   (call .log.search_file_pattern.type (subj))
+
+	   (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
 
 	   (call .nss.passwdgroup.type (subj))
 
@@ -50,4 +51,16 @@
 	   (block exec
 
 		  (filecon "/usr/lib/apache2/suexec-pristine" file
-			   file_context))))
+			   file_context))
+
+	   (block log
+
+		  (filecon "/var/log/apache2/suexec\.log" file file_context)
+		  (filecon "/var/log/apache2/suexec\.log\..*" file file_context)
+
+		  (macro apache_log_file_type_transition_file ((type ARG1))
+			 (call .apache.log.file_type_transition
+			       (ARG1 file file "suexec.log")))
+
+		  (blockinherit .file.log.apache.base_template)
+		  (blockinherit .file.macro_template_files))))

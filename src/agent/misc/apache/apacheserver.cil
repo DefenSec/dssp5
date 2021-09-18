@@ -41,15 +41,13 @@
 	   (call .dos.getattr_fs_pattern.type (subj))
 	   (call .dos.manage_fs_pattern.type (subj))
 
-	   (call .file.content.web.script.webserver.type (subj))
+	   (call .file.content.web.webserver.type (subj))
 
 	   (call .fuse.getattr_fs_pattern.type (subj))
 	   (call .fuse.manage_fs_pattern.type (subj))
 
 	   (call .http.namebind_port_tcp_sockets (subj))
 	   (call .http.https.namebind_port_tcp_sockets (subj))
-
-	   (call .kernel.read_sysctlfile_pattern.type (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
@@ -63,6 +61,8 @@
 
 	   (call .nfs.getattr_fs_pattern.type (subj))
 	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
