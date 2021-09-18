@@ -157,7 +157,7 @@
 	      (macro setattr_file_files ((type ARG1))
 		     (allow ARG1 file (file (setattr))))
 
-	      (blockinherit .file.log.template))
+	      (blockinherit .file.log.apache.template))
 
        (block run
 
@@ -286,6 +286,36 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.log
+
+    (block apache
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.log.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.apache.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.log.apache.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
 
 (in file.run
 

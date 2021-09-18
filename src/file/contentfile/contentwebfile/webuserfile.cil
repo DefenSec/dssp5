@@ -290,6 +290,10 @@
 
 			 (call .tmp.deletename_file_dirs (subj))))))
 
+(in file.content.web.webserver
+
+    (call .user.home.search_file_pattern.type (typeattr)))
+
 (in file.unconfined
 
     (call .user.web.htaccess.user_web_ra_file_type_transition_file (typeattr))
