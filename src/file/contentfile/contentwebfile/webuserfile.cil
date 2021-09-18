@@ -168,13 +168,19 @@
 
 	   (block script
 
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
 		  (macro signal_all_processes ((type ARG1))
 			 (allow ARG1 typeattr (process (signal))))
 
 		  (macro type ((type ARG1))
 			 (typeattributeset typeattr ARG1))
 
+		  (roleattribute roleattr)
 		  (typeattribute typeattr)
+
+		  (roletype roleattr typeattr)
 
 		  (call .file.content.web.script.type (typeattr))
 
@@ -308,11 +314,6 @@
     (call .user.web.ro.user_home_file_type_transition_file (typeattr))
     (call .user.web.script.exec.user_web_ro_file_type_transition_file
 	  (typeattr)))
-
-(in sys
-
-    ;; suexec
-    (call .user.web.script.role (role)))
 
 (in user
 
