@@ -31,20 +31,56 @@
 
 	      (blockinherit .sys.agent.template)
 
+	      (allow subj self (capability (chown)))
+	      (allow subj self (process (setrlimit)))
+
+	      (call conf.manage_file_lnk_files (subj))
+	      (call conf.read_file_files (subj))
+	      (call conf.readwrite_file_dirs (subj))
+
+	      (call run.manage_file_dirs (subj))
+	      (call run.run_file_type_transition_file (subj))
+
+	      (call runlock.manage_file_dirs (subj))
+	      (call runlock.runlock_file_type_transition_file (subj "*"))
+
+	      (call server.subj_type_transition (subj))
+
+	      (call state.manage_file_dirs (subj))
+	      (call state.manage_file_files (subj))
+	      (call state.state_file_type_transition_file (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .locale.data.map_file_files (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .perl5.read_file_pattern.type (subj))
+
+	      (call .random.read_nodedev_chr_files (subj))
+
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
 
+	      (call .root.list_file_dirs (subj))
+
+	      (call .runlock.deletename_file_dirs (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.execute_file_files (subj))
+
+	      (call .state.search_file_pattern.type (subj))
+
+	      (call .sys.read_subj_states (subj))
+
 	      (block exec
 
-		     (filecon "/usr/bin/a2disconf" file file_context)
-		     (filecon "/usr/bin/a2dismod" file file_context)
-		     (filecon "/usr/bin/a2dissite" file file_context)
-		     (filecon "/usr/bin/a2enconf" file file_context)
 		     (filecon "/usr/bin/a2enmod" file file_context)
-		     (filecon "/usr/bin/a2ensite" file file_context)
 		     (filecon "/usr/bin/a2query" file file_context)
-		     (filecon "/usr/bin/apache2ctl" file file_context)
-		     (filecon "/usr/bin/apachectl" file file_context)))
+		     (filecon "/usr/bin/apache2ctl" file file_context)))
 
        (block conf
 
@@ -108,7 +144,7 @@
 
        (block log
 
-	      (filecon "/var/log/apach2" dir file_context)
+	      (filecon "/var/log/apache2" dir file_context)
 	      (filecon "/var/log/apache2/.*" any file_context)
 
 	      (macro log_file_type_transition_file ((type ARG1))
@@ -139,6 +175,19 @@
 
 	      (blockinherit .file.macro_template_sock_files)
 	      (blockinherit .file.run.apache.template))
+
+       (block runlock
+
+	      (filecon "/run/lock/apache2" dir file_context)
+	      (filecon "/run/lock/apache2/.*" any file_context)
+
+	      (macro runlock_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .runlock.file_type_transition
+			   (ARG1 file dir ARG2)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.runlock.base_template))
 
        (block state
 
@@ -280,4 +329,6 @@
 	  (typeattr))
     (call .apache.log.log_file_type_transition_file (typeattr))
     (call .apache.run.run_file_type_transition_file (typeattr))
+    (call .apache.runlock.runlock_file_type_transition_file
+	  (typeattr "apache2"))
     (call .apache.state.state_file_type_transition_file (typeattr)))
