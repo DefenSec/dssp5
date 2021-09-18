@@ -102,6 +102,7 @@
 	   (call .fuse.getattr_fs_pattern.type (subj))
 	   (call .fuse.manage_fs_pattern.type (subj))
 
+	   (call .http.nameconnect_port_tcp_sockets (subj))
 	   (call .http.https.nameconnect_port_tcp_sockets (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
