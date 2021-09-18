@@ -58,9 +58,8 @@
 		     (call server.unix_stream_connect (subj)))
 
 	   (optional opensshclient_add_p11kit
-		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
-		     (call .p11kit.data.read_file_pattern.type (subj)))
+		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (block exec
 
@@ -111,9 +110,8 @@
 	   (call .user.run.deletename_file_dirs (subj))
 
 	   (optional opensshclient_agent_p11kit
-		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
-		     (call .p11kit.data.read_file_pattern.type (subj)))
+		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (optional opensshclient_agent_user
 		     (call .user.shell_exec_subj_type_transition (subj)))
@@ -261,9 +259,8 @@
 		     (call server.unix_stream_connect (subj)))
 
 	   (optional opensshclient_client_p11kit
-		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
-		     (call .p11kit.data.read_file_pattern.type (subj)))
+		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (optional opensshclient_client_user
 		     (call .user.shell_exec_subj_type_transition (subj)))
@@ -356,9 +353,8 @@
 	   (call .selinux.readwrite_fs_pattern.type (subj))
 
 	   (optional opensshclient_keygen_p11kit
-		     (call .p11kit.conf.read_file_pattern.type (subj))
 		     (call .p11kit.data.map_file_files (subj))
-		     (call .p11kit.data.read_file_pattern.type (subj)))
+		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (block exec
 
