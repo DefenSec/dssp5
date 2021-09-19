@@ -48,8 +48,6 @@
 
 	   (call .shell.exec.execute_file_files (subj))
 
-	   (call .state.search_file_pattern.type (subj))
-
 	   (call .terminfo.read_file_pattern.type (subj))
 
 	   (call .user.home.manage_file_files (subj))

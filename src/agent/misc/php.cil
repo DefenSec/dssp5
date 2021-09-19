@@ -78,13 +78,18 @@
 	   (call .file.conf.php.read_all_files (subj))
 	   (call .file.conf.php.read_all_lnk_files (subj))
 
+	   (call .file.exec.getattr_all_files (subj))
+
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
 
+	   (call .proc.getattr_fs_pattern.type (subj))
 	   (call .proc.list_fs_dirs (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .root.list_file_dirs (subj))
 
 	   (call .selinux.linked.type (subj))
 
@@ -95,8 +100,6 @@
 
 	   (call .subj.dontaudit_read_all_states (subj))
 	   (call .subj.common.read_all_states (subj))
-
-	   (call .systemd.exec.getattr_file_files (subj))
 
 	   (block exec
 
@@ -142,6 +145,8 @@
     (block utils
 
 	   (blockinherit .sys.agent.template)
+
+	   (allow subj self (process (getsched)))
 
 	   (call exec.execute_file_files (subj))
 

@@ -14,12 +14,13 @@
 
 	   (macro unix_stream_connect ((type ARG1))
 		  (call connectto_subj_unix_stream_sockets (ARG1))
-		  (call state.search_file_dirs (ARG1))
-		  (call state.write_file_sock_files (ARG1)))
+		  (call run.search_file_dirs (ARG1))
+		  (call run.write_file_sock_files (ARG1)))
 
 	   (blockinherit .dbus.client.template)
 	   (blockinherit .sys.agent.template)
 
+	   (allow subj self (capability (dac_override setgid setuid)))
 	   (allow subj self (process (getsched setrlimit)))
 	   (allow subj self create_tcp_stream_socket)
 	   (allow subj self create_unix_dgram_socket)
@@ -45,15 +46,10 @@
 
 	   (call run.manage_file_dirs (subj))
 	   (call run.manage_file_files (subj))
+	   (call run.manage_file_sock_files (subj))
 
 	   (call state.manage_file_dirs (subj))
 	   (call state.manage_file_files (subj))
-	   (call state.manage_file_sock_files (subj))
-
-	   (call tmp.manage_file_files (subj))
-	   (call tmp.tmp_file_type_transition_file (subj))
-
-	   (call unit.status_file_services (subj))
 
 	   (call utils.nnptransition_subj_processes (subj))
 	   (call utils.subj_type_transition (subj))
@@ -68,9 +64,10 @@
 
 	   (call .cgroup.getattr_fs_pattern.type (subj))
 
-	   (call .crypto.read_sysctlfile_pattern.type (subj))
+	   (call .cpu.read_sysfile_files (subj))
+	   (call .cpu.search_sysfile_pattern.type (subj))
 
-	   (call .debug.search_fs_pattern.type (subj))
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .devices.read_sysfile_files (subj))
 	   (call .devices.search_sysfile_pattern.type (subj))
@@ -83,6 +80,8 @@
 	   (call .log.search_file_pattern.type (subj))
 
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
@@ -99,10 +98,6 @@
 
 	   (call .root.list_file_dirs (subj))
 
-	   (call .runuser.search_file_pattern.type (subj))
-
-	   (call .seclabelfs.getattr_all_fs (subj))
-
 	   (call .selinux.linked.type (subj))
 
 	   (call .shell.exec.mapexecute_file_files (subj))
@@ -112,14 +107,7 @@
 
 	   (call .sys.sendmsg_subj_dbus.type (subj))
 
-	   (call .systemd.logparsenv.type (subj))
 	   (call .systemd.notify.type (subj))
-
-	   (call .systemd.systemctl.exec.execute_file_files (subj))
-
-	   (call .tmp.deletename_file_dirs (subj))
-
-	   (call .trace.search_fs_pattern.type (subj))
 
 	   (call .zram.read_sysfile_files (subj))
 	   (call .zram.search_sysfile_dirs (subj))
@@ -143,26 +131,27 @@
 
 	   (block log
 
-		  (filecon "/var/log/mariadb" dir file_context)
-		  (filecon "/var/log/mariadb/.*" any file_context)
+		  (filecon "/var/log/mysql" dir file_context)
+		  (filecon "/var/log/mysql/.*" any file_context)
 
 		  (macro log_file_type_transition_file ((type ARG1))
 			 (call .log.file_type_transition
-			       (ARG1 file dir "mariadb")))
+			       (ARG1 file dir "mysql")))
 
 		  (blockinherit .file.log.template))
 
 	   (block run
 
-		  (filecon "/run/mariadb" dir file_context)
-		  (filecon "/run/mariadb/.*" any file_context)
+		  (filecon "/run/mysqld" dir file_context)
+		  (filecon "/run/mysqld/.*" any file_context)
 
 		  (macro run_file_type_transition_file ((type ARG1))
 			 (call .run.file_type_transition
-			       (ARG1 file dir "mariadb")))
+			       (ARG1 file dir "mysqld")))
 
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.run.base_template))
 
 	   (block state
@@ -179,26 +168,13 @@
 
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
-		  (blockinherit .file.macro_template_sock_files)
 		  (blockinherit .file.state.base_template))
-
-	   (block tmp
-
-		  (macro tmp_file_type_transition_file ((type ARG1))
-			 (call .tmp.file_type_transition
-			       (ARG1 file file "*")))
-
-		  (blockinherit .file.macro_template_files)
-		  (blockinherit .file.tmp.base_template))
 
 	   (block unit
 
-		  (filecon
-		   "/usr/lib/systemd/system/mariadb@bootstrap\.service.*" file
-		   file_context)
-		  (filecon "/usr/lib/systemd/system/mysql\.service.*" file
+		  (filecon "/usr/lib/systemd/system/mariadb\.service.*" file
 			   file_context)
-		  (filecon "/usr/lib/systemd/system/mysqld\.service.*" file
+		  (filecon "/usr/lib/systemd/system/mariadb@.*\.service.*" file
 			   file_context)
 
 		  (blockinherit .file.unit.template)))
@@ -224,6 +200,9 @@
 	   (call server.state.search_file_dirs (subj))
 	   (call server.state.setattr_file_dirs (subj))
 
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .exec.execute_file_files (subj))
@@ -233,6 +212,8 @@
 
 	   (call .nss.hosts.type (subj))
 	   (call .nss.passwdgroup.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
 
 	   (call .random.read_sysctlfile_pattern.type (subj))
 
@@ -248,6 +229,8 @@
 
 	   (call .terminfo.conf.read_file_pattern.type (subj))
 	   (call .terminfo.data.read_file_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
 
 	   (block exec
 
@@ -281,7 +264,16 @@
 		  (filecon "/usr/bin/wsrep_sst_mariabackup" file file_context)
 		  (filecon "/usr/bin/wsrep_sst_mysqldump" file file_context)
 		  (filecon "/usr/bin/wsrep_sst_rsync" file file_context)
-		  (filecon "/usr/bin/wsrep_sst_rsync_wan" file file_context))))
+		  (filecon "/usr/bin/wsrep_sst_rsync_wan" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.tmp.base_template))))
 
 (in mysql.client
 
