@@ -324,6 +324,9 @@
 
     (block instance
 
+	   (macro connectto_all_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 typeattr (unix_stream_socket (connectto))))
+
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
 
@@ -331,8 +334,6 @@
 		  (call connectto_all_unix_stream_sockets (ARG1))
 		  (call .file.run.php.fpm.search_all_dirs (ARG1))
 		  (call .file.run.php.fpm.write_all_sock_files (ARG1)))
-
-	   (blockinherit .subj.all_macro_template)
 
 	   (typeattribute typeattr)
 
