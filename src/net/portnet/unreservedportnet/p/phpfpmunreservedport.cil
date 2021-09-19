@@ -1,0 +1,11 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block phpfpm
+
+       (portcon "dccp" 9000 port_context)
+       (portcon "sctp" 9000 port_context)
+       (portcon "tcp" 9000 port_context)
+       (portcon "udp" 9000 port_context)
+
+       (blockinherit .net.port.unreserved.template))
