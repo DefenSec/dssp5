@@ -182,6 +182,10 @@
 	      (call .mpg123.tmpfs.relabel_file_files (subj)))
 
     (optional unprivuser_mysqlclientcore
+	      (call .mysql.client.home.manage_file_files (subj))
+	      (call .mysql.client.home.relabel_file_files (subj))
+	      (call .mysql.client.home.user_home_file_type_transition_file
+		    (subj ".my.cnf"))
 	      (call .mysql.client.role (role)))
 
     (optional unprivuser_oident
