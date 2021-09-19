@@ -1,0 +1,24 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in opendkim
+
+    (block util
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (block exec
+
+		  (filecon"/usr/bin/opendkim-atpszone" file file_context)
+		  (filecon"/usr/bin/opendkim-expire" file file_context)
+		  (filecon"/usr/bin/opendkim-gengraphs" file file_context)
+		  (filecon"/usr/bin/opendkim-genkey" file file_context)
+		  (filecon"/usr/bin/opendkim-genstats" file file_context)
+		  (filecon"/usr/bin/opendkim-genzone" file file_context)
+		  (filecon"/usr/bin/opendkim-importstats" file file_context)
+		  (filecon"/usr/bin/opendkim-spam" file file_context)
+		  (filecon"/usr/bin/opendkim-stats" file file_context)
+		  (filecon"/usr/bin/opendkim-testkey" file file_context)
+		  (filecon"/usr/bin/opendkim-testmsg" file file_context))))
