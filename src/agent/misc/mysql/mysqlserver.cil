@@ -60,12 +60,8 @@
 	   (call .block.list_sysfile_dirs (subj))
 	   (call .block.read_sysfile_lnk_files (subj))
 
-	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
-
 	   (call .cert.read_file_files (subj))
 	   (call .cert.search_file_pattern.type (subj))
-
-	   (call .cgroup.getattr_fs_pattern.type (subj))
 
 	   (call .cpu.read_sysfile_files (subj))
 	   (call .cpu.search_sysfile_pattern.type (subj))
@@ -90,16 +86,10 @@
 	   (call .nss.passwdgroup.type (subj))
 	   (call .nss.services.type (subj))
 
-	   (call .osrelease.read_sysctlfile_pattern.type (subj))
-
-	   (call .proc.getattr_fs_pattern.type (subj))
-
 	   (call .random.read_sysctlfile_pattern.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
-
-	   (call .root.list_file_dirs (subj))
 
 	   (call .selinux.linked.type (subj))
 
@@ -107,8 +97,6 @@
 	   (call .shell.exec.read_file_files (subj))
 
 	   (call .state.search_file_pattern.type (subj))
-
-	   (call .sys.sendmsg_subj_dbus.type (subj))
 
 	   (call .systemd.notify.type (subj))
 
