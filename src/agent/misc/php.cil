@@ -11,102 +11,170 @@
 
     (call .php.conf.conf_file_type_transition_file (typeattr))
     (call .php.data.data_file_type_transition_file (typeattr))
+    (call .php.run.run_file_type_transition_file (typeattr))
+    (call .php.sessions.state.php_state_file_type_transition_file (typeattr))
     (call .php.state.state_file_type_transition_file (typeattr)))
 
-(block php
+(in php
 
-       (block conf
+    (block conf
 
-	      (filecon "/etc/php" dir file_context)
-	      (filecon "/etc/php/.*" any file_context)
+	   (filecon "/etc/php" dir file_context)
+	   (filecon "/etc/php/.*" any file_context)
 
-	      (macro conf_file_type_transition_file ((type ARG1))
-		     (call .conf.file_type_transition
-			   (ARG1 file dir "php")))
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "php")))
 
-	      (blockinherit .file.conf.php.template))
+	   (blockinherit .file.conf.php.template))
 
-       (block data
+    (block data
 
-	      (filecon "/usr/share/php" dir file_context)
-	      (filecon "/usr/share/php/.*" any file_context)
+	   (filecon "/usr/share/php" dir file_context)
+	   (filecon "/usr/share/php/.*" any file_context)
 
-	      (filecon "/usr/share/php[0-9]\.[0-9]-.*" dir file_context)
-	      (filecon "/usr/share/php[0-9]\.[0-9]-.*/.*" any file_context)
+	   (filecon "/usr/share/php[0-9]\.[0-9]-.*" dir file_context)
+	   (filecon "/usr/share/php[0-9]\.[0-9]-.*/.*" any file_context)
 
-	      (macro data_file_type_transition_file ((type ARG1))
-		     (call .data.file_type_transition
-			   (ARG1 file dir "php")))
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "php")))
 
-	      (blockinherit .file.data.template))
+	   (blockinherit .file.data.template))
 
-       (block sessionclean
+    (block run
 
-	      (blockinherit .sys.agent.template)
+	   (filecon "/run/php" dir file_context)
+	   (filecon "/run/php/.*" any file_context)
 
-	      (call .rbacsep.constrained.type (subj))
-	      (call .rbacsep.usefdsource.type (subj))
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file dir "php")))
 
-	      (block exec
+	   (blockinherit .file.macro_template_dirs)
+	   (blockinherit .file.macro_template_lnk_files)
+	   (blockinherit .file.run.php.base_template))
 
-		     (filecon "/usr/lib/php/sessionclean" file file_context))
+    (block sessionclean
 
-	      (block unit
+	   (blockinherit .sys.agent.template)
 
-		     (filecon
-		      "/usr/lib/systemd/system/phpsessionclean\.service.*" file
-		      file_context)
-		     (filecon
-		      "/usr/lib/systemd/system/phpsessionclean\.timer.*" file
-		      file_context)
+	   (allow subj self (process (getsched)))
 
-		     (blockinherit .file.unit.template)))
+	   (call php.cli.exec.execute_file_files (subj))
 
-       (block state
+	   (call php.sessions.state.manage_file_dirs (subj))
+	   (call php.sessions.state.manage_file_files (subj))
+	   (call php.sessions.state.php_state_file_type_transition_file (subj))
 
-	      (filecon "/var/lib/php" dir file_context)
-	      (filecon "/var/lib/php/.*" any file_context)
+	   (call php.utils.subj_type_transition (subj))
 
-	      (macro state_file_type_transition_file ((type ARG1))
-		     (call .state.file_type_transition
-			   (ARG1 file dir "php")))
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
 
-	      (blockinherit .file.state.php.template))
+	   (call .exec.execute_file_files (subj))
 
-       (block utils
+	   (call .file.conf.php.list_all_dirs (subj))
+	   (call .file.conf.php.read_all_files (subj))
+	   (call .file.conf.php.read_all_lnk_files (subj))
 
-	      (blockinherit .sys.agent.template)
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
 
-	      (call exec.execute_file_files (subj))
+	   (call .proc.list_fs_dirs (subj))
 
-	      (call php.state.state_file_type_transition_file (subj))
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
 
-	      (call .exec.execute_file_files (subj))
+	   (call .selinux.linked.type (subj))
 
-	      (call .file.conf.php.manage_all_lnk_files (subj))
-	      (call .file.conf.php.read_all_files (subj))
-	      (call .file.conf.php.readwrite_all_dirs (subj))
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
 
-	      (call .file.state.php.manage_all_dirs (subj))
-	      (call .file.state.php.manage_all_files (subj))
+	   (call .state.search_file_pattern.type (subj))
 
-	      (call .locale.data.map_file_pattern.type (subj))
-	      (call .locale.read_file_pattern.type (subj))
+	   (call .subj.dontaudit_read_all_states (subj))
+	   (call .subj.common.read_all_states (subj))
 
-	      (call .rbacsep.constrained.type (subj))
-	      (call .rbacsep.usefdsource.type (subj))
+	   (call .systemd.exec.getattr_file_files (subj))
 
-	      (call .root.list_file_dirs (subj))
+	   (block exec
 
-	      (call .selinux.linked.type (subj))
+		  (filecon "/usr/lib/php/sessionclean" file file_context))
 
-	      (call .shell.exec.mapexecute_file_files (subj))
-	      (call .shell.exec.read_file_files (subj))
+	   (block unit
 
-	      (block exec
+		  (filecon
+		   "/usr/lib/systemd/system/phpsessionclean\.service.*" file
+		   file_context)
+		  (filecon
+		   "/usr/lib/systemd/system/phpsessionclean\.timer.*" file
+		   file_context)
 
-		     (filecon "/usr/bin/phpenmod" file file_context)
-		     (filecon "/usr/bin/phpquery" file file_context))))
+		  (blockinherit .file.unit.template)))
+
+    (block sessions
+
+	   (block state
+
+		  (filecon "/var/lib/php/sessions" dir file_context)
+		  (filecon "/var/lib/php/sessions/.*" any file_context)
+
+		  (macro php_state_file_type_transition_file ((type ARG1))
+			 (call .php.state.file_type_transition
+			       (ARG1 file dir "sessions")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.state.base_template)))
+
+    (block state
+
+	   (filecon "/var/lib/php" dir file_context)
+	   (filecon "/var/lib/php/.*" any file_context)
+
+	   (macro state_file_type_transition_file ((type ARG1))
+		  (call .state.file_type_transition
+			(ARG1 file dir "php")))
+
+	   (blockinherit .file.state.php.template))
+
+    (block utils
+
+	   (blockinherit .sys.agent.template)
+
+	   (call exec.execute_file_files (subj))
+
+	   (call php.state.state_file_type_transition_file (subj))
+
+	   (call .exec.execute_file_files (subj))
+
+	   (call .file.conf.php.manage_all_lnk_files (subj))
+	   (call .file.conf.php.read_all_files (subj))
+	   (call .file.conf.php.readwrite_all_dirs (subj))
+
+	   (call .file.state.php.manage_all_dirs (subj))
+	   (call .file.state.php.manage_all_files (subj))
+
+	   (call .locale.data.map_file_pattern.type (subj))
+	   (call .locale.read_file_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .root.list_file_dirs (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .shell.exec.mapexecute_file_files (subj))
+	   (call .shell.exec.read_file_files (subj))
+
+	   (call .var.search_file_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/phpenmod" file file_context)
+		  (filecon "/usr/bin/phpquery" file file_context))))
 
 (in file.conf
 
@@ -139,6 +207,38 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.run
+
+    (block php
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.run.php.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_sock_files)
+		  (blockinherit .file.run.php.base_template))))
 
 (in file.state
 

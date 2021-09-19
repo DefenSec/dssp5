@@ -169,6 +169,8 @@
 
 	      (blockinherit .sys.agent.template)
 
+	      (allow subj self (capability (dac_override)))
+
 	      (call log.manage_file_files (subj))
 	      (call log.log_file_type_transition_file (subj))
 
@@ -186,6 +188,10 @@
 	      (call .file.data.getattr_all_files (subj))
 	      (call .file.data.manage_all_lnk_files (subj))
 	      (call .file.data.readwrite_all_dirs (subj))
+
+	      (call .file.run.getattr_all_sock_files (subj))
+	      (call .file.run.manage_all_lnk_files (subj))
+	      (call .file.run.readwrite_all_dirs (subj))
 
 	      (call .locale.data.map_file_pattern.type (subj))
 	      (call .locale.read_file_pattern.type (subj))

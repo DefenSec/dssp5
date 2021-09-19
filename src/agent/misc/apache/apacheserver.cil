@@ -99,10 +99,11 @@
 		     (call .p11kit.read_file_pattern.type (subj)))
 
 	   (optional apacheserver_phpfpm
-		     (call .phpfpm.unix_stream_connect (subj)))
+		     (call .php.fpm.unix_stream_connect (subj))
+		     (call .php.run.search_file_dirs (subj)))
 
 	   (optional apacheserver_phpfpmunreservedport
-		     (call .phpfpm.nameconnect_port_tcp_sockets (subj)))
+		     (call .php.fpm.nameconnect_port_tcp_sockets (subj)))
 
 	   (block exec
 
