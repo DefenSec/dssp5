@@ -1,0 +1,108 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .php.conf.conf_file_type_transition_file (typeattr))
+    (call .php.data.data_file_type_transition_file (typeattr))
+    (call .php.state.state_file_type_transition_file (typeattr)))
+
+(block php
+
+       (block conf
+
+	      (filecon "/etc/php" dir file_context)
+	      (filecon "/etc/php/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "php")))
+
+	      (blockinherit .file.conf.php.template))
+
+       (block data
+
+	      (filecon "/usr/share/php" dir file_context)
+	      (filecon "/usr/share/php/.*" any file_context)
+
+	      (filecon "/usr/share/php[0-9]\.[0-9]-.*" dir file_context)
+	      (filecon "/usr/share/php[0-9]\.[0-9]-.*/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "php")))
+
+	      (blockinherit .file.data.template))
+
+       (block state
+
+	      (filecon "/var/lib/php" dir file_context)
+	      (filecon "/var/lib/php/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "php")))
+
+	      (blockinherit .file.state.php.template)))
+
+(in file.conf
+
+    (block php
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.php.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.php.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.state
+
+    (block php
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.state.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.base_template)
+
+		  (call .file.state.php.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.state.php.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
