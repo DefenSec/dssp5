@@ -257,8 +257,6 @@
 
     (blockinherit instance.template)
 
-    ;; default /run/php owned by www-data
-    (allow subj self (capability (chown dac_override)))
     (allow subj self create_tcp_stream_socket)
 
     (call namebind_port_tcp_sockets (subj))
@@ -339,7 +337,9 @@
 
 	   (typeattribute typeattr)
 
-	   (allow typeattr self (capability (kill setgid setuid)))
+	   ;; /run/php is www-data owned
+	   (allow typeattr self
+		  (capability (chown dac_override kill setgid setuid)))
 	   (allow typeattr self (process (getsched)))
 	   (allow typeattr self create_unix_stream_stream_socket)
 	   (allow typeattr self create_unix_dgram_socket)
@@ -365,10 +365,10 @@
 
 	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
 
-	   (call .kernel.read_sysctlfile_pattern.type (typeattr))
-
 	   (call .locale.data.map_file_pattern.type (typeattr))
 	   (call .locale.read_file_pattern.type (typeattr))
+
+	   (call .ngroupsmax.read_sysctlfile_pattern.type (typeattr))
 
 	   (call .nss.passwdgroup.type (typeattr))
 
