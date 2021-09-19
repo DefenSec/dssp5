@@ -1,0 +1,30 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block knotutils
+
+       (blockinherit .user.agent.template)
+
+       (call .crypto.read_sysctlfile_pattern.type (subj))
+
+       (call .locale.data.map_file_pattern.type (subj))
+       (call .locale.read_file_pattern.type (subj))
+
+       (call .nss.hosts.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+
+       (block exec
+
+	      (filecon "/usr/bin/kdig" file file_context)
+	      (filecon "/usr/bin/knsupdate" file file_context)
+	      (filecon "/usr/bin/kzonecheck" file file_context)
+	      (filecon "/usr/bin/kxdpgun" file file_context)))
+
+(in user
+
+    (call .knotutils.role (role)))
+
+(in wheel
+
+    (call .knotutils.role (role)))
