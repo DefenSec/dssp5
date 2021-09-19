@@ -60,6 +60,7 @@
 	   (blockinherit .sys.agent.template)
 
 	   (allow subj self (process (getsched)))
+	   (dontaudit subj self (capability (sys_ptrace)))
 
 	   (call php.cli.exec.execute_file_files (subj))
 
