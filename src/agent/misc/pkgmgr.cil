@@ -177,11 +177,12 @@
 	      (call state.manage_file_files (subj))
 	      (call state.readwrite_file_dirs (subj))
 
-	      (call .conf.manage_file_lnk_files (subj))
-	      (call .conf.readwrite_file_dirs (subj))
-
 	      (call .exec.manage_file_lnk_files (subj))
 	      (call .exec.readwrite_file_dirs (subj))
+
+	      (call .file.conf.getattr_all_files (subj))
+	      (call .file.conf.manage_all_lnk_files (subj))
+	      (call .file.conf.readwrite_all_dirs (subj))
 
 	      (call .file.exec.getattr_all_files (subj))
 

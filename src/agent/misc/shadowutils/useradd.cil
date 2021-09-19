@@ -32,13 +32,16 @@
 
        (call .devpts.search_fs_pattern.type (subj))
 
+       ;; some have login shell set to /bin/false
+       (call .exec.auditexecuteaccess_file_files (subj))
+
        (call .faillog.log.readwrite_file_files (subj))
 
        (call .file.auth.write.type (subj))
 
        (call .file.user.home.manage_all_dirs (subj))
-       (call .file.user.home.delete_all_fifo_files (subj))
        (call .file.user.home.manage_all_files (subj))
+       (call .file.user.home.delete_all_fifo_files (subj))
        (call .file.user.home.delete_all_lnk_files (subj))
        (call .file.user.home.delete_all_sock_files (subj))
 

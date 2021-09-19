@@ -6,6 +6,9 @@
        (filecon "/usr/bin" dir file_context)
        (filecon "/usr/bin/.*" any file_context)
 
+       (macro auditexecuteaccess_file_files ((type ARG1))
+	      (allow ARG1 file (file (execute getattr))))
+
        (macro data_file_type_transition_file ((type ARG1))
 	      (call .data.file_type_transition
 		    (ARG1 file dir "bin"))

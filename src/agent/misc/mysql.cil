@@ -73,20 +73,12 @@
 
     (block conf
 
-	   (filecon "/etc/default/mariadb" file file_context)
-	   (filecon "/etc/default/mariadb\..*" file file_context)
-	   (filecon "/etc/default/mysql" file file_context)
-	   (filecon "/etc/default/mysql\..*" file file_context)
 	   (filecon "/etc/mysql" dir file_context)
 	   (filecon "/etc/mysql/.*" any file_context)
 
 	   (macro conf_file_type_transition_file ((type ARG1))
 		  (call .conf.file_type_transition
-			(ARG1 file dir "mysql"))
-		  (call .conf.file_type_transition
-			(ARG1 file file "mariadb"))
-		  (call .conf.file_type_transition
-			(ARG1 file file "mysql")))
+			(ARG1 file dir "mysql")))
 
 	   (blockinherit .file.conf.mysql.template))
 
