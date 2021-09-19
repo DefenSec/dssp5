@@ -77,8 +77,31 @@
 
 	      (blockinherit .sys.agent.template)
 
+	      (call exec.execute_file_files (subj))
+
+	      (call php.state.state_file_type_transition_file (subj))
+
+	      (call .exec.execute_file_files (subj))
+
+	      (call .file.conf.php.manage_all_lnk_files (subj))
+	      (call .file.conf.php.read_all_files (subj))
+	      (call .file.conf.php.readwrite_all_dirs (subj))
+
+	      (call .file.state.php.manage_all_dirs (subj))
+	      (call .file.state.php.manage_all_files (subj))
+
+	      (call .locale.data.map_file_pattern.type (subj))
+	      (call .locale.read_file_pattern.type (subj))
+
 	      (call .rbacsep.constrained.type (subj))
 	      (call .rbacsep.usefdsource.type (subj))
+
+	      (call .root.list_file_dirs (subj))
+
+	      (call .selinux.linked.type (subj))
+
+	      (call .shell.exec.mapexecute_file_files (subj))
+	      (call .shell.exec.read_file_files (subj))
 
 	      (block exec
 
