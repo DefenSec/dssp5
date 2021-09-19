@@ -263,11 +263,10 @@
 
     (call exec.subj_type_transition (.sys.subj subj))
 
-    (call log.log_file_type_transition_file (subj "php7.4-fpm.log"))
+    (call log.log_file_type_transition_file (subj "*"))
 
-    (call run.php_run_file_type_transition_file (subj file "php7.4-fpm.pid"))
-    (call run.php_run_file_type_transition_file
-	  (subj sock_file "php7.4-fpm.sock"))
+    (call run.php_run_file_type_transition_file (subj file "*"))
+    (call run.php_run_file_type_transition_file (subj sock_file "*"))
 
     (call .net.nodebind_netnode_tcp_sockets (subj))
 
