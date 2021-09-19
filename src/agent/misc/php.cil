@@ -1,6 +1,12 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in exec
+
+    (filecon "/usr/lib/php/php-fpm-socket-helper" file file_context)
+    (filecon "/usr/lib/php/php-helper" file file_context)
+    (filecon "/usr/lib/php/php-maintscript-helper" file file_context))
+
 (in file.unconfined
 
     (call .php.conf.conf_file_type_transition_file (typeattr))
@@ -34,6 +40,28 @@
 
 	      (blockinherit .file.data.template))
 
+       (block sessionclean
+
+	      (blockinherit .sys.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/lib/php/sessionclean" file file_context))
+
+	      (block unit
+
+		     (filecon
+		      "/usr/lib/systemd/system/phpsessionclean\.service.*" file
+		      file_context)
+		     (filecon
+		      "/usr/lib/systemd/system/phpsessionclean\.timer.*" file
+		      file_context)
+
+		     (blockinherit .file.unit.template)))
+
        (block state
 
 	      (filecon "/var/lib/php" dir file_context)
@@ -43,7 +71,19 @@
 		     (call .state.file_type_transition
 			   (ARG1 file dir "php")))
 
-	      (blockinherit .file.state.php.template)))
+	      (blockinherit .file.state.php.template))
+
+       (block utils
+
+	      (blockinherit .sys.agent.template)
+
+	      (call .rbacsep.constrained.type (subj))
+	      (call .rbacsep.usefdsource.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/phpenmod" file file_context)
+		     (filecon "/usr/bin/phpquery" file file_context))))
 
 (in file.conf
 
