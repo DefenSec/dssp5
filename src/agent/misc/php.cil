@@ -10,7 +10,7 @@
 (in file.unconfined
 
     (call .php.conf.conf_file_type_transition_file (typeattr))
-    (call .php.data.data_file_type_transition_file (typeattr))
+    (call .php.data.data_file_type_transition_file (typeattr "php"))
     (call .php.run.run_file_type_transition_file (typeattr))
     (call .php.sessions.state.php_state_file_type_transition_file (typeattr))
     (call .php.state.state_file_type_transition_file (typeattr)))
@@ -36,9 +36,9 @@
 	   (filecon "/usr/share/php[0-9]\.[0-9]-.*" dir file_context)
 	   (filecon "/usr/share/php[0-9]\.[0-9]-.*/.*" any file_context)
 
-	   (macro data_file_type_transition_file ((type ARG1))
+	   (macro data_file_type_transition_file ((type ARG1)(name ARG2))
 		  (call .data.file_type_transition
-			(ARG1 file dir "php")))
+			(ARG1 file dir ARG2)))
 
 	   (blockinherit .file.data.template))
 
