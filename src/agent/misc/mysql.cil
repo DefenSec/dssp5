@@ -1,0 +1,106 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.cert
+
+    (block mysql
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.cert.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.cert.base_template)
+
+		  (call .file.cert.mysql.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.cert.mysql.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.conf
+
+    (block mysql
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.conf.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.base_template)
+
+		  (call .file.conf.mysql.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.conf.mysql.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.unconfined
+
+    (call .mysql.conf.conf_file_type_transition_file (typeattr))
+    (call .mysql.data.data_file_type_transition_file (typeattr)))
+
+(in mysql
+
+    (block conf
+
+	   (filecon "/etc/default/mariadb" file file_context)
+	   (filecon "/etc/default/mariadb\..*" file file_context)
+	   (filecon "/etc/default/mysql" file file_context)
+	   (filecon "/etc/default/mysql\..*" file file_context)
+	   (filecon "/etc/mysql" dir file_context)
+	   (filecon "/etc/mysql/.*" any file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file dir "mysql"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "mariadb"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "mysql")))
+
+	   (blockinherit .file.conf.mysql.template))
+
+    (block data
+
+	   (filecon "/usr/share/mysql" dir file_context)
+	   (filecon "/usr/share/mysql/.*" any file_context)
+	   (filecon "/usr/share/mysql-common" dir file_context)
+	   (filecon "/usr/share/mysql-common/.*" any file_context)
+
+	   (macro data_file_type_transition_file ((type ARG1))
+		  (call .data.file_type_transition
+			(ARG1 file dir "mysql"))
+		  (call .data.file_type_transition
+			(ARG1 file dir "mysql-common")))
+
+	   (blockinherit .file.data.template)))
