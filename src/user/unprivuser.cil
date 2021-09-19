@@ -181,6 +181,9 @@
 	      (call .mpg123.tmpfs.map_file_files (subj))
 	      (call .mpg123.tmpfs.relabel_file_files (subj)))
 
+    (optional unprivuser_mysqlclientcore
+	      (call .mysql.client.role (role)))
+
     (optional unprivuser_oident
 	      (call .oident.home.conf.manage_file_files (subj))
 	      (call .oident.home.conf.relabel_file_files (subj))

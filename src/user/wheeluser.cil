@@ -57,6 +57,9 @@
        (optional wheeluser_mpg123
 		 (call .mpg123.role (role)))
 
+       (optional wheeluser_mysqlclientcore
+		 (call .mysql.client.role (role)))
+
        (optional wheeluser_opensshclient
 		 (call .openssh.add.role (role))
 		 (call .openssh.agent.role (role))
