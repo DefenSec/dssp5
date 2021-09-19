@@ -258,7 +258,7 @@
     (blockinherit instance.template)
 
     ;; default /run/php owned by www-data
-    (allow subj self (capability (dac_override)))
+    (allow subj self (capability (chown dac_override)))
     (allow subj self create_tcp_stream_socket)
 
     (call namebind_port_tcp_sockets (subj))
