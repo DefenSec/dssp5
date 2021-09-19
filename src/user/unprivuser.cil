@@ -165,6 +165,13 @@
     (optional unprivuser_kbd
 	      (call .kbd.role (role)))
 
+    (optional unprivuser_knot
+	      (call .knot.cli.home.manage_file_files (subj))
+	      (call .knot.cli.home.relabel_file_files (subj))
+	      (call .knot.cli.home.user_home_file_type_transition_file
+		    (subj ".knotc_history"))
+	      (call .knot.cli.role (role)))
+
     (optional unprivuser_mount
 	      (call .mount.role (role)))
 

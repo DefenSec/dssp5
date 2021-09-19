@@ -1,0 +1,269 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block knot
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.search_file_dirs (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (net_bind_service setpcap)))
+       (allow subj self (process (getcap getsched setcap setsched)))
+       (allow subj self create_tcp_stream_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (unix_stream_socket (accept listen)))
+
+       (call common.type (subj))
+
+       (call keys.list_file_dirs (subj))
+       (call keys.map_file_files (subj))
+       (call keys.read_file_files (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_files (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+       (call .dns.namebind_port_tcp_sockets (subj))
+       (call .dns.namebind_port_udp_sockets (subj))
+       (call .dns.nameconnect_port_tcp_sockets (subj))
+
+       (call .filesystems.read_procfile_files (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+       (call .nss.services.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .proc.getattr_fs_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (call .systemd.logparsenv.type (subj))
+       (call .systemd.notify.type (subj))
+
+       (block cli
+
+	      (blockinherit .hybrid.agent.template)
+
+	      (allow subj self
+		     (capability (dac_override dac_read_search setgid setuid)))
+	      (allow subj self (process (getsched)))
+
+	      (call unix_stream_connect (subj))
+
+	      (call common.type (subj))
+
+	      (call home.manage_file_files (subj))
+	      (call home.user_home_file_type_transition_file (subj "*"))
+
+	      (call keys.knot_state_file_type_transition_file (subj))
+	      (call keys.manage_file_dirs (subj))
+	      (call keys.manage_file_files (subj))
+	      (call keys.map_file_files (subj))
+
+	      (call .nss.passwdgroup.type (subj))
+
+	      (call .rbacsep.constrained.type (subj))
+
+	      (call .terminfo.read_file_pattern.type (subj))
+
+	      (block exec
+
+		     (filecon "/usr/bin/kcatalogprint" file file_context)
+		     (filecon "/usr/bin/keymgr" file file_context)
+		     (filecon "/usr/bin/kjournalprint" file file_context)
+		     (filecon "/usr/bin/knotc" file file_context))
+
+	      (block home
+
+		     (filecon "HOME_DIR/\.knotc_history" file file_context)
+		     (filecon "HOME_DIR/\.knotc_history\..*" file file_context)
+
+		     (macro user_home_file_type_transition_file
+			    ((type ARG1)(name ARG2))
+			    (call .user.home.file_type_transition
+				  (ARG1 file file ARG2)))
+
+		     (blockinherit .file.macro_template_files)
+		     (blockinherit .file.user.home.base_template)))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (call conf.list_file_dirs (typeattr))
+	      (call conf.map_file_files (typeattr))
+	      (call conf.read_file_files (typeattr))
+
+	      (call state.manage_file_dirs (typeattr))
+	      (call state.manage_file_files (typeattr))
+	      (call state.map_file_files (typeattr))
+
+	      (call tmp.manage_file_dirs (typeattr))
+	      (call tmp.manage_file_files (typeattr))
+	      (call tmp.map_file_files (typeattr))
+	      (call tmp.tmp_file_type_transition_file (typeattr))
+
+	      (call .cpu.read_sysfile_files (typeattr))
+	      (call .cpu.search_sysfile_pattern.type (typeattr))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+
+	      (call .state.search_file_pattern.type (typeattr))
+
+	      (call .tmp.deletename_file_dirs (typeattr))
+	      (call .tmp.getattr_fs_pattern.type (typeattr))
+
+	      (call .xattr.getattr_fs_pattern.type (typeattr)))
+
+       (block exec
+
+	      (filecon "/usr/bin/knotd" file file_context))
+
+       (block conf
+
+	      (filecon "/etc/default/knot" file file_context)
+	      (filecon "/etc/default/knot\..*" file file_context)
+
+	      (filecon "/etc/knot" dir file_context)
+	      (filecon "/etc/knot/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "knot"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "knot")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.conf.template))
+
+       (block keys
+
+	      (filecon "/var/lib/knot/keys" dir file_context)
+	      (filecon "/var/lib/knot/keys/.*" any file_context)
+
+	      (macro knot_state_file_type_transition_file ((type ARG1))
+		     (call .knot.state.file_type_transition
+			   (ARG1 file dir "keys")))
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (blockinherit .file.state.knot.template))
+
+       (block run
+
+	      (filecon "/run/knot" dir file_context)
+	      (filecon "/run/knot/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "knot")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_sock_files)
+	      (blockinherit .file.run.base_template)
+
+	      (call .rbacsep.exempt.obj.type (file)))
+
+       (block state
+
+	      (filecon "/var/lib/knot" dir file_context)
+	      (filecon "/var/lib/knot/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "knot")))
+
+	      (blockinherit .file.state.knot.template))
+
+       (block tmp
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro tmp_file_type_transition_file ((type ARG1))
+		     (call .tmp.file_type_transition
+			   (ARG1 file dir "*")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.tmp.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/knot\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.state
+
+    (block knot
+
+	   (macro map_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.state.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.base_template)
+
+		  (call .file.state.knot.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (blockinherit .file.state.knot.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .knot.cli.home.user_home_file_type_transition_file
+	  (typeattr ".knotc_history"))
+    (call .knot.conf.conf_file_type_transition_file (typeattr))
+    (call .knot.keys.knot_state_file_type_transition_file (typeattr))
+    (call .knot.run.run_file_type_transition_file (typeattr))
+    (call .knot.state.state_file_type_transition_file (typeattr)))

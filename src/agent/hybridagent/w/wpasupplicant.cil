@@ -61,6 +61,9 @@
 
        (call .nss.passwdgroup.type (subj))
 
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
        (call .random.read_nodedev_chr_files (subj))
 
        (call .rfkill.read_nodedev_chr_files (subj))
@@ -94,6 +97,8 @@
 
 	      (call wpasupplicant.unix_dgram_send (subj))
 
+	      (call .rbacsep.constrained.type (subj))
+
 	      (call .run.search_file_pattern.type (subj))
 
 	      (call .tmp.deletename_file_dirs (subj))
@@ -113,7 +118,9 @@
 				  (ARG1 file sock_file "*")))
 
 		     (blockinherit .file.macro_template_sock_files)
-		     (blockinherit .file.user.tmp.base_template)))
+		     (blockinherit .file.user.tmp.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
 
        (block conf
 

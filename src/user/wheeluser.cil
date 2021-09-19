@@ -48,6 +48,9 @@
        (optional wheeluser_kbd
 		 (call .kbd.role (role)))
 
+       (optional wheeluser_knot
+		 (call .knot.cli.role (role)))
+
        (optional wheeluser_mount
 		 (call .mount.role (role)))
 
