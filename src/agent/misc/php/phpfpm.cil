@@ -1,0 +1,425 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.conf.php
+
+    (block fpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+	   (blockinherit .file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.conf.php.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.conf.php.base_template)
+
+		  (call .file.conf.php.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro php_conf_file_type_transition_file
+			 ((type ARG1)(class ARG2)(name ARG3))
+			 (call .php.conf.file_type_transition
+			       (ARG1 file ARG2 ARG3)))
+
+		  (blockinherit .file.conf.php.fpm.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files))))
+
+(in file.log
+
+    (block fpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.log.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.log.base_template)
+
+		  (call .file.log.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro log_file_type_transition_file ((type ARG1)(name ARG2))
+			 (call .log.file_type_transition
+			       (ARG1 file file ARG2)))
+
+		  (blockinherit .file.log.fpm.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.run.php
+
+    (block fpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.run.php.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.run.php.base_template)
+
+		  (call .file.run.php.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro php_run_file_type_transition_file
+			 ((type ARG1)(class ARG2)(name ARG3))
+			 (call .php.run.file_type_transition
+			       (ARG1 file ARG2 ARG3)))
+
+		  (blockinherit .file.run.php.fpm.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_sock_files))))
+
+(in file.state.php
+
+    (block fpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit .file.all_macro_template_dirs)
+	   (blockinherit .file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call .file.state.php.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.state.php.base_template)
+
+		  (call .file.state.php.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.state.php.fpm.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.tmp
+
+    (block fpm
+
+	   (macro map_all_file_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.tmp.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.tmp.base_template)
+
+		  (call .file.tmp.fpm.type (file)))
+
+	   (block template
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockabstract template)
+
+		  (blockinherit .file.tmp.fpm.base_template)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .php.fpm.conf.php_conf_file_type_transition_file (typeattr dir "fpm"))
+    (call .php.fpm.log.log_file_type_transition_file
+	  (typeattr "php7.4-fpm.log"))
+    (call .php.fpm.run.php_run_file_type_transition_file
+	  (typeattr file "php7.4-fpm.pid"))
+    (call .php.fpm.run.php_run_file_type_transition_file
+	  (typeattr sock_file "php7.4-fpm.sock")))
+
+(in file.unit
+
+    (block fpm
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.unit.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.unit.base_template)
+
+		  (call .file.unit.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.unit.fpm.base_template)
+		  (blockinherit .file.macro_template_files))))
+
+(in php.fpm
+
+    (blockinherit instance.template)
+
+    (allow subj self create_tcp_stream_socket)
+
+    (call namebind_port_tcp_sockets (subj))
+
+    (call exec.subj_type_transition (.sys.subj subj))
+
+    (call log.log_file_type_transition_file (subj "php7.4-fpm.log"))
+
+    (call run.php_run_file_type_transition_file (subj file "php7.4-fpm.pid"))
+    (call run.php_run_file_type_transition_file
+	  (subj sock_file "php7.4-fpm.sock"))
+
+    (call .net.nodebind_netnode_tcp_sockets (subj))
+
+    (call .nss.hosts.type (subj))
+
+    (call .sys.web.ra.append_file_files (subj))
+    (call .sys.web.ra.create_file_files (subj))
+    (call .sys.web.ra.delete_file_files (subj))
+    (call .sys.web.ra.map_file_files (subj))
+    (call .sys.web.ra.read_file_files (subj))
+    (call .sys.web.ra.readwrite_file_dirs (subj))
+    (call .sys.web.ra.rename_file_files (subj))
+    (call .sys.web.ra.setattr_file_files (subj))
+    (call .sys.web.ro.list_file_dirs (subj))
+    (call .sys.web.ro.map_file_files (subj))
+    (call .sys.web.ro.read_file_files (subj))
+    (call .sys.web.rw.manage_file_dirs (subj))
+    (call .sys.web.rw.manage_file_fifo_files (subj))
+    (call .sys.web.rw.manage_file_files (subj))
+    (call .sys.web.rw.manage_file_lnk_files (subj))
+    (call .sys.web.rw.manage_file_sock_files (subj))
+    (call .sys.web.rw.map_file_files (subj))
+
+    (optional phpfpm_httpreservedport
+	      (call .http.nameconnect_port_tcp_sockets (subj))
+	      (call .http.https.nameconnect_port_tcp_sockets (subj)))
+
+    (optional phpfpm_mariadbserver
+	      (call .mariadb.server.unix_stream_connect (subj)))
+
+    (optional phpfpm_mysqlunreservedport
+	      (call .mysql.nameconnect_port_tcp_sockets (subj)))
+
+    (optional phpfpm_postfix
+	      (call .postfix.sendmail.mailer.type (subj))
+	      (call .postfix.sendmail.mailer.tmp.type (tmp.file)))
+
+    (optional phpfpm_smtpreservedport
+	      (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
+	      (call .smtp.nameconnect_port_tcp_sockets (subj))
+	      (call .smtp.smtps.nameconnect_port_tcp_sockets (subj)))
+
+    (block conf
+
+	   (filecon "/etc/php/[0-9]\.[0-9]/fpm" dir file_context)
+	   (filecon "/etc/php/[0-9]\.[0-9]/fpm/.*" any file_context))
+
+    (block exec
+
+	   (filecon "/usr/bin/php-fpm[0-9]\.[0-9]" file file_context)
+
+	   (blockinherit .file.exec.template)
+
+	   (call .sys.agent.exec.type (file)))
+
+    (block instance
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (macro unix_stream_connect ((type ARG1))
+		  (call connectto_all_unix_stream_sockets (ARG1))
+		  (call .file.run.php.fpm.search_all_dirs (ARG1))
+		  (call .file.run.php.fpm.write_all_sock_files (ARG1)))
+
+	   (blockinherit .subj.all_macro_template)
+
+	   (typeattribute typeattr)
+
+	   (allow typeattr self (capability (kill setgid setuid)))
+	   (allow typeattr self (process (getsched)))
+	   (allow typeattr self create_unix_stream_stream_socket)
+	   (allow typeattr self create_unix_dgram_socket)
+
+	   (call exec.entrypoint_file_files (typeattr))
+	   (call exec.mapexecute_file_files (typeattr))
+	   (call exec.read_file_files (typeattr))
+
+	   (call php.conf.list_file_dirs (typeattr))
+	   (call php.conf.read_file_files (typeattr))
+	   (call php.conf.read_file_lnk_files (typeattr))
+
+	   (call php.data.read_file_files (typeattr))
+	   (call php.data.search_file_dirs (typeattr))
+
+	   (call php.run.deletename_file_dirs (typeattr))
+
+	   (call .exec.execute_file_files (typeattr))
+
+	   (call .cert.read_file_pattern.type (typeattr))
+
+	   (call .cpu.read_sysfile_pattern.type (typeattr))
+
+	   (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .kernel.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .locale.data.map_file_pattern.type (typeattr))
+	   (call .locale.read_file_pattern.type (typeattr))
+
+	   (call .nss.passwdgroup.type (typeattr))
+
+	   (call .random.read_nodedev_chr_files (typeattr))
+
+	   (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	   (call .shell.exec.execute_file_files (typeattr))
+
+	   (call .selinux.linked.type (typeattr))
+
+	   (call .sys.agent.type (typeattr))
+
+	   (call .systemd.journal.relay_msgs.type (typeattr))
+
+	   (call .systemd.notify.type (typeattr))
+
+	   (call .tmp.deletename_file_dirs (typeattr))
+
+	   (call .xattr.getattr_fs_pattern.type (typeattr))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro unix_stream_connect ((type ARG1))
+			 (call connectto_subj_unix_stream_sockets (ARG1))
+			 (call run.search_file_dirs (ARG1))
+			 (call run.write_file_sock_files (ARG1)))
+
+		  (blockinherit .subj.common.template)
+
+		  (call conf.list_file_dirs (subj))
+		  (call conf.read_file_files (subj))
+		  (call conf.read_file_lnk_files (subj))
+
+		  (call log.append_file_files (subj))
+		  (call log.create_file_files (subj))
+		  (call log.delete_file_files (subj))
+		  (call log.manage_file_dirs (subj))
+		  (call log.read_file_files (subj))
+		  (call log.rename_file_files (subj))
+		  (call log.setattr_file_files (subj))
+
+		  (call run.manage_file_dirs (subj))
+		  (call run.manage_file_files (subj))
+		  (call run.manage_file_sock_files (subj))
+
+		  (call tmp.manage_file_files (subj))
+		  (call tmp.map_file_files (subj))
+		  (call tmp.tmp_file_type_transition_file (subj))
+
+		  (call .php.fpm.instance.type (subj))
+
+		  (block conf
+
+			 (blockinherit .file.conf.php.fpm.template))
+
+		  (block log
+
+			 (macro setattr_file_files ((type ARG1))
+				(allow ARG1 file (file (setattr))))
+
+			 (blockinherit .file.log.fpm.template))
+
+		  (block run
+
+			 (blockinherit .file.run.php.fpm.template))
+
+		  (block tmp
+
+			 (blockinherit .file.tmp.fpm.template))
+
+		  (block unit
+
+			 (blockinherit .file.unit.fpm.template))))
+
+    (block log
+
+	   (filecon "/var/log/php[0-9]\.[0-9]-fpm\.log" file file_context)
+	   (filecon "/var/log/php[0-9]\.[0-9]-fpm\.log\.*" file file_context))
+
+    (block run
+
+	   (filecon "/run/php/php[0-9]\.[0-9]-fpm\.pid" file file_context)
+	   (filecon "/run/php/php[0-9]\.[0-9]-fpm\.pid\..*" file file_context)
+	   (filecon "/run/php/php[0-9]\.[0-9]-fpm\.sock" socket file_context)
+	   (filecon "/run/php/php[0-9]\.[0-9]-fpm\.sock\..*" socket
+		    file_context))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/php[0-9]\.[0-9]-fpm\.service.*"
+		    file file_context)))

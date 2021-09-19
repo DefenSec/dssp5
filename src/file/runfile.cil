@@ -26,6 +26,9 @@
 
     (block run
 
+	   (macro getattr_all_sock_files ((type ARG1))
+		  (allow ARG1 typeattr (sock_file (getattr))))
+
 	   (macro type ((type ARG1))
 		  (typeattributeset typeattr ARG1))
 
