@@ -294,8 +294,8 @@
 	      (call .http.nameconnect_port_tcp_sockets (subj))
 	      (call .http.https.nameconnect_port_tcp_sockets (subj)))
 
-    (optional phpfpm_mariadbserver
-	      (call .mariadb.server.unix_stream_connect (subj)))
+    (optional phpfpm_mysqlserver
+	      (call .mysql.server.unix_stream_connect (subj)))
 
     (optional phpfpm_mysqlunreservedport
 	      (call .mysql.nameconnect_port_tcp_sockets (subj)))
