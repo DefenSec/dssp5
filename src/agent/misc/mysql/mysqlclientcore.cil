@@ -48,7 +48,12 @@
 
 	   (call .shell.exec.execute_file_files (subj))
 
+	   ;; /tmp/mysql_upgrade-* created by /etc/mysql/debian-start
+	   (call .sys.tmp.write_file_files (subj))
+
 	   (call .terminfo.read_file_pattern.type (subj))
+
+	   (call .tmp.search_file_dirs (subj))
 
 	   (call .user.home.manage_file_files (subj))
 	   (call .user.home.readwrite_file_dirs (subj))
