@@ -38,6 +38,44 @@
 		  (blockinherit .file.macro_template_files)
 		  (blockinherit .file.macro_template_lnk_files))))
 
+(in file.hugetlbfs
+
+    (block fpm
+
+	   (macro map_all_file_files ((type ARG1))
+		  (allow ARG1 typeattr (file (map))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.hugetlbfs.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.hugetlbfs.base_template)
+
+		  (call .file.hugetlbfs.fpm.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (macro map_file_files ((type ARG1))
+			 (allow ARG1 file (file (map))))
+
+		  (macro hugetlb_fs_type_transition_file ((type ARG1))
+			 (call .hugetlb.fs_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.hugetlbfs.fpm.base_template)
+		  (blockinherit .file.macro_template_files))))
+
 (in file.log
 
     (block fpm
@@ -165,14 +203,14 @@
 
 	   (block template
 
+		  (blockabstract template)
+
 		  (macro map_file_files ((type ARG1))
 			 (allow ARG1 file (file (map))))
 
 		  (macro tmp_file_type_transition_file ((type ARG1))
 			 (call .tmp.file_type_transition
 			       (ARG1 file file "*")))
-
-		  (blockabstract template)
 
 		  (blockinherit .file.tmp.fpm.base_template)
 		  (blockinherit .file.macro_template_files))))
@@ -219,6 +257,8 @@
 
     (blockinherit instance.template)
 
+    ;; default /run/php owned by www-data
+    (allow subj self (capability (dac_override)))
     (allow subj self create_tcp_stream_socket)
 
     (call namebind_port_tcp_sockets (subj))
@@ -365,6 +405,10 @@
 		  (call conf.read_file_files (subj))
 		  (call conf.read_file_lnk_files (subj))
 
+		  (call hugetlbfs.hugetlb_fs_type_transition_file (subj))
+		  (call hugetlbfs.manage_file_files (subj))
+		  (call hugetlbfs.map_file_files (subj))
+
 		  (call log.append_file_files (subj))
 		  (call log.create_file_files (subj))
 		  (call log.delete_file_files (subj))
@@ -386,6 +430,10 @@
 		  (block conf
 
 			 (blockinherit .file.conf.php.fpm.template))
+
+		  (block hugetlbfs
+
+			 (blockinherit .file.hugetlbfs.fpm.template))
 
 		  (block log
 
