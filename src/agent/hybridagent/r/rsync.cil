@@ -7,7 +7,7 @@
 
     (allow subj self
 	   (capability (chown dac_override dac_read_search fowner fsetid
-			      setgid setuid sys_chroot)))
+			      net_bind_service setgid setuid sys_chroot)))
     (allow subj self create_tcp_stream_socket)
     (allow subj self create_unix_dgram_socket)
 
@@ -27,6 +27,10 @@
     (call .fs.getattr_all_fs (subj))
 
     (call .fuse.manage_fs_pattern.type (subj))
+
+    (call .locale.data.map_file_pattern.type (subj))
+
+    (call .net.nodebind_netnode_tcp_sockets (subj))
 
     (call .nss.hosts.type (subj))
 
