@@ -41,8 +41,8 @@
 	   (call log.manage_file_files (subj))
 	   (call log.readwrite_file_dirs (subj))
 
-	   (call mysql.namebind_port_tcp_sockets (subj))
 	   (call mysql.admin.namebind_port_tcp_sockets (subj))
+	   (call mysql.namebind_port_tcp_sockets (subj))
 
 	   (call run.manage_file_dirs (subj))
 	   (call run.manage_file_files (subj))
