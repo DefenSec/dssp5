@@ -11,6 +11,8 @@
 	   (allow subj self (cap_userns (sys_ptrace)))
 	   (allow subj self (process (setfscreate setrlimit)))
 
+	   (call exec.execute_file_files (subj))
+
 	   (call systemd.logparsenv.type (subj))
 	   (call systemd.pager.type (subj))
 	   (call systemd.private.type (subj))
@@ -57,6 +59,8 @@
 	   (call .cgroup.list_fs_dirs (subj))
 	   (call .cgroup.read_fs_files (subj))
 
+	   (call .conf.list_file_dirs (subj))
+
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 
 	   (call .dbus.client.type (subj))
@@ -70,6 +74,9 @@
 	   (call .fstab.status_file_services (subj))
 
 	   (call .ibac.objchangesys.type (subj))
+
+	   (call .initrc.read_file_files (subj))
+	   (call .initrc.search_file_dirs (subj))
 
 	   (call .kernel.read_sysfile_files (subj))
 	   (call .kernel.search_sysfile_pattern.type (subj))
@@ -85,7 +92,11 @@
 
 	   (call .osrelease.read_sysctlfile_pattern.type (subj))
 
+	   (call .perl5.read_file_pattern.type (subj))
+
 	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_nodedev_chr_files (subj))
 
 	   (call .random.read_sysctlfile_pattern.type (subj))
 
