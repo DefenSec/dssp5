@@ -69,6 +69,7 @@ config_install:
 \n/sysroot/usr/lib/gnupg /usr/bin\
 \n/sysroot/usr/lib/klibc/bin /usr/bin\
 \n/sysroot/usr/lib/openssh /usr/bin\
+\n/sysroot/usr/lib/postfix/sbin /usr/bin\
 \n/sysroot/usr/lib32 /usr/lib\
 \n/sysroot/usr/lib64 /usr/lib\
 \n/sysroot/usr/libexec /usr/bin\
@@ -91,6 +92,7 @@ config_install:
 \n/usr/lib/gnupg /usr/bin\
 \n/usr/lib/klibc/bin /usr/bin\
 \n/usr/lib/openssh /usr/bin\
+\n/usr/lib/postfix/sbin /usr/bin\
 \n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
