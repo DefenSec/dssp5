@@ -1,0 +1,100 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in rsync
+
+    (blockinherit hybrid.agent.template)
+
+    (allow subj self
+	   (capability (chown dac_override dac_read_search fowner fsetid
+			      setgid setuid sys_chroot)))
+    (allow subj self create_tcp_stream_socket)
+    (allow subj self create_unix_dgram_socket)
+
+    (call namebind_port_tcp_sockets (subj))
+    (call nameconnect_port_tcp_sockets (subj))
+
+    (call run.run_file_type_transition_file (subj))
+
+    (call .ci.manage_fs_pattern.type (subj))
+
+    (call .dos.manage_fs_pattern.type (subj))
+
+    (call .exec.execute_file_files (subj))
+
+    (call .file.except.manage_all_file (subj))
+
+    (call .fs.getattr_all_fs (subj))
+
+    (call .fuse.manage_fs_pattern.type (subj))
+
+    (call .nss.hosts.type (subj))
+
+    (call .nfs.manage_fs_pattern.type (subj))
+
+    (call .openssh.client.exec.execute_file_files (subj))
+
+    (call .random.read_nodedev_chr_files (subj))
+
+    (call .rbacsep.constrained.type (subj))
+
+    (call .ssh.nameconnect_port_tcp_sockets (subj))
+
+    (call .systemd.journal.relay_msgs.type (subj))
+
+    (block conf
+
+	   (filecon "/etc/default/rsync" file file_context)
+	   (filecon "/etc/default/rsync\..*" file file_context)
+	   (filecon "/etc/rsyncd\.conf" file file_context)
+	   (filecon "/etc/rsyncd\.conf\..*" file file_context)
+	   (filecon "/etc/rsyncd\.secrets" file file_context)
+	   (filecon "/etc/rsyncd\.secrets\..*" file file_context)
+
+	   (macro conf_file_type_transition_file ((type ARG1))
+		  (call .conf.file_type_transition
+			(ARG1 file file "rsyncd"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "rsyncd.conf"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "rsyncd.secrets")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.conf.base_template))
+
+    (block exec
+
+	   (filecon "/usr/bin/rsync" file file_context)
+	   (filecon "/usr/bin/rsync-ssl" file file_context))
+
+    (block run
+
+	   (filecon "/run/rsyncd\.lock" file file_context)
+	   (filecon "/run/rsyncd\.lock\..*" file file_context)
+	   (filecon "/run/rsyncd\.pid" file file_context)
+	   (filecon "/run/rsyncd\.pid\..*" file file_context)
+
+	   (macro run_file_type_transition_file ((type ARG1))
+		  (call .run.file_type_transition
+			(ARG1 file file "rsyncd.lock"))
+		  (call .run.file_type_transition
+			(ARG1 file file "rsyncd.pid")))
+
+	   (blockinherit .file.macro_template_files)
+	   (blockinherit .file.run.base_template))
+
+    (block unit
+
+	   (filecon "/usr/lib/systemd/system/rsync\.service.*" file
+		    file_context)
+
+	   (blockinherit .file.unit.template)))
+
+(in exec
+
+    (filecon "/usr/share/rsync/scripts/.*" file file_context))
+
+(in file.unconfined
+
+    (call .rsync.conf.conf_file_type_transition_file (typeattr))
+    (call .rsync.run.run_file_type_transition_file (typeattr)))
