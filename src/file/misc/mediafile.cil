@@ -4,6 +4,7 @@
 (block media
 
        (filecon "/media" dir file_context)
+       (filecon "/media/cdrom" symlink file_context)
        (filecon "/media/.*" any ())
 
        (filecon "/mnt" dir file_context)

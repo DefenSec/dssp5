@@ -87,6 +87,9 @@
 (macro execute_unlabeled_files ((type ARG1))
        (allow ARG1 unlabeled execute_file))
 
+(macro getattr_unlabeled_dirs ((type ARG1))
+       (allow ARG1 unlabeled (dir (getattr))))
+
 (macro list_unlabeled_dirs ((type ARG1))
        (allow ARG1 unlabeled list_dir))
 

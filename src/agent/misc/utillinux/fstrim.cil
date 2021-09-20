@@ -16,6 +16,9 @@
 
        (call .fstab.read_file_files (subj))
 
+       ;; /media/cdrom0 is installed by default
+       (call .getattr_unlabeled_dirs (subj))
+
        (call .locale.data.map_file_pattern.type (subj))
        (call .locale.read_file_pattern.type (subj))
 

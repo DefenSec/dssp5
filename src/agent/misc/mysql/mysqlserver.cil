@@ -54,9 +54,6 @@
 	   (call tmp.manage_file_files (subj))
 	   (call tmp.tmp_file_type_transition_file (subj))
 
-	   (call utils.nnptransition_subj_processes (subj))
-	   (call utils.subj_type_transition (subj))
-
 	   (call .block.list_sysfile_dirs (subj))
 	   (call .block.read_sysfile_lnk_files (subj))
 
@@ -70,8 +67,6 @@
 
 	   (call .devices.read_sysfile_files (subj))
 	   (call .devices.search_sysfile_pattern.type (subj))
-
-	   (call .exec.execute_file_files (subj))
 
 	   (call .locale.data.map_file_pattern.type (subj))
 	   (call .locale.read_file_pattern.type (subj))
@@ -92,9 +87,6 @@
 	   (call .rbacsep.usefdsource.type (subj))
 
 	   (call .selinux.linked.type (subj))
-
-	   (call .shell.exec.mapexecute_file_files (subj))
-	   (call .shell.exec.read_file_files (subj))
 
 	   (call .state.search_file_pattern.type (subj))
 
@@ -185,19 +177,12 @@
 
 	   (blockinherit .sys.agent.template)
 
-	   (call client.subj_type_transition (subj))
-
 	   (call conf.list_file_dirs (subj))
 	   (call conf.read_file_files (subj))
 	   (call conf.read_file_lnk_files (subj))
 
 	   (call data.read_file_files (subj))
 	   (call data.search_file_dirs (subj))
-
-	   (call exec.execute_file_files (subj))
-
-	   (call server.nnptransition_subj_processes (subj))
-	   (call server.subj_type_transition (subj))
 
 	   (call server.state.search_file_dirs (subj))
 	   (call server.state.setattr_file_dirs (subj))
