@@ -73,6 +73,8 @@
 
 	   (call .log.search_file_pattern.type (subj))
 
+	   (call .mcs.constrained.type (subj))
+
 	   (call .net.nodebind_netnode_tcp_sockets (subj))
 
 	   (call .ngroupsmax.read_sysctlfile_pattern.type (subj))
