@@ -1,6 +1,15 @@
 ;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
 ;; SPDX-License-Identifier: Unlicense
 
+(in exec
+
+    (filecon "/usr/share/rsync/scripts/.*" file file_context))
+
+(in file.unconfined
+
+    (call .rsync.conf.conf_file_type_transition_file (typeattr))
+    (call .rsync.run.run_file_type_transition_file (typeattr)))
+
 (in rsync
 
     (blockinherit hybrid.agent.template)
@@ -93,12 +102,3 @@
 		    file_context)
 
 	   (blockinherit .file.unit.template)))
-
-(in exec
-
-    (filecon "/usr/share/rsync/scripts/.*" file file_context))
-
-(in file.unconfined
-
-    (call .rsync.conf.conf_file_type_transition_file (typeattr))
-    (call .rsync.run.run_file_type_transition_file (typeattr)))
