@@ -207,6 +207,8 @@
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))
 
+	   (call .rsync.subj_type_transition (subj))
+
 	   (call .selinux.linked.type (subj))
 
 	   (call .shell.exec.mapexecute_file_files (subj))
