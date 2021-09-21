@@ -69,6 +69,7 @@ config_install:
 \n/sysroot/usr/lib/gnupg /usr/bin\
 \n/sysroot/usr/lib/klibc/bin /usr/bin\
 \n/sysroot/usr/lib/openssh /usr/bin\
+\n/sysroot/usr/lib/postfix/sbin /usr/bin\
 \n/sysroot/usr/lib32 /usr/lib\
 \n/sysroot/usr/lib64 /usr/lib\
 \n/sysroot/usr/libexec /usr/bin\
@@ -87,10 +88,16 @@ config_install:
 \n/sysroot/var/log/private /var/log\
 \n/sysroot/var/mail /var/spool/mail\
 \n/sysroot/var/run /run\
+\n/sysroot/var/spool/postfix/dev /dev\
+\n/sysroot/var/spool/postfix/etc /etc\
+\n/sysroot/var/spool/postfix/lib /lib\
+\n/sysroot/var/spool/postfix/usr /usr\
+\n/sysroot/var/spool/postfix/usr/lib /usr/lib\
 \n/sysroot/var/tmp /tmp\
 \n/usr/lib/gnupg /usr/bin\
 \n/usr/lib/klibc/bin /usr/bin\
 \n/usr/lib/openssh /usr/bin\
+\n/usr/lib/postfix/sbin /usr/bin\
 \n/usr/lib32 /usr/lib\
 \n/usr/lib64 /usr/lib\
 \n/usr/libexec /usr/bin\
@@ -109,6 +116,11 @@ config_install:
 \n/var/log/private /var/log\
 \n/var/mail /var/spool/mail\
 \n/var/run /run\
+\n/var/spool/postfix/dev /dev\
+\n/var/spool/postfix/etc /etc\
+\n/var/spool/postfix/lib /lib\
+\n/var/spool/postfix/usr /usr\
+\n/var/spool/postfix/usr/lib /usr/lib\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
 ifeq ($(MCS),false)
 	/bin/echo -e """cdrom sys.id:sys.role:removable.stordev\

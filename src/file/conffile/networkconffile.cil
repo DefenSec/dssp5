@@ -9,10 +9,14 @@
 	      (filecon "/etc/default/networking\..*" file file_context)
 	      (filecon "/etc/network" dir file_context)
 	      (filecon "/etc/network/.*" any file_context)
+	      (filecon "/etc/ppp" dir file_context)
+	      (filecon "/etc/ppp/.*" any file_context)
 
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "network"))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "ppp"))
 		     (call .conf.file_type_transition
 			   (ARG1 file file "networking")))
 

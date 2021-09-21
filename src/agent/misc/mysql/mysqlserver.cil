@@ -177,7 +177,11 @@
 
     (block utils
 
-	   (blockinherit .sys.agent.template)
+	   (blockinherit .hybrid.agent.template)
+
+	   (call client.home.manage_file_files (subj))
+	   (call client.home.user_home_file_type_transition_file (subj "*"))
+	   (call client.subj_type_transition (subj))
 
 	   (call conf.list_file_dirs (subj))
 	   (call conf.read_file_files (subj))
@@ -207,7 +211,6 @@
 	   (call .random.read_sysctlfile_pattern.type (subj))
 
 	   (call .rbacsep.constrained.type (subj))
-	   (call .rbacsep.usefdsource.type (subj))
 
 	   (call .rsync.subj_type_transition (subj))
 
@@ -218,10 +221,15 @@
 
 	   (call .state.search_file_pattern.type (subj))
 
+	   (call .sys.home.manage_file_files (subj))
+	   (call .sys.home.readwrite_file_files (subj))
+
 	   (call .terminfo.conf.read_file_pattern.type (subj))
 	   (call .terminfo.data.read_file_pattern.type (subj))
 
 	   (call .tmp.deletename_file_dirs (subj))
+
+	   (call .user.home.deletename_file_dirs (subj))
 
 	   (block exec
 
