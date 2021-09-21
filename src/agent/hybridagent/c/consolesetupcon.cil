@@ -136,4 +136,4 @@
 
 (in null
 
-    (call .xattr.associate_fs (nodedev)))
+    (call .xattr.associate_fs_pattern.type (nodedev)))

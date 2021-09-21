@@ -70,7 +70,7 @@
 
 	   (call .tmp.associate_fs (typeattr))
 
-	   (call .xattr.associate_fs (typeattr))
+	   (call .xattr.associate_fs_pattern.type (typeattr))
 
 	   (block base_template
 

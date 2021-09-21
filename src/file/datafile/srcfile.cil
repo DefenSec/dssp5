@@ -12,7 +12,7 @@
 
        (blockinherit .file.data.template)
 
-       (call .xattr.associate_fs (file)))
+       (call .xattr.associate_fs_pattern.type (file)))
 
 (in file.unconfined
 

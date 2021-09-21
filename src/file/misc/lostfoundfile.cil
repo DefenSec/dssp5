@@ -112,7 +112,7 @@
        (blockinherit .file.macro_template_dirs)
        (blockinherit .file.macro_template_files)
 
-       (call .xattr.associate_fs (file)))
+       (call .xattr.associate_fs_pattern.type (file)))
 
 (in file.unconfined
 

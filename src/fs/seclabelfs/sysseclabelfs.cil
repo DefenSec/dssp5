@@ -21,4 +21,4 @@
 
     (allow fs self (filesystem (associate)))
 
-    (call .xattr.associate_fs (fs)))
+    (call .xattr.associate_fs_pattern.type (fs)))
