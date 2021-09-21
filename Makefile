@@ -90,7 +90,7 @@ config_install:
 \n/sysroot/var/run /run\
 \n/sysroot/var/spool/postfix/dev /dev\
 \n/sysroot/var/spool/postfix/etc /etc\
-\n/sysroot/var/spool/postfix/lib /lib\
+\n/sysroot/var/spool/postfix/lib /usr/lib\
 \n/sysroot/var/spool/postfix/usr /usr\
 \n/sysroot/var/spool/postfix/usr/lib /usr/lib\
 \n/sysroot/var/tmp /tmp\
@@ -118,7 +118,7 @@ config_install:
 \n/var/run /run\
 \n/var/spool/postfix/dev /dev\
 \n/var/spool/postfix/etc /etc\
-\n/var/spool/postfix/lib /lib\
+\n/var/spool/postfix/lib /usr/lib\
 \n/var/spool/postfix/usr /usr\
 \n/var/spool/postfix/usr/lib /usr/lib\
 \n/var/tmp /tmp""" > $(DESTDIR)/etc/selinux/$(SELINUXTYPE)/contexts/files/file_contexts.subs_dist
