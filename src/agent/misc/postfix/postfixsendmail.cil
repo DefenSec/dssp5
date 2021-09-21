@@ -1,0 +1,87 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block sendmail
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call cli.signal_subj_processes (subj))
+	   (call cli.subj_type_transition (subj))
+
+	   (call common.type (subj))
+
+	   (call mailer.readwrite_all_unix_stream_sockets (subj))
+	   (call mailer.use_all_fds (subj))
+
+	   (call mailer.tmp.readwriteinherited_all_files (subj))
+
+	   (call master.readwriteinherited_subj_fifo_files (subj))
+	   (call master.use_subj_fds (subj))
+
+	   (call pipe.readwriteinherited_subj_fifo_files (subj))
+	   (call pipe.use_subj_fds (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.exemptsource.type (subj))
+
+	   (call .sys.home.list_file_dirs (subj))
+
+	   (optional postfixsendmail_dovecot
+		     (call .dovecot.readwrite_subj_unix_stream_sockets (subj))
+		     (call .dovecot.readwriteinherited_subj_fifo_files (subj))
+		     (call .dovecot.spool.readwriteinherited_file_files (subj))
+		     (call .dovecot.use_subj_fds (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sendmail" file file_context)
+
+		  (call common.exec.type (file)))
+
+	   (block mailer
+
+		  (macro readwrite_all_unix_stream_sockets ((type ARG1))
+			 (allow ARG1 typeattr readwrite_unix_stream_socket))
+
+		  (macro role ((role ARG1))
+			 (roleattributeset roleattr ARG1))
+
+		  (macro type ((type ARG1))
+			 (typeattributeset typeattr ARG1))
+
+		  (macro use_all_fds ((type ARG1))
+			 (allow ARG1 typeattr (fd (use))))
+
+		  (macro writeinherited_all_fifo_files ((type ARG1))
+			 (allow ARG1 typeattr writeinherited_fifo_file))
+
+		  (roleattribute roleattr)
+		  (typeattribute typeattr)
+
+		  (call cli.role (roleattr))
+
+		  (call sendmail.signal_subj_processes (typeattr))
+		  (call sendmail.subj_type_transition (typeattr))
+		  (call sendmail.role (roleattr))
+
+		  (block tmp
+
+			 (macro readwriteinherited_all_files ((type ARG1))
+				(allow ARG1 typeattr
+				       readwriteinherited_file))
+
+			 (macro type ((type ARG1))
+				(typeattributeset typeattr ARG1))
+
+			 (typeattribute typeattr)))))
+
+(in sys.tmp
+
+    (call .postfix.sendmail.mailer.tmp.type (file)))

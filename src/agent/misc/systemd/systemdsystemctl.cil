@@ -59,7 +59,9 @@
 	   (call .cgroup.list_fs_dirs (subj))
 	   (call .cgroup.read_fs_files (subj))
 
-	   (call .conf.list_file_dirs (subj))
+	   ;; update-rc.d: /etc/rc.d
+	   (call .conf.manage_file_lnk_files (subj))
+	   (call .conf.readwrite_file_dirs (subj))
 
 	   (call .crypto.read_sysctlfile_pattern.type (subj))
 

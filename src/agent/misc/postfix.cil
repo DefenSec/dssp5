@@ -1,0 +1,487 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block postfix
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self (capability (chown dac_read_search fowner)))
+       (allow subj self (tcp_socket (create)))
+
+       (call cli.signal_subj_processes (subj))
+       (call cli.subj_type_transition (subj))
+
+       (call common.exec.getattr_all_files (subj))
+       (call common.type (subj))
+
+;;       (call conf.setattr_file_dirs (subj))
+
+       (call log.manage_file_files (subj))
+       (call log.log_file_type_transition_file (subj "*"))
+
+       (call pid.spool.read_file_files (subj))
+
+       (call sendmail.exec.read_file_files (subj))
+
+       (call state.list_file_dirs (subj))
+       (call state.read_file_files (subj))
+;;       (call state.setattr_file_dirs (subj))
+
+       (call .cgroup.getattr_fs_pattern.type (subj))
+
+;;       (call .exec.dontaudit_setattr_file_dirs (subj))
+       (call .exec.execute_file_files (subj))
+       (call .exec.list_file_dirs (subj))
+
+       (call .file.spool.postfix.getattr_all_files (subj))
+       (call .file.spool.postfix.list_all_dirs (subj))
+       (call .file.spool.postfix.setattr_all_dirs (subj))
+
+       (call .log.deletename_file_dirs (subj))
+
+;;       (call .man.data.getattr_file_files (subj))
+;;       (call .man.data.search_file_dirs (subj))
+
+       (call .nss.hosts.type (subj))
+       (call .nss.passwdgroup.type (subj))
+
+       (call .osrelease.read_sysctlfile_pattern.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .shell.exec.execute_file_files (subj))
+
+       (call .terminfo.conf.read_file_pattern.type (subj))
+       (call .terminfo.data.read_file_pattern.type (subj))
+
+       (call .xattr.getattr_fs_pattern.type (subj))
+
+       (block active
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/active" dir file_context)
+		     (filecon "/var/spool/postfix/active/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "active")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block bounce
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/bounce" dir file_context)
+		     (filecon "/var/spool/postfix/bounce/.*" any ())
+
+		     (macro getattr_file_files ((type ARG1))
+			    (allow ARG1 file (file (getattr))))
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "bounce")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block cert
+
+	      (filecon "/etc/ssl/postfix" dir file_context)
+	      (filecon "/etc/ssl/postfix/.*" any file_context)
+
+	      (macro cert_file_type_transition_file ((type ARG1))
+		     (call .cert.file_type_transition
+			   (ARG1 file dir "postfix")))
+
+	      (blockinherit .file.cert.template))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (process (getsched setrlimit setsched)))
+	      (allow typeattr self create_unix_dgram_socket)
+
+	      (call conf.list_file_dirs (typeattr))
+	      (call conf.read_file_files (typeattr))
+	      (call conf.read_file_lnk_files (typeattr))
+
+	      (call .cpu.read_sysfile_files (typeattr))
+	      (call .cpu.search_sysfile_pattern.type (typeattr))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .file.spool.postfix.search_all_dirs (typeattr))
+
+	      ;; is this ngroupsmax?
+	      (call .kernel.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .net.read_procfile_pattern.type (typeattr))
+
+	      (call .random.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+
+	      (call .spool.search_file_pattern.type (typeattr))
+
+	      (call .sys.agent.type (typeattr))
+
+	      (call .systemd.journal.relay_msgs.type (typeattr))
+
+	      (call .tmp.search_file_pattern.type (typeattr))
+
+	      (block exec
+
+		     (macro getattr_all_files ((type ARG1))
+			    (allow ARG1 typeattr (file (getattr))))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (call .sys.agent.exec.type (typeattr))))
+
+       (block conf
+
+	      (filecon "/etc/postfix" dir file_context)
+	      (filecon "/etc/postfix/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "postfix")))
+
+	      (blockinherit .file.conf.template))
+
+       (block corrupt
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/corrupt" dir file_context)
+		     (filecon "/var/spool/postfix/corrupt/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "corrupt")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block data
+
+	      (filecon "/usr/share/postfix" dir file_context)
+	      (filecon "/usr/share/postfix/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "postfix")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block defer
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/defer" dir file_context)
+		     (filecon "/var/spool/postfix/defer/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "defer")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block deferred
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/deferred" dir file_context)
+		     (filecon "/var/spool/postfix/deferred/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "deferred")))
+
+		     (macro setattr_file_files ((type ARG1))
+			    (allow ARG1 file (file (setattr))))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block exec
+
+	      (filecon "/usr/bin/postfix" file file_context)
+	      (filecon "/usr/bin/postmulti" file file_context))
+
+       (block flush
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/flush" dir file_context)
+		     (filecon "/var/spool/postfix/flush/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "flush")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block hold
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/hold" dir file_context)
+		     (filecon "/var/spool/postfix/hold/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "hold")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block incoming
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/incoming" dir file_context)
+		     (filecon "/var/spool/postfix/incoming/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "incoming")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block log
+
+	      (filecon "/var/log/postfix\.log" file file_context)
+	      (filecon "/var/log/postfix\.log\..*" file file_context)
+
+	      (macro log_file_type_transition_file ((type ARG1)(name ARG2))
+		     (call .log.file_type_transition
+			   (ARG1 file file ARG2)))
+
+	      (blockinherit .file.log.template))
+
+       (block maildrop
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/maildrop" dir file_context)
+		     (filecon "/var/spool/postfix/maildrop/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "maildrop")))
+
+		     (blockinherit .file.spool.postfix.template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block pid
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/pid" dir file_context)
+		     (filecon "/var/spool/postfix/pid/.*" any file_context)
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "pid")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block private
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/private" dir file_context)
+		     (filecon "/var/spool/postfix/private/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "private")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.spool.postfix.base_template)))
+
+       (block public
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/public" dir file_context)
+		     (filecon "/var/spool/postfix/public/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "public")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.macro_template_sock_files)
+		     (blockinherit .file.spool.postfix.base_template)
+
+		     (call .rbacsep.exempt.obj.type (file))))
+
+       (block saved
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/saved" dir file_context)
+		     (filecon "/var/spool/postfix/saved/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "saved")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block spool
+
+	      (filecon "/var/spool/postfix" dir file_context)
+	      (filecon "/var/spool/postfix/.*" any file_context)
+
+	      (macro spool_file_type_transition_file ((type ARG1))
+		     (call .spool.file_type_transition
+			   (ARG1 file dir "postfix")))
+
+	      (blockinherit .file.spool.postfix.template))
+
+       (block state
+
+	      (filecon "/var/lib/misc/postfix\.aliasesdb-stamp" file
+		       file_context)
+	      (filecon "/var/lib/misc/postfix\.aliasesdb-stamp\..*" file
+		       file_context)
+
+	      (filecon "/var/lib/postfix" dir file_context)
+	      (filecon "/var/lib/postfix/.*" any file_context)
+
+	      (macro state_file_type_transition_file
+		     ((type ARG1)(class ARG2)(name ARG3))
+		     (call .state.file_type_transition
+			   (ARG1 file ARG2 ARG3)))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block trace
+
+	      (block spool
+
+		     (filecon "/var/spool/postfix/trace" dir file_context)
+		     (filecon "/var/spool/postfix/trace/.*" any ())
+
+		     (macro postfix_spool_file_type_transition_file
+			    ((type ARG1))
+			    (call .postfix.spool.file_type_transition
+				  (ARG1 file dir "trace")))
+
+		     (blockinherit .file.spool.postfix.template)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/postfix\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/postfix@.*\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.spool
+
+    (block postfix
+
+	   (macro getattr_all_files ((type ARG1))
+		  (allow ARG1 typeattr (file (getattr))))
+
+	   (macro setattr_all_dirs ((type ARG1))
+		  (allow ARG1 typeattr (dir (setattr))))
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.spool.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.spool.base_template)
+
+		  (call .file.spool.postfix.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.spool.postfix.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files))))
+
+(in file.unconfined
+
+    (call .postfix.active.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.bounce.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.cert.cert_file_type_transition_file (typeattr))
+    (call .postfix.conf.conf_file_type_transition_file (typeattr))
+    (call .postfix.corrupt.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.data.data_file_type_transition_file (typeattr))
+    (call .postfix.defer.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.deferred.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.flush.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.hold.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.incoming.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.log.log_file_type_transition_file (typeattr "postfix.log"))
+    (call .postfix.maildrop.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.pid.spool.postfix_spool_file_type_transition_file (typeattr))
+    (call .postfix.private.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.public.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.saved.spool.postfix_spool_file_type_transition_file
+	  (typeattr))
+    (call .postfix.spool.spool_file_type_transition_file (typeattr))
+    (call .postfix.state.state_file_type_transition_file
+	  (typeattr dir "postfix"))
+    (call .postfix.state.state_file_type_transition_file
+	  (typeattr file "postfix.aliasesdb-stamp"))
+    (call .postfix.trace.spool.postfix_spool_file_type_transition_file
+	  (typeattr)))

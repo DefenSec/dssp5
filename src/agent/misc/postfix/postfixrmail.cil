@@ -1,0 +1,14 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block rmail
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/rmail" file file_context))))

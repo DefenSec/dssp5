@@ -229,6 +229,10 @@
 	      (call .polkit.check.role (role))
 	      (call .polkit.ttyagent.role (role)))
 
+    (optional unprivuser_postfixsendmail
+	      (call .postfix.sendmail.mailer.type (subj))
+	      (call .postfix.sendmail.mailer.role (role)))
+
     (optional unprivuser_qemu
 	      (call .qemu.data.list_file_dirs (subj))
 	      (call .qemu.data.read_file_files (subj))

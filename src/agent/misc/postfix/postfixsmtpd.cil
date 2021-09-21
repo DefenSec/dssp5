@@ -1,0 +1,47 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block smtpd
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self create_tcp_socket)
+
+	   (call cert.list_file_dirs (subj))
+	   (call cert.read_file_files (subj))
+
+	   (call master.agent (subj exec.file))
+	   (call master.accept_subj_tcp_sockets (subj))
+	   (call master.readwrite_subj_tcp_sockets (subj))
+	   (call master.unix_stream_connect_private (subj))
+	   (call master.unix_stream_connect_public (subj))
+
+	   (call .aliases.read_file_files (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .xattr.getattr_fs_pattern.type (subj))
+
+	   (optional postfixsmtpd_certbot
+		     (call .certbot.conf.read_file_pattern.type (subj)))
+
+	   (optional postfixsmtpd_dovecot
+		     (call .dovecot.connectto_subj_unix_stream_sockets (subj)))
+
+	   (optional postfixsmtpd_opendkimunreservedport
+		     (call .opendkim.nameconnect_port_tcp_sockets (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/smtpd" file file_context))))

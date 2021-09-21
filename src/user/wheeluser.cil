@@ -77,6 +77,9 @@
 		 (call .polkit.check.role (role))
 		 (call .polkit.ttyagent.role (role)))
 
+       (optional wheeluser_postfixsendmail
+		 (call .postfix.sendmail.mailer.role (role)))
+
        (optional wheeluser_qemu
 		 (call .qemu.bridgehelper.role (role)))
 
