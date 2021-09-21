@@ -90,7 +90,11 @@
        (blockinherit .stordev.base_template)
        (blockinherit .stordev.macro_template_blk_files))
 
-(in sys
-
     ;; udev is not quick enough with labeling
-    (call .loop.dev_file_type_transition_stordev (subj)))
+(in dev.unconfined
+
+    (call .loop.dev_file_type_transition_stordev (typeattr)))
+
+(in stordev.unconfined
+
+    (call .loop.dev_file_type_transition_stordev (typeattr)))

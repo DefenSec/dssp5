@@ -138,6 +138,8 @@
 	      (call .locale.data.map_file_pattern.type (typeattr))
 	      (call .locale.read_file_pattern.type (typeattr))
 
+	      (call .mailname.read_file_files (typeattr))
+
 	      (call .net.read_procfile_pattern.type (typeattr))
 
 	      (call .ngroupsmax.read_sysctlfile_pattern.type (typeattr))
@@ -469,6 +471,11 @@
 		  (blockinherit .file.macro_template_dirs)
 		  (blockinherit .file.macro_template_files))))
 
+;; for /var/spool/postfix/dev
+(in dev.unconfined
+
+    (call .random.dev_file_type_transition_nodedev (typeattr)))
+
 (in file.unconfined
 
     (call .postfix.active.spool.postfix_spool_file_type_transition_file
@@ -507,3 +514,7 @@
 	  (typeattr file "postfix.aliasesdb-stamp"))
     (call .postfix.trace.spool.postfix_spool_file_type_transition_file
 	  (typeattr)))
+
+(in nodedev.unconfined
+
+    (call .random.dev_file_type_transition_nodedev (typeattr)))
