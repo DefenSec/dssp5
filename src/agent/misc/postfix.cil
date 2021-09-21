@@ -14,7 +14,7 @@
        (call common.exec.getattr_all_files (subj))
        (call common.type (subj))
 
-;;       (call conf.setattr_file_dirs (subj))
+       (call conf.setattr_file_dirs (subj))
 
        (call log.manage_file_files (subj))
        (call log.log_file_type_transition_file (subj "*"))
@@ -25,7 +25,7 @@
 
        (call state.list_file_dirs (subj))
        (call state.read_file_files (subj))
-;;       (call state.setattr_file_dirs (subj))
+       (call state.setattr_file_dirs (subj))
 
        (call .cgroup.getattr_fs_pattern.type (subj))
 
@@ -40,7 +40,7 @@
        (call .log.deletename_file_dirs (subj))
 
 ;;       (call .man.data.getattr_file_files (subj))
-;;       (call .man.data.search_file_dirs (subj))
+       (call .man.data.search_file_dirs (subj))
 
        (call .nss.hosts.type (subj))
        (call .nss.passwdgroup.type (subj))
@@ -160,6 +160,9 @@
 	      (macro conf_file_type_transition_file ((type ARG1))
 		     (call .conf.file_type_transition
 			   (ARG1 file dir "postfix")))
+
+	      (macro setattr_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (setattr))))
 
 	      (blockinherit .file.conf.template))
 
@@ -377,6 +380,9 @@
 
 	      (filecon "/var/lib/postfix" dir file_context)
 	      (filecon "/var/lib/postfix/.*" any file_context)
+
+	      (macro setattr_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (setattr))))
 
 	      (macro state_file_type_transition_file
 		     ((type ARG1)(class ARG2)(name ARG3))
