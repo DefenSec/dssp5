@@ -53,4 +53,7 @@
 		  (call .tmp.file_type_transition
 			(ARG1 file ARG2 ARG3)))
 
-	   (blockinherit .file.user.tmp.template)))
+	   (blockinherit .file.user.tmp.template)
+
+	   (optional usertmpfile_postfixsendmail
+		     (call .postfix.sendmail.mailer.tmp.type (file)))))

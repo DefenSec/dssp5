@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block qmgr
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call active.spool.delete_file_files (subj))
+	   (call active.spool.readwrite_file_dirs (subj))
+
+	   (call bounce.spool.getattr_file_files (subj))
+
+	   (call defer.spool.delete_file_files (subj))
+	   (call defer.spool.deletename_file_dirs (subj))
+
+	   (call deferred.spool.manage_file_dirs (subj))
+	   (call deferred.spool.setattr_file_files (subj))
+
+	   (call incoming.spool.manage_file_files (subj))
+	   (call incoming.spool.readwrite_file_dirs (subj))
+
+	   (call master.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+
+		  (filecon "/usr/bin/nqmgr" file file_context)
+		  (filecon "/usr/bin/oqmgr" file file_context)
+		  (filecon "/usr/bin/qmgr" file file_context))))

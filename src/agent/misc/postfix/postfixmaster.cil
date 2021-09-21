@@ -1,0 +1,135 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (call master.readwrite_subj_unix_stream_sockets (subj))
+    (call master.signal_subj_processes (subj))
+    (call master.subj_type_transition (subj))
+
+    (block master
+
+	   (macro agent ((type ARG1)(type ARG2))
+		  (typetransition subj ARG2 process ARG1)
+		  (call service.exec.type (ARG2))
+		  (call service.type (ARG1)))
+
+	   (macro accept_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj (tcp_socket (accept))))
+
+	   (macro accept_subj_unix_stream_sockets ((type ARG1))
+		  (allow ARG1 subj (unix_stream_socket (accept))))
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
+
+	   (macro unix_dgram_send_public ((type ARG1))
+		  (call sendto_subj_unix_dgram_sockets (ARG1))
+		  (call public.spool.search_file_dirs (ARG1))
+		  (call public.spool.write_file_sock_files (ARG1)))
+
+	   (macro unix_stream_connect_private ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call private.spool.search_file_dirs (ARG1))
+		  (call private.spool.write_file_sock_files (ARG1)))
+
+	   (macro unix_stream_connect_public ((type ARG1))
+		  (call connectto_subj_unix_stream_sockets (ARG1))
+		  (call public.spool.search_file_dirs (ARG1))
+		  (call public.spool.write_file_sock_files (ARG1)))
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self
+		  (capability (dac_read_search kill net_bind_service setgid
+					       setuid)))
+	   (allow subj self create_tcp_stream_socket)
+	   (allow subj self (unix_stream_socket (accept connectto listen)))
+
+	   (call service.exec.mapexecute_all_files (subj))
+	   (call service.exec.read_all_files (subj))
+	   (call service.signal_all_processes (subj))
+	   (call service.transition_all_processes (subj))
+
+	   (call common.type (subj))
+
+	   (call pid.spool.manage_file_files (subj))
+	   (call pid.spool.readwrite_file_dirs (subj))
+
+	   (call private.spool.manage_file_sock_files (subj))
+	   (call private.spool.readwrite_file_dirs (subj))
+
+	   (call public.spool.manage_file_sock_files (subj))
+	   (call public.spool.readwrite_file_dirs (subj))
+
+	   (call state.manage_file_files (subj))
+	   (call state.readwrite_file_dirs (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+	   (call .nss.services.type (subj))
+
+	   (call .rbacsep.exempttarget.type (subj))
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdtarget.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .smtp.msa.namebind_port_tcp_sockets (subj))
+	   (call .smtp.namebind_port_tcp_sockets (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/master" file file_context)
+
+		  (call common.exec.type (file)))
+
+	      (block service
+
+		     (macro signal_all_processes ((type ARG1))
+			    (allow ARG1 typeattr (process (signal))))
+
+		     (macro transition_all_processes ((type ARG1))
+			    (allow ARG1 typeattr (process (transition))))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (allow typeattr self
+			    (capability (dac_read_search setgid setuid)))
+
+		     (call common.type (typeattr))
+
+		     (call master.accept_subj_unix_stream_sockets (typeattr))
+		     (call master.readwrite_subj_unix_stream_sockets (typeattr))
+		     (call master.readwriteinherited_subj_fifo_files (typeattr))
+		     (call master.sigchld_subj_processes (typeattr))
+		     (call master.use_subj_fds (typeattr))
+
+		     (call pid.spool.manage_file_files (typeattr))
+		     (call pid.spool.readwrite_file_dirs (typeattr))
+
+		     (call .nss.hosts.type (typeattr))
+		     (call .nss.passwdgroup.type (typeattr))
+
+		     (block exec
+
+			    (macro mapexecute_all_files ((type ARG1))
+				   (allow ARG1 typeattr mapexecute_file))
+
+			    (macro read_all_files ((type ARG1))
+				   (allow ARG1 typeattr read_file))
+
+			    (macro type ((type ARG1))
+				   (typeattributeset typeattr ARG1))
+
+			    (typeattribute typeattr)
+
+			    (call common.exec.type (typeattr))))))
+
+(in postfix.common
+
+    (call master.unix_dgram_send_public (typeattr)))

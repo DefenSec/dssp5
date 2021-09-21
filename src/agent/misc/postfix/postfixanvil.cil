@@ -1,0 +1,23 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block anvil
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call master.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (optional postfixanvil_dovecot
+		     (call .dovecot.connectto_subj_unix_stream_sockets
+			   (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/anvil" file file_context))))

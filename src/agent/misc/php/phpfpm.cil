@@ -300,7 +300,7 @@
     (optional phpfpm_mysqlunreservedport
 	      (call .mysql.nameconnect_port_tcp_sockets (subj)))
 
-    (optional phpfpm_postfix
+    (optional phpfpm_postfixsendmail
 	      (call .postfix.sendmail.mailer.type (subj))
 	      (call .postfix.sendmail.mailer.tmp.type (tmp.file)))
 

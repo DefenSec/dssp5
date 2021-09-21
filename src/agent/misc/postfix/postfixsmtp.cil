@@ -1,0 +1,39 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block smtp
+
+	   (macro readwrite_subj_tcp_sockets ((type ARG1))
+		  (allow ARG1 subj readwrite_tcp_socket))
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self create_tcp_socket)
+
+	   (call incoming.spool.readwrite_file_files (subj))
+
+	   (call master.agent (subj exec.file))
+	   (call master.unix_stream_connect_private (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .net.nodebind_netnode_tcp_sockets (subj))
+
+	   (call .nss.services.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
+	   (call .smtp.nameconnect_port_tcp_sockets (subj))
+
+	   (optional postfixsmtp_dovecot
+		     (call .dovecot.connectto_subj_unix_stream_sockets (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/lmtp" file file_context)
+		  (filecon "/usr/bin/smtp" file file_context))))

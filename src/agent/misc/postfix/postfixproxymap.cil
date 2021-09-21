@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block proxymap
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call master.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/proxymap" file file_context))))

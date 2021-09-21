@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block trivialrewrite
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call master.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/trivial-rewrite" file file_context))))

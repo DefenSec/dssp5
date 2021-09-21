@@ -1,0 +1,23 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block scache
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call master.agent (subj exec.file))
+
+	   (call smtp.readwrite_subj_tcp_sockets (subj))
+	   (call smtp.readwrite_subj_unix_stream_sockets (subj))
+	   (call smtp.use_subj_fds (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/scache" file file_context))))

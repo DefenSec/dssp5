@@ -1,0 +1,17 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block postscreen
+
+	   (blockinherit .agent.template)
+
+	   (call master.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/postscreen" file file_context))))

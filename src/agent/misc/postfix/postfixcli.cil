@@ -1,0 +1,90 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block cli
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (allow subj self (capability (setgid setuid)))
+	   (allow subj self create_tcp_socket)
+
+	   (call active.spool.deletename_file_dirs (subj))
+
+	   (call common.type (subj))
+
+	   (call conf.manage_file_files (subj))
+	   (call conf.readwrite_file_dirs (subj))
+
+	   (call defer.spool.delete_file_files (subj))
+	   (call defer.spool.deletename_file_dirs (subj))
+
+	   (call deferred.spool.deletename_file_dirs (subj))
+
+	   (call hold.spool.delete_file_files (subj))
+	   (call hold.spool.deletename_file_dirs (subj))
+
+	   (call incoming.spool.delete_file_files (subj))
+	   (call incoming.spool.deletename_file_dirs (subj))
+
+	   (call log.append_file_files (subj))
+	   (call log.create_file_files (subj))
+	   (call log.log_file_type_transition_file (subj "postfix.log"))
+
+	   (call maildrop.spool.manage_file_files (subj))
+	   (call maildrop.spool.readwrite_file_dirs (subj))
+
+	   (call master.readwrite_subj_unix_stream_sockets (subj))
+	   (call master.unix_stream_connect_public (subj))
+
+	   (call pipe.readwriteinherited_subj_fifo_files (subj))
+	   (call pipe.use_subj_fds (subj))
+
+	   (call sendmail.readwrite_subj_unix_stream_sockets (subj))
+	   (call sendmail.use_subj_fds (subj))
+	   (call sendmail.mailer.writeinherited_all_fifo_files (subj))
+	   (call sendmail.mailer.use_all_fds (subj))
+
+	   (call .aliases.manage_file_files (subj))
+	   (call .aliases.conf_file_type_transition_file (subj "*"))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .file.spool.postfix.getattr_all_files (subj))
+	   (call .file.spool.postfix.list_all_dirs (subj))
+
+	   (call .nss.hosts.type (subj))
+	   (call .nss.passwdgroup.type (subj))
+	   (call .nss.services.type (subj))
+
+	   (call .smtp.msa.nameconnect_port_tcp_sockets (subj))
+	   (call .smtp.nameconnect_port_tcp_sockets (subj))
+
+	   (optional postfixcli_dovecot
+		     (call .dovecot.readwriteinherited_subj_fifo_files (subj))
+		     (call .dovecot.use_subj_fds (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/bin/postalias" file file_context)
+		  (filecon "/usr/bin/postcat" file file_context)
+		  (filecon "/usr/bin/postconf" file file_context)
+		  (filecon "/usr/bin/postdrop" file file_context)
+		  (filecon "/usr/bin/postfix-add-filter" file file_context)
+		  (filecon "/usr/bin/postfix-add-policy" file file_context)
+		  (filecon "/usr/bin/postkick" file file_context)
+		  (filecon "/usr/bin/postlock" file file_context)
+		  (filecon "/usr/bin/postlog" file file_context)
+		  (filecon "/usr/bin/postmap" file file_context)
+		  (filecon "/usr/bin/postqueue" file file_context)
+		  (filecon "/usr/bin/postsuper" file file_context)
+		  (filecon "/usr/bin/posttls-finger" file file_context)
+		  (filecon "/usr/bin/qmqp-sink" file file_context)
+		  (filecon "/usr/bin/qmqp-source" file file_context)
+		  (filecon "/usr/bin/qshape" file file_context)
+		  (filecon "/usr/bin/smtp-sink" file file_context)
+		  (filecon "/usr/bin/smtp-source" file file_context)
+
+		  (call common.exec.type (file)))))

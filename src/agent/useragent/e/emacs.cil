@@ -276,7 +276,7 @@
 		 (call .p11kit.data.map_file_files (subj))
 		 (call .p11kit.read_file_pattern.type (subj)))
 
-       (optional emacs_postfix
+       (optional emacs_postfixsendmail
 		 (call .postfix.sendmail.mailer.type (subj)))
 
        (optional emacs_sudo

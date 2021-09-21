@@ -1,0 +1,45 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix
+
+    (block local
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (tcp_socket (create)))
+
+	   (call incoming.spool.readwrite_file_files (subj))
+
+	   (call master.agent (subj exec.file))
+	   (call master.unix_stream_connect_private (subj))
+	   (call master.unix_stream_connect_public (subj))
+
+	   (call spool.manage_file_files (subj))
+	   (call spool.mail_file_type_transition_file (subj "*"))
+
+	   (call .aliases.read_file_files (subj))
+
+	   (call .mail.deletename_file_dirs (subj))
+
+	   (call .nss.services.type (subj))
+
+	   (call .user.home.search_file_pattern.type (subj))
+
+	   (call .user.mail.append_file_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/local" file file_context))
+
+	   (block spool
+
+		  (filecon "/var/mail/*.\.lock" file file_context)
+		  (filecon "/var/mail/*.\.lock\..*" file file_context)
+
+		  (macro mail_file_type_transition_file ((type ARG1)(name ARG2))
+			 (call .mail.file_type_transition
+			       (ARG1 file file ARG2)))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.spool.postfix.base_template))))

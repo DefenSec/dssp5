@@ -1,0 +1,15 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in postfix.flush
+
+    (blockinherit .agent.template)
+
+    (call master.agent (subj exec.file))
+
+    (call .rbacsep.constrained.type (subj))
+    (call .rbacsep.usefdsource.type (subj))
+
+    (block exec
+
+	   (filecon "/usr/bin/flush" file file_context)))

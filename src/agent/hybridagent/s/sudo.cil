@@ -190,6 +190,10 @@
     (optional sudo_opensshserver
 	      (call .openssh.server.unix_stream_connect (subj)))
 
+    (optional sudo_postfixsendmail
+	      (call .postfix.sendmail.mailer.type (subj))
+	      (call .postfix.sendmail.mailer.role (roleattr)))
+
     (optional sudo_systemdnspawn
 	      ;; sudo -r sys.role runcon -t systemd.nspawn.subj -- \
 	      ;; systemd-nspawn -Z sys.id:sys.role:systemd.nspawn.privcontainer.subj:s0 \
