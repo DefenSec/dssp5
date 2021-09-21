@@ -34,8 +34,8 @@
 
 	   (block spool
 
-		  (filecon "/var/mail/*.\.lock" file file_context)
-		  (filecon "/var/mail/*.\.lock\..*" file file_context)
+		  (filecon "/var/spool/mail/*.\.lock" file file_context)
+		  (filecon "/var/spool/mail/*.\.lock\..*" file file_context)
 
 		  (macro mail_file_type_transition_file ((type ARG1)(name ARG2))
 			 (call .mail.file_type_transition
