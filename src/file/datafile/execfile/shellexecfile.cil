@@ -13,6 +13,9 @@
 	      (filecon "/usr/bin/sh" file file_context)
 	      (filecon "/usr/bin/tcsh" file file_context)
 
+	      (macro auditexecuteaccess_file_files ((type ARG1))
+		     (allow ARG1 file (file (execute getattr))))
+
 	      (macro getattr_file_files ((type ARG1))
 		     (allow ARG1 file (file (getattr))))
 

@@ -80,6 +80,9 @@
        (call .shadow.manage_file_files (subj))
        (call .shadow.read.type (subj))
 
+       ;; checks login shells
+       (call .shell.exec.auditexecuteaccess_file_files (subj))
+
        (call .spool.traverse_file_pattern.type (subj))
 
        (call .subj.common.read_all_states (subj))
