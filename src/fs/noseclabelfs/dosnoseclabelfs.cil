@@ -26,7 +26,7 @@
 
        (call .rbacsep.exempt.obj.type (fs))
 
-       (call .xattr.associate_fs (fs))
+       (call .xattr.associate_fs_pattern.type (fs))
 
        (optional dosnoseclabelfs_mount
 		 (call .mount.mountpoint.type (fs))))

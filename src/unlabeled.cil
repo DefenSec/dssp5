@@ -364,7 +364,7 @@
 (type unlabeled)
 (roletype sys.role unlabeled)
 
-(call .xattr.associate_fs (unlabeled))
+(call .xattr.associate_fs_pattern.type (unlabeled))
 
 (block unlabeled
 

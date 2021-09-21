@@ -56,6 +56,8 @@
 
        (call .logindefs.read_file_files (subj))
 
+       ;; failover mail spool file handling
+       (call .mail.manage_file_files (subj))
        (call .mail.readwrite_file_dirs (subj))
 
        (call .ngroupsmax.read_sysctlfile_files (subj))

@@ -18,6 +18,9 @@
 
        (call conf.setattr_file_dirs (subj))
 
+       (call data.getattr_file_files (subj))
+       (call data.search_file_dirs (subj))
+
        (call hold.spool.manage_file_dirs (subj))
        (call hold.spool.postfix_spool_file_type_transition_file (subj))
 
@@ -206,6 +209,9 @@
 	      (macro data_file_type_transition_file ((type ARG1))
 		     (call .data.file_type_transition
 			   (ARG1 file dir "postfix")))
+
+	      (macro getattr_file_files ((type ARG1))
+		     (allow ARG1 file (file (getattr))))
 
 	      (blockinherit .file.data.base_template)
 	      (blockinherit .file.macro_template_dirs)
@@ -476,6 +482,14 @@
 
     (call .random.dev_file_type_transition_nodedev (typeattr)))
 
+(in e2fsprogs
+
+    ;; chattr
+    (allow subj self (capability (dac_read_search fowner)))
+
+    (call .file.spool.postfix.list_all_dirs (subj))
+    (call .file.spool.postfix.setattr_all_dirs (subj)))
+
 (in file.unconfined
 
     (call .postfix.active.spool.postfix_spool_file_type_transition_file
@@ -518,3 +532,7 @@
 (in nodedev.unconfined
 
     (call .random.dev_file_type_transition_nodedev (typeattr)))
+
+(in random
+
+    (call .xattr.associate_fs_pattern.type (nodedev)))

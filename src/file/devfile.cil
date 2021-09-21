@@ -24,7 +24,7 @@
     (blockinherit .file.macro_template_blk_files)
     (blockinherit .file.macro_template_chr_files)
 
-    (call .xattr.associate_fs (file))
+    (call .xattr.associate_fs_pattern.type (file))
 
     (optional devfile_mount
 	      (call .mount.mountpoint.type (file))))

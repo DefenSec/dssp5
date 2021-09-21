@@ -14,4 +14,4 @@
        (blockinherit .fs.macro_template_lnk_files)
        (blockinherit .noseclabelfs.template)
 
-       (call .xattr.associate_fs (fs)))
+       (call .xattr.associate_fs_pattern.type (fs)))

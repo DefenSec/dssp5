@@ -29,7 +29,7 @@
 
        (call .tmp.associate_fs (file))
 
-       (call .xattr.associate_fs (file))
+       (call .xattr.associate_fs_pattern.type (file))
 
        (optional mediafile_mount
 		 (call .mount.mountpoint.type (file))))
