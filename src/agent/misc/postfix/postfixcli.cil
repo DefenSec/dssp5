@@ -52,6 +52,8 @@
 	   (call .cert.read_file_files (subj))
 	   (call .cert.traverse_file_pattern.type (subj))
 
+	   (call .conf.deletename_file_dirs (subj))
+
 	   (call .file.spool.postfix.getattr_all_files (subj))
 	   (call .file.spool.postfix.list_all_dirs (subj))
 

@@ -24,6 +24,7 @@
 	   (call incoming.spool.readwrite_file_dirs (subj))
 
 	   (call master.agent (subj exec.file))
+	   (call master.unix_stream_connect_private (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))

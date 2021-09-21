@@ -17,6 +17,8 @@
 	   (filecon "/etc/locale\.conf\..*" file file_context)
 	   (filecon "/etc/locale\.gen" file file_context)
 	   (filecon "/etc/locale\.gen\..*" file file_context)
+	   (filecon "/etc/localtime" file file_context)
+	   (filecon "/etc/localtime\..*" file file_context)
 	   (filecon "/etc/timezone" file file_context)
 	   (filecon "/etc/timezone\..*" file file_context)
 
@@ -29,6 +31,8 @@
 			(ARG1 file file "locale.conf"))
 		  (call .conf.file_type_transition
 			(ARG1 file file "locale.gen"))
+		  (call .conf.file_type_transition
+			(ARG1 file file "localtime"))
 		  (call .conf.file_type_transition
 			(ARG1 file file "timezone")))
 

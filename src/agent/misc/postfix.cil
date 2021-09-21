@@ -8,6 +8,8 @@
        (allow subj self (capability (chown dac_read_search fowner)))
        (allow subj self (tcp_socket (create)))
 
+       (call exec.execute_file_files (subj))
+
        (call cli.signal_subj_processes (subj))
        (call cli.subj_type_transition (subj))
 
@@ -15,6 +17,9 @@
        (call common.type (subj))
 
        (call conf.setattr_file_dirs (subj))
+
+       (call hold.spool.manage_file_dirs (subj))
+       (call hold.spool.postfix_spool_file_type_transition_file (subj))
 
        (call log.manage_file_files (subj))
        (call log.log_file_type_transition_file (subj "*"))
@@ -27,9 +32,17 @@
        (call state.read_file_files (subj))
        (call state.setattr_file_dirs (subj))
 
+       (call trace.spool.manage_file_dirs (subj))
+       (call trace.spool.postfix_spool_file_type_transition_file (subj))
+
+       (call .cert.read_file_pattern.type (subj))
+
        (call .cgroup.getattr_fs_pattern.type (subj))
 
-;;       (call .exec.dontaudit_setattr_file_dirs (subj))
+       (call .conf.list_file_dirs (subj))
+
+       (call .data.list_file_dirs (subj))
+
        (call .exec.execute_file_files (subj))
        (call .exec.list_file_dirs (subj))
 
@@ -39,11 +52,13 @@
 
        (call .log.deletename_file_dirs (subj))
 
-;;       (call .man.data.getattr_file_files (subj))
+       (call .man.data.getattr_file_files (subj))
+       (call .man.data.read_file_lnk_files (subj))
        (call .man.data.search_file_dirs (subj))
 
        (call .nss.hosts.type (subj))
        (call .nss.passwdgroup.type (subj))
+       (call .nss.services.type (subj))
 
        (call .osrelease.read_sysctlfile_pattern.type (subj))
 
@@ -120,19 +135,20 @@
 
 	      (call .file.spool.postfix.search_all_dirs (typeattr))
 
-	      ;; is this ngroupsmax?
-	      (call .kernel.read_sysctlfile_pattern.type (typeattr))
-
 	      (call .locale.data.map_file_pattern.type (typeattr))
 	      (call .locale.read_file_pattern.type (typeattr))
 
 	      (call .net.read_procfile_pattern.type (typeattr))
+
+	      (call .ngroupsmax.read_sysctlfile_pattern.type (typeattr))
 
 	      (call .random.read_sysctlfile_pattern.type (typeattr))
 
 	      (call .selinux.linked.type (typeattr))
 
 	      (call .spool.search_file_pattern.type (typeattr))
+
+	      (call .state.search_file_pattern.type (typeattr))
 
 	      (call .sys.agent.type (typeattr))
 
