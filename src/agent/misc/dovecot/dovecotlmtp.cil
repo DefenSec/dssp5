@@ -12,6 +12,9 @@
 	   (call cert.list_file_dirs (subj))
 	   (call cert.read_file_files (subj))
 
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
 	   (call dovecot.agent (subj exec.file))
 	   (call dovecot.unix_stream_connect (subj))
 
