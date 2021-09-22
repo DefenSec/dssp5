@@ -23,9 +23,6 @@
 	   (call home.dontaudit_writeinherited_file_files (subj))
 	   (call home.read_file_files (subj))
 
-	   (call .cert.read_file_files (subj))
-	   (call .cert.search_file_pattern.type (subj))
-
 	   (call .cert.home.list_file_dirs (subj))
 	   (call .cert.home.read_file_files (subj))
 
