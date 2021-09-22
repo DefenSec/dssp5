@@ -1,0 +1,400 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;;/usr/lib/dovecot/aggregator
+;;/usr/lib/dovecot/checkpassword-reply
+;;/usr/lib/dovecot/deliver
+;;/usr/lib/dovecot/dict
+;;/usr/lib/dovecot/director
+;;/usr/lib/dovecot/dns-client
+;;/usr/lib/dovecot/doveadm-server
+;;/usr/lib/dovecot/gdbhelper
+;;/usr/lib/dovecot/health-check.sh
+;;/usr/lib/dovecot/indexer
+;;/usr/lib/dovecot/indexer-worker
+;;/usr/lib/dovecot/ipc
+;;/usr/lib/dovecot/maildirlock
+;;/usr/lib/dovecot/old-stats
+;;/usr/lib/dovecot/quota-status
+;;/usr/lib/dovecot/rawlog
+;;/usr/lib/dovecot/replicator
+;;/usr/lib/dovecot/script
+;;/usr/lib/dovecot/script-login
+;;/usr/lib/dovecot/stats
+;;/usr/lib/dovecot/tcpwrap
+;;/usr/lib/dovecot/xml2text
+
+(block dovecot
+
+       (macro agent ((type ARG1)(type ARG2))
+	      (typetransition subj ARG2 process ARG1)
+	      (call service.exec.type (ARG2))
+	      (call service.type (ARG1)))
+
+       (macro accept_subj_tcp_sockets ((type ARG1))
+	      (allow ARG1 subj (tcp_socket (accept))))
+
+       (macro accept_subj_unix_stream_sockets ((type ARG1))
+	      (allow ARG1 subj (unix_stream_socket (accept))))
+
+       (macro readwrite_subj_tcp_sockets ((type ARG1))
+	      (allow ARG1 subj readwrite_tcp_socket))
+
+       (macro unix_stream_connect ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call run.search_file_dirs (ARG1))
+	      (call run.write_file_sock_files (ARG1)))
+
+       (macro unix_stream_connect_login ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call login.run.search_file_dirs (ARG1))
+	      (call login.run.write_file_sock_files (ARG1))
+	      (call run.search_file_dirs (ARG1)))
+
+       (macro unix_stream_connect_tokenlogin ((type ARG1))
+	      (call connectto_subj_unix_stream_sockets (ARG1))
+	      (call tokenlogin.run.search_file_dirs (ARG1))
+	      (call tokenlogin.run.write_file_sock_files (ARG1))
+	      (call run.search_file_dirs (ARG1)))
+
+       (blockinherit .sys.agent.template)
+
+       (allow subj self
+	      (capability (chown dac_override dac_read_search fsetid kill
+				 net_bind_service)))
+       (allow subj self (process (setcap)))
+       (allow subj self create_tcp_stream_socket)
+       (allow subj self create_unix_dgram_socket)
+       (allow subj self (unix_stream_socket (accept connectto listen)))
+
+       (call common.type (subj))
+
+       (call conf.getattr_file_files (subj))
+       (call conf.read_file_lnk_files (subj))
+       (call conf.search_file_dirs (subj))
+
+       (call empty.run.manage_file_dirs (subj))
+       (call empty.run.dovecot_run_file_type_transition_file (subj))
+
+       (call login.run.manage_file_dirs (subj))
+       (call login.run.manage_file_sock_files (subj))
+       (call login.run.dovecot_run_file_type_transition_file (subj))
+
+       (call run.manage_file_dirs (subj))
+       (call run.manage_file_fifo_files (subj))
+       (call run.manage_file_files (subj))
+       (call run.manage_file_lnk_files (subj))
+       (call run.manage_file_sock_files (subj))
+       (call run.run_file_type_transition_file (subj))
+
+       (call service.exec.mapexecute_all_files (subj))
+       (call service.exec.read_all_files (subj))
+       (call service.signal_all_processes (subj))
+       (call service.transition_all_processes (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+
+       (call tokenlogin.run.manage_file_dirs (subj))
+       (call tokenlogin.run.manage_file_sock_files (subj))
+       (call tokenlogin.run.dovecot_run_file_type_transition_file (subj))
+
+       (call .corepattern.getattr_sysctlfile_files (subj))
+
+       ;; /usr/libexec/dovecot/replicator
+       (call .exec.execute_file_files (subj))
+
+       (call .fs.getattr_sysctlfile_files (subj))
+       (call .fs.search_sysctlfile_pattern.type (subj))
+
+       (call .imap.imaps.namebind_port_tcp_sockets (subj))
+       (call .imap.namebind_port_tcp_sockets (subj))
+
+       (call .kernel.search_sysctlfile_pattern.type (subj))
+
+       (call .net.nodebind_netnode_tcp_sockets (subj))
+
+       (call .nss.hosts.type (subj))
+
+       (call .pop.namebind_port_tcp_sockets (subj))
+       (call .pop.pops.namebind_port_tcp_sockets (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (call .sieve.namebind_port_tcp_sockets (subj))
+
+       (call .spool.search_file_pattern.type (subj))
+
+       (call .systemd.notify.type (subj))
+
+       (call .systemd.journal.relay_msgs.type (subj))
+
+       (optional dovecot_postfix
+		 (call .postfix.private.spool.manage_file_sock_files (subj))
+		 (call .postfix.private.spool.readwrite_file_dirs (subj))
+		 (call .postfix.spool.search_file_dirs (subj)))
+
+       (block cert
+
+	      (filecon "/etc/ssl/dovecot" dir file_context)
+	      (filecon "/etc/ssl/dovecot/.*" any file_context)
+
+	      (macro cert_file_type_transition_file ((type ARG1))
+		     (call .cert.file_type_transition
+			   (ARG1 file dir "dovecot")))
+
+	      (blockinherit .file.cert.template))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (process (getsched setrlimit setsched)))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .nss.passwdgroup.type (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+
+	      (call .state.search_file_pattern.type (typeattr)))
+
+       (block conf
+
+	      (filecon "/etc/default/dovecot" file file_context)
+	      (filecon "/etc/default/dovecot\..*" file file_context)
+	      (filecon "/etc/dovecot" dir file_context)
+	      (filecon "/etc/dovecot/.*" any file_context)
+
+	      (macro conf_file_type_transition_file ((type ARG1))
+		     (call .conf.file_type_transition
+			   (ARG1 file dir "dovecot"))
+		     (call .conf.file_type_transition
+			   (ARG1 file file "dovecot")))
+
+	      (macro getattr_file_files ((type ARG1))
+		     (allow ARG1 file (file (getattr))))
+
+	      (blockinherit .file.conf.template))
+
+       (block data
+
+	      (filecon "/usr/share/dovecot" dir file_context)
+	      (filecon "/usr/share/dovecot/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "dovecot")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block empty
+
+	      (block run
+
+		     (filecon "/run/dovecot/empty" dir file_context)
+		     (filecon "/run/dovecot/empty/.*" any file_context)
+
+		     (macro dovecot_run_file_type_transition_file ((type ARG1))
+			    (call .dovecot.run.file_type_transition
+				  (ARG1 file dir "empty")))
+
+		     (blockinherit .file.macro_template_dirs)
+		     (blockinherit .file.run.dovecot.base_template)))
+
+       (block exec
+
+	      (filecon "/usr/bin/dovecot" file file_context))
+
+       (block login
+
+	      (block run
+
+		     (filecon "/run/dovecot/login" dir file_context)
+		     (filecon "/run/dovecot/login/.*" any file_context)
+
+		     (macro dovecot_run_file_type_transition_file ((type ARG1))
+			    (call .dovecot.run.file_type_transition
+				  (ARG1 file dir "login")))
+
+		     (blockinherit .file.run.dovecot.template)))
+
+       (block run
+
+	      (filecon "/run/dovecot" dir file_context)
+	      (filecon "/run/dovecot/.*" any file_context)
+
+	      (macro run_file_type_transition_file ((type ARG1))
+		     (call .run.file_type_transition
+			   (ARG1 file dir "dovecot")))
+
+	      (blockinherit .file.macro_template_fifo_files)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.run.dovecot.template)
+
+	      (call .rbacsep.exempt.obj.type (file)))
+
+       (block service
+
+	      (macro signal_all_processes ((type ARG1))
+		     (allow ARG1 typeattr (process (signal))))
+
+	      (macro transition_all_processes ((type ARG1))
+		     (allow ARG1 typeattr (process (transition))))
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow typeattr self (capability (setgid setuid sys_chroot)))
+
+	      (call common.type (typeattr))
+
+	      (call dovecot.accept_subj_unix_stream_sockets (typeattr))
+	      (call dovecot.readwrite_subj_unix_stream_sockets (typeattr))
+	      (call dovecot.readwriteinherited_subj_fifo_files (typeattr))
+	      (call dovecot.sigchld_subj_processes (typeattr))
+	      (call dovecot.use_subj_fds (typeattr))
+
+	      (call empty.run.search_file_dirs (typeattr))
+
+	      (call .sys.agent.type (typeattr))
+
+	      (block exec
+
+		     (macro mapexecute_all_files ((type ARG1))
+			    (allow ARG1 typeattr mapexecute_file))
+
+		     (macro read_all_files ((type ARG1))
+			    (allow ARG1 typeattr read_file))
+
+		     (macro type ((type ARG1))
+			    (typeattributeset typeattr ARG1))
+
+		     (typeattribute typeattr)
+
+		     (call .sys.agent.exec.type (typeattr))))
+
+       (block spool
+
+	      (filecon "/var/spool/dovecot" dir file_context)
+	      (filecon "/var/spool/dovecot/.*" any file_context)
+
+	      (filecon "/var/vmail" dir file_context)
+	      (filecon "/var/vmail/.*" any file_context)
+
+	      (macro map_file_files ((type ARG1))
+		     (allow ARG1 file (file (map))))
+
+	      (macro spool_file_type_transition_file ((type ARG1))
+		     (call .spool.file_type_transition
+			   (ARG1 file dir "dovecot")))
+
+	      (macro var_file_type_transition_file ((type ARG1))
+		     (call .var.file_type_transition
+			   (ARG1 file dir "vmail")))
+
+	      (macro watch_file_dirs ((type ARG1))
+		     (allow ARG1 file (dir (watch))))
+
+	      (macro watch_file_files ((type ARG1))
+		     (allow ARG1 file (file (watch))))
+
+	      (blockinherit .file.spool.template))
+
+       (block state
+
+	      (filecon "/var/lib/dovecot" dir file_context)
+	      (filecon "/var/lib/dovecot/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "dovecot")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.state.base_template))
+
+       (block tokenlogin
+
+	      (block run
+
+		     (filecon "/run/dovecot/token-login" dir file_context)
+		     (filecon "/run/dovecot/token-login/.*" any file_context)
+
+		     (macro dovecot_run_file_type_transition_file ((type ARG1))
+			    (call .dovecot.run.file_type_transition
+				  (ARG1 file dir "token-login")))
+
+		     (blockinherit .file.run.dovecot.template)))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/dovecot\.service.*" file
+		       file_context)
+	      (filecon "/usr/lib/systemd/system/dovecot\.socket.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in file.run
+
+    (block dovecot
+
+	   (macro type ((type ARG1))
+		  (typeattributeset typeattr ARG1))
+
+	   (blockinherit file.all_macro_template_dirs)
+	   (blockinherit file.all_macro_template_fifo_files)
+	   (blockinherit file.all_macro_template_files)
+	   (blockinherit file.all_macro_template_lnk_files)
+	   (blockinherit file.all_macro_template_sock_files)
+
+	   (typeattribute typeattr)
+
+	   (call file.run.type (typeattr))
+
+	   (block base_template
+
+		  (blockabstract base_template)
+
+		  (blockinherit .file.run.base_template)
+
+		  (call .file.run.dovecot.type (file)))
+
+	   (block template
+
+		  (blockabstract template)
+
+		  (blockinherit .file.run.dovecot.base_template)
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_sock_files))))
+
+(in exec
+
+    (filecon "/usr/share/dovecot/mkcert\.sh" file file_context))
+
+(in file.unconfined
+
+    (call .dovecot.cert.cert_file_type_transition_file (typeattr))
+    (call .dovecot.conf.conf_file_type_transition_file (typeattr))
+    (call .dovecot.data.data_file_type_transition_file (typeattr))
+    (call .dovecot.empty.run.dovecot_run_file_type_transition_file (typeattr))
+    (call .dovecot.login.run.dovecot_run_file_type_transition_file (typeattr))
+    (call .dovecot.run.run_file_type_transition_file (typeattr))
+    (call .dovecot.spool.spool_file_type_transition_file (typeattr))
+    (call .dovecot.spool.var_file_type_transition_file (typeattr))
+    (call .dovecot.state.state_file_type_transition_file (typeattr))
+    (call .dovecot.tokenlogin.run.dovecot_run_file_type_transition_file
+	  (typeattr)))

@@ -1,0 +1,49 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block auth
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (audit_write)))
+	   (allow subj self (process (getcap)))
+	   (allow subj self create_netlink_audit_socket)
+	   (allow subj self create_netlink_route_socket)
+	   (allow subj self create_unix_dgram_socket)
+	   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+	   (allow subj self (netlink_route_socket (nlmsg_read)))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+	   (call conf.read_file_lnk_files (subj))
+
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call spool.read_file_files (subj))
+	   (call spool.search_file_dirs (subj))
+
+	   (call run.manage_file_files (subj))
+	   (call run.readwrite_file_dirs (subj))
+	   (call run.write_file_fifo_files (subj))
+
+	   (call .caplastcap.read_sysctlfile_pattern.type (subj))
+
+	   (call .mail.search_file_pattern.type (subj))
+
+	   (call .pam.linked.type (subj))
+
+	   (call .proc.getattr_fs_pattern.type (subj))
+
+	   (call .random.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/auth" file file_context))))

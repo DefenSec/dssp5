@@ -1,0 +1,67 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block managesieve
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (dac_override dac_read_search)))
+
+	   (call cli.signal_subj_processes (subj))
+	   (call cli.subj_type_transition (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+	   (call conf.read_file_lnk_files (subj))
+
+	   (call config.signal_subj_processes (subj))
+	   (call config.subj_type_transition (subj))
+
+	   (call dovecot.accept_subj_tcp_sockets (subj))
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.readwrite_subj_tcp_sockets (subj))
+	   (call dovecot.readwriteinherited_subj_fifo_files (subj))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call dovecot.run.readwriteinherited_file_files (subj))
+
+	   (call login.readwrite_subj_unix_stream_sockets (subj))
+	   (call login.use_subj_fds (subj))
+
+	   (call spool.manage_file_dirs (subj))
+	   (call spool.manage_file_files (subj))
+	   (call spool.manage_file_lnk_files (subj))
+	   (call spool.map_file_files (subj))
+
+	   (call .mail.search_file_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/managesieve" file file_context))
+
+	   (block login
+
+		  (blockinherit .agent.template)
+
+		  (allow subj self (capability (dac_override dac_read_search)))
+
+		  (call dovecot.accept_subj_tcp_sockets (subj))
+		  (call dovecot.agent (subj exec.file))
+		  (call dovecot.readwrite_subj_tcp_sockets (subj))
+		  (call dovecot.unix_stream_connect (subj))
+		  (call dovecot.unix_stream_connect_login (subj))
+
+		  (call dovecot.run.readwriteinherited_file_files (subj))
+
+		  (call .cert.read_file_files (subj))
+		  (call .cert.traverse_file_pattern.type (subj))
+
+		  (call .rbacsep.constrained.type (subj))
+		  (call .rbacsep.usefdsource.type (subj))
+
+		  (block exec
+
+			 (filecon "/usr/lib/dovecot/managesieve-login" file
+				  file_context)))))

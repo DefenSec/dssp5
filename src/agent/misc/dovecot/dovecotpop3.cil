@@ -1,0 +1,55 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block pop3
+
+	   (blockinherit .agent.template)
+
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call login.readwrite_subj_unix_stream_sockets (subj))
+	   (call login.use_subj_fds (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .home.search_file_pattern.type (subj))
+
+	   (call .mail.home.manage_file_dirs (subj))
+	   (call .mail.home.manage_file_files (subj))
+	   (call .mail.home.map_file_files (subj))
+	   (call .mail.home.user_home_file_type_transition_file (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/pop3" file file_context))
+
+	   (block login
+
+		  (blockinherit .agent.template)
+
+		  (call dovecot.accept_subj_tcp_sockets (subj))
+		  (call dovecot.agent (subj exec.file))
+		  (call dovecot.readwrite_subj_tcp_sockets (subj))
+		  (call dovecot.unix_stream_connect (subj))
+		  (call dovecot.unix_stream_connect_login (subj))
+
+		  (call .rbacsep.constrained.type (subj))
+		  (call .rbacsep.usefdsource.type (subj))
+
+		  (block exec
+
+			 (filecon "/usr/lib/dovecot/pop3-login" file
+				  file_context)))))

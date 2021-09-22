@@ -1,0 +1,43 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block sieve
+
+	   (blockinherit .hybrid.agent.template)
+
+	   (call dovecot.spool.manage_file_files (subj))
+	   (call dovecot.spool.readwrite_file_dirs (subj))
+
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call .crypto.read_sysctlfile_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .nss.hosts.type (subj))
+
+	   (call .selinux.linked.type (subj))
+
+	   (call .user.home.manage_file_files (subj))
+	   (call .user.home.readwrite_file_dirs (subj))
+
+	   (block exec
+
+		  (filecon "/usr/bin/sieve-dump" file file_context)
+		  (filecon "/usr/bin/sieve-filter" file file_context)
+		  (filecon "/usr/bin/sieve-test" file file_context)
+		  (filecon "/usr/bin/sievec" file file_context))))
