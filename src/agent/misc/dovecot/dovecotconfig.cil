@@ -16,6 +16,9 @@
 	   (call conf.read_file_files (subj))
 	   (call conf.read_file_lnk_files (subj))
 
+	   (call data.list_file_dirs (subj))
+	   (call data.read_file_files (subj))
+
 	   (call dovecot.agent (subj exec.file))
 
 	   (call .cert.read_file_files (subj))

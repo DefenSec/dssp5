@@ -18,9 +18,6 @@
 ;;/usr/lib/dovecot/quota-status
 ;;/usr/lib/dovecot/rawlog
 ;;/usr/lib/dovecot/replicator
-;;/usr/lib/dovecot/script
-;;/usr/lib/dovecot/script-login
-;;/usr/lib/dovecot/stats
 ;;/usr/lib/dovecot/tcpwrap
 ;;/usr/lib/dovecot/xml2text
 

@@ -26,6 +26,9 @@
 	      (call config.signal_subj_processes (subj))
 	      (call config.use_subj_fds (subj))
 
+	      (call data.list_file_dirs (subj))
+	      (call data.read_file_files (subj))
+
 	      (call dovecot.signal_subj_processes (subj))
 	      (call dovecot.signull_subj_processes (subj))
 	      (call dovecot.subj_type_transition (subj))
