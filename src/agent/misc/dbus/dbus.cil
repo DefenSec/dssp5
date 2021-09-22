@@ -162,6 +162,7 @@
 	      (call data.read_file_lnk_files (typeattr))
 	      (call data.watch_file_dirs (typeattr))
 
+	      (call exec.entrypoint_file_files (typeattr))
 	      (call exec.execute_file_files (typeattr))
 
 	      (call .apparmor.read_sysfile_files (typeattr))

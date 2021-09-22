@@ -1,0 +1,131 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(block znc
+
+       (blockinherit .agent.template)
+
+       (call cert.list_file_dirs (subj))
+       (call cert.read_file_files (subj))
+
+       (call common.type (subj))
+
+       (call state.manage_file_dirs (subj))
+       (call state.manage_file_files (subj))
+       (call state.manage_file_lnk_files (subj))
+       (call state.state_file_type_transition_file (subj))
+
+       (call .sys.agent.type (subj))
+
+       (call .rbacsep.constrained.type (subj))
+       (call .rbacsep.usefdsource.type (subj))
+
+       (optional znc_certbot
+		 (call .certbot.conf.read_file_pattern.type (subj)))
+
+       (block cert
+
+	      (filecon "/etc/ssl/znc" dir file_context)
+	      (filecon "/etc/ssl/znc/.*" any file_context)
+
+	      (macro cert_file_type_transition_file ((type ARG1))
+		     (call .cert.file_type_transition
+			   (ARG1 file dir "znc")))
+
+	      (blockinherit .file.cert.template))
+
+       (block common
+
+	      (macro type ((type ARG1))
+		     (typeattributeset typeattr ARG1))
+
+	      (typeattribute typeattr)
+
+	      (allow subj self create_tcp_stream_socket)
+	      (allow subj self create_unix_dgram_socket)
+
+	      (call data.list_file_dirs (typeattr))
+	      (call data.read_file_files (typeattr))
+
+	      (call exec.entrypoint_file_files (typeattr))
+	      (call exec.execute_file_files (typeattr))
+
+	      (call .cert.read_file_files (typeattr))
+	      (call .cert.traverse_file_pattern.type (typeattr))
+
+	      (call .cgroup.getattr_fs_pattern.type (typeattr))
+
+	      (call .crypto.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .exec.execute_file_files (typeattr))
+
+	      (call .irc.namebind_port_tcp_sockets (typeattr))
+	      (call .irc.nameconnect_port_tcp_sockets (typeattr))
+
+	      (call .locale.data.map_file_pattern.type (typeattr))
+	      (call .locale.read_file_pattern.type (typeattr))
+
+	      (call .net.nodebind_netnode_tcp_sockets (typeattr))
+
+	      (call .nss.hosts.type (typeattr))
+	      (call .nss.passwdgroup.type (typeattr))
+
+	      (call .osrelease.read_sysctlfile_pattern.type (typeattr))
+
+	      (call .random.read_nodedev_chr_files (typeattr))
+
+	      (call .selinux.linked.type (typeattr))
+
+	      (call .shell.exec.execute_file_files (typeattr))
+
+	      (call .systemd.journal.relay_msgs.type (typeattr)))
+
+       (block exec
+
+	      (filecon "/usr/bin/znc" file file_context)
+
+	      (call .hybrid.agent.exec.type (file)))
+
+       (block data
+
+	      (filecon "/usr/share/znc" dir file_context)
+	      (filecon "/usr/share/znc/.*" any file_context)
+
+	      (macro data_file_type_transition_file ((type ARG1))
+		     (call .data.file_type_transition
+			   (ARG1 file dir "znc")))
+
+	      (blockinherit .file.data.base_template)
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files))
+
+       (block state
+
+	      (filecon "/var/lib/znc" dir file_context)
+	      (filecon "/var/lib/znc/.*" any file_context)
+
+	      (macro state_file_type_transition_file ((type ARG1))
+		     (call .state.file_type_transition
+			   (ARG1 file dir "znc")))
+
+	      (blockinherit .file.macro_template_dirs)
+	      (blockinherit .file.macro_template_files)
+	      (blockinherit .file.macro_template_lnk_files)
+	      (blockinherit .file.state.base_template))
+
+       (block unit
+
+	      (filecon "/usr/lib/systemd/system/znc\.service.*" file
+		       file_context)
+
+	      (blockinherit .file.unit.template)))
+
+(in sys
+
+    (call .znc.subj_type_transition (subj)))
+
+(in file.unconfined
+
+    (call .znc.cert.cert_file_type_transition_file (typeattr))
+    (call .znc.data.data_file_type_transition_file (typeattr))
+    (call .znc.state.state_file_type_transition_file (typeattr)))

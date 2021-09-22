@@ -1,0 +1,74 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in file.unconfined
+
+    (call .user.znc.home.user_home_file_type_transition_file (typeattr)))
+
+(in user
+
+    (call znc.home.manage_file_dirs (subj))
+    (call znc.home.manage_file_files (subj))
+    (call znc.home.manage_file_lnk_files (subj))
+    (call znc.home.relabel_file_dirs (subj))
+    (call znc.home.relabel_file_files (subj))
+    (call znc.home.relabel_file_lnk_files (subj))
+    (call znc.home.user_home_file_type_transition_file (subj))
+
+    (call znc.role (role))
+    (call znc.subj_type_transition (subj))
+
+    (block znc
+
+	   (macro role ((role ARG1))
+		  (roleattributeset roleattr ARG1))
+
+	   (macro subj_type_transition ((type ARG1))
+		  (allow ARG1 subj (process (transition)))
+
+		  (allow subj ARG1 (process (sigchld)))
+		  (allow subj ARG1 (fd (use)))
+		  (allow subj ARG1 readwriteinherited_fifo_file)
+
+		  (call .znc.exec.mapexecute_file_files (ARG1))
+		  (call .znc.exec.read_file_files (ARG1))
+		  (call .znc.exec.subj_type_transition (ARG1 subj)))
+
+	   (blockinherit .subj.common.base_template)
+
+	   (roleattribute roleattr)
+	   (roletype roleattr subj)
+
+	   (call home.manage_file_dirs (subj))
+	   (call home.manage_file_files (subj))
+	   (call home.manage_file_lnk_files (subj))
+	   (call home.user_home_file_type_transition_file (subj))
+
+	   (call .cert.home.read_file_files (subj))
+	   (call .cert.home.search_file_dirs (subj))
+
+	   (call .rbacsep.readstatesource.type (subj))
+
+	   (call .user.agent.type (subj))
+
+	   (call .user.systemd.agent (subj .znc.exec.file))
+
+	   (call .znc.common.type (subj))
+
+	   (block home
+
+		  (filecon "HOME_DIR/\.znc" dir file_context)
+		  (filecon "HOME_DIR/\.znc/.*" any file_context)
+
+		  (macro user_home_file_type_transition_file ((type ARG1))
+			 (call .user.home.file_type_transition
+			       (ARG1 file dir ".znc")))
+
+		  (blockinherit .file.macro_template_dirs)
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.macro_template_lnk_files)
+		  (blockinherit .file.user.home.base_template))))
+
+(in wheel
+
+    (call .user.znc.role (role)))
