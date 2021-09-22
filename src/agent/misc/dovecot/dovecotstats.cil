@@ -10,6 +10,7 @@
 	   (allow subj self (capability (setgid setuid)))
 
 	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.unix_stream_connect (subj))
 
 	   (call .rbacsep.constrained.type (subj))
 	   (call .rbacsep.usefdsource.type (subj))

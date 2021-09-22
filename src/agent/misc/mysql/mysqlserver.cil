@@ -276,4 +276,4 @@
 
 (in mysql.client
 
-    (call .mysql.server.unix_stream_connect (subj)))
+    (call connect_pattern_unix.type (subj)))

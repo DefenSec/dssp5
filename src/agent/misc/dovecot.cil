@@ -3,7 +3,6 @@
 
 ;;/usr/lib/dovecot/aggregator
 ;;/usr/lib/dovecot/checkpassword-reply
-;;/usr/lib/dovecot/deliver
 ;;/usr/lib/dovecot/dict
 ;;/usr/lib/dovecot/director
 ;;/usr/lib/dovecot/dns-client
