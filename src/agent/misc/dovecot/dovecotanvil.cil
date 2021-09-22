@@ -1,0 +1,18 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block anvil
+
+	   (blockinherit .agent.template)
+
+	   (call agent (subj exec.file))
+	   (call unix_stream_connect (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/anvil" file file_context))))

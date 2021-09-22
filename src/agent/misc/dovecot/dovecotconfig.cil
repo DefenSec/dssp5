@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block config
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (dac_read_search)))
+
+	   (call cert.list_file_dirs (subj))
+	   (call cert.read_file_files (subj))
+
+	   (call conf.list_file_dirs (subj))
+	   (call conf.read_file_files (subj))
+	   (call conf.read_file_lnk_files (subj))
+
+	   (call dovecot.agent (subj exec.file))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (optional dovecotconfig_certbot
+		     (call .certbot.conf.read_file_pattern.type (subj)))
+
+	   (optional dovecotconfig_dovecotmanagesieve
+		     (call dovecot.managesieve.signal_subj_processes (subj))
+		     (call dovecot.managesieve.subj_type_transition (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/config" file file_context))))

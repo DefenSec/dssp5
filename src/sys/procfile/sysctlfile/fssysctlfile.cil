@@ -5,6 +5,9 @@
 
     (genfscon "proc" "/sys/fs" sysctlfile_context)
 
+    (macro getattr_sysctlfile_files ((type ARG1))
+	   (allow ARG1 sysctlfile (file (getattr))))
+
     (blockinherit .sysctlfile.fs.template)
     (blockinherit .sysctlfile.macro_template_dirs))
 

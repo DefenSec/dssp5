@@ -1,0 +1,69 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block lmtp
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self (capability (dac_override dac_read_search)))
+
+	   (call cert.list_file_dirs (subj))
+	   (call cert.read_file_files (subj))
+
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call spool.manage_file_dirs (subj))
+	   (call spool.manage_file_files (subj))
+	   (call spool.map_file_files (subj))
+	   (call spool.read_file_lnk_files (subj))
+
+	   (call state.list_file_dirs (subj))
+	   (call state.read_file_files (subj))
+
+	   (call tmp.manage_file_files (subj))
+	   (call tmp.tmp_file_type_transition_file (subj))
+
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .home.search_file_pattern.type (subj))
+
+	   (call .mail.search_file_pattern.type (subj))
+
+	   (call .mail.home.manage_file_dirs (subj))
+	   (call .mail.home.manage_file_files (subj))
+	   (call .mail.home.map_file_files (subj))
+	   (call .mail.home.user_home_file_type_transition_file (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .tmp.deletename_file_dirs (subj))
+
+	   (optional dovecotlmtp_postfixsendmail
+		     (call .postfix.sendmail.mailer.type (subj)))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/lmtp" file file_context))
+
+	   (block tmp
+
+		  (macro tmp_file_type_transition_file ((type ARG1))
+			 (call .tmp.file_type_transition
+			       (ARG1 file file "*")))
+
+		  (blockinherit .file.macro_template_files)
+		  (blockinherit .file.tmp.base_template))))

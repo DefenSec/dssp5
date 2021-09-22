@@ -145,6 +145,9 @@
 	      (call .consolesetup.setupcon.tmp.manage_file_files (subj))
 	      (call .consolesetup.setupcon.tmp.relabel_file_files (subj)))
 
+    (optional unprivuser_dovecotsieve
+	      (call .dovecot.sieve.role (role)))
+
     (optional unprivuser_glib
 	      (call .glib.home.conf.manage_file_dirs (subj))
 	      (call .glib.home.conf.manage_file_files (subj))

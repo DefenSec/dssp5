@@ -42,6 +42,9 @@
        (optional wheeluser_consolesetupcon
 		 (call .consolesetup.setupcon.role (role)))
 
+       (optional wheeluser_dovecotsieve
+		 (call .dovecot.sieve.role (role)))
+
        (optional wheeluser_gtkupdateiconcache
 		 (call .gtk.updateiconcache.role (role)))
 

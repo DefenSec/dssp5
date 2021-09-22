@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+(in dovecot
+
+    (block log
+
+	   (blockinherit .agent.template)
+
+	   (allow subj self create_unix_dgram_socket)
+
+	   (call dovecot.agent (subj exec.file))
+
+	   (call .rbacsep.constrained.type (subj))
+	   (call .rbacsep.usefdsource.type (subj))
+
+	   (call .systemd.journal.relay_msgs.type (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/log" file file_context))))

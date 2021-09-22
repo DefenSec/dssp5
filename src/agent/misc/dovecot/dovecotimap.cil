@@ -1,0 +1,78 @@
+;; SPDX-FileCopyrightText: © 2021 Dominick Grift <dominick.grift@defensec.nl>
+;; SPDX-License-Identifier: Unlicense
+
+;; /usr/lib/dovecot/imap-hibernate
+;; /usr/lib/dovecot/imap-urlauth
+;; /usr/lib/dovecot/imap-urlauth-login
+;; /usr/lib/dovecot/imap-urlauth-worker
+
+(in dovecot
+
+    (block imap
+
+	   (blockinherit .agent.template)
+
+	   (call dovecot.agent (subj exec.file))
+	   (call dovecot.unix_stream_connect (subj))
+
+	   (call login.readwrite_subj_unix_stream_sockets (subj))
+	   (call login.use_subj_fds (subj))
+
+	   (call spool.manage_file_dirs (subj))
+	   (call spool.manage_file_files (subj))
+	   (call spool.map_file_files (subj))
+	   (call spool.watch_file_dirs (subj))
+	   (call spool.watch_file_files (subj))
+
+	   (call .ci.getattr_fs_pattern.type (subj))
+	   (call .ci.manage_fs_pattern.type (subj))
+
+	   (call .dos.getattr_fs_pattern.type (subj))
+	   (call .dos.manage_fs_pattern.type (subj))
+
+	   (call .fuse.getattr_fs_pattern.type (subj))
+	   (call .fuse.manage_fs_pattern.type (subj))
+
+	   (call .home.search_file_pattern.type (subj))
+
+	   (call .mail.search_file_pattern.type (subj))
+
+	   (call .mail.home.manage_file_dirs (subj))
+	   (call .mail.home.manage_file_files (subj))
+	   (call .mail.home.map_file_files (subj))
+	   (call .mail.home.user_home_file_type_transition_file (subj))
+
+	   (call .nfs.getattr_fs_pattern.type (subj))
+	   (call .nfs.manage_fs_pattern.type (subj))
+
+	   (call .user.mail.readwrite_file_files (subj))
+
+	   (block exec
+
+		  (filecon "/usr/lib/dovecot/imap" file file_context))
+
+	   (block login
+
+		  (blockinherit .agent.template)
+
+		  (call dovecot.accept_subj_tcp_sockets (subj))
+		  (call dovecot.agent (subj exec.file))
+		  (call dovecot.readwrite_subj_tcp_sockets (subj))
+		  (call dovecot.unix_stream_connect (subj))
+		  (call dovecot.unix_stream_connect_login (subj))
+
+		  (call dovecot.cert.list_file_dirs (subj))
+		  (call dovecot.cert.read_file_files (subj))
+
+		  (call dovecot.run.readwriteinherited_file_files (subj))
+
+		  (call .cert.read_file_files (subj))
+		  (call .cert.traverse_file_pattern.type (subj))
+
+		  (call .rbacsep.constrained.type (subj))
+		  (call .rbacsep.usefdsource.type (subj))
+
+		  (block exec
+
+			 (filecon "/usr/lib/dovecot/imap-login" file
+				  file_context)))))
