@@ -80,7 +80,6 @@
 	   (call .runuser.search_file_pattern.type (subj))
 
 	   (call .systemd.tmpfiles.common.type (subj))
-
 	   (call .systemd.tmpfiles.exec.entrypoint_file_files (subj))
 	   (call .systemd.tmpfiles.exec.mapexecute_file_files (subj))
 	   (call .systemd.tmpfiles.exec.read_file_files (subj))

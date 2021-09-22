@@ -20,9 +20,6 @@
 
 	   (call .aliases.read_file_files (subj))
 
-	   (call .cert.read_file_files (subj))
-	   (call .cert.traverse_file_pattern.type (subj))
-
 	   (call .mail.deletename_file_dirs (subj))
 
 	   (call .nss.services.type (subj))

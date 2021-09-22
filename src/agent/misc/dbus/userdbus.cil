@@ -63,7 +63,6 @@
 	   (call tmpfs.tmp_fs_type_transition_file (subj))
 
 	   (call .dbus.common.type (subj))
-	   (call .dbus.exec.entrypoint_file_files (subj))
 
 	   (call .user.agent.type (subj))
 
