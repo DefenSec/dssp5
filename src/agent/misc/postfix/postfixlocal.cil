@@ -20,6 +20,9 @@
 
 	   (call .aliases.read_file_files (subj))
 
+	   (call .cert.read_file_files (subj))
+	   (call .cert.traverse_file_pattern.type (subj))
+
 	   (call .mail.deletename_file_dirs (subj))
 
 	   (call .nss.services.type (subj))
@@ -27,6 +30,12 @@
 	   (call .user.home.search_file_pattern.type (subj))
 
 	   (call .user.mail.append_file_files (subj))
+
+	   (optional postfixlocal_mysqlserver
+		     (call .mysql.connect_pattern_unix.type (subj)))
+
+	   (optional postfixlocal_mysqlunreservedport
+		     (call .mysql.connect_pattern_tcp.type (subj)))
 
 	   (block exec
 

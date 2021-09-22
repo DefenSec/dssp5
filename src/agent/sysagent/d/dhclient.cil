@@ -28,7 +28,7 @@
        (call script.subj_type_transition (subj))
 
        (call .cert.read_file_files (subj))
-       (call .cert.search_file_dirs (subj))
+       (call .cert.traverse_file_pattern.type (subj))
 
        (call .dhcp.namebind_port_udp_sockets (subj))
 

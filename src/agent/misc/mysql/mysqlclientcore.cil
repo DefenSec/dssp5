@@ -14,22 +14,14 @@
 	   (blockinherit .hybrid.agent.template)
 
 	   (allow subj self (capability (dac_read_search)))
-	   (allow subj self create_tcp_socket)
 
-	   (call cert.list_file_dirs (subj))
-	   (call cert.read_file_files (subj))
-
-	   (call conf.list_file_dirs (subj))
-	   (call conf.read_file_files (subj))
-	   (call conf.read_file_lnk_files (subj))
+	   (call connect_pattern_tcp.type (subj))
 
 	   (call data.read_file_files (subj))
 	   (call data.search_file_dirs (subj))
 
 	   (call home.dontaudit_writeinherited_file_files (subj))
 	   (call home.read_file_files (subj))
-
-	   (call mysql.nameconnect_port_tcp_sockets (subj))
 
 	   (call .cert.read_file_files (subj))
 	   (call .cert.search_file_pattern.type (subj))

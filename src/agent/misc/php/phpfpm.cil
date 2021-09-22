@@ -295,10 +295,10 @@
 	      (call .http.https.nameconnect_port_tcp_sockets (subj)))
 
     (optional phpfpm_mysqlserver
-	      (call .mysql.server.unix_stream_connect (subj)))
+	      (call .mysql.connect_pattern_unix.type (subj)))
 
     (optional phpfpm_mysqlunreservedport
-	      (call .mysql.nameconnect_port_tcp_sockets (subj)))
+	      (call .mysql.connect_pattern_tcp.type (subj)))
 
     (optional phpfpm_postfixsendmail
 	      (call .postfix.sendmail.mailer.type (subj))
